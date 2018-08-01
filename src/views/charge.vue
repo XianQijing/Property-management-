@@ -1,0 +1,600 @@
+<template>
+    <div class="charge">
+        <nav-bar/>
+        <div class="container">
+            <nav-header/>
+            <div class="card row">
+                <div class="col-md-12">
+                    <el-tabs v-model="activeName" @tab-click="handleClick">
+                        <el-tab-pane label="收费参数" name="first">
+                            <div class="main">
+								<button class="add" @click="qingkong(1)">新增收费项目</button>
+								<el-table :data="charge" style="width: 100%">
+									<el-table-column prop="name" label="名称" width="280"></el-table-column>
+									<el-table-column prop="charge" label="收费项目" width="280"></el-table-column>
+									<el-table-column prop="meter" label="仪表种类"></el-table-column>
+                                    <el-table-column prop="remark" label="备注" width="280"></el-table-column>
+									<el-table-column>
+										<template slot-scope="scope">
+											<el-dropdown>
+												<span class="el-dropdown-link">
+                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
+                                                </span>
+												<el-dropdown-menu slot="dropdown">
+													
+											        <span @click="tanchaung(scope.$index, charge)"><el-dropdown-item>编辑</el-dropdown-item></span>
+													<span @click="chargeDelete(scope.$index, charge)"><el-dropdown-item>删除</el-dropdown-item></span>
+												</el-dropdown-menu>
+											</el-dropdown>
+										</template>
+										
+									</el-table-column>
+								</el-table>
+								<div class="fenye">
+									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" 
+                                                    :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+
+									</el-pagination>
+								</div>
+							</div>
+                        </el-tab-pane>
+
+                        <el-tab-pane label="仪表管理">
+
+                             <div class="main">
+								<button class="add" @click="luru">录入数据</button>
+								<el-table :data="meter" style="width: 100%">
+									<el-table-column prop="roomType" label="房屋类型"></el-table-column>
+									<el-table-column prop="build" label="楼宇"></el-table-column>
+									<el-table-column prop="roomNum" label="房号"></el-table-column>
+									<el-table-column prop="payItemName" label="收费项目"></el-table-column>
+									<el-table-column prop="payMonth" label="月份"></el-table-column>
+									<el-table-column prop="univalence" label="单价"></el-table-column>
+									<el-table-column prop="currentRead" label="起度"></el-table-column>
+                                    <el-table-column prop="lastRead" label="止度"></el-table-column>
+                                    <el-table-column prop="use" label="用量"></el-table-column>
+                                    <el-table-column prop="orderPrice" label="费用"></el-table-column>
+                                    <el-table-column prop="remark" label="备注"></el-table-column>
+									<el-table-column>
+										<template slot-scope="scope">
+											<span ><button @click="entryChange = true">编辑</button></span>
+										</template>
+									</el-table-column>
+								</el-table>
+								<div class="fenye">
+									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+
+									</el-pagination>
+								</div>
+							</div>                 
+                        </el-tab-pane>
+
+                        <el-tab-pane label="应收费用">
+
+                            <div class="main">
+                                <div id="card"><button @click="feiyong3">临时费用</button><button @click="feiyong2">抄表费用</button><button class="active" @click="feiyong1">常规费用</button></div>
+                                <div id="main">
+			                    <div>
+								<el-table :data="linshi" style="width: 100%">
+									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
+									<el-table-column prop="build" label="楼宇" width="180"></el-table-column>
+									<el-table-column prop="roomNum" label="房号"></el-table-column>
+                                    <el-table-column prop="clientName" label="租户名称" width="180"></el-table-column>
+                                    <el-table-column prop="itemName" label="收费项目" width="180"></el-table-column>
+                                    <el-table-column prop="meterName" label="仪表种类" width="180"></el-table-column>
+                                    <el-table-column prop="price" label="费用" width="180"></el-table-column>
+                                    <el-table-column prop="createTime" label="时间" width="180"></el-table-column>
+                                    <el-table-column prop="remarks" label="备注" width="180"></el-table-column>
+								</el-table>
+                                <div class="fenye">
+                                    <el-pagination @size-change="handleSizeChange" 
+                                    @current-change="handleCurrentChange"
+                                    :current-page="pageNo"  
+                                    :page-size="100" 
+                                    layout="total, sizes, prev, pager, next, jumper" 
+                                    :total="totalDataNumber">
+                                    <!--size-change, pageSize 改变时会触发 -->
+                                    <!-- current-change	currentPage 改变时会触发 -->
+                                    <!-- current-page	当前页数，支持 .sync 修饰符 -->
+                                    <!-- page-sizes	每页显示个数选择器的选项设置 -->
+                                    <!-- layout	组件布局，子组件名用逗号分隔 -->
+                                    <!-- total	总条目数 -->
+									<!-- page-size	每页显示条目个数 -->
+									</el-pagination>
+                                </div>
+                                </div>
+                            </div>
+							</div>                 
+                        </el-tab-pane>
+                    </el-tabs>
+                </div>
+            </div>
+
+             <!-- 收费参数-新建弹窗 -->
+            <el-dialog :title="this.name" :visible.sync="news" width="30%">
+                <div class="tanchuang">
+                    <el-form ref="shuru" label-width="130px" class="demo-shuru" size="mini" :model="add" :value="too">
+                        <el-form-item label="名称:">
+                        <el-input v-model="add.name" placeholder="请输入名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="费用项目类型:">
+                            <el-select v-model="add.payItemId" placeholder="请选择费用项目类型">
+                                <el-option label="常规费用" value="180723BR7M3G986W"></el-option>
+                                <el-option label="抄表费用" value="180723BR8PBFT354"></el-option>
+                                <el-option label="临时费用" value='180723BRAS3GHR68'></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="仪表种类:">
+                            <el-select v-model="add.type" placeholder="请选择仪表种类">
+                                <el-option label="水表" value="180723BRCZ4C6YK4"></el-option>
+                                <el-option label="电表" value="180723BRFX75P6FW"></el-option>
+                                <el-option label="燃气表" value="180723BRGGG34H94"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="备注:">
+                            <el-input v-model="add.remarks" type="textarea" :rows="4" :value="too.remarks"></el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="news= false">取 消</el-button>
+                    <el-button type="primary" @click="createPayItem">确 定</el-button>
+                </span>
+
+            </el-dialog>
+
+            <!-- 收费参数-编辑弹窗 -->
+            <!-- <el-dialog
+                title="编辑收费项目"
+                :visible.sync="dialogVisible"
+                width="30%" :model="upload">
+                <div class="tanchuang">
+                    <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
+                    
+                        <el-form-item label="名称:">
+                        <el-input v-model="upload.name" placeholder="请输入名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="费用项目类型:">
+                            <el-select v-model="upload.chargeType" placeholder="请选择项目类型">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="仪表种类:">
+                            <el-select v-model="upload.type" placeholder="请选择仪表种类">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="备注:">
+                            <el-input v-model="upload.remarks" type="textarea" :rows="4"></el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                </span>
+
+            </el-dialog> -->
+
+            <!-- 仪表管理-录入 -->
+            <el-dialog
+                title="录入"
+                :visible.sync="entry"
+                width="30%" :model="entrydata">
+                <div class="tanchuang">
+                    <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
+                        <el-form-item label="关联房屋:">
+                            <el-select v-model="entrydata.houseType">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="收费项目:">
+                            <el-select v-model="entrydata.charge">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="起度:">
+                            <el-input v-model="entrydata.start"></el-input>
+                        </el-form-item>
+                        <el-form-item label="止度:">
+                            <el-input v-model="entrydata.end"></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注:">
+                            <el-input v-model="entrydata.remarks"></el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="entry = false">取 消</el-button>
+                    <el-button type="primary" @click="entry = false">确 定</el-button>
+                </span>
+
+            </el-dialog>
+
+            <!-- 仪表管理-编辑 -->
+            <el-dialog
+                title="编辑"
+                :visible.sync="entryChange"
+                width="30%" :model="changedata">
+                <div class="tanchuang">
+                    <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
+                        <el-form-item label="关联房屋:">
+                            <el-select v-model="changedata.houseType">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="收费项目:">
+                            <el-select v-model="changedata.charge">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="起度:">
+                            <el-input v-model="changedata.start"></el-input>
+                        </el-form-item>
+                        <el-form-item label="止度:">
+                            <el-input v-model="changedata.end"></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注:">
+                            <el-input v-model="changedata.remarks"></el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="entryChange = false">取 消</el-button>
+                    <el-button type="primary" @click="entryChange = false">确 定</el-button>
+                </span>
+
+            </el-dialog>
+        </div>
+    </div>
+</template>
+
+<script>
+	import NavHeader from '@/components/NavHeader'
+    import NavBar from '@/components/NavBar'
+    import qs from 'qs'
+    import url from '../assets/Req.js'
+export default {
+    name:'charge',
+    data(){
+        return{
+            entryChange:false,
+            entry:false,
+            news:false,
+            edit:true,
+            dialogVisible: false,
+            //分页数据
+			pageNo: 1,
+            pageSize: 10,
+            pageSizesList: [10, 15, 20, 30, 50],
+            tableData: [],       //返回的结果集合
+            totalDataNumber: 20,//数据的总数,
+            
+            name: '新建',
+            modify:false,
+            activeName: 'first',
+            //收费参数
+            charge: [],
+            //仪表管理
+            meter:[],
+            //应收费用
+            linshi: [
+                {
+                    houseType: 'sb',
+                    build: '15946907569',
+                    roomNumber:'gdfg',
+                    name: '门面',
+                    chargeProject: '023',
+                    meter:'125',
+                    charge: '200',
+                    time: '2018.7.14',
+                    remarks:''                 
+                }
+            ],
+            //收费参数-新增
+            add:{
+                name: '',
+                payItemId: '',
+                type: '',
+                remarks:''
+            },
+            //收费参数-编辑
+            upload:{
+                name: '',
+                chargeType: ' ',
+                type: ' ',
+                remarks:''
+            },
+            //仪表管理-录入
+            entrydata: {
+                houseType: '店铺',
+                charge: '电表',
+                start: '6000',
+                end: '6500',
+                remarks: ''
+            },
+            //仪表管理-编辑
+            changedata: {
+                houseType: '店铺',
+                charge: '电表',
+                start: '6000',
+                end: '6500',
+                remarks: ''
+            },
+            //返回的数据
+            too:{
+                remarks:''
+            }
+        }
+    },
+    mounted(){
+        this.nn(),
+        this.getCharge()
+        this.getMeter(),
+        this.feiyong1()
+    },
+    
+        //选项卡
+    methods:{
+        changePosition() {
+			console.log(this.position)
+		},
+		handleClick(tab, event) {
+			console.log(tab, event);
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+            this.fenye  = val
+        },
+        getCharge(){
+            this.$ajax.get(url+'pay/queryPayItemMeterAll',{
+                params:{
+                    page:this.pageNo,
+                    pageSize:this.pageSize
+                }
+                // 前端将每页显示多少条放入 pageSize,第几页放入page
+            }).then(res => {
+                this.charge = res.data.data.rows
+                this.totalDataNumber=res.data.data.records
+                this.pageSize=res.data.data.pageSize
+                this.pageNo=res.data.data.pageNo
+                console.log(res.data)
+            })
+        },
+        //删除
+        chargeDelete(index,rows) {
+				let that = this;
+                that.id = this.charge[index].id;
+				rows.splice(index, 1);
+                this.$ajax.delete(url+"pay/deletePayItemMeter",{
+                    params:{
+                        'payItemMeterId':this.id
+                    }
+                })
+                
+                .then((res) => {
+					this.getCharge()
+				})
+            },
+            //弹窗
+            tanchaung(index,rows){
+                let that = this;
+				that.id = this.charge[index].id;
+                console.log(this.id);
+                this.news = true
+                if(that.id !== ''){
+                    this.name = '编辑'
+                    this.$ajax.get(url + 'pay/queryPayItemMeter',{
+                        params:{
+                            'payItemMeterId': this.id
+                        }
+                    }).then(res => {
+                        console.log(res)
+                        var temp=res.data.data
+                        this.add = temp
+                        this.add.payItemId = temp.payItemId
+                        this.add.type=temp.meterId
+                        this.add.remarks=temp.remark
+                        this.add.name=temp.name
+                    })
+                }
+            },
+            qingkong(){
+                this.name = '添加',
+                this.add = {}
+                this.news = true
+            },
+            luru(){
+                
+                this.entrydata = {}
+                this.entry = true
+            },
+
+        createPayItem(){
+            var payItemVO={}
+            payItemVO.payItemMeterId=this.id
+            payItemVO.payItemId=this.add.payItemId
+            payItemVO.meterId=this.add.type
+            payItemVO.payItemMeterName=this.add.name
+            payItemVO.remake=this.add.remarks
+            console.info(payItemVO)
+            this.$ajax.post(
+                url+"/pay/createPayItemMeter",payItemVO
+            ).then((res) => {
+                alert("成功")
+                this.add=={}
+                this.news = false
+            })
+        },
+        getMeter(){
+            this.$ajax.get(url+'/pay/queryMeterManagementAll')
+            
+            .then(res =>{
+                this.meter=res.data.data.rows
+            })
+        },
+        //常规
+        feiyong1(){
+            this.$ajax.get(url + 'pay/queryReceivable',{
+                params:{
+                    'payItem':'180723BR7M3G986W',
+                    'page':'1',
+                    'pageSize':'2'
+                }
+            }).then(res => {
+                console.log(res)
+                this.linshi = res.data.data.rows
+            })
+        },
+        //抄表
+        feiyong2(){
+            this.$ajax.get(url + 'pay/queryReceivable',{
+                params:{
+                    'payItem':'180723BR8PBFT354',
+                    'page':'1',
+                    'pageSize':'2'
+                }
+            }).then(res => {
+                console.log(res)
+                this.linshi = res.data.data.rows
+            })
+        },
+        //临时
+        feiyong3(){
+            this.$ajax.get(url + 'pay/queryReceivable',{
+                params:{
+                    'payItem':'180723BRAS3GHR68',
+                    'page':'1',
+                    'pageSize':'2'
+                }
+            }).then(res => {
+                console.log(res)
+                this.linshi = res.data.data.rows
+            })
+        },
+        nn(){
+        var card =document.getElementById("card");
+		var cardlist = card.children;
+        
+		for (var i= 0;i<cardlist.length;i++){ 
+			cardlist[i].index = i;
+			cardlist[i].onclick = function (){
+				for (var m = 0;m< cardlist.length;m++){
+					cardlist[m].className = "";
+				}
+				this.className = "active";
+			}
+		}
+    },
+        
+    },
+    components: {
+			NavHeader,
+			NavBar
+		},
+}
+
+</script>
+<style scoped>
+.container {
+		width: 88%;
+		position: relative;
+		left: 6%;
+		background-color: #eeeeee;
+		padding: 0;
+	}
+
+.charge {
+	background: #eeeeee;
+	}
+
+.card {
+		margin: 0;
+		background-color: white;
+		width: 99%;
+		margin: 10px 10px 0 5px;
+	}
+
+.add {
+		color: white;
+		background-color: #32a8ee;
+		font-size: 14px;
+		font-family: "Microsoft YaHei";
+		border: 1px solid #32a8ee;
+		border-radius: 5px;
+		width: 100px;
+		height: 31px;
+        margin-right: 10px;
+        margin-top: 10px;
+		margin-bottom: 20px;
+    }
+
+    .fenye {
+		float: right;
+		padding: 20px 0;
+        display: block!important;
+	}
+
+    .main {
+		padding: 0 40px 0 50px;
+		width: 99%;
+		margin-left: 2px;
+		height: 844px;
+	}
+.confirm {
+    background-color: #32a8ee;
+    border: #32a8ee;
+    color: white;
+    border-radius: 5px;
+}
+
+.cancel {
+    background-color: white;
+    border: 1px solid rgb(217, 217, 217);
+    color: rgb(138, 138, 138);
+    border-radius: 5px;
+}
+
+.cell button{
+    background: none;
+    border: none;
+    color: #32a8ee;
+}
+
+.tanchuang {
+    width: 80%;
+}
+
+#card button{
+        border: 1px solid #999999;
+        border-radius: 5px;
+        margin-left: 5px;
+        background: white;
+        color: #999999;
+        height: 31px;
+        float: right;
+    }
+.active {
+    border: 1px solid #32a8ee!important;
+    color: #32a8ee!important;
+}
+
+#main div:nth-child(2){
+    display: none;
+}
+#main div:nth-child(3){
+    display: none;
+}
+#main {
+    padding-top: 52px;
+}
+</style>
