@@ -6,9 +6,7 @@
             <div class="input">
             <el-form :model="addCustomer" :rules="rules" ref="addCustomer" label-width="130px" size="small" class="demo-addCustomer" :disabled="edit">
                <el-form-item label="关联房屋:" prop="selectRoom">
-                   <div class="block">{{addCustomer.selectRoom}}
-                   <el-cascader expand-trigger="hover" :options="options" v-model="addCustomer.selectRoom" @change="handleChange"></el-cascader>
-                   </div>
+                   <el-input v-model="addCustomer.selectRoom" placeholder="关联房屋" :disabled="true"></el-input>
                 </el-form-item>
 
                 <el-form-item label="姓名:" prop="name">
@@ -131,89 +129,7 @@ export default {
             { required: true, message: '请输入建筑面积', trigger: 'blur' }
           ]
         },
-      options: [
-          {
-          value: 'bangongqu',
-          label: '办公区',
-          children: [{
-              value: 'Azuo',
-              label: 'A座',
-              children: [{
-                value: '101',
-                label: '101'
-              }, {
-                value: '102',
-                label: '102'
-              }, {
-                value: '103',
-                label: '103'
-              }, {
-                value: '104',
-                label: '104'
-              },
-              {
-                value: '105',
-                label: '105'
-              }]
-          }, 
-          {
-            value: 'Bzuo',
-            label: 'B座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          },{
-            value: 'Czuo',
-            label: 'C座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          }]
-        },{
-          value: 'yanjiedianpu',
-          label: '沿街店铺',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
-        }],
-
-        }
-    },
+        }},
     mounted(){
             this.id = this.$route.query.id
             // console.log("id"+this.$route)
@@ -306,6 +222,7 @@ export default {
         goBack(){
             window.history.back()
         },
+        
       //   handleChange(file, fileList) {
       //   this.fileList = fileList.slice(-2);
       // },

@@ -6,35 +6,29 @@
             <div class="input">
             <el-form :model="carForm" ref="carForm" label-width="130px" class="demo-carForm">
                <el-form-item label="关联房屋：">
-                   <el-select v-model="carForm.region" placeholder="请选择房屋类型">
-                       <el-option label="区域一" value="shanghai"></el-option>
-                       <el-option label="区域二" value="beijing"></el-option>
-                   </el-select>
+                    <el-cascader expand-trigger="hover" :options="options" v-model="carForm.region" @change="handleChange"></el-cascader>
                </el-form-item>
                 <el-form-item label="验收项目：">
-                   <el-select v-model="carForm.region" placeholder="请选择验收项目">
-                       <el-option label="区域一" value="shanghai"></el-option>
-                       <el-option label="区域二" value="beijing"></el-option>
-                   </el-select>
+                   <el-input v-model="carForm.project"></el-input>
                </el-form-item>
                 <el-form-item label="验收标准：">
-                <el-input v-model="carForm.Area">
+                <el-input v-model="carForm.standard">
                 </el-input>
                 </el-form-item>
                 <el-form-item label="验收结果：">
-                   <el-select v-model="carForm.region" placeholder="请选择验收结果">
+                   <el-select v-model="carForm.Result" placeholder="请选择验收结果">
                        <el-option label="区域一" value="shanghai"></el-option>
                        <el-option label="区域二" value="beijing"></el-option>
                    </el-select>
                </el-form-item>
                 <el-form-item label="验收人：">
-                <el-input v-model="carForm.carState" placeholder="请输入验收人"></el-input>
+                <el-input v-model="carForm.person" placeholder="请输入验收人"></el-input>
                 </el-form-item>
                 <el-form-item label="验收说明：" prop="Type">
-                <el-input v-model="carForm.Type" placeholder="请输入验收说明"></el-input>
+                <el-input v-model="carForm.Explain" placeholder="请输入验收说明"></el-input>
                 </el-form-item>
                 <el-form-item label="验收时间：" prop="Type">
-                <el-input v-model="carForm.Type" placeholder="请输入验收时间"></el-input>
+                <el-input v-model="carForm.time" placeholder="请输入验收时间"></el-input>
                 </el-form-item>
                 <el-form-item label="备注：" prop="remarks">
                 <el-input v-model="carForm.remarks" placeholder="请输入备注"></el-input>
@@ -56,14 +50,96 @@ export default {
         return{
             name:'添加',
             carForm: {
-                region:'',
+                region:[],
                 carNumber: '',
-                Area:'',
-                remarks: '',
-                Type: '',
-                carType: '',
-                carState:''
+                project:'',
+                standard:'',
+                Result:'',
+                person:'',
+                Explain:'',
+                time:'',
+                remarks: ''
         },
+        options: [
+          {
+          value: 'bangongqu',
+          label: '办公区',
+          children: [{
+              value: 'Azuo',
+              label: 'A座',
+              children: [{
+                value: '101',
+                label: '101'
+              }, {
+                value: '102',
+                label: '102'
+              }, {
+                value: '103',
+                label: '103'
+              }, {
+                value: '104',
+                label: '104'
+              },
+              {
+                value: '105',
+                label: '105'
+              }]
+          }, 
+          {
+            value: 'Bzuo',
+            label: 'B座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          },{
+            value: 'Czuo',
+            label: 'C座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          }]
+        },{
+          value: 'yanjiedianpu',
+          label: '沿街店铺',
+          children: [{
+            value: 'axure',
+            label: 'Axure Components'
+          }, {
+            value: 'sketch',
+            label: 'Sketch Templates'
+          }, {
+            value: 'jiaohu',
+            label: '组件交互文档'
+          }]
+        }],
         }
     },
     mounted(){
@@ -84,7 +160,10 @@ export default {
     methods:{
         goBack(){
             window.history.back()
-        }
+        },
+        handleChange(value) {
+        console.log(value);
+      }
     }
 
 }

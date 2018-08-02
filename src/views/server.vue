@@ -9,7 +9,8 @@
                         <el-input v-model="detail.name" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="关联房屋:">
-                        <el-input v-model="detail.house" clearable></el-input>
+                        <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange"></el-cascader>
+                        
                     </el-form-item>
                     <el-form-item label="服务类别:">
                         <el-select v-model="detail.server" placeholder="请选择小区">
@@ -93,7 +94,7 @@ export default {
             detail: {
                 name: '',
                 area: '',
-                house: '',
+                house: [],
                 server:'',
                 startTime: '',
                 sendTime: '',
@@ -108,6 +109,86 @@ export default {
                 require: '',
                 textarea:'',
             },
+            options: [
+          {
+          value: 'bangongqu',
+          label: '办公区',
+          children: [{
+              value: 'Azuo',
+              label: 'A座',
+              children: [{
+                value: '101',
+                label: '101'
+              }, {
+                value: '102',
+                label: '102'
+              }, {
+                value: '103',
+                label: '103'
+              }, {
+                value: '104',
+                label: '104'
+              },
+              {
+                value: '105',
+                label: '105'
+              }]
+          }, 
+          {
+            value: 'Bzuo',
+            label: 'B座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          },{
+            value: 'Czuo',
+            label: 'C座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          }]
+        },{
+          value: 'yanjiedianpu',
+          label: '沿街店铺',
+          children: [{
+            value: 'axure',
+            label: 'Axure Components'
+          }, {
+            value: 'sketch',
+            label: 'Sketch Templates'
+          }, {
+            value: 'jiaohu',
+            label: '组件交互文档'
+          }]
+        }]
             // input: {
             //     name: '李文',
             //     sex: '男',
@@ -128,14 +209,17 @@ export default {
         }
     },
     methods: {
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-      },
+    //   handleRemove(file, fileList) {
+    //     console.log(file, fileList);
+    //   },
+    //   handlePictureCardPreview(file) {
+    //     this.dialogImageUrl = file.url;
+    //   },
       goBack(){
           window.history.back()
+      },
+      handleChange(value) {
+        console.log(value);
       }
     }
 }

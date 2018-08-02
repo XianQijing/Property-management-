@@ -8,11 +8,11 @@
                     <el-form-item label="租户姓名:">
                         <el-input v-model="detail.name" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="建筑面积:">
+                    <el-form-item label="负责人电话:">
                         <el-input v-model="detail.area" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="关联房屋:">
-                        <el-input v-model="detail.house" clearable></el-input>
+                        <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange"></el-cascader>
                     </el-form-item>
                     <div class="zhuangxiu">
                     <el-form-item label="开始装修时间:">
@@ -105,6 +105,87 @@ export default {
                 company:'',
                 textarea:'',
             },
+            options: [
+          {
+          value: 'bangongqu',
+          label: '办公区',
+          children: [{
+              value: 'Azuo',
+              label: 'A座',
+              children: [{
+                value: '101',
+                label: '101'
+              }, {
+                value: '102',
+                label: '102'
+              }, {
+                value: '103',
+                label: '103'
+              }, {
+                value: '104',
+                label: '104'
+              },
+              {
+                value: '105',
+                label: '105'
+              }]
+          }, 
+          {
+            value: 'Bzuo',
+            label: 'B座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          },{
+            value: 'Czuo',
+            label: 'C座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          }]
+        },{
+          value: 'yanjiedianpu',
+          label: '沿街店铺',
+          children: [{
+            value: 'axure',
+            label: 'Axure Components'
+          }, {
+            value: 'sketch',
+            label: 'Sketch Templates'
+          }, {
+            value: 'jiaohu',
+            label: '组件交互文档'
+          }]
+        }],
+            
             // input: {
             //     name: '李文',
             //     sex: '男',
@@ -147,6 +228,9 @@ export default {
       },
       goBack(){
           window.history.back()
+      },
+      handleChange(value) {
+        console.log(value);
       }
     }
 }

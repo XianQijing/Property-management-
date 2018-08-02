@@ -36,14 +36,14 @@
                 </div>
                     <el-table :data="tableData2" style="width: 100%">
                         <el-table-column type="selection" width="55"></el-table-column>
-                        <el-table-column prop="cname" label="用户名" width="180"></el-table-column>
-                        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-                        <el-table-column prop="rname" label="所属部门"></el-table-column>
-                        <el-table-column prop="post2" label="岗位"></el-table-column>
+                        <el-table-column prop="username" label="用户名"></el-table-column>
+                        <el-table-column prop="name" label="姓名"></el-table-column>
+                        <el-table-column prop="cname" label="所属部门"></el-table-column>
+                        <el-table-column prop="rname" label="岗位"></el-table-column>
                         <!-- <el-table-column prop="file" label="个人文档"></el-table-column> -->
                         <el-table-column label="停用">
                             <template  slot-scope="scope">
-                            <button class="stop">停用</button>
+                            <button class="stop" @click="stop(scope.$index,tableData2)">停用</button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -219,7 +219,14 @@ export default {
 					this.tableData2 = res.data.data.rows
 					this.totalDataNumbercustomerMsg = res.data.data.records
 				})
-			}
+            },
+            stop(index,rows){
+                this.tableData2[index].id;
+                rows.splice(index, 1);
+                this.$ajax.post(url + 'user/logicDelete',"id="+this.tableData2[index].id).then(res => {
+                    console.log(res)
+                })
+            }
       }
 }
 </script>
