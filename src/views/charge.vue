@@ -31,8 +31,13 @@
 									</el-table-column>
 								</el-table>
 								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" 
-                                                    :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+									<el-pagination @size-change="handleSizeChange"
+                                     @current-change="handleCurrentChange"
+                                      :current-page="pageNo"
+                                      :page-sizes="pageSizesList"
+                                      :page-size="pageSize" 
+                                      layout="total, sizes, prev, pager, next, jumper" 
+                                      :total="totalDataNumber">
 
 									</el-pagination>
 								</div>
@@ -271,10 +276,10 @@ export default {
             dialogVisible: false,
             //分页数据
 			pageNo: 1,
-            pageSize: 10,
-            pageSizesList: [10, 15, 20, 30, 50],
-            tableData: [],       //返回的结果集合
-            totalDataNumber: 20,//数据的总数,
+            pageSize: 2,
+            pageSizesList: [1, 2, 3, 5, 6],
+            // tableData: [],       //返回的结果集合
+            totalDataNumber: 1,//数据的总数,
             
             name: '新建',
             modify:false,
@@ -336,8 +341,6 @@ export default {
     mounted(){
         this.nn(),
         this.getCharge()
-        this.getMeter(),
-        this.feiyong1()
     },
     
         //选项卡
@@ -349,11 +352,14 @@ export default {
 			console.log(tab, event);
         },
         handleSizeChange(val) {
+            this.pageSize=val;
+            this.getCharge();
             console.log(`每页 ${val} 条`);
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
-            this.fenye  = val
+            this.pageNo=val;
+            this.getCharge();
         },
         getCharge(){
             this.$ajax.get(url+'pay/queryPayItemMeterAll',{
@@ -363,10 +369,8 @@ export default {
                 }
                 // 前端将每页显示多少条放入 pageSize,第几页放入page
             }).then(res => {
-                this.charge = res.data.data.rows
-                this.totalDataNumber=res.data.data.records
-                this.pageSize=res.data.data.pageSize
-                this.pageNo=res.data.data.pageNo
+                this.charge=res.data.data.rows
+                this.totalDataNumber=res.data.data.rows.records
                 console.log(res.data)
             })
         },
@@ -428,7 +432,7 @@ export default {
             payItemVO.remake=this.add.remarks
             console.info(payItemVO)
             this.$ajax.post(
-                url+"/pay/createPayItemMeter",payItemVO
+                url+"pay/createPayItemMeter",payItemVO
             ).then((res) => {
                 alert("成功")
                 this.add=={}
@@ -436,7 +440,7 @@ export default {
             })
         },
         getMeter(){
-            this.$ajax.get(url+'/pay/queryMeterManagementAll')
+            this.$ajax.get(url+'pay/queryMeterManagementAll')
             
             .then(res =>{
                 this.meter=res.data.data.rows
