@@ -2,7 +2,32 @@
     <div class="manage">
         <el-container>
             <el-aside width="200px">
-        <depart-nav/>
+                <div class="departNav">
+        <h1>部门</h1>
+       <el-tree :data="data5"  node-key="id" default-expand-all  @node-click="back">
+      <span class="custom-tree-node" slot-scope="{ node, data }">
+        <span>{{ node.label }}</span>
+        <div class="aa">
+          <img src=".././assets/add.png" @click="() => qq(data)" class="tianjia">
+          <img src=".././assets/delet.png" class="shanchu"  @click="() => remove(node, data)"/>
+        </div>
+      </span>
+    </el-tree>
+    <el-dialog
+  title="添加"
+  :visible.sync="dialogVisible"
+  width="30%">
+  <div class="mingcheng">
+  <div class="name1">部门名称：</div>
+    <el-input v-model="name"></el-input>
+    </div>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="() => append(this.pp)">确 定</el-button>
+  </span>
+</el-dialog>
+
+    </div>
             </el-aside>
             <el-main>
         <div class="body">
@@ -11,30 +36,52 @@
                 </div>
                     <el-table :data="tableData2" style="width: 100%">
                         <el-table-column type="selection" width="55"></el-table-column>
-                        <el-table-column prop="userName" label="用户名" width="180"></el-table-column>
-                        <el-table-column prop="name2" label="姓名" width="180"></el-table-column>
-                        <el-table-column prop="position2" label="所属部门"></el-table-column>
+                        <el-table-column prop="cname" label="用户名" width="180"></el-table-column>
+                        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
+                        <el-table-column prop="rname" label="所属部门"></el-table-column>
                         <el-table-column prop="post2" label="岗位"></el-table-column>
-                        <el-table-column prop="role" label="角色"></el-table-column>
-                        <el-table-column prop="file" label="个人文档"></el-table-column>
+                        <!-- <el-table-column prop="file" label="个人文档"></el-table-column> -->
                         <el-table-column label="停用">
                             <template  slot-scope="scope">
                             <button class="stop">停用</button>
                             </template>
                         </el-table-column>
                     </el-table>
+                    <div class="fenye">
+                    <div class="fenye">
+                        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNoCustomerMsg"  :page-size="pageSizeCustomerMsg" :page-sizes="pageSizesListCustomerMsg" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumbercustomerMsg">
+
+                        </el-pagination>
+                    </div>
                 </div>
+                </div>
+                
             </el-main>
+            
         </el-container>
     </div>
 </template>
 
 <script>
-import departNav from './departNav'
+// import departNav from './departNav'
+import url from '../assets/Req.js'
+let id = 1000;
 export default {
     name: 'manage',
     data(){
         return{
+        data5: [],
+        dialogVisible: false,
+        pageNoCustomerMsg: 1,
+        pageSizeCustomerMsg: 2,
+        pageSizesListCustomerMsg: [1,2, 3, 4, 5],
+        totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
+        name:'',
+        id:'',
+        rules: {
+          name: [
+            { required: true, message: '请输入名称', trigger: 'blur' },
+          ]},
             tableData2: [
                 {
                     userName: 'admin',
@@ -79,9 +126,101 @@ export default {
             ]
         }
     },
-    components: {
-    departNav
-  }
+    mounted(){
+        this.getbumen()
+    },
+    methods: {
+      append(data) {
+        const newChild = { id: id++, label: this.name, children: [] };
+        if (!data.children) {
+          this.$set(data, 'children', []);
+        }
+        if (this.name !=='') {
+        data.children.push(newChild);
+        this.dialogVisible = false;
+        console.log(data.id)
+        }else{
+            
+        }
+        this.$ajax.get(url + '',"id="+data.id).then(res=>{
+            console.log(res)
+        })
+      },
+      back(e){
+            // console.log(e);
+            this.$ajax.post(url + 'company/findCompanyById',"id="+e.id).then(res =>{
+                var child = res.data.data;
+                // console.log(child)
+                if (!e.children) {
+                    this.$set(e, 'children', []);
+                    }
+                    this.id = e.id
+                e.children = res.data.data
+                this.getcustomerMsg()
+            })
+            
+      },
+      remove(node, data) {
+        const parent = node.parent;
+        const children = parent.data.children || parent.data;
+        const index = children.findIndex(d => d.id === data.id);
+        children.splice(index, 1);
+        
+        this.$ajax.post(url + 'company/delete',"id="+data.id).then(res=>{
+            console.log(res)
+        })
+      },
+
+      qq(data){
+      this.dialogVisible = true;
+      this.pp = data;
+      this.name = '';
+      },
+
+      getbumen(){
+          this.$ajax.get(url + 'company/findCompany').then(res => {
+              var data = res.data.data
+            //   console.log(res.data.data)
+              this.data5= res.data.data
+            //   console.log(res.data.data)
+          }),
+          this.$ajax.get(url + 'company/findUser',{
+              params:{
+                        "id":1,
+                        "page":this.pageNoCustomerMsg,
+                        "pageSize":this.pageSizeCustomerMsg
+                    }
+          }).then(res => {
+              console.log(res.data.data.rows)
+              this.tableData2= res.data.data.rows
+              this.totalDataNumbercustomerMsg = res.data.data.records
+            //   console.log(res.data.data)
+          })
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.pageSizeCustomerMsg = val;
+        this.getcustomerMsg()
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.pageNoCustomerMsg = val;
+        this.getcustomerMsg()
+      },
+      getcustomerMsg() {
+                this.$ajax.get(url+'company/findUser',{
+                    params:{
+                        "id":this.id,
+                        "page":this.pageNoCustomerMsg,
+                        "pageSize":this.pageSizeCustomerMsg
+                    }
+                }).then((res) => {
+                    console.log(res.data.data)
+					this.tableData2 = res.data.data.rows
+					this.totalDataNumbercustomerMsg = res.data.data.records
+				})
+			}
+      }
 }
 </script>
 
@@ -119,4 +258,45 @@ button {
 label {
         width: 100%;
 }
+
+.departNav h1 {
+    padding-left: 2%;
+    font-size: 1.5vw;
+}
+
+li {
+    height: 51px;
+	list-style-type: none;
+	color: black;
+	width: 100%;
+	text-align: center;
+    background-color: white;
+    padding-right: 50px;
+}
+.tianjia{
+    width: 20px;
+    position: relative;
+    left: 8px;
+}
+.shanchu {
+    width: 35px;
+}
+.name1 {
+    margin-left: 2%;
+    display: inline-block;
+}
+.el-input{
+    display: inline-block;
+    width: 70%;
+}
+.mingchen {
+    width: 50%;
+}
+.aa{
+    display: inline-block;
+}
+.fenye {
+		float: right;
+		padding: 20px 0;
+	}
 </style>

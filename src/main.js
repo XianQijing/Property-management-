@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios';
 import qs from 'qs';
 
+
 axios.interceptors.request.use(
   config => {
       // 这里写死一个token，你需要在这里取到你设置好的token的值

@@ -5,7 +5,11 @@
             <div class="ds">
             <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail" size = "small">
                 <el-form-item label="验收日期:">
-                        <el-input :value="detail.day" style="width:50%"></el-input>
+                    <el-date-picker
+							v-model="detail.day"
+							type="datetime"
+							placeholder="选择日期时间">
+						</el-date-picker>
                         <el-switch
                             v-model="detail.pass"
                             active-color="#409EFF"

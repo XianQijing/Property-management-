@@ -3,7 +3,7 @@
         <nav-bar/>
         <div class="container">
             
-        <nav-header></nav-header>
+        <nav-header :name="username"></nav-header>
         <div class="card row">
             <div class="col-md-12">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -96,6 +96,23 @@
 										</template>
 									</el-table-column>
 								</el-table>
+                                <div class="fenye">
+									<el-pagination
+                                        @size-change="company_handleSizeChange"
+                                        @current-change="company_handleCurrentChange"
+                                        :current-page=1
+                                        :page-sizes="[100, 200, 300, 400]"
+                                        :page-size="100"
+                                        layout="total, sizes, prev, pager, next, jumper"
+                                        :total="totalDataNumber">
+                                    </el-pagination>
+                                    <!--size-change, pageSize 改变时会触发 -->
+                                    <!-- current-change	currentPage 改变时会触发 -->
+                                    <!-- current-page	当前页数，支持 .sync 修饰符 -->
+                                    <!-- page-sizes	每页显示个数选择器的选项设置 -->
+                                    <!-- layout	组件布局，子组件名用逗号分隔 -->
+                                    <!-- total	总条目数 -->
+								</div>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -296,6 +313,7 @@
 </template>
 
 <script>
+import { setCookie,getCookie,delCookie } from '.././assets/js/cookie.js'
 import NavBar from '.././components/NavBar.vue'
 import NavHeader from '.././components/NavHeader.vue'
 import departNav from './departNav'
@@ -303,6 +321,7 @@ import manageName from './manage'
 import url from '../assets/Req.js'
 import qs from 'qs';
 import Item from './item'
+
 
 var data = {
     name: 'My Tree',
@@ -318,12 +337,8 @@ export default {
             children: [],
         }];
         return{
-            // pageNo: 1,
-            // pageSize: 10,
-            // pageSizesList: [10, 15, 20, 30, 50],
-            // // tableData: [],//返回的结果集合
+            username:'',
             totalDataNumber: 1,//数据的总数,
-            // toggle:'',
             zhiyuan:false,
             multipleSelection: [],
             person: [],
@@ -333,8 +348,6 @@ export default {
             contact:false,
             modify:false,
             selectArr: [],
-            treeData: data,
-            data5: JSON.parse(JSON.stringify(datato)),
             tableData: [
                     {
                         id: "180720B4WTW38A3C",
@@ -428,13 +441,14 @@ export default {
 },
 mounted(){
      this.staff()
+     let uname = getCookie('phone')
+            this.username = uname
             // /*页面挂载获取保存的cookie值，渲染到页面上*/
-            // let uname = getCookie('username')
-            // this.name = uname
+            this.name = uname
             // /*如果cookie不存在，则跳转到登录页*/
-            // if(uname == ""){
-            //     this.$router.push('/')
-            // }
+            if(uname == ""){
+                this.$router.push('/')
+            }
         },
     methods:{
         changePosition() {
@@ -449,6 +463,15 @@ mounted(){
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
         },
+
+        //往来单位的分页
+        company_handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        company_handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
+
         deleteRow(index, rows) {
             let that = this;
 				that.id = this.tableData[index].id;
@@ -517,6 +540,7 @@ mounted(){
                 this.multipleSelection = val
                 console.log(this.multipleSelection)
             },
+
 			allDelete() {
                 let comments = this.multipleSelection
 				console.log(comments.id)
@@ -525,7 +549,8 @@ mounted(){
                 num.push(comments[i].id)
                 console.log(num)
             }
-        }
+        },
+        
     }
 }
 </script>

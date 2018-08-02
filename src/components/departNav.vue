@@ -1,6 +1,6 @@
 <template>
     <div class="departNav">
-        <h1>部门</h1>
+        <!-- <h1>部门</h1>
        <el-tree :data="data5"  node-key="id" default-expand-all  @node-click="back">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -22,7 +22,7 @@
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="() => append(this.pp)">确 定</el-button>
   </span>
-</el-dialog>
+</el-dialog> -->
 
     </div>
 </template>
@@ -74,6 +74,8 @@ let id = 1000;
                     console.log(this.data5)
                 e.children = res.data.data
             })
+            this.$ajax.post(url + 'company/findUser',"id="+e.id).then(res =>{
+                })
             
       },
       remove(node, data) {

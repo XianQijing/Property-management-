@@ -63,11 +63,12 @@
 						
 						/*接口的传值是(-1,该用户不存在),(0,密码错误)，同时还会检测管理员账号的值*/
 						if(res.data.data.success == true) {
+							console.log(res.data)
 							this.tishi = "登录成功"
 							this.showTishi = true
 							this.$router.push('/HelloWorld')
 							sessionStorage.setItem('userId',res.data.data.token)
-							sessionStorage.setItem('judge',res.data.data)
+							sessionStorage.setItem('judge',this.phone)
 
 							if (this.remember = true){
 								setCookie('phone',this.phone,1000*60)//保存帐号到cookie，有效期7天
@@ -98,7 +99,7 @@
 						}else{
 							this.tishi = res.data.data.msg;
 							this.showTishi = true
-							console.log(res.data.msg)
+		
 						}
 					})
 				}

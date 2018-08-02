@@ -16,12 +16,20 @@
                     </el-form-item>
                     <div class="zhuangxiu">
                     <el-form-item label="开始装修时间:">
-                        <el-input v-model="detail.startTime"></el-input>
+                        <el-date-picker
+							v-model="detail.startTime"
+							type="datetime"
+							placeholder="选择日期时间">
+						</el-date-picker>
                     </el-form-item>
                     </div>
                     <div class="zhuangxiu">
                         <el-form-item label="预估结束时间:">
-                        <el-input v-model="detail.endTime"></el-input>
+                            <el-date-picker
+							v-model="detail.endTime"
+							type="datetime"
+							placeholder="选择日期时间">
+						</el-date-picker>
                     </el-form-item>
                     </div>
 

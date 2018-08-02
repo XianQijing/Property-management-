@@ -179,17 +179,18 @@ export default {
   },
 
   mounted(){
-			let uname = getCookie('phone')
-			this.$ajax.get( url + '/user/findById',{
-				params:{
-						'token': sessionStorage.getItem('userId'),
-					}
-			}).then(res => {
-				console.log(res.data)
-			})
+			
+			let uname = sessionStorage.getItem('judge')
+			// this.$ajax.get( url + '/user/findById',{
+			// 	params:{
+			// 			'token': sessionStorage.getItem('userId'),
+			// 		}
+			// }).then(res => {
+			// 	console.log(res.data)
+			// })
             this.username = uname
             /*如果cookie不存在，则跳转到登录页*/
-            if(uname == ""){
+            if(uname == null){
                 this.$router.push('/')
             }
   },

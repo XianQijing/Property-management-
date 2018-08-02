@@ -10,7 +10,15 @@
 						<!--搜索-->
 						<form action="" method="post" style="display:inline-block;">
 						</form>
-						<img src="">
+						<el-dropdown>
+							<span class="el-dropdown-link">
+								<img src=".././assets/yonghu.png"><i class="el-icon-arrow-down el-icon--right"></i>
+							</span>
+							<el-dropdown-menu slot="dropdown">
+								<span @click="quit"><el-dropdown-item>退出登录</el-dropdown-item></span>
+							</el-dropdown-menu>
+						</el-dropdown>
+						
 						<span>{{name}}</span>
 					</div>
 				</div>
@@ -18,6 +26,7 @@
 </template>
 
 <script>
+import {delCookie} from '.././assets/js/cookie.js'
 export default {
 	props:{
 		name:''
@@ -26,9 +35,26 @@ export default {
 		return{
 		}
 	},
+	mounted(){
+		// let uname = getCookie('phone')
+		// 	// this.$ajax.get( url + '/user/findById',{
+		// 	// 	params:{
+		// 	// 			'token': sessionStorage.getItem('userId'),
+		// 	// 		}
+		// 	// }).then(res => {
+		// 	// 	console.log(res.data)
+		// 	// })
+        //     this.username = uname
+        //     /*如果cookie不存在，则跳转到登录页*/
+        //     if(uname == ""){
+        //         this.$router.push('/')
+        //     }
+	},
 	
 	methods: {
-
+		quit(){
+			this.$emit('login_out');
+		}
 	}
 }
 </script>
@@ -52,7 +78,6 @@ export default {
 		border-radius: 50%;
 		width: 2em;
 		height: 2em;
-		background-color: #2e3d50;
 		overflow: hidden;
 	}
 	input{
