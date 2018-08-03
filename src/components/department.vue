@@ -181,57 +181,51 @@
             </span>
         </el-dialog>
             <!--导入弹窗-->
-            <div v-show="isShow">
-                <div class="add" id="myModal">
-                    <div class="modal-content1">
-                        <div>
-                        <span class="close" @click="isShow = !isShow">&times;</span>
-                        <p class="yuangong">导入员工</p>
-                        </div>
-                        <div class="put">
+            <el-dialog
+                    title="导入"
+                    :visible.sync="isShow"
+                    width="30%">
+                    <div class="put">
                         <p>导入设置:</p>
                         <form>
                             <ul class="shuju">
                                 <li>
-                            <input name="modal-content1" type="radio" value="no" id="no">
-                            <label for="no">重复数据不导入</label>
-                                </li>
+                                    <el-radio v-model="radio" label="0">重复数据不导入</el-radio>
+                                    </li>
                                 <li>
-                            <input name="modal-content1" type="radio" value="cover" id="cover">
-                            <label for="cover">重复数据覆盖</label>
-                                </li>
+                            <el-radio v-model="radio" label="1">重复数据覆盖</el-radio>
+                             </li>
                             </ul>
                         </form>
                         <div class="upload">
-                            <span>选择excel上传：</span><div class="file"><input type="file" onchange="foo(event)" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
-                        </div>
+                            <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
+                             </div>
+                        <div>{{this.file}}</div>
                         </div>
                         
                         <div>
-                               <p>如何导入通讯录</p>
-                               <ul class="liebiao">
-                                <li class="how">数据导入采用Excel表格导入</li>
-                                <li>1、不支持Excel公式导入，尽量去除所有文字和表格样式</li>
-                                <li>2、只支持工作表1导入</li>
-                                <li>3、请点击下载微小区实例</li>
-                                <li>4、如需导入时间，时间格式必须为YYYY-MM-DD(例如：2016-01-01)</li>
-                                <li class="how">必须项目(必须项目不能为空且不能重复)</li>
-                                <li>姓名</li>
-                                <li>手机号（必须是手机格式且不能重复）</li>
-                                <li>部门（必须与组织架构对应）</li>
-                                <li>选填项目（选填项目可以为空）</li>
-                                <li>微信（填写员工微信号）</li>
-                                <li>昵称（填写员工昵称）</li>
-                                <li>职位（填写员工职位）</li>
-                                <li>备注</li>
+                            <p>如何导入通讯录</p>
+                                <ul class="liebiao">
+                                 <li class="how">数据导入采用Excel表格导入</li>
+                                 <li>1、不支持Excel公式导入，尽量去除所有文字和表格样式</li>
+                                 <li>2、只支持工作表1导入</li>
+                                 <li>3、请点击下载微小区实例</li>
+                                 <li>4、如需导入时间，时间格式必须为YYYY-MM-DD(例如：2016-01-01)</li>
+                                 <li class="how">必须项目(必须项目不能为空且不能重复)</li>
+                                 <li>姓名</li>
+                                 <li>手机号（必须是手机格式且不能重复）</li>
+                                 <li>部门（必须与组织架构对应）</li>
+                                 <li>选填项目（选填项目可以为空）</li>
+                                 <li>微信（填写员工微信号）</li>
+                                 <li>昵称（填写员工昵称）</li>
+                                 <li>职位（填写员工职位）</li>
+                                 <li>备注</li>
                             </ul>
                         </div>
                         <div class="footer1">
-                            <button class="confirm">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            <button class="confirm" @click="submit">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
+                             </div>
+                </el-dialog>
             <!--添加新员工弹窗-->
             <el-dialog
                 title="添加新员工"
@@ -337,7 +331,6 @@ import qs from 'qs';
 
 
 
-
 let id = 1000;
 export default {
     name: 'department',
@@ -348,7 +341,10 @@ export default {
             children: []
         }];
         return{
-            daaa:'',
+            file:'',
+            src:'',
+            username:'',
+            radio:'0',
             pageNo: 1,
             pageSize: 1,
             pageSizesList: [1, 2, 3, 4, 5],
@@ -667,7 +663,7 @@ mounted(){
       },
       
       //删除
-      handleSelectionChange (val) {
+            handleSelectionChange (val) {
             //val 为选中数据的集合
                 this.multipleSelection = val
                 console.log(this.multipleSelection)
@@ -682,8 +678,24 @@ mounted(){
             }
             console.log(num)
         },
-        //职员信息批量删除
-        
+        //上传的方法
+         getPath(e){
+            // console.log(e.target.value)
+            
+            // this.path = e.target.value;
+            this.file = e.currentTarget.files[0].name//百度是没有name的
+            
+            console.log(this.src)
+        },
+        submit(){
+            var formData = new FormData()
+            console.log(this.files)
+            formData.append('path', this.file)
+            formData.append('status', this.radio)
+            this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
+                console.log(res)
+            })
+        }
     }
 }
 </script>

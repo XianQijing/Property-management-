@@ -14,11 +14,11 @@
 								<el-table :data="admin" style="width: 100%">
 									<el-table-column prop="namec" label="小区名称" width="180"></el-table-column>
 									<el-table-column prop="site" label="楼高"></el-table-column>
-									<el-table-column prop="building" label="建筑面积(平方)"></el-table-column>
-									<el-table-column prop="totalUsableArea" label="车库(座)"></el-table-column>
-									<el-table-column prop="roadSurface" label="车位(个)"></el-table-column>
-									<el-table-column prop="cellParkingRelationship.garage" label="楼宇(栋)"></el-table-column>
-									<el-table-column prop="cellParkingRelationship.carSeatNumber" label="使用面积(平方)"></el-table-column>
+									<el-table-column prop="overallFloorage" label="建筑面积(平方)"></el-table-column>
+									<el-table-column prop="cellParkingRelationship.garage" label="车库(座)"></el-table-column>
+									<el-table-column prop="cellParkingRelationship.carSeatNumber" label="车位(个)"></el-table-column>
+									<el-table-column prop="building" label="楼宇(栋)"></el-table-column>
+									<el-table-column prop="totalUsableArea" label="使用面积(平方)"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -35,13 +35,13 @@
 								</el-table>
 								<div class="fenye">
 									<el-pagination
-                                        @size-change="handleSizeChange"
-                                        @current-change="handleCurrentChange"
-                                        :current-page=1
-                                        :page-sizes="[100, 200, 300, 400]"
-                                        :page-size="meiyexianshi"
+                                        @size-change="adminSizeChange"
+                                        @current-change="adminCurrentChange"
+                                        :current-page="pageNoAdmin"
+                                        :page-sizes="pageSizesListAdmin" 
+                                        :page-size="pageSizeAdmin"
                                         layout="total, sizes, prev, pager, next, jumper"
-                                        :total="zongtiaoshu">
+                                        :total="totalDataNumberAdmin">
                                     </el-pagination>
                                     <!--size-change, pageSize 改变时会触发 -->
                                     <!-- current-change	currentPage 改变时会触发 -->
@@ -60,13 +60,13 @@
 								<router-link :to="{name: 'AddBuild'}"><button class="add">+ 添加</button></router-link><button class="delect">删除</button>
 								<el-table :data="build" style="width: 100%">
 									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="precinct" label="所属小区" width="180"></el-table-column>
+									<el-table-column prop="precinctName" label="所属小区" width="180"></el-table-column>
 									<el-table-column prop="namec" label="楼宇名称" width="180"></el-table-column>
-									<el-table-column prop="rooms" label="单元数量"></el-table-column>
+									<el-table-column prop="roomRelationship.room" label="房间数量"></el-table-column>
 									<el-table-column prop="layer" label="楼宇层数"></el-table-column>
 									<el-table-column prop="buildingType" label="楼宇类型"></el-table-column>
-									<el-table-column prop="buildingTowards" label="楼宇结构"></el-table-column>
-									<el-table-column prop="orientation" label="楼宇朝向"></el-table-column>
+									<el-table-column prop="flatFabric" label="楼宇结构"></el-table-column>
+									<el-table-column prop="buildingTowards" label="楼宇朝向"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -83,13 +83,13 @@
 								</el-table>
 								<div class="fenye">
 									<el-pagination
-                                        @size-change="handleSizeChange"
-                                        @current-change="handleCurrentChange"
-                                        :current-page=1
-                                        :page-sizes="[100, 200, 300, 400]"
-                                        :page-size="meiyexianshi"
+                                        @size-change="buildingSizeChange"
+                                        @current-change="buildingCurrentChange"
+                                        :current-page="pageNoBuilding"
+                                        :page-sizes="pageSizesListBuilding" 
+                                        :page-size="pageSizeBuilding"
                                         layout="total, sizes, prev, pager, next, jumper"
-                                        :total="zongtiaoshu">
+                                        :total="totalDataNumberBuilding">
                                     </el-pagination>
                                     <!--size-change, pageSize 改变时会触发 -->
                                     <!-- current-change	currentPage 改变时会触发 -->
@@ -108,16 +108,16 @@
 							<router-view class="Next"></router-view>
 							<router-view class="daoru"></router-view>
 							</div>
-								<router-link :to="{name: 'Next',query:{id:'qq'}}"><button class="add">+ 添加</button></router-link><router-link :to="{name: 'Daoru'}"><button class="import">导入</button></router-link><button class="cash">+ 添加收费标准</button><button class="delect" @click="allDelete">删除</button>
+								<router-link :to="{name: 'Next',query:{id:'qq'}}"><button class="add">+ 添加</button></router-link><router-link :to="{name: 'Daoru'}"><button class="import">分配楼宇</button></router-link><button class="cash">+ 添加收费标准</button><button class="delect" @click="allDelete">删除</button>
 								<el-table :data="room" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="id" label="房屋编号" width="140"></el-table-column>
-									<el-table-column prop="precinct" label="小区" width="108"></el-table-column>
-									<el-table-column prop="buildings" label="楼宇" width="108"></el-table-column>
+									<el-table-column prop="precincts.namec" label="小区" width="108"></el-table-column>
+									<el-table-column prop="building" label="楼宇" width="108"></el-table-column>
 									<el-table-column prop="ste" label="单元号" width="124"></el-table-column>
 									<el-table-column prop="floor" label="所在楼层" width="140"></el-table-column>
 									<el-table-column prop="roomNumber" label="房号" width="108"></el-table-column>
-									<el-table-column prop="chargeNumber" label="收费标准个数" width="172"></el-table-column>
+									<el-table-column prop="denominatorVolume" label="收费标准个数" width="172"></el-table-column>
                                     <el-table-column prop="coveredArea" label="建筑面积" width="140"></el-table-column>
                                     <el-table-column prop="useId" label="房屋类型" width="140"></el-table-column>
                                     <el-table-column prop="roomType" label="房屋户型" width="140"></el-table-column>
@@ -138,7 +138,14 @@
 									</el-table-column>
 								</el-table>
 								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+									<el-pagination 
+									@size-change="roomSizeChange" 
+									@current-change="roomCurrentChange" 
+									:current-page="pageNoRoom"  
+									:page-size="pageSizeRoom" 
+									:page-sizes="pageSizesListRoom" 
+									layout="total, sizes, prev, pager, next, jumper" 
+									:total="totalDataNumberRoom">
 
 									</el-pagination>
 								</div>
@@ -152,17 +159,17 @@
 									<router-view class="addCar"></router-view>
 									<router-view class="carCharge"></router-view>
 									</div>
-								<router-link :to="{name: 'AddCar',query:{id:'ww'}}"><button class="add">+ 添加</button></router-link><router-link :to="{name: 'Daoru'}"><button class="import">导入</button></router-link><button class="cash">+ 添加收费标准</button><button class="delect" @click="allDelete">删除</button>
+								<router-link :to="{name: 'AddCar',query:{id:'ww'}}"><button class="add">+ 添加</button></router-link><router-link :to="{name: 'Daoru'}"><button class="add">导入</button></router-link><button class="cash">+ 添加收费标准</button><button class="delect" @click="allDelete">删除</button>
 								<el-table :data="car" style="width: 100%" >
 									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="carNumber" label="车辆编号" width="180"></el-table-column>
-									<el-table-column prop="house" label="所属小区" width="180"></el-table-column>
-									<el-table-column prop="number" label="车位号" width="180"></el-table-column>
-									<el-table-column prop="carType" label="车位类型"></el-table-column>
-									<el-table-column prop="state" label="车位状态"></el-table-column>
-									<el-table-column prop="area" label="车位面积"></el-table-column>
-									<el-table-column prop="charge" label="收费标准个数"></el-table-column>
-									<el-table-column prop="remarks" label="备注"></el-table-column>
+									<el-table-column prop="parkingSpots.plateNumbers" label="车辆编号" width="180"></el-table-column>
+									<el-table-column prop="precincts.namec" label="所属小区" width="180"></el-table-column>
+									<el-table-column prop="carSeatNumber" label="车位号" width="180"></el-table-column>
+									<el-table-column prop="parkingType" label="车位类型"></el-table-column>
+									<el-table-column prop="parkingState" label="车位状态"></el-table-column>
+									<el-table-column prop="parkingArea" label="车位面积"></el-table-column>
+								<!-- <el-table-column prop="charge" label="收费标准个数"></el-table-column> -->
+									<el-table-column prop="comment" label="备注"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -180,7 +187,14 @@
 									</el-table-column>
 								</el-table>
 								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+									<el-pagination 
+									@size-change="carSizeChange" 
+									@current-change="carCurrentChange" 
+									:current-page="pageNoCar"  
+									:page-size="pageSizeCar" 
+									:page-sizes="pageSizesListCar" 
+									layout="total, sizes, prev, pager, next, jumper" 
+									:total="totalDataNumberCar">
 
 									</el-pagination>
 								</div>
@@ -193,16 +207,16 @@
 									<router-view class="test"></router-view>
 									</div>
 								<router-link :to="{name: 'Test',query:{id:'add'}}"><button class="add">+ 添加</button></router-link>
-								<el-table :data="yanshou" style="width: 100%" >
+								<el-table :data="tableDataRoomStandard" style="width: 100%" >
 									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="carNumber" label="关联房屋" width="180"></el-table-column>
-									<el-table-column prop="house" label="验收项目" width="180"></el-table-column>
-									<el-table-column prop="number" label="验收标准" width="180"></el-table-column>
-									<el-table-column prop="carType" label="验收结果"></el-table-column>
-									<el-table-column prop="state" label="验收人"></el-table-column>
-									<el-table-column prop="area" label="验收说明"></el-table-column>
-									<el-table-column prop="charge" label="验收日期"></el-table-column>
-									<el-table-column prop="remarks" label="备注"></el-table-column>
+									<el-table-column prop="room" label="关联房屋" width="180"></el-table-column>
+									<el-table-column prop="projectAcceptance" label="验收项目" width="180"></el-table-column>
+									<el-table-column prop="acceptanceStandard" label="验收标准" width="180"></el-table-column>
+									<el-table-column prop="acceptanceResult" label="验收结果"></el-table-column>
+									<el-table-column prop="acceptanceBy" label="验收人"></el-table-column>
+									<el-table-column prop="acceptanceState" label="验收说明"></el-table-column>
+									<el-table-column prop="acceptanceTime" label="验收日期"></el-table-column>
+									<el-table-column prop="remark" label="备注"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -218,7 +232,14 @@
 									</el-table-column>
 								</el-table>
 								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+									<el-pagination 
+									@size-change="handleSizeChange" 
+									@current-change="handleCurrentChange" 
+									:current-page="pageNoRoomStandard"  
+									:page-size="pageSizeRoomStandard" 
+									:page-sizes="pageSizesListRoomStandard" 
+									layout="total, sizes, prev, pager, next, jumper" 
+									:total="totalDataNumberRoomStandard">
 
 									</el-pagination>
 								</div>
@@ -247,113 +268,122 @@
                 pageSize: 10,
                 pageSizesList: [10, 15, 20, 30, 50],
                 tableData: [],//返回的结果集合
-				totalDataNumber: 400,//数据的总数,
+				totalDataNumber: 100,//数据的总数,
+				
+				pageNoRoomStandard: 1,
+                pageSizeRoomStandard: 10,
+                pageSizesListRoomStandard: [1, 2, 3, 4, 5],
+                tableDataRoomStandard: [
+					{
+						room:'',
+						projectAcceptance:'',
+						acceptanceStandard:'',
+						acceptanceResult:'',
+						acceptanceBy:'',
+						acceptanceState:'',
+						acceptanceTime:'',
+						remark:'',
+					}
+				],//返回的结果集合
+				totalDataNumberRoomStandard: 100,//数据的总数,
 
 				//
 				zongtiaoshu:4,
 				meiyexianshi:9,
 				//
 				//管理区
+
+				pageNoAdmin: 1,
+                pageSizeAdmin: 10,
+                pageSizesListAdmin: [1, 2, 3, 4, 5],
 				admin: [{
-						house: '卢比克魔方',
-						namec: 'A座',
-						number: '1',
-						layers: '3',
-						type: '多层',
-						structure: '钢筋混凝土',
-						orientation: '坐北朝南',
+						namec: '',
+						site: '',
+						overallFloorage: '',
+						cellParkingRelationship:{
+							garage:'',
+							carSeatNumber:'',
+						},
+						building: '',
+						totalUsableArea: '',
 						id:10
 					},
-					{
-						house: '卢比克魔方',
-						namec: 'A座',
-						number: '1',
-						layers: '3',
-						type: '多层',
-						structure: '钢筋混凝土',
-						orientation: '坐北朝南',
-						id:6879685416
-					}],
+					],
+ 					totalDataNumberAdmin: 100,//数据的总数,
+
 				//楼宇
+				pageNoBuilding: 1,
+                pageSizeBuilding: 10,
+                pageSizesListBuilding: [1, 2, 3, 4, 5],
 				build: [{
-						house: '卢比克魔方',
-						name: 'A座',
-						number: '1',
-						layers: '3',
-						type: '多层',
-						structure: '钢筋混凝土',
-						orientation: '坐北朝南',
-						id:10
+						precinctName: '',
+						namec: '',
+						roomRelationship:{
+							room:'',
+						} ,
+						layer: '',
+						buildingType: '',
+						struflatFabriccture: '',
+						buildingTowards: '',
+						
 					},
-					{
-						house: '卢比克魔方',
-						name: 'B座',
-						number: '1',
-						layers: '3',
-						type: '多层',
-						structure: '钢筋混凝土',
-						orientation: '坐北朝南',
-						id:11
-					}
+					
 				],
+                totalDataNumberBuilding: 100,//数据的总数,
+
 				//房间
+				pageNoRoom: 1,
+                pageSizeRoom: 10,
+                pageSizesListRoom: [1, 2, 3, 4, 5],
                 room: [
 					{
-						house: '卢比克魔方',
-						name: 'A座',
-						number: '1',
-						layers: '3',
-						type: '多层',
-						structure: '钢筋混凝土',
-						orientation: '坐北朝南',
-						id:10
+						precinct:{
+							namec: '',
+						},
+						building: '',
+						ste: '',
+						floor: '',
+						roomNumber: '',
+						denominatorVolume: '',
+						coveredArea: '',
+						useId:'',
+						roomType:'',
+						id:'',
 					},
-					{
-						house: '卢比克魔方',
-						name: 'B座',
-						number: '1',
-						layers: '3',
-						type: '多层',
-						structure: '钢筋混凝土',
-						orientation: '坐北朝南',
-						id:11
-					}
+					
 				],
+				totalDataNumberRoom: 100,//数据的总数,
+				
 				//车辆管理
+				pageNoCar: 1,
+                pageSizeCar: 10,
+                pageSizesListCar: [1, 2, 3, 4, 5],
 				car: [
 					{
-						carNumber: '卢比克魔方',
-						house: 'A座',
-						number: '1',
-						carType: '3',
-						state: '多层',
-						charge: '钢筋混凝土',
-						remarks: '坐北朝南',
+						parkingSpots: {
+							plateNumbers: '',
+						},
+						precincts:{
+							namec:'',
+						} ,
+						carSeatNumber: '',
+						parkingType: '',
+						parkingState: '',
+						parkingArea: '',
+						comment: '',
 						id:10,
-						area:'',
+						
 					},
 				],
-				//房产验收
-				yanshou:[
-					{
-						carNumber: '卢比克魔方',
-						house: 'A座',
-						number: '1',
-						carType: '3',
-						state: '多层',
-						charge: '钢筋混凝土',
-						remarks: '坐北朝南',
-						id:10,
-						area:'',
-					},
-				]
+				totalDataNumberCar: 100,//数据的总数,
 			}
 		},
 		mounted() {
-			// this.getAdmin()
-			// this.getRoom()
-			this.getBuild()
-			// this.getCar()
+			 this.getAdmin()
+			 this.getRoom(),
+			 this.getRoomStandard()
+			 this.getBuild()
+			 this.getCar()
 		},
 		
 		methods: {
@@ -386,26 +416,43 @@
 			},
 			//获取管理区
 			getAdmin(){
-				this.$ajax.get(url + 'precinct/selectPrecinct/'+this.pp+'/'+this.pp+'',{
+				this.$ajax.get(url + 'precinct/selectPrecinct/'+this.pageNoAdmin+'/'+this.pageSizeAdmin+'',{
 					params:{
 						'token': sessionStorage.getItem('userId'),
 					}
 				}).then(res => {
 					this.admin = res.data.data.rows
-					this.zongtiaoshu = res.data.data.rows.length
-					this.meiyetiaoshu = res.data.data.records
+					this.totalDataNumberAdmin = res.data.data.records
 				})
+			},adminSizeChange(val) {
+				console.log(`每页 ${val} 条`);
+				this.pageSizeAdmin=val
+				this.getAdmin()
+			},adminCurrentChange(val) {
+				console.log(`当前 ${val} 页`)
+				this.pageNoAdmin=val
+				this.getAdmin()
 			},
 			//获取build
 			getBuild() {
-				this.$ajax.get(url + 'building/flndAll/'+this.pp+'/'+this.pp+'',{
+				this.$ajax.get(url + 'building/flndAll/'+this.pageNoBuilding+'/'+this.pageSizeBuilding+'',{
 					params:{
 						'token': sessionStorage.getItem('userId'),
 					}
 				}).then((res) => {
 					this.build = res.data.data.rows
-					console.log(res.data.data)
+					this.totalDataNumberBuilding =  res.data.data.records
+					
+					console.log(this.build)
 				})
+			},buildingSizeChange(val) {
+				console.log(`每页 ${val} 条`);
+				this.pageSizeBuilding=val
+				this.getBuil()
+			},buildingCurrentChange(val) {
+				console.log(`当前 ${val} 页`)
+				this.pageNoBuilding=val
+				this.getBuil()
 			},
 			//编辑build
 			jumpBuild(index,rows){
@@ -425,18 +472,58 @@
 				})
 			},
 			getCar(){
-				this.$ajax.get(url + 'parkingSpot/flndParkingSpot/{id}').then((res) => {
-					
+				this.$ajax.get(url + 'cellparkingRelatinship/selectCellParkingRelationship/'+this.pageNoCar+'/'+this.pageSizeCar+'',{
+					params:{
+						'token': sessionStorage.getItem('userId'),
+					}
+				}).then((res) => {
+					this.car = res.data.data.rows
+					this.totalDataNumberCar =  res.data.data.records
 				})
+			},carSizeChange(val) {
+				console.log(`每页 ${val} 条`);
+				this.pageSizeCar=val
+				this.getCar()
+			},carCurrentChange(val) {
+				console.log(`当前 ${val} 页`)
+				this.pageNoCar=val
+				this.getCar()
 			},
 
 			//获取room
 			getRoom() {
-				this.$ajax.get(url + 'room/flndAll/2/2',{
+				this.$ajax.get(url + 'room/flndAll/'+this.pageNoRoom+'/'+this.pageSizeRoom+'',{
 				}).then(res => {
 					this.room = res.data.data.rows
+					this.totalDataNumberRoom =  res.data.data.records
 					console.log(this.room)
 				})
+			},roomSizeChange(val) {
+				console.log(`每页 ${val} 条`);
+				this.pageSizeRoom=val
+				this.getRoom()
+			},roomCurrentChange(val) {
+				console.log(`当前 ${val} 页`)
+				this.pageNoRoom=val
+				this.getRoom()
+			},
+			
+			//房产验收
+			getRoomStandard() {
+				this.$ajax.get(url + 'roomStandard/flndAll/'+this.pageNoRoomStandard+'/'+this.pageSizeRoomStandard+'',{
+				}).then(res => {
+					this.tableDataRoomStandard = res.data.data.rows
+					this.totalDataNumberRoomStandard =  res.data.data.records
+					console.log(this.room)
+				})
+			},handleSizeChange(val) {
+				console.log(`每页 ${val} 条`);
+				this.pageSizeRoomStandard=val
+				this.getRoomStandard()
+			},handleCurrentChange(val) {
+				console.log(`当前 ${val} 页`)
+				this.pageNoRoomStandard=val
+				this.getRoomStandard()
 			},
 			//跳转编辑
 			jumpRoom(index,rows){
@@ -683,7 +770,7 @@
 		font-family: "Microsoft YaHei";
 		border: 1px solid #32a8ee;
 		border-radius: 5px;
-		width: 63px;
+		width: 90px;
 		height: 31px;
         margin-right: 10px;
         margin-top: 10px;

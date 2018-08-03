@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import url from '../assets/Req.js'
 export default {
     name: 'addAdmin',
     data(){
@@ -117,7 +118,13 @@ export default {
     },
     mounted(){
         this.id = this.$route.query.id
-        console.log(this.$route.query.id)
+        console.log(this.$route.query.msg)
+        if(this.$route.query.msg === "tianjia"){
+            this.ruleForm = {}
+        }else if(this.$route.query.msg === "bianji"){
+            console.log(this.id)
+            this.$ajax.get(url+ '')
+        }
     },
     methods:{
         goBack(){

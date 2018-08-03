@@ -7,7 +7,6 @@
                 <div class="col-md-12">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane label="房源管理" name="first">
-
                             <div class="main">
 								<div>
 									<router-view class="rent_addhouse"></router-view>
@@ -15,22 +14,29 @@
 								</div>
 								<router-link :to="{name: 'Rent_addhouse',query:{msg:'tianjia'}}"><button class="add">添加房源</button></router-link>
                                 <div class="fenye" style="display:inline-block" id="btn"><button>全部数据</button><button>只显示已租数据</button><button>只显示未租数据</button></div>
-								<el-table :data="housingManagement" style="width: 100%">
-									<el-table-column prop="house" label="房屋类型" width="180"></el-table-column>
+								<el-table :data="tableData" style="width: 100%">
+									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
 									<el-table-column prop="build" label="楼宇" width="180"></el-table-column>
 									<el-table-column prop="roomNumber" label="房号"></el-table-column>
-									<el-table-column prop="buildArea" label="建筑面积(平方米)"></el-table-column>
-									<el-table-column prop="price" label="价格(元/月)"></el-table-column>
-									<el-table-column prop="state" label="租用状态"></el-table-column>
-									<el-table-column prop="remarks" label="预定状态"></el-table-column>
+									<el-table-column prop="coveredArea" label="建筑面积(平方米)"></el-table-column>
+									<el-table-column prop="pricing" label="价格(元/月)"></el-table-column>
+									<el-table-column prop="room_status" label="租用状态"></el-table-column>
+									<el-table-column prop="reserve" label="预定状态"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
-											<span style="color:#32a8ee;" @click="toBianji(scope.$index,housingManagement,'bianji')">编辑</span>
+											<span style="color:#32a8ee;" @click="toBianji(scope.$index,tableData,'bianji')">编辑</span>
 										</template>
 									</el-table-column>
 								</el-table>
 								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+									<el-pagination 
+                                    @size-change="handleSizeChange" 
+                                    @current-change="handleCurrentChange" 
+                                    :current-page="pageNo"  
+                                    :page-size="pageSize" 
+                                    :page-sizes="pageSizesList"
+                                    layout="total, sizes, prev, pager, next, jumper" 
+                                    :total="totalDataNumber">
 
 									</el-pagination>
 								</div>
@@ -38,21 +44,20 @@
                         </el-tab-pane>
 
                         <el-tab-pane label="商机管理">
-
                              <div class="main">
 								<!-- <div>
 									<router-view class="relationshipAdd"></router-view>
 								    <router-view class="householdDetail"></router-view>
 								</div> -->
 								<!--<router-link :to="{name: 'RelationshipAdd'}">--><button class="add" @click="shangji('','','tianjia')">添加商机</button><!--</router-link>-->
-								<el-table :data="businessManagement" style="width: 100%">
-									<el-table-column prop="name" label="客户姓名" width="180"></el-table-column>
+								<el-table :data="tableDataBusiness" style="width: 100%">
+									<el-table-column prop="namec" label="客户姓名" width="180"></el-table-column>
 									<el-table-column prop="phone" label="联系方式" width="180"></el-table-column>
-									<el-table-column prop="visit" label="来访方式"></el-table-column>
-									<el-table-column prop="customer" label="客户类型"></el-table-column>
-									<el-table-column prop="area" label="需求面积(平方米)"></el-table-column>
-									<el-table-column prop="price" label="需求价格(元/月)"></el-table-column>
-									<el-table-column prop="time" label="来访时间"></el-table-column>
+									<el-table-column prop="visiting_way" label="来访方式"></el-table-column>
+									<el-table-column prop="clientType" label="客户类型"></el-table-column>
+									<el-table-column prop="areaNeed" label="需求面积(平方米)"></el-table-column>
+									<el-table-column prop="priceNeed" label="需求价格(元/月)"></el-table-column>
+									<el-table-column prop="visitTime" label="来访时间"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -60,19 +65,26 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
-													<span @click="shangji(scope.$index,businessManagement,'bianji')"><el-dropdown-item>查看</el-dropdown-item></span>
-													<span  @click="shangji(scope.$index,businessManagement,'gengxin')"><el-dropdown-item>更新</el-dropdown-item></span>
+													<span @click="shangji(scope.$index,tableDataBusiness,'bianji')"><el-dropdown-item>查看</el-dropdown-item></span>
+													<span  @click="shangji(scope.$index,tableDataBusiness,'gengxin')"><el-dropdown-item>更新</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
 									</el-table-column>
 								</el-table>
 								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+									<el-pagination 
+                                    @size-change="handleSizeChangeBusiness" 
+                                    @current-change="handleCurrentChangeBusiness" 
+                                    :current-page="pageNoBusiness"  
+                                    :page-size="pageSizeBusiness" 
+                                    :page-sizes="pageSizesListBusiness"
+                                    layout="total, sizes, prev, pager, next, jumper" 
+                                    :total="totalDataNumberBusiness">
 
 									</el-pagination>
 								</div>
-							</div>                 
+							</div>
                         </el-tab-pane>
 
                         <el-tab-pane label="合同管理">
@@ -83,15 +95,15 @@
 								    <!-- <router-view class="householdDetail"></router-view> -->
 								</div>
 								<!--<router-link :to="{name: 'RelationshipAdd'}">--><button class="add">导入合同</button><!--</router-link>-->
-								<el-table :data="contract" style="width: 100%">
-									<el-table-column prop="name" label="客户姓名" width="180"></el-table-column>
-									<el-table-column prop="phone" label="联系方式" width="180"></el-table-column>
-									<el-table-column prop="rent" label="租用类型"></el-table-column>
-                                    <el-table-column prop="build" label="楼宇" width="180"></el-table-column>
-                                    <el-table-column prop="roomNumber" label="房号"></el-table-column>
-                                    <el-table-column prop="buildArea" label="建筑面积(平方米)"></el-table-column>
-									<el-table-column prop="use" label="用途"></el-table-column>
-									<el-table-column prop="time" label="交付时间"></el-table-column>
+								<el-table :data="tableDataContract" style="width: 100%">
+									<el-table-column prop="owner.name" label="客户姓名" width="180"></el-table-column>
+									<el-table-column prop="owner.phone" label="联系方式" width="180"></el-table-column>
+									<el-table-column prop="rooms.roomType" label="租用类型"></el-table-column>
+                                    <el-table-column prop="buildings.namec" label="楼宇" width="180"></el-table-column>
+                                    <el-table-column prop="rooms.roomNumber" label="房号"></el-table-column>
+                                    <el-table-column prop="rooms.coveredArea" label="建筑面积(平方米)"></el-table-column>
+									<el-table-column prop="rooms.useId" label="用途"></el-table-column>
+									<el-table-column prop="paymentTime" label="交付时间"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -108,7 +120,14 @@
 									</el-table-column>
 								</el-table>
 								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+									<el-pagination 
+                                    @size-change="handleSizeChangeContract" 
+                                    @current-change="handleCurrentChangeContract" 
+                                    :current-page="pageNoContract"  
+                                    :page-size="pageSizeContract" 
+                                    :page-sizes="pageSizesListContract"
+                                    layout="total, sizes, prev, pager, next, jumper" 
+                                    :total="totalDataNumberContract">
 
 									</el-pagination>
 								</div>
@@ -161,7 +180,7 @@
                 </el-form>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                    <el-button type="primary" @click="save">确 定</el-button>
                 </span>
 
             </el-dialog>
@@ -171,7 +190,8 @@
 
 <script>
 	import NavHeader from '@/components/NavHeader'
-	import NavBar from '@/components/NavBar'
+    import NavBar from '@/components/NavBar'
+    import url from '../assets/Req.js'
 export default {
     name:'rent',
     data(){
@@ -179,73 +199,31 @@ export default {
             tanchuang:'查看商机',
             edit:true,
             dialogVisible: false,
-            //分页数据
-			pageNo: 1,
-            pageSize: 10,
-            pageSizesList: [10, 15, 20, 30, 50],
-            tableData: [],//返回的结果集合
-            totalDataNumber: 400,//数据的总数,
             
             modify:false,
             activeName: 'first',
+
             //房源管理
-            housingManagement: [
-                {
-                    house: '店铺',
-                    roomNumber: '023',
-                    build: '门面',
-                    buildArea:'125',
-                    remarks:'6000',
-                    state:'可租',
-                    price:'是',
-                    id:5674654
-                },
-                {
-                    house: '办公',
-                    roomNumber: '301',
-                    build: 'C座',
-                    buildArea:'200',
-                    remarks:'9000',
-                    state:'已租',
-                    price:'否'
-                },
-            ],
+			pageNo: 1,
+            pageSize: 10,
+            pageSizesList: [1, 2, 3, 4, 5],
+            tableData: [],//返回的结果集合
+            totalDataNumber: 400,//数据的总数,
+            
             //商机管理
-            businessManagement:[
-                {
-                    name: '王万',
-                    phone: '15946907569',
-                    visit: '到访',
-                    customer: '办公需求',
-                    area: '200',
-                    price: 'fsdfd',
-                    time: '2018.7.14',
-                    id:6796845
-                },
-                {
-                    name: '金星',
-                    phone: '15946907569',
-                    visit: '来电',
-                    customer: '办公需求',
-                    area: '200',
-                    price: 'fsdfd',
-                    time: '2018.7.14',
-                    id:6796844
-                }
-            ],
+			pageNoBusiness: 1,
+            pageSizeBusiness: 10,
+            pageSizesListBusiness: [1, 2, 3, 4, 5],
+            tableDataBusiness: [],//返回的结果集合
+            totalDataNumberBusiness: 400,//数据的总数,
+            
             //合同管理
-            contract: [
-                {
-                    name: '王万',
-                    phone: '15946907569',
-                    rent:'gdfg',
-                    build: '门面',
-                    roomNumber: '023',
-                    buildArea:'125',
-                    use: '200',
-                    time: '2018.7.14'                 
-                }
-            ],
+			pageNoContract: 1,
+            pageSizeContract: 10,
+            pageSizesListContract: [1, 2, 3, 4, 5],
+            tableDataContract: [],//返回的结果集合
+            totalDataNumberContract: 400,//数据的总数,
+            
             //商机管理-查看
             shuru: 
             {
@@ -282,45 +260,111 @@ export default {
                 
             }
         },
+    mounted(){
+        this.flndAllHousingResource(),
+        this.flndAllBusiness(),
+        this.flndAllContract()
+    },
     methods:{
         changePosition() {
-			console.log(this.position)
+            console.log(this.position)
 		},
 		handleClick(tab, event) {
 			console.log(tab, event);
         },
-        handleSizeChange(val) {
+        save(){
+            var prospectiveCustomer={}
+            prospectiveCustomer.namec=upload.name
+            prospectiveCustomer.phone=upload.phone
+            prospectiveCustomer.clientType=upload.type
+            prospectiveCustomer.areaNeed=upload.roomArea
+            prospectiveCustomer.priceNeed=upload.price
+            prospectiveCustomer.visitingWay=upload.visit
+            prospectiveCustomer.visitingWay=upload.visit
+
+            this.$ajax.get(url + 'prospectiveCustomer/addProspectiveCustomer',prospectiveCustomer).then((res) => {
+                console.log(res)
+            })
+        },
+        //房源管理=>查询全部
+        flndAllHousingResource(){
+            this.$ajax.get(url + 'housingResource/flndAllHousingResource/'+this.pageNo+'/'+this.pageSize).then((res) => {
+                console.log(res)
+                this.tableData=res.data.data.rows
+                this.totalDataNumber=res.data.data.records
+            })
+        },handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
+            this.pageSize=val;
+            this.flndAllHousingResource()
+        },handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
+            this.pageNo=val;
+            this.flndAllHousingResource()
         },
-        //房源管理
+
+
+        //商机管理
+        flndAllBusiness(){
+            this.$ajax.get(url + 'housingResource/flndAllHousingResource/'+this.pageNoBusiness+'/'+this.pageSizeBusiness).then((res) => {
+                console.log(res)
+                this.tableDataBusiness=res.data.data.rows
+                this.totalDataNumberBusiness=res.data.data.records
+            })
+        },handleSizeChangeBusiness(val) {
+            console.log(`每页 ${val} 条`);
+            this.pageSizeBusiness=val;
+            this.flndAllBusiness()
+        },handleCurrentChangeBusiness(val) {
+            console.log(`当前页: ${val}`);
+            this.pageNoBusiness=val;
+            this.flndAllBusiness()
+        },
+
+        //合同管理
+        flndAllContract(){
+            this.$ajax.get(url + 'contract/flndAll/'+this.pageNoContract+'/'+this.pageSizeContract).then((res) => {
+                console.log(res)
+                this.tableDataContract=res.data.data.rows
+                this.totalDataNumberContract=res.data.data.records
+            })
+        },handleSizeChangeContract(val) {
+            console.log(`每页 ${val} 条`);
+            this.pageSizeContract=val;
+            this.flndAllContract()
+        },handleCurrentChangeContract(val) {
+            console.log(`当前页: ${val}`);
+            this.pageNoContract=val;
+            this.flndAllContract()
+        },
+
+        //房源添加
         toBianji(index,row,msg){
             let that = this;
-            this.id = this.housingManagement[index].id;
+            this.id = this.tableData[index].id;
             this.msg = msg;
             this.$router.push({name: 'Rent_addhouse',query:{id:that.id,msg:this.msg}})
         },
-        //商机管理
+        //商机添加
         shangji(index,row,msg){
             let that = this;
             this.msg = msg;
             this.dialogVisible = true;
             this.msg = msg;
             if(this.msg == "bianji"){
-                this.id = this.businessManagement[index].id;
+                this.id = this.tableDataBusiness[index].id;
                 this.edit = true
                 console.log(this.id)
                 this.tanchuang = "查看详情"
             }else if(this.msg == "gengxin"){
-                this.id = this.businessManagement[index].id;
+                this.id = this.tableDataBusiness[index].id;
                 this.edit = false
                 console.log(this.id)
                 this.tanchuang = "更新商机"
             }
             else{
                 this.tanchuang = "添加商机"
+                this.edit = false
             }
         }
         

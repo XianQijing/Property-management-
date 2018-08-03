@@ -17,8 +17,8 @@
                 </el-form-item>
                 <el-form-item label="验收结果：">
                    <el-select v-model="carForm.Result" placeholder="请选择验收结果">
-                       <el-option label="区域一" value="shanghai"></el-option>
-                       <el-option label="区域二" value="beijing"></el-option>
+                       <el-option label="不合格" value="0"></el-option>
+                       <el-option label="合格" value="1"></el-option>
                    </el-select>
                </el-form-item>
                 <el-form-item label="验收人：">
@@ -28,7 +28,13 @@
                 <el-input v-model="carForm.Explain" placeholder="请输入验收说明"></el-input>
                 </el-form-item>
                 <el-form-item label="验收时间：" prop="Type">
-                <el-input v-model="carForm.time" placeholder="请输入验收时间"></el-input>
+                  <el-date-picker 
+                    v-model="carForm.time" 
+                    type="datetime"
+                    format="yyyy-MM-dd HH:mm:ss" 
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    placeholder="选择验收时间">
+                </el-date-picker>
                 </el-form-item>
                 <el-form-item label="备注：" prop="remarks">
                 <el-input v-model="carForm.remarks" placeholder="请输入备注"></el-input>
@@ -36,7 +42,7 @@
             </el-form>
             </div>
             <div class="nn">
-            <button class="nextStep">保存</button><button class="cancel" @click="goBack">返回</button>
+            <button class="nextStep" @click="save">保存</button><button class="cancel" @click="goBack">返回</button>
             </div>
         </div>
     </div>
@@ -144,6 +150,7 @@ export default {
     },
     mounted(){
         console.log(this.$route.query.id)
+        
         if (this.$route.query.id!=="add") {
             console.log(this.$route.query.id)
             this.id = this.$route.query.id
@@ -153,6 +160,7 @@ export default {
             })
         }else if(this.$route.query.id==="add"){
             this.name = "添加"
+            this.getRoomList()
             console.log(this.$route.query.id)
         }
     },
@@ -162,8 +170,29 @@ export default {
             window.history.back()
         },
         handleChange(value) {
-        console.log(value);
-      }
+          console.log(value);
+        },
+        getRoomList(){
+          this.$ajax.get(url + 'room/flndByClientId').then(res => {
+                  console.log(res)
+                  this.options=res.data;
+          })
+        },
+        save(){
+          console.log(this.carForm)
+          var roomStandard={}
+          roomStandard.room=this.carForm.region[2];
+          roomStandard.acceptanceStandard=this.carForm.standard
+          roomStandard.acceptanceResult=this.carForm.Result
+          roomStandard.acceptanceBy=this.carForm.Result
+          roomStandard.acceptanceState=this.carForm.Explain
+          roomStandard.acceptanceTime=this.carForm.time
+          roomStandard.remark=this.carForm.remarks
+          this.$ajax.post(url + 'roomStandard/addRoomStandard',roomStandard).then(res => {
+              console.log(res)
+          })
+
+        },
     }
 
 }

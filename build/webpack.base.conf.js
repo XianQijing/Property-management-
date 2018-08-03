@@ -37,11 +37,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-<<<<<<< HEAD
-        loader: 'less-loader',
-=======
         loader: 'style-loader!css-loader!less-loader'
->>>>>>> min
       },
       {
         test: /\.js$/,

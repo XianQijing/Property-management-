@@ -6,61 +6,56 @@
             <div class="input">
             <el-form :model="addCustomer" ref="addCustomer" label-width="130px" class="demo-addCustomer">
 
-                <el-form-item label="房屋类型：" prop="houseType">{{addCustomer.houseType}}
-                   <el-select v-model="addCustomer.houseType" placeholder="请选择房屋类型">
-                   <el-option label="沿街店铺" value="yanjiedianpu"></el-option>
-                   <el-option label="办公区" value="bangongqu"></el-option>
-                   </el-select>
+                <el-form-item label="房屋类型：" prop="roomType">
+                   <el-input v-model="addCustomer.houseType" placeholder="请输入房屋类型"></el-input>
                 </el-form-item>
 
-                <el-form-item label="楼宇：" prop="build">{{addCustomer.build}}
-                   <el-select v-model="addCustomer.build" placeholder="请选择房屋类型">
-                   <el-option label="啥都木有" value="yanjiedianpu"></el-option>
-                   <el-option label="啥都木有" value="bangongqu"></el-option>
+                <el-form-item label="楼宇：" prop="buildings">
+                   <el-select v-model="addCustomer.buildings" placeholder="请选择楼宇">
+                   <el-option :label="item.namec" :value="item.id" v-for="item in builds" :key="item.id"></el-option>
                    </el-select>
                 </el-form-item>
 
 
-                <el-form-item label="房号：" prop="roomNumber">{{addCustomer.roomNumber}}
-                   <el-select v-model="addCustomer.roomNumber" placeholder="请选择房屋类型">
-                   <el-option label="啥都木有" value="yanjiedianpu"></el-option>
-                   <el-option label="啥都木有" value="bangongqu"></el-option>
-                   </el-select>
+                <el-form-item label="房号：" prop="roomNumber">
+                   <el-input v-model="addCustomer.roomNumber" placeholder="请输入房号"></el-input>
                 </el-form-item>
 
-                <el-form-item label="建筑面积：" prop="buildArea">{{addCustomer.buildArea}}
-                <el-input v-model="addCustomer.buildArea" placeholder="请输入建筑面积"></el-input>
+                <el-form-item label="建筑面积：" prop="coveredArea">
+                <el-input v-model="addCustomer.coveredArea" placeholder="请输入建筑面积"></el-input>
                 </el-form-item>
 
-                <el-form-item label="定价：" prop="price">{{addCustomer.price}}
-                    <el-input v-model="addCustomer.price" placeholder="请输入定价">
+                <el-form-item label="定价：" prop="pricing">
+                    <el-input v-model="addCustomer.pricing" placeholder="请输入定价">
                         <template slot="append">元/月</template>
                     </el-input>
                 </el-form-item>
 
-                <el-form-item label="租用状态：" prop="state">{{addCustomer.state}}
-                   <el-select v-model="addCustomer.state" placeholder="请选择房屋类型">
-                   <el-option label="卖了" value="yanjiedianpu"></el-option>
-                   <el-option label="租了" value="bangongqu"></el-option>
-                   </el-select>
+                <el-form-item label="租用状态：" prop="renting">
+                   <el-select v-model="addCustomer.renting" placeholder="请选择房屋类型">
+                   <el-option label="可租" value="0"></el-option>
+                   <el-option label="不可租" value="1"></el-option>
+                   <el-option label="已租" value="2"></el-option>
+                    </el-select>
                 </el-form-item>
 
-                <el-form-item label="预定状态：" prop="order">{{addCustomer.order}}
-                   <el-select v-model="addCustomer.order" placeholder="请选择房屋类型">
-                   <el-option label="卖了" value="yanjiedianpu"></el-option>
-                   <el-option label="租了" value="bangongqu"></el-option>
+                <el-form-item label="预定状态：" prop="reserve">
+                   <el-select v-model="addCustomer.reserve" placeholder="请选择房屋类型">
+                   <el-option label="未预定" value="0"></el-option>
+                   <el-option label="已预定" value="1"></el-option>
                    </el-select>
                 </el-form-item>
             </el-form>
             </div>
             <div class="nn">
-            <button class="nextStep">保存</button><button class="cancel" @click="goBack">取消</button>
+            <button class="nextStep" @click="save">保存</button><button class="cancel" @click="goBack">取消</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import url from '../assets/Req.js'
 export default {
     name:'rent_addhouse',
     data(){
@@ -70,15 +65,16 @@ export default {
             show2:false,
             //数据
             addCustomer: {
-                houseType:'',
-                build:'',
+                roomType:'',
+                buildings:'',
                 roomNumber:'',
-                buildArea: '',
-                price: '',
-                state: '',
-                order: ''
-        },
-        
+                coveredArea: '',
+                pricing: '',
+                renting: '',
+                reserve: ''
+            },
+            builds:[
+            ],
         }
     },
     mounted(){
@@ -86,34 +82,47 @@ export default {
         if(this.$route.query.msg == "tianjia"){
             this.name = '添加',
             this.addCustomer = {}
+            this.$ajax.get(url + 'building/flndAll/1/999').then(res => {
+                console.log(res);
+                this.builds=res.data.data.rows
+                //goBack()
+            })
         }else{
             this.name = '编辑'
         }
     },
     methods:{
         submitUpload() {
-        this.$refs.upload.submit();
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
+            this.$refs.upload.submit();
+        },
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handlePreview(file) {
+            console.log(file);
+        },
+        save(){
+            var housingResourceVO={}
+           housingResourceVO= this.addCustomer
+            this.$ajax.post(url + 'housingResource/insertRoom',housingResourceVO).then(res => {
+                console.log(res);
+                //goBack()
+            })
+        },
         goBack(){
             window.history.back()
         },
         handleChange(file, fileList) {
-        this.fileList = fileList.slice(-2);
-      },
-      // 上传成功后的回调
-    uploadSuccess (response, file, fileList) {
-      console.log('上传文件', response)
-    },
-    // 上传错误
-    uploadError (response, file, fileList) {
-      console.log('上传失败，请重试！')
-    },
+            this.fileList = fileList.slice(-2);
+        },
+        // 上传成功后的回调
+        uploadSuccess (response, file, fileList) {
+            console.log('上传文件', response)
+        },
+        // 上传错误
+        uploadError (response, file, fileList) {
+            console.log('上传失败，请重试！')
+        },
     }
 }
 </script>

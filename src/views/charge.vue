@@ -8,21 +8,21 @@
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane label="收费参数" name="first">
                             <div class="main">
-								<button class="add" @click="qingkong(1)">新增收费项目</button>
+								<button class="add" @click="addNewProject">新增收费项目</button>
 								<el-table :data="charge" style="width: 100%">
 									<el-table-column prop="name" label="名称" width="280"></el-table-column>
 									<el-table-column prop="charge" label="收费项目" width="280"></el-table-column>
 									<el-table-column prop="meter" label="仪表种类"></el-table-column>
-                                    <el-table-column prop="remark" label="备注" width="280"></el-table-column>
+                      <el-table-column prop="remark" label="备注" width="280"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
 												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
+                              操作<i class="el-icon-arrow-down el-icon--right"></i>
+                          </span>
 												<el-dropdown-menu slot="dropdown">
 													
-											        <span @click="tanchaung(scope.$index, charge)"><el-dropdown-item>编辑</el-dropdown-item></span>
+											        <span @click="tanchaung(scope.$index, charge,2)"><el-dropdown-item>编辑</el-dropdown-item></span>
 													<span @click="chargeDelete(scope.$index, charge)"><el-dropdown-item>删除</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -124,7 +124,11 @@
                         </el-form-item>
                     </el-form>
                 </div>
-                <span slot="footer" class="dialog-footer">
+                <span slot="footer" class="dialog-footer" v-show="addNewOne">
+                    <el-button @click="news= false">取 消</el-button>
+                    <el-button type="primary" @click="submit">确 定</el-button>
+                </span>
+                <span slot="footer" class="dialog-footer" v-show="changeOne">
                     <el-button @click="news= false">取 消</el-button>
                     <el-button type="primary" @click="createPayItem">确 定</el-button>
                 </span>
@@ -184,6 +188,13 @@
                                 <el-option label="区域一" value="shanghai"></el-option>
                                 <el-option label="区域二" value="beijing"></el-option>
                             </el-select>
+                        </el-form-item>
+                        <el-form-item label="录入时间:">
+                            <el-date-picker
+                              v-model="entrydata.time"
+                              type="date"
+                              placeholder="选择日期">
+                            </el-date-picker>
                         </el-form-item>
                         <el-form-item label="起度:">
                             <el-input v-model="entrydata.start"></el-input>
@@ -274,7 +285,8 @@ export default {
       pageSize2: 2,
       pageSizes2: [1, 2, 3, 4, 5],
       totalData2: 400, //customerMsg数据的总数,
-
+      addNewOne: true,
+      changeOne:false,
       name: "新建",
       modify: false,
       activeName: "first",
@@ -316,7 +328,8 @@ export default {
         charge: "电表",
         start: "6000",
         end: "6500",
-        remarks: ""
+        remarks: "",
+        time:''
       },
       //仪表管理-编辑
       changedata: {
@@ -411,8 +424,11 @@ export default {
         });
     },
     //弹窗
-    tanchaung(index, rows) {
+    tanchaung(index, rows,msg) {
+      if(msg === 2){
       let that = this;
+      this.addNewOne = false,
+      this.changeOne = true,
       that.id = this.charge[index].id;
       console.log(this.id);
       this.news = true;
@@ -433,11 +449,13 @@ export default {
             this.add.remarks = temp.remark;
             this.add.name = temp.name;
           });
-      }
+      }}
     },
-    qingkong() {
-      (this.name = "添加"), (this.add = {});
-      this.news = true;
+    addNewProject(){
+      this.add = {},
+      this.addNewOne = false,
+      this.changeOne = true,
+      this.news = true
     },
     luru() {
       this.entrydata = {};
@@ -457,6 +475,16 @@ export default {
         this.add == {};
         this.news = false;
       });
+    },
+    //新增收费参数
+    submit(){
+      var payItemVO = {};
+      payItemVO.payItemMeterId = this.id;
+      payItemVO.payItemId = this.add.payItemId;
+      payItemVO.meterId = this.add.type;
+      payItemVO.payItemMeterName = this.add.name;
+      payItemVO.remake = this.add.remarks;
+      this.$ajax.post(url + '',payItemVO)
     },
     //应收费用
     Cost() {
