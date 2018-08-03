@@ -3,29 +3,38 @@
         <nav-bar/>
         <div class="container">
             
-        <nav-header :name="username"></nav-header>
+        <nav-header></nav-header>
         <div class="card row">
             <div class="col-md-12">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                     <!--组织机构-->
                     <!-- <el-tab-pane label="组织机构">
-                        <div class="stffTree___I0TAP">
-                        <ul class="tiaoshi">
-                            <li>
-                            <item :model="treeData" class="item"></item>
-                            </li>
+                        <ul>
+                            <el-tree :data="data5" show-checkbox="" node-key="id" default-expand-all :expand-on-click-node="false">
+                                <span class="custom-tree-node" slot-scope="{ node, data }">
+                                    <span>{{ node.label }}</span>
+                                    <span>
+                                    <el-button type="text" size="mini" @click="() => append(data)">
+                                        Append
+                                    </el-button>
+                                    <el-button type="text" size="mini" @click="() => remove(node, data)">
+                                        Delete
+                                    </el-button>
+                                    </span>
+                                </span>
+                            </el-tree>
+
                         </ul>
-                        </div>
                     </el-tab-pane> -->
                     <!--部门管理-->
-                    <el-tab-pane label="组织机构">
+                    <el-tab-pane label="部门管理">
                         <manage-name></manage-name>
                     </el-tab-pane>
 
                     <!--职员信息-->
                     <el-tab-pane label="职员信息" name="second">
                         <div class="main">
-                            <button @click="add = !add">+ 添加新员工</button><button @click="isShow = !isShow">导入</button><button class="shanchu">删除</button>
+                            <button @click="add = !add">+ 添加新员工</button><button @click="isShow = !isShow">导入</button><button class="shanchu" @click="allDelete">删除</button>
                                 <el-table :data="tableData" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="name" label="姓名" width="180"></el-table-column>
@@ -74,13 +83,13 @@
                             <button @click="contact = !contact">+ 添加联系人</button><button @click="isShow = !isShow">导入</button><button @click="test">删除</button>
                             <el-table :data="tableData1" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="unitName" label="单位名称" width="180"></el-table-column>
-									<el-table-column prop="department1" label="部门" width="180"></el-table-column>
-									<el-table-column prop="name1" label="姓名"></el-table-column>
-									<el-table-column prop="post" label="职务"></el-table-column>
-									<el-table-column prop="phoneNumber" label="联系电话"></el-table-column>
+									<el-table-column prop="btypeName" label="单位名称" width="180"></el-table-column>
+									<el-table-column prop="type" label="部门" width="180"></el-table-column>
+									<el-table-column prop="linkman" label="姓名"></el-table-column>
+									<el-table-column prop="business" label="职务"></el-table-column>
+									<el-table-column prop="phone" label="联系电话"></el-table-column>
 									<el-table-column prop="address" label="地址"></el-table-column>
-									<el-table-column prop="Remarks1" label="备注"></el-table-column>
+									<el-table-column prop="remark" label="备注"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -125,7 +134,7 @@
             title="编辑员工"
             :visible.sync="zhiyuan"
             width="30%">
-             <ul class="shuru">
+            <ul class="shuru">
                         <li>
                             <label for="name">姓名:</label>
                             <input id="name"  placeholder="请输入姓名" v-model="addpersonEdit.name">
@@ -172,26 +181,30 @@
             </span>
         </el-dialog>
             <!--导入弹窗-->
-                <el-dialog
-                    title="导入"
-                    :visible.sync="isShow"
-                    width="30%">
+            <div v-show="isShow">
+                <div class="add" id="myModal">
+                    <div class="modal-content1">
+                        <div>
+                        <span class="close" @click="isShow = !isShow">&times;</span>
+                        <p class="yuangong">导入员工</p>
+                        </div>
                         <div class="put">
                         <p>导入设置:</p>
                         <form>
                             <ul class="shuju">
                                 <li>
-                            <el-radio v-model="radio" label="0">重复数据不导入</el-radio>
+                            <input name="modal-content1" type="radio" value="no" id="no">
+                            <label for="no">重复数据不导入</label>
                                 </li>
                                 <li>
-                            <el-radio v-model="radio" label="1">重复数据覆盖</el-radio>
+                            <input name="modal-content1" type="radio" value="cover" id="cover">
+                            <label for="cover">重复数据覆盖</label>
                                 </li>
                             </ul>
                         </form>
                         <div class="upload">
-                            <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
+                            <span>选择excel上传：</span><div class="file"><input type="file" onchange="foo(event)" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
                         </div>
-                        <div>{{this.file}}</div>
                         </div>
                         
                         <div>
@@ -214,15 +227,17 @@
                             </ul>
                         </div>
                         <div class="footer1">
-                            <button class="confirm" @click="submit">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
+                            <button class="confirm">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
                         </div>
-                </el-dialog>
+                    </div>
+                </div>
+            </div>
             <!--添加新员工弹窗-->
             <el-dialog
                 title="添加新员工"
                 :visible.sync="add"
                 width="30%">
-                    <el-form ref="form" :model="addperson" label-width="80px" size="small" class="chuang">
+                    <el-form  :model="addperson" ref="addperson" label-width="80px" size="small" class="chuang">
                         <el-form-item label="姓名:">
                             <el-input placeholder="请输入姓名" v-model="addperson.name"></el-input>
                         </el-form-item>
@@ -232,6 +247,9 @@
                         <el-form-item label="手机号:">
                             <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
                         </el-form-item>
+                        <el-form-item label="密码:">
+                            <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
+                        </el-form-item>
                         <el-form-item label="微信号:">
                             <el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
                         </el-form-item>
@@ -240,15 +258,12 @@
                         </el-form-item>
                         <el-form-item label="角色:">
                             <el-select  id="position" placeholder="请输入职位" v-model="addperson.position">
-                                <el-option value=180717116472055595008>总经理</el-option>
-                                <el-option value=180717124465488855040>adaf</el-option>
+                                <el-option label="总经理" value=180717116472055595008>总经理</el-option>
+                                <el-option label="adaf" value=180717124465488855040>adaf</el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="岗位:">
                             <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input>
-                        </el-form-item>
-                        <el-form-item label="密码:">
-                            <el-input id="remark" placeholder="新增密码" v-model="addperson.mima"></el-input>
                         </el-form-item>
                         <el-form-item label="备注:">
                             <el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
@@ -318,27 +333,20 @@ import departNav from './departNav'
 import manageName from './manage'
 import url from '../assets/Req.js'
 import qs from 'qs';
-import Item from './item'
 
 
-var data = {
-    name: 'My Tree',
-    children: [],
-    class:'zhu tt'
-}
+
+
+let id = 1000;
 export default {
     name: 'department',
     data(){
         const datato = [{
             id: 1,
             label: '一级 1',
-            children: [],
+            children: []
         }];
         return{
-            file:'',
-            src:'',
-            username:'',
-            radio:'0',
             pageNo: 1,
             pageSize: 1,
             pageSizesList: [1, 2, 3, 4, 5],
@@ -347,7 +355,7 @@ export default {
             pageSizeB: 1,
             pageSizesListB: [1, 2, 3, 4, 5],
             totalDataNumberB: 1,//数据的总数,
-
+            // toggle:'',
             zhiyuan:false,
             multipleSelection: [],
             person: [],
@@ -357,9 +365,10 @@ export default {
             contact:false,
             modify:false,
             selectArr: [],
+            data5: JSON.parse(JSON.stringify(datato)),
             tableData: [
                     {
-                        id: "180720B4WTW38A3C",
+                        id: "rnejkgtrek",
                         name: "杨帅",
                         username: "ys",
                         password: "06ba0ebc6f9efec42b0c43dd2e3ce1cf",
@@ -381,7 +390,18 @@ export default {
                 phone: "",
                 remark: ""
             }],
-            addperson:[{
+            addperson:{
+                name:'',
+                number:'',
+                wechat:'',
+                nickname:'',
+                post:'',
+                position:'',
+                beizhu:'',
+                gangwei: '',
+                mima:''
+            },
+            addpersonEdit:[{
                 name:'',
                 number:'',
                 wechat:'',
@@ -392,6 +412,15 @@ export default {
                 gangwei: '',
                 mima:''
             }],
+            btype:{
+                btypeName: "",
+                type: "",
+                linkman: "",
+                business: "",
+                address: "",
+                phone: "",
+                remark: ""
+            },
             form:{},
             // data: [
                 // {
@@ -439,27 +468,6 @@ export default {
                 // }
             // ],
             position: '',
-            path:'',
-            addpersonEdit:[{
-                name:'',
-                number:'',
-                wechat:'',
-                nickname:'',
-                post:'',
-                position:'',
-                beizhu:'',
-                gangwei: '',
-                mima:''
-            }],
-            btype:{
-                btypeName: "",
-                type: "",
-                linkman: "",
-                business: "",
-                address: "",
-                phone: "",
-                remark: ""
-            },
         }
     },
     components:{
@@ -468,7 +476,6 @@ export default {
         departNav,
         manageName,
         NavBar,
-        Item
     },
     directives: {
   focus: {
@@ -479,16 +486,15 @@ export default {
   }
 },
 mounted(){
-     this.staff()
-     this.Btype()
-     let uname = getCookie('phone')
-            this.username = uname
+    this.staff(),
             // /*页面挂载获取保存的cookie值，渲染到页面上*/
-            this.name = uname
+            // let uname = getCookie('username')
+            // this.name = uname
             // /*如果cookie不存在，则跳转到登录页*/
-            if(uname == ""){
-                this.$router.push('/')
-            }
+            // if(uname == ""){
+            //     this.$router.push('/')
+            // }
+    this.Btype()
         },
     methods:{
         changePosition() {
@@ -497,13 +503,6 @@ mounted(){
 		handleClick(tab, event) {
 			console.log(tab, event);
         },
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
-        },
-
         //职员信息
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
@@ -528,6 +527,7 @@ mounted(){
             this.pageNoB = val;
             this.Btype();
         },
+        //to职员编辑
         toUserEdit(index, rows){
             let that = this;
             that.id = this.tableData[index].id;
@@ -546,7 +546,6 @@ mounted(){
                 this.zhiyuan = true;
 			})
         },
-
         //职员删除
         deleteRow(index, rows) {
             let that = this;
@@ -556,6 +555,7 @@ mounted(){
             this.$ajax.post(url + 'user/logicDelete',"id="+this.id).then((res) => {
 			})
         },
+        //往来单位删除
         deleteRowB(index, rows) {
             let that = this;
             that.id = this.tableData1[index].id;
@@ -564,7 +564,6 @@ mounted(){
             this.$ajax.post(url + 'btype/delete',"id="+this.id).then((res) => {
 			})
         },
-        
         
 //         foo:function (event) {
 //             formdata = new FormData();
@@ -599,6 +598,7 @@ mounted(){
         users.name=this.addperson.name;
         users.username=this.addperson.nickname;
         users.phone=this.addperson.number;
+        users.password=this.addperson.mima;
         users.wechat=this.addperson.wechat;
         users.email=this.addperson.email;
         users.orgId=this.addperson.gangwei;
@@ -664,39 +664,23 @@ mounted(){
         children.splice(index, 1);
       },
       
-      //多选删除
+      //删除
       handleSelectionChange (val) {
             //val 为选中数据的集合
                 this.multipleSelection = val
                 console.log(this.multipleSelection)
             },
-
 			allDelete() {
                 let comments = this.multipleSelection
-				console.log(comments.id)
+				// console.log(comments.id)
                 let num = []
                 for (let i = 0;i<comments.length;i++) {
                 num.push(comments[i].id)
-                console.log(num)
+                this.$ajax.post(url + "user/delete","id="+num)
             }
+            console.log(num)
         },
-        getPath(e){
-            // console.log(e.target.value)
-            
-            this.path = e.target.value;
-            this.file = e.currentTarget.files[0].name//百度是没有name的
-            
-            console.log(this.src)
-        },
-        submit(){
-            var formData = new FormData()
-            console.log(this.files)
-            formData.append('path', this.file)
-            formData.append('status', this.radio)
-            this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                console.log(res)
-            })
-        }
+        //职员信息批量删除
         
     }
 }
@@ -997,7 +981,7 @@ span {
     color: #777777;
 }
 .put {
-    margin:10px 0px 60px 29%!important;
+    margin:58px 0px 60px 29%!important;
 }
 .put ul {
     padding: 0
@@ -1029,23 +1013,4 @@ span {
 .chuang{
     margin: 0 15% 0 10%
 }
-/* .tiaoshi{
-    padding: 24px;
-    width:937px
-}
-.stffTree___I0TAP {
-    padding: 40px;
-    text-align: center;
-    overflow-x: auto;
-}
-.tiaoshi:after{
-    content: "";
-    width: 1px;
-    height: 24px;
-    position: absolute;
-    top: 92px;
-    left: 50%;
-    border-right: 1px solid black;
-    border-right: 1px solid black; 
-} */
 </style>
