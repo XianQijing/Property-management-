@@ -211,7 +211,7 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
-													<router-link :to="{name: 'Server1',query:{}}"><el-dropdown-item>查看</el-dropdown-item></router-link>
+													<router-link :to="{name: 'Server1'}"><el-dropdown-item>查看</el-dropdown-item></router-link>
 													<router-link :to="{name: 'Return'}"><el-dropdown-item>回访</el-dropdown-item></router-link>
 													<el-dropdown-item>派工</el-dropdown-item>
 												</el-dropdown-menu>
@@ -324,8 +324,9 @@
                     </div>
 					<div class="body">
                         <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage">
-							<el-form-item label="短信标题:">
+							<el-form-item label="短信标题:">{{addMessage.title}}
 								<el-select v-model="addMessage.title" placeholder="请输入短信标题">
+									
 									<el-option
 										v-for="item in messageTitle"
 										:key="item.value"
@@ -774,7 +775,7 @@
                 if(that.id !== ''){
                     this.name = '编辑'
                     this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
-						this.addMessage.title = res.data.titleName;
+						this.addMessage.title = res.data.title;
 						this.addMessage.content = res.data.content;
 						this.addMessage.sign = res.data.signature;
 					})

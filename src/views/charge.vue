@@ -30,17 +30,11 @@
 										
 									</el-table-column>
 								</el-table>
-								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange"
-                                     @current-change="handleCurrentChange"
-                                      :current-page="pageNo"
-                                      :page-sizes="pageSizesList"
-                                      :page-size="pageSize" 
-                                      layout="total, sizes, prev, pager, next, jumper" 
-                                      :total="totalDataNumber">
+                                <div class="fenye">
+								<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"  :page-size="pageSize" :page-sizes="pageSizes" layout="total, sizes, prev, pager, next, jumper" :total="totalData">
 
-									</el-pagination>
-								</div>
+                                </el-pagination>
+                                </div>
 							</div>
                         </el-tab-pane>
 
@@ -66,11 +60,11 @@
 										</template>
 									</el-table-column>
 								</el-table>
-								<div class="fenye">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
+                                <div class="fenye">
+								<el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page="currentPage1"  :page-size="pageSize1" :page-sizes="pageSizes1" layout="total, sizes, prev, pager, next, jumper" :total="totalData1">
 
-									</el-pagination>
-								</div>
+                                </el-pagination>
+                                </div>
 							</div>                 
                         </el-tab-pane>
 
@@ -80,7 +74,7 @@
                                 <div id="card"><button @click="feiyong3">临时费用</button><button @click="feiyong2">抄表费用</button><button class="active" @click="feiyong1">常规费用</button></div>
                                 <div id="main">
 			                    <div>
-								<el-table :data="linshi" style="width: 100%">
+								<el-table :data="temporary" style="width: 100%">
 									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
 									<el-table-column prop="build" label="楼宇" width="180"></el-table-column>
 									<el-table-column prop="roomNum" label="房号"></el-table-column>
@@ -92,20 +86,9 @@
                                     <el-table-column prop="remarks" label="备注" width="180"></el-table-column>
 								</el-table>
                                 <div class="fenye">
-                                    <el-pagination @size-change="handleSizeChange" 
-                                    @current-change="handleCurrentChange"
-                                    :current-page="pageNo"  
-                                    :page-size="100" 
-                                    layout="total, sizes, prev, pager, next, jumper" 
-                                    :total="totalDataNumber">
-                                    <!--size-change, pageSize 改变时会触发 -->
-                                    <!-- current-change	currentPage 改变时会触发 -->
-                                    <!-- current-page	当前页数，支持 .sync 修饰符 -->
-                                    <!-- page-sizes	每页显示个数选择器的选项设置 -->
-                                    <!-- layout	组件布局，子组件名用逗号分隔 -->
-                                    <!-- total	总条目数 -->
-									<!-- page-size	每页显示条目个数 -->
-									</el-pagination>
+                                    <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="currentPage2"  :page-size="pageSize2" :page-sizes="pageSizes2" layout="total, sizes, prev, pager, next, jumper" :total="totalData2">
+
+                                    </el-pagination>
                                 </div>
                                 </div>
                             </div>
@@ -261,344 +244,415 @@
 </template>
 
 <script>
-	import NavHeader from '@/components/NavHeader'
-    import NavBar from '@/components/NavBar'
-    import qs from 'qs'
-    import url from '../assets/Req.js'
+import NavHeader from "@/components/NavHeader";
+import NavBar from "@/components/NavBar";
+import qs from "qs";
+import url from "../assets/Req.js";
 export default {
-    name:'charge',
-    data(){
-        return{
-            entryChange:false,
-            entry:false,
-            news:false,
-            edit:true,
-            dialogVisible: false,
-            //分页数据
-			pageNo: 1,
-            pageSize: 2,
-            pageSizesList: [1, 2, 3, 5, 6],
-            // tableData: [],       //返回的结果集合
-            totalDataNumber: 1,//数据的总数,
-            
-            name: '新建',
-            modify:false,
-            activeName: 'first',
-            //收费参数
-            charge: [],
-            //仪表管理
-            meter:[],
-            //应收费用
-            linshi: [
-                {
-                    houseType: 'sb',
-                    build: '15946907569',
-                    roomNumber:'gdfg',
-                    name: '门面',
-                    chargeProject: '023',
-                    meter:'125',
-                    charge: '200',
-                    time: '2018.7.14',
-                    remarks:''                 
-                }
-            ],
-            //收费参数-新增
-            add:{
-                name: '',
-                payItemId: '',
-                type: '',
-                remarks:''
-            },
-            //收费参数-编辑
-            upload:{
-                name: '',
-                chargeType: ' ',
-                type: ' ',
-                remarks:''
-            },
-            //仪表管理-录入
-            entrydata: {
-                houseType: '店铺',
-                charge: '电表',
-                start: '6000',
-                end: '6500',
-                remarks: ''
-            },
-            //仪表管理-编辑
-            changedata: {
-                houseType: '店铺',
-                charge: '电表',
-                start: '6000',
-                end: '6500',
-                remarks: ''
-            },
-            //返回的数据
-            too:{
-                remarks:''
-            }
+  name: "charge",
+  data() {
+    return {
+      //应收费用的id
+      shouldId: "180723BR7M3G986W",
+      entryChange: false,
+      entry: false,
+      news: false,
+      edit: true,
+      dialogVisible: false,
+      //分页数据
+      currentPage: 1,
+      pageSize: 2,
+      pageSizes: [1, 2, 3, 4, 5],
+      totalData: 400, //customerMsg数据的总数,
+      //仪表管理
+      currentPage1: 1,
+      pageSize1: 2,
+      pageSizes1: [1, 2, 3, 4, 5],
+      totalData1: 400, //customerMsg数据的总数,
+      //应收费用
+      currentPage2: 1,
+      pageSize2: 2,
+      pageSizes2: [1, 2, 3, 4, 5],
+      totalData2: 400, //customerMsg数据的总数,
+
+      name: "新建",
+      modify: false,
+      activeName: "first",
+      //收费参数
+      charge: [],
+      //仪表管理
+      meter: [],
+      //应收费用
+      temporary: [
+        {
+          houseType: "sb",
+          build: "15946907569",
+          roomNumber: "gdfg",
+          name: "门面",
+          chargeProject: "023",
+          meter: "125",
+          charge: "200",
+          time: "2018.7.14",
+          remarks: ""
         }
-    },
-    mounted(){
-        this.nn(),
-        this.getCharge()
-    },
-    
-        //选项卡
-    methods:{
-        changePosition() {
-			console.log(this.position)
-		},
-		handleClick(tab, event) {
-			console.log(tab, event);
-        },
-        handleSizeChange(val) {
-            this.pageSize=val;
-            this.getCharge();
-            console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
-            this.pageNo=val;
-            this.getCharge();
-        },
-        getCharge(){
-            this.$ajax.get(url+'pay/queryPayItemMeterAll',{
-                params:{
-                    page:this.pageNo,
-                    pageSize:this.pageSize
-                }
-                // 前端将每页显示多少条放入 pageSize,第几页放入page
-            }).then(res => {
-                this.charge=res.data.data.rows
-                this.totalDataNumber=res.data.data.rows.records
-                console.log(res.data)
-            })
-        },
-        //删除
-        chargeDelete(index,rows) {
-				let that = this;
-                that.id = this.charge[index].id;
-				rows.splice(index, 1);
-                this.$ajax.delete(url+"pay/deletePayItemMeter",{
-                    params:{
-                        'payItemMeterId':this.id
-                    }
-                })
-                
-                .then((res) => {
-					this.getCharge()
-				})
-            },
-            //弹窗
-            tanchaung(index,rows){
-                let that = this;
-				that.id = this.charge[index].id;
-                console.log(this.id);
-                this.news = true
-                if(that.id !== ''){
-                    this.name = '编辑'
-                    this.$ajax.get(url + 'pay/queryPayItemMeter',{
-                        params:{
-                            'payItemMeterId': this.id
-                        }
-                    }).then(res => {
-                        console.log(res)
-                        var temp=res.data.data
-                        this.add = temp
-                        this.add.payItemId = temp.payItemId
-                        this.add.type=temp.meterId
-                        this.add.remarks=temp.remark
-                        this.add.name=temp.name
-                    })
-                }
-            },
-            qingkong(){
-                this.name = '添加',
-                this.add = {}
-                this.news = true
-            },
-            luru(){
-                
-                this.entrydata = {}
-                this.entry = true
-            },
+      ],
+      //收费参数-新增
+      add: {
+        name: "",
+        payItemId: "",
+        type: "",
+        remarks: ""
+      },
+      //收费参数-编辑
+      upload: {
+        name: "",
+        chargeType: " ",
+        type: " ",
+        remarks: ""
+      },
+      //仪表管理-录入
+      entrydata: {
+        houseType: "店铺",
+        charge: "电表",
+        start: "6000",
+        end: "6500",
+        remarks: ""
+      },
+      //仪表管理-编辑
+      changedata: {
+        houseType: "店铺",
+        charge: "电表",
+        start: "6000",
+        end: "6500",
+        remarks: ""
+      },
+      //返回的数据
+      too: {
+        remarks: ""
+      }
+    };
+  },
+  mounted() {
+    this.nn(), this.getCharge(), this.getMeter(), this.Cost();
+  },
 
-        createPayItem(){
-            var payItemVO={}
-            payItemVO.payItemMeterId=this.id
-            payItemVO.payItemId=this.add.payItemId
-            payItemVO.meterId=this.add.type
-            payItemVO.payItemMeterName=this.add.name
-            payItemVO.remake=this.add.remarks
-            console.info(payItemVO)
-            this.$ajax.post(
-                url+"pay/createPayItemMeter",payItemVO
-            ).then((res) => {
-                alert("成功")
-                this.add=={}
-                this.news = false
-            })
-        },
-        getMeter(){
-            this.$ajax.get(url+'pay/queryMeterManagementAll')
-            
-            .then(res =>{
-                this.meter=res.data.data.rows
-            })
-        },
-        //常规
-        feiyong1(){
-            this.$ajax.get(url + 'pay/queryReceivable',{
-                params:{
-                    'payItem':'180723BR7M3G986W',
-                    'page':'1',
-                    'pageSize':'2'
-                }
-            }).then(res => {
-                console.log(res)
-                this.linshi = res.data.data.rows
-            })
-        },
-        //抄表
-        feiyong2(){
-            this.$ajax.get(url + 'pay/queryReceivable',{
-                params:{
-                    'payItem':'180723BR8PBFT354',
-                    'page':'1',
-                    'pageSize':'2'
-                }
-            }).then(res => {
-                console.log(res)
-                this.linshi = res.data.data.rows
-            })
-        },
-        //临时
-        feiyong3(){
-            this.$ajax.get(url + 'pay/queryReceivable',{
-                params:{
-                    'payItem':'180723BRAS3GHR68',
-                    'page':'1',
-                    'pageSize':'2'
-                }
-            }).then(res => {
-                console.log(res)
-                this.linshi = res.data.data.rows
-            })
-        },
-        nn(){
-        var card =document.getElementById("card");
-		var cardlist = card.children;
-        
-		for (var i= 0;i<cardlist.length;i++){ 
-			cardlist[i].index = i;
-			cardlist[i].onclick = function (){
-				for (var m = 0;m< cardlist.length;m++){
-					cardlist[m].className = "";
-				}
-				this.className = "active";
-			}
-		}
+  //选项卡
+  methods: {
+    changePosition() {
+      console.log(this.position);
     },
-        
+    handleClick(tab, event) {
+      console.log(tab, event);
     },
-    components: {
-			NavHeader,
-			NavBar
-		},
-}
 
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+      this.getCharge();
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.getCharge();
+    },
+
+    handleSizeChange1(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize1 = val;
+      this.getMeter();
+    },
+    handleCurrentChange1(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage1 = val;
+      this.getMeter();
+    },
+
+    handleSizeChange2(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize2 = val;
+      this.Cost();
+    },
+    handleCurrentChange2(val) {
+      console.log(`当前页: ${this.currentPage2}`);
+      this.currentPage2 = val;
+      this.Cost();
+    },
+
+    //收费参数
+    getCharge() {
+      this.$ajax
+        .get(url + "pay/queryPayItemMeterAll", {
+          params: {
+            page: this.currentPage,
+            pageSize: this.pageSize
+          }
+          // 前端将每页显示多少条放入 pageSize,第几页放入page
+        })
+        .then(res => {
+          this.charge = res.data.data.rows;
+          this.totalData = res.data.data.records;
+          console.log(res.data);
+        });
+    },
+    //删除
+    chargeDelete(index, rows) {
+      let that = this;
+      that.id = this.charge[index].id;
+      rows.splice(index, 1);
+      this.$ajax
+        .delete(url + "pay/deletePayItemMeter", {
+          params: {
+            payItemMeterId: this.id
+          }
+        })
+
+        .then(res => {
+          this.getCharge();
+        });
+    },
+    //弹窗
+    tanchaung(index, rows) {
+      let that = this;
+      that.id = this.charge[index].id;
+      console.log(this.id);
+      this.news = true;
+      if (that.id !== "") {
+        this.name = "编辑";
+        this.$ajax
+          .get(url + "pay/queryPayItemMeter", {
+            params: {
+              payItemMeterId: this.id
+            }
+          })
+          .then(res => {
+            console.log(res);
+            var temp = res.data.data;
+            this.add = temp;
+            this.add.payItemId = temp.payItemId;
+            this.add.type = temp.meterId;
+            this.add.remarks = temp.remark;
+            this.add.name = temp.name;
+          });
+      }
+    },
+    qingkong() {
+      (this.name = "添加"), (this.add = {});
+      this.news = true;
+    },
+    luru() {
+      this.entrydata = {};
+      this.entry = true;
+    },
+
+    createPayItem() {
+      var payItemVO = {};
+      payItemVO.payItemMeterId = this.id;
+      payItemVO.payItemId = this.add.payItemId;
+      payItemVO.meterId = this.add.type;
+      payItemVO.payItemMeterName = this.add.name;
+      payItemVO.remake = this.add.remarks;
+      console.info(payItemVO);
+      this.$ajax.post(url + "pay/createPayItemMeter", payItemVO).then(res => {
+        alert("成功");
+        this.add == {};
+        this.news = false;
+      });
+    },
+    //应收费用
+    Cost() {
+      this.$ajax
+        .get(url + "pay/queryReceivable", {
+          params: {
+            payItem: this.shouldId,
+            page: this.currentPage2,
+            pageSize: this.pageSize2
+          },
+        })
+        .then(res => {
+          console.log(res);
+          this.temporary = res.data.data.rows;
+          this.totalData2 = res.data.data.records;
+        });
+    },
+    //仪表管理
+    getMeter() {
+      this.$ajax
+        .get(url + "pay/queryMeterManagementAll", {
+          params: {
+            page: this.currentPage1,
+            pageSize: this.pageSize1
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.meter = res.data.data.rows;
+          this.totalData1 = res.data.data.records;
+        });
+    },
+    //
+    //常规
+    feiyong1() {
+      this.shouldId = "180723BR7M3G986W";
+      this.$ajax
+        .get(url + "pay/queryReceivable", {
+          params: {
+            payItem: "180723BR7M3G986W",
+            page: "1",
+            pageSize: "2"
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.temporary = res.data.data.rows;
+          this.totalData2 = res.data.data.records;
+        });
+    },
+    //抄表
+    feiyong2() {
+      this.shouldId = "180723BR8PBFT354";
+      this.$ajax
+        .get(url + "pay/queryReceivable", {
+          params: {
+            payItem: "180723BR8PBFT354",
+            page: "1",
+            pageSize: "2"
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.temporary = res.data.data.rows;
+          this.totalData2 = res.data.data.records;
+        });
+    },
+    //临时
+    feiyong3() {
+      this.shouldId = "180723BRAS3GHR68";
+      this.$ajax
+        .get(url + "pay/queryReceivable", {
+          params: {
+            payItem: "180723BRAS3GHR68",
+            page: "1",
+            pageSize: "2"
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.temporary = res.data.data.rows;
+          this.totalData2 = res.data.data.records;
+        });
+    },
+    nn() {
+      var card = document.getElementById("card");
+      var cardlist = card.children;
+
+      for (var i = 0; i < cardlist.length; i++) {
+        cardlist[i].index = i;
+        cardlist[i].onclick = function() {
+          for (var m = 0; m < cardlist.length; m++) {
+            cardlist[m].className = "";
+          }
+          this.className = "active";
+        };
+      }
+    }
+  },
+  components: {
+    NavHeader,
+    NavBar
+  }
+};
 </script>
 <style scoped>
 .container {
-		width: 88%;
-		position: relative;
-		left: 6%;
-		background-color: #eeeeee;
-		padding: 0;
-	}
+  width: 88%;
+  position: relative;
+  left: 6%;
+  background-color: #eeeeee;
+  padding: 0;
+}
 
 .charge {
-	background: #eeeeee;
-	}
+  background: #eeeeee;
+}
 
 .card {
-		margin: 0;
-		background-color: white;
-		width: 99%;
-		margin: 10px 10px 0 5px;
-	}
+  margin: 0;
+  background-color: white;
+  width: 99%;
+  margin: 10px 10px 0 5px;
+}
 
 .add {
-		color: white;
-		background-color: #32a8ee;
-		font-size: 14px;
-		font-family: "Microsoft YaHei";
-		border: 1px solid #32a8ee;
-		border-radius: 5px;
-		width: 100px;
-		height: 31px;
-        margin-right: 10px;
-        margin-top: 10px;
-		margin-bottom: 20px;
-    }
+  color: white;
+  background-color: #32a8ee;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  border: 1px solid #32a8ee;
+  border-radius: 5px;
+  width: 100px;
+  height: 31px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
 
-    .fenye {
-		float: right;
-		padding: 20px 0;
-        display: block!important;
-	}
+.fenye {
+  float: right;
+  padding: 20px 0;
+  display: block !important;
+}
 
-    .main {
-		padding: 0 40px 0 50px;
-		width: 99%;
-		margin-left: 2px;
-		height: 844px;
-	}
+.main {
+  padding: 0 40px 0 50px;
+  width: 99%;
+  margin-left: 2px;
+  height: 844px;
+}
 .confirm {
-    background-color: #32a8ee;
-    border: #32a8ee;
-    color: white;
-    border-radius: 5px;
+  background-color: #32a8ee;
+  border: #32a8ee;
+  color: white;
+  border-radius: 5px;
 }
 
 .cancel {
-    background-color: white;
-    border: 1px solid rgb(217, 217, 217);
-    color: rgb(138, 138, 138);
-    border-radius: 5px;
+  background-color: white;
+  border: 1px solid rgb(217, 217, 217);
+  color: rgb(138, 138, 138);
+  border-radius: 5px;
 }
 
-.cell button{
-    background: none;
-    border: none;
-    color: #32a8ee;
+.cell button {
+  background: none;
+  border: none;
+  color: #32a8ee;
 }
 
 .tanchuang {
-    width: 80%;
+  width: 80%;
 }
 
-#card button{
-        border: 1px solid #999999;
-        border-radius: 5px;
-        margin-left: 5px;
-        background: white;
-        color: #999999;
-        height: 31px;
-        float: right;
-    }
+#card button {
+  border: 1px solid #999999;
+  border-radius: 5px;
+  margin-left: 5px;
+  background: white;
+  color: #999999;
+  height: 31px;
+  float: right;
+}
 .active {
-    border: 1px solid #32a8ee!important;
-    color: #32a8ee!important;
+  border: 1px solid #32a8ee !important;
+  color: #32a8ee !important;
 }
 
-#main div:nth-child(2){
-    display: none;
+#main div:nth-child(2) {
+  display: none;
 }
-#main div:nth-child(3){
-    display: none;
+#main div:nth-child(3) {
+  display: none;
 }
 #main {
-    padding-top: 52px;
+  padding-top: 52px;
 }
 </style>

@@ -17,8 +17,8 @@
 			<div class="title1">
 				<p class="tongzhi">通知</p>
 				<div  class="bodymain">
-				<div v-for="ok in inform" :key="ok.id" class="notic-body">
-					<p :class="ok.class">{{ok.title}}</p><span>{{ok.main}}</span><span class="time">{{ok.time}}</span>
+				<div v-for="(ok,index) in inform" :key="index" class="notic-body">
+					<div @click="detail(scoped.$index)"><p :class="ok.class">{{ok.title}}</p><span>{{ok.main}}</span><span class="time">{{ok.time}}</span></div>
 				</div>
 				</div>
 			</div>
@@ -204,6 +204,9 @@ export default {
 		  this.$ajax.get('/').then((res) => {
 			  this.task1 = res.data
 		  })
+	  },
+	  detail(){
+		  console.log(index)
 	  }
   },
   components: {

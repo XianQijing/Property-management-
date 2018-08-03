@@ -24,6 +24,7 @@ import Return from '@/views/return'
 import Test from '@/views/test'
 import AddCustomer from '@/views/addCustomer'
 import AddAdmin from '@/views/addAdmin'
+import Notice from '@/views/notice'
 
 
 Vue.use(Router)
@@ -35,6 +36,13 @@ export default new Router({
       path: '/helloWorld',
       name: 'HelloWorld',
       component: HelloWorld,
+      children:[
+        {
+          path:'notice',
+          name:'Notice',
+          component:Notice
+        }
+      ]
     //   meta: {
     //     requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
     // },

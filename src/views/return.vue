@@ -114,14 +114,14 @@ export default {
         return{
             detail: {
                 name: '李文',
-                area: '',
+                area: 'ffre',
                 house: '办公室C座301',
-                server:'',
+                server:'deff',
                 startTime: '2018.6.23',
                 sendTime: '2017.6.23',
-                to:'',
+                to:'sdfsd',
                 phone: '18874562233',
-                mold: '',
+                mold: 'erw',
                 type: 'beijing',
                 endTime:'2017.6.23',
                 time:'2017.6.23',

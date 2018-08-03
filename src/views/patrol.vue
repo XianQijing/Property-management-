@@ -6,7 +6,11 @@
             <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail">
                 <div class="zhuangxiu">
                     <el-form-item label="巡检日期:">
-                        <el-input v-model="detail.day"></el-input>
+                        <el-date-picker
+                            v-model="detail.day"
+                            type="date"
+                            placeholder="选择日期">
+                            </el-date-picker>
                     </el-form-item>
                 </div>
                 <div class="zhuangxiu">

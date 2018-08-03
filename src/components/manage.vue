@@ -156,7 +156,17 @@ export default {
                     }
                     this.id = e.id
                 e.children = res.data.data
-                this.getcustomerMsg()
+                this.$ajax.get(url+'company/findUser',{
+                    params:{
+                        "id":this.id,
+                        "page":1,
+                        "pageSize":this.pageSizeCustomerMsg
+                    }
+                }).then((res) => {
+                    console.log(res.data.data)
+					this.tableData2 = res.data.data.rows
+					this.totalDataNumbercustomerMsg = res.data.data.records
+				})
             })
             
       },

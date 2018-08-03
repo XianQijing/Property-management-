@@ -99,7 +99,7 @@ export default {
           xiangqing:true,
           addCustomer: {
               name: '',
-              selectRoom: ["bangongqu","Azuo","105"],
+              selectRoom: '167',
               radio: '',
               nationality:'',
               nation: '',
