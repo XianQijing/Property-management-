@@ -13,23 +13,34 @@
                         
                     </el-form-item>
                     <el-form-item label="服务类别:">
-                        <el-select v-model="detail.server" placeholder="请选择小区">
+                        <el-select v-model="detail.service_classes" placeholder="请选择小区">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
+                     <div class="zhuangxiu">
+                        <el-form-item label="受理时间:">
+                            <el-date-picker
+							v-model="detail.receiverTime"
+							type="datetime"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+							placeholder="选择日期时间">
+                        </el-date-picker>
+                    </el-form-item>
+                    </div>
                     <div class="zhuangxiu">
                     <el-form-item label="开工时间:">
-                        <el-input v-model="detail.startTime"></el-input>
+                         <el-date-picker
+							v-model="detail.startTime"
+							type="datetime"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+							placeholder="选择日期时间">
+                        </el-date-picker>
                     </el-form-item>
                     </div>
-                    <div class="zhuangxiu">
-                        <el-form-item label="派工时间:">
-                        <el-input v-model="detail.sendTime"></el-input>
-                    </el-form-item>
-                    </div>
+                    
                     <el-form-item label="派工至:">
-                        <el-select v-model="detail.to" placeholder="请选择小区">
+                        <el-select v-model="detail.handler" placeholder="请选择小区">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
@@ -45,48 +56,61 @@
                         <el-input v-model="detail.phone" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
-                        <el-input v-model="detail.mold" clearable></el-input>
+                        <el-input v-model="detail.leaseType" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="报修方式:">
-                        <el-select v-model="detail.type" placeholder="请选择小区">
+                        <el-select v-model="detail.way" placeholder="请选择小区">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
                     <div class="zhuangxiu">
-                    <el-form-item label="完工时间:">
-                        <el-input v-model="detail.endTime"></el-input>
+                        <el-form-item label="派工时间:">
+                            <el-date-picker
+							v-model="detail.dispatchingTime"
+							type="datetime"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+							placeholder="选择日期时间">
+                        </el-date-picker>
                     </el-form-item>
                     </div>
                     <div class="zhuangxiu">
-                        <el-form-item label="工时:">
-                        <el-input v-model="detail.time"></el-input>
+                    <el-form-item label="完工时间:">
+                        <el-date-picker
+							v-model="detail.endTime"
+							type="datetime"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+							placeholder="选择日期时间">
+                        </el-date-picker>
                     </el-form-item>
                     </div>
                     <el-form-item label="专业分类:">
-                        <el-input v-model="detail.person" clearable></el-input>
+                        <el-input v-model="detail.professional_list" clearable></el-input>
                     </el-form-item>
                     
             </div>
         </div>
         <div style="width:90%">
             <el-form-item label="要求处理事项：">
-            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="detail.require">
+            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="detail.problem">
         </el-input>
         </el-form-item>
         <el-form-item label="备注：">
-            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="detail.textarea">
+            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="detail.remarks">
         </el-input>
         </el-form-item>
         </div>
         </el-form>
         <div class="nn">
-            <button class="nextStep">保存</button><button class="cancel" @click="goBack">返回</button>
+            <button class="nextStep" @click="addOne">保存</button><button class="cancel" @click="goBack">返回</button>
             </div>
     </div>
 </template>
 
 <script>
+
+import url from '../assets/Req.js'
+
 export default {
     name:'server',
     data(){
@@ -208,6 +232,21 @@ export default {
             
         }
     },
+    mounted(){
+        console.log(this.$route.query.id)
+         this.id = this.$route.query.id
+         this.$ajax.get(url + 'room/flndByClientId'+'').then(res => {
+               
+                this.options=res.data;
+            })
+        if(this.$route.query.msg == 8){
+            this.$ajax.get(url +'serviceAccept/findIdVO/'+this.id).then(res => {
+                this.detail = res.data;
+            })
+        }else(
+            this.datail = ''
+        )
+    },
     methods: {
     //   handleRemove(file, fileList) {
     //     console.log(file, fileList);
@@ -215,11 +254,47 @@ export default {
     //   handlePictureCardPreview(file) {
     //     this.dialogImageUrl = file.url;
     //   },
+
+    //修改或新增装修申请
+	   addOne(){
+            var serviceAcceptVO={};
+            serviceAcceptVO.name=this.detail.name;           //租户姓名
+            serviceAcceptVO.service_classes=this.detail.service_classes;   //服务类别
+            var arr=this.detail.house;
+            serviceAcceptVO.roomNumber=arr[arr.length-1];//关联房屋
+            alert(serviceAcceptVO.roomNumber);
+            serviceAcceptVO.startTime=this.detail.startTime;    //开始时间
+            serviceAcceptVO.endTime=this.detail.endTime;    //结束时间
+            serviceAcceptVO.dispatchingTime=this.detail.dispatchingTime;    //派工时间
+            alert(serviceAcceptVO.endTime)
+            serviceAcceptVO.handler=this.detail.handler;    //派工至
+            serviceAcceptVO.phone=this.detail.phone;    //手机号
+            serviceAcceptVO.leaseType=this.detail.leaseType;   //类型
+            serviceAcceptVO.way=this.detail.way;   //报修方式
+            alert(serviceAcceptVO.way);
+            serviceAcceptVO.receiverTime=this.detail.receiverTime;    //工时
+            serviceAcceptVO.professional_list=this.detail.professional_list;    //专业分类
+            serviceAcceptVO.problem=this.detail.problem;    //要求处理事项
+            serviceAcceptVO.remarks=this.detail.remarks;    //备注
+            if(this.$route.query.msg == 8){
+                 serviceAcceptVO.id = this.id;
+                this.$ajax.put(url+"serviceAccept/update",serviceAcceptVO).then((res) => {
+                    this.form = res.data
+                    console.log(this.form);
+                })
+            }else{
+                this.$ajax.post(url+"serviceAccept/insert",serviceAcceptVO).then((res) => {
+                    this.form = res.data
+                    console.log(this.form);
+                })
+            }
+            
+        },
       goBack(){
           window.history.back()
       },
       handleChange(value) {
-        console.log(value);
+        //console.log(value);
       }
     }
 }

@@ -42,6 +42,7 @@
                       <el-date-picker
                           v-model="addCustomer.birth"
                           type="date"
+                          format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
                           placeholder="选择日期">
                         </el-date-picker>
                     </el-form-item>
@@ -99,7 +100,7 @@ export default {
           xiangqing:true,
           addCustomer: {
               name: '',
-              selectRoom: '167',
+              selectRoom: ["bangongqu","Azuo","105"],
               radio: '',
               nationality:'',
               nation: '',
@@ -129,7 +130,76 @@ export default {
             { required: true, message: '请输入建筑面积', trigger: 'blur' }
           ]
         },
-        }},
+      options: [
+          {
+          value: 'bangongqu',
+          label: '办公区',
+          children: [{
+              value: 'Azuo',
+              label: 'A座',
+              children: [{
+                value: '101',
+                label: '101'
+              }, {
+                value: '102',
+                label: '102'
+              }, {
+                value: '103',
+                label: '103'
+              }, {
+                value: '104',
+                label: '104'
+              },
+              {
+                value: '105',
+                label: '105'
+              }]
+          }, 
+          {
+            value: 'Bzuo',
+            label: 'B座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          },{
+            value: 'Czuo',
+            label: 'C座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          }]
+        }],
+
+        }
+    },
     mounted(){
             this.id = this.$route.query.id
             // console.log("id"+this.$route)
@@ -222,10 +292,9 @@ export default {
         goBack(){
             window.history.back()
         },
-        
-      //   handleChange(file, fileList) {
-      //   this.fileList = fileList.slice(-2);
-      // },
+        handleChange(file, fileList) {
+      //   // this.fileList = fileList.slice(-1);
+       },
       // 上传成功后的回调
     // uploadSuccess (response, file, fileList) {
     //   console.log('上传文件', response)

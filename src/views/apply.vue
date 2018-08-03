@@ -9,7 +9,7 @@
                         <el-input v-model="detail.name" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="负责人电话:">
-                        <el-input v-model="detail.area" clearable></el-input>
+                        <el-input v-model="detail.principal_phone" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="关联房屋:">
                         <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange"></el-cascader>
@@ -19,6 +19,7 @@
                         <el-date-picker
 							v-model="detail.startTime"
 							type="datetime"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
 							placeholder="选择日期时间">
 						</el-date-picker>
                     </el-form-item>
@@ -28,19 +29,20 @@
                             <el-date-picker
 							v-model="detail.endTime"
 							type="datetime"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
 							placeholder="选择日期时间">
 						</el-date-picker>
                     </el-form-item>
                     </div>
 
                     <el-form-item label="装修性质:">
-                        <el-radio-group v-model="detail.fitUp">
+                         <el-radio-group v-model="detail.natureName">
                             <el-radio label="客户自行装修"></el-radio>
                             <el-radio label="委托装修公司"></el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="装修项目:">
-                        <el-input v-model="detail.project" clearable></el-input>
+                     <el-form-item label="装修项目:">
+                        <el-input v-model="detail.project " clearable></el-input>
                     </el-form-item>
 
 
@@ -49,20 +51,20 @@
 
         <div class="tianjia">
             <div class="input">
-                    <el-form-item label="手机号：">
+                   <el-form-item label="手机号：">
                         <el-input v-model="detail.phone" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
-                        <el-input v-model="detail.mold" clearable></el-input>
+                        <el-input v-model="detail.leaseType" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="装修保证金：">
-                        <el-input v-model="detail.money" clearable></el-input>
+                        <el-input v-model="detail.cash_deposit" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="负责人身份证号:">
-                        <el-input v-model="detail.card" clearable></el-input>
+                        <el-input v-model="detail.principal_card" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="施工负责人:">
-                        <el-input v-model="detail.person" clearable></el-input>
+                        <el-input v-model="detail.principal_man" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="装修公司名称:">
                         <el-input v-model="detail.company" clearable></el-input>
@@ -71,19 +73,19 @@
         </div>
         <div style="width:90%">
         <el-form-item label="备注：">
-            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="detail.textarea">
+            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="detail.remarks">
         </el-input>
         </el-form-item>
         </div>
         </el-form>
         <div class="nn">
-            <button class="nextStep">保存</button><button class="cancel" @click="goBack">返回</button>
+            <button class="nextStep" @click="addOne">保存</button><button class="cancel" @click="goBack">返回</button>
             </div>
     </div>
 </template>
 
 <script>
-	import url from '../assets/Req.js'
+import url from '../assets/Req.js'	
 
 export default {
     name:'apply',
@@ -92,7 +94,7 @@ export default {
             detail: {
                 name: '',
                 area: '',
-                house: '',
+                house: ["bangongqu","Azuo","105"],
                 startTime: '',
                 endTime: '',
                 fitUp:'客户自行装修',
@@ -207,13 +209,14 @@ export default {
     },
     mounted(){
         console.log(this.$route.query.id)
+         this.id = this.$route.query.id
+         this.$ajax.get(url + 'room/flndByClientId'+'').then(res => {
+               
+                this.options=res.data;
+            })
         if(this.$route.query.msg == 8){
-            this.$ajax.get(url + '',{
-                params:{
-
-                }
-            }).then(res => {
-                this.detail = res.data.data
+            this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
+                this.detail = res.data;
             })
         }else(
             this.datail = ''
@@ -226,11 +229,46 @@ export default {
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
       },
+      //修改或新增装修申请
+	   addOne(){
+            var adornApplyvo={};
+            adornApplyvo.name=this.detail.name;           //租户姓名
+            adornApplyvo.principal_phone=this.detail.principal_phone;   //负责人电话号码
+            console.log(this.detail.house);
+            var arr=this.detail.house;
+            adornApplyvo.roomNumber=arr[arr.length-1];//关联房屋
+            alert(adornApplyvo.roomNumber);
+            adornApplyvo.startTime=this.detail.startTime;    //开始装修时间
+            adornApplyvo.endTime=this.detail.endTime;    //预估结束时间
+            console.log(this.detail.natureName)
+            adornApplyvo.natureName=this.detail.natureName;    //装修性质
+            adornApplyvo.project=this.detail.project;    //装修项目
+            adornApplyvo.phone=this.detail.phone;    //手机号
+            adornApplyvo.leaseType=this.detail.leaseType;   //类型
+            adornApplyvo.cash_deposit=this.detail.cash_deposit;   //装修保证金
+            adornApplyvo.principal_card=this.detail.principal_card;    //负责人身份证号
+            adornApplyvo.principal_man=this.detail.principal_man;    //施工负责人
+            adornApplyvo.company=this.detail.company;    //装修公司名称
+            adornApplyvo.remarks=this.detail.remarks;    //备注
+            if(this.$route.query.msg == 8){
+                 adornApplyvo.id = this.id;
+                this.$ajax.put(url+"adornApply/update",adornApplyvo).then((res) => {
+                    this.form = res.data
+                    console.log(this.form);
+                })
+            }else{
+                this.$ajax.post(url+"adornApply/insert",adornApplyvo).then((res) => {
+                    this.form = res.data
+                    console.log(this.form);
+                })
+            }
+            
+        },
       goBack(){
           window.history.back()
       },
       handleChange(value) {
-        console.log(value);
+        //console.log(value);
       }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="navHeader ">
+  <div class="navHeader">
     <div class="search">
       <span>当前物业</span>
       <select>
@@ -48,7 +48,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.el-dropdown {
+  cursor: pointer;
+}
 .navHeader {
   width: 100%;
   height: 3.17%;

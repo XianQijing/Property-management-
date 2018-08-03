@@ -22,6 +22,9 @@ body {
 .container {
   max-width: 1800px;
 }
+#app {
+  height: 100%;
+}
 /* @media (min-width: 1200px)
 .container {
   max-width: 1140px;
