@@ -5,7 +5,14 @@
             <div class="ds">
             <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail" size = "small">
                 <el-form-item label="验收日期:">
-                        <el-input :value="detail.day" style="width:50%"></el-input>
+                        <el-date-picker
+							v-model="detail.day"
+							type="datetime"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                            style="width:50%"
+							placeholder="选择日期时间">
+                         </el-date-picker>
+                        <!-- <el-input :value="detail.day" style="width:50%"></el-input> -->
                         <el-switch
                             v-model="detail.pass"
                             active-color="#409EFF"
@@ -15,22 +22,22 @@
                     </el-form-item>
                     <div class="money_1">
                     <el-form-item label="已收押金:">
-                        <el-input :value="detail.aready"></el-input>
+                        <el-input v-model="detail.aready"></el-input>
                     </el-form-item>
                     </div>
                     <div class="money_1">
                         <el-form-item label="扣款合计:">
-                        <el-input :value="detail.all"></el-input>
+                        <el-input v-model="detail.all"></el-input>
                     </el-form-item>
                     </div>
                     <div class="money_1">
                         <el-form-item label="拟退押金:">
-                        <el-input :value="detail.money"></el-input>
+                        <el-input v-model="detail.money"></el-input>
                     </el-form-item>
                     </div>
                     
                         <el-form-item label="验收说明：">
-                            <el-input type="textarea" :rows="4">
+                            <el-input v-model="detail.remark" type="textarea" :rows="4">
                         </el-input>
                         </el-form-item>
                    
@@ -47,10 +54,10 @@
                     </el-form-item>
 
                     <el-form-item label="关联房屋:">
-                        <el-input :value="input.house"></el-input>
+                        <el-input :value="input.roomNumber"></el-input>
                     </el-form-item>
-                    <el-form-item label="建筑面积:">
-                        <el-input :value="input.area"></el-input>
+                    <el-form-item label="负责人电话:">
+                        <el-input :value="input.principal_phone"></el-input>
                     </el-form-item>
                     <div class="zhuangxiu">
                     <el-form-item label="开始装修时间:">
@@ -64,14 +71,15 @@
                     </div>
                     <div class="zhuangxiu">
                     <el-form-item label="装修性质:">
-                        <el-radio-group :value="input.fitUp">
-                            <el-radio :label="input.fitUp"></el-radio>
+                        <el-radio-group :value="input.natureName">
+                            <el-radio :label="input.natureName"></el-radio>
                         </el-radio-group>
+                      
                     </el-form-item>
                     </div>
                     <div class="zhuangxiu">
                         <el-form-item label="施工负责人:">
-                            <el-input :value="input.person"></el-input>
+                            <el-input :value="input.principal_man"></el-input>
                         </el-form-item>
                     </div>
 
@@ -84,13 +92,13 @@
                         <el-input :value="input.phone"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
-                        <el-input :value="input.mold"></el-input>
+                        <el-input :value="input.leaseType"></el-input>
                     </el-form-item>
                     <el-form-item label="装修保证金：">
-                        <el-input :value="input.money"></el-input>
+                        <el-input :value="input.cash_deposit"></el-input>
                     </el-form-item>
                     <el-form-item label="负责人身份证号:">
-                        <el-input :value="input.card"></el-input>
+                        <el-input :value="input.principal_card"></el-input>
                     </el-form-item>
                     <el-form-item label="装修项目:">
                         <el-input :value="input.project"></el-input>
@@ -101,12 +109,15 @@
         </el-form>
         </div>
         <div class="nn">
-            <button class="nextStep">保存</button><button class="cancel" @click="goBack">返回</button>
+            <button class="nextStep" @click="addOne">保存</button><button class="cancel" @click="goBack">返回</button>
             </div>
     </div>
 </template>
 
 <script>
+
+import url from '../assets/Req.js'
+
 export default {
     name:'check',
     data(){
@@ -121,24 +132,52 @@ export default {
             },
             input: {
                 name: '李文',
-                house: '办公室C座301',
-                area: 'afse',
+                roomNumber: '办公室C座301',
+                principal_phone: 'afse',
                 startTime:'管理费',
                 endTime: '5000元/年',
-                time: '2018.6.23',
-                startTime: '2017.6.23',
-                fitUp: 'sfdg',
-                project:'18874562233',
-                mold: '办公区',
-                person:'1354',
-                phone:'787',
-                card:'2年',
-                money:'2年',
+                cash_deposit: '2018.6.23',
+                project: '2017.6.23',
+                natureName: 'sfdg',
+                phone:'18874562233',
+                leaseType: '办公区',
+                principal_card:'1354',
+                cash_deposit:'787',
+                principal_man:'2年',
+                company:'2年',
             },
             
         }
     },
+    mounted(){
+        console.log(this.$route.query.id)
+         this.id = this.$route.query.id
+         this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
+            this.input = res.data;
+         })
+     
+    },
     methods: {
+    //增加装修验收记录
+     addOne(){
+            var adornCheck={};
+            adornCheck.applyid = this.id;
+            adornCheck.checkTime = this.detail.day;
+            adornCheck.receivedMoney = this.detail.aready;
+            adornCheck.withholdMoney = this.detail.all;
+            adornCheck.retreatMoney = this.detail.money;
+            console.log(adornCheck)
+            adornCheck.checkState = this.detail.remark;
+            if(this.detail.pass == true){
+                adornCheck.isPass = 1;
+            }else{
+                adornCheck.isPass = 0;
+            }
+           this.$ajax.post(url+"adornCheck/insert",adornCheck).then((res) => {
+              this.form = res.data
+              console.log(this.form);
+            })
+        },
       goBack(){
           window.history.back()
       }

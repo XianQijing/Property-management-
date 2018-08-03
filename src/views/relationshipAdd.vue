@@ -16,7 +16,7 @@
                 </el-form-item>
                 <div class="ww">
                   <el-form-item label="性别:" prop="radio">
-                      <el-radio v-model="addCustomer.radio" label="man">男</el-radio>
+                      <el-radio v-model="addCustomer.radio" label="man" >男</el-radio>
                       <el-radio v-model="addCustomer.radio" label="women">女</el-radio>
                     </el-form-item>
                 </div>
@@ -41,7 +41,12 @@
                 </div>
                 <div class="ww">
                     <el-form-item label="生日:">
-                      <el-input v-model="addCustomer.birth" placeholder="请输入租户生日"></el-input>
+                      <el-date-picker
+                          v-model="addCustomer.birth"
+                          type="date"
+                          format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                          placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                 </div>
                 <el-form-item label="手机号:">
@@ -79,7 +84,7 @@
             <button class="nextStep" @click="goBack">确定</button><button class="cancel" @click="goBack">返回</button>
             </div>
         <div class="nn" v-show="bianji">
-            <button class="nextStep">保存</button><button class="cancel" @click="goBack">取消</button>
+            <button class="nextStep"  @click="addOne">保存</button><button class="cancel" @click="goBack">取消</button>
         </div>
         </div>
         
@@ -95,11 +100,10 @@ export default {
           bianji:false,
           name:"查看",
           xiangqing:true,
-          id:0,
           addCustomer: {
               name: '',
               selectRoom: ["bangongqu","Azuo","105"],
-              radio: 'man',
+              radio: '',
               nationality:'',
               nation: '',
               place: '',
@@ -128,7 +132,7 @@ export default {
             { required: true, message: '请输入建筑面积', trigger: 'blur' }
           ]
         },
-        options: [
+      options: [
           {
           value: 'bangongqu',
           label: '办公区',
@@ -194,29 +198,54 @@ export default {
               label: '105'
             }]
           }]
-        },{
-          value: 'yanjiedianpu',
-          label: '沿街店铺',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
         }],
 
         }
     },
-    created(){
-      this.id = this.$route.query.id
-    },
     mounted(){
-            this.$ajax.get(url + 'building/flndById/'+this.id+'').then(res => {
-                // console.log(res.data.data)
+            this.id = this.$route.query.id
+            // console.log("id"+this.$route)
+            this.roomid = this.$route.query.roomid
+            
+            this.sa()
+            
+    },
+    methods:{
+        submitUpload() {
+        this.$refs.upload.submit();
+      },
+      handleRemove(file, fileList) {
+        // console.log(file, fileList);
+      },
+      handlePreview(file) {
+        // console.log(file);
+      },
+      sa(){
+        // console.log(this.roomid)
+            this.$ajax.get(url + 'room/flndByClientId'+'').then(res => {
+                // console.log(res.data)
+                // console.log(res)
+                this.options=res.data;
+               
+            })
+            this.$ajax.get(url + 'owner/get/'+this.id+'/'+this.roomid+'').then(res => {
+                console.log(res.data.sexs)
+                this.addCustomer.name=res.data.name;
+                //this.addCustomer.selectRoom=res.data.buildingName+res.data.roomNumber;
+                this.addCustomer.radio=res.data.sexs;
+                this.addCustomer.nationality=res.data.nationality;
+                this.addCustomer.nation=res.data.nation;
+                this.addCustomer.place=res.data.nativeAddress;
+                this.addCustomer.political=res.data.politicsStatus;
+                this.addCustomer.card=res.data.idCard;
+                this.addCustomer.birth=res.data.birthday;
+                this.addCustomer.phone=res.data.phone;
+                this.addCustomer.mail=res.data.email;
+                this.addCustomer.post=res.data.postcode;
+                this.addCustomer.contact=res.data.linkman;
+                this.addCustomer.contactPhone=res.data.linkphone;
+                this.addCustomer.address=res.data.address;
+                 this.addCustomer.fax=res.data.fax;
             })
             if(this.$route.query.bian==="qq"){
               this.name = "编辑",
@@ -229,31 +258,53 @@ export default {
               this.xiangqing = true,
               this.edit = true
             }
-    },
-    methods:{
-        submitUpload() {
-        this.$refs.upload.submit();
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
+      //修改客户资料
+			addOne(){
+            var owner={};
+            owner.id = this.id;
+           // alert(this.id);
+            owner.name=this.addCustomer.name;
+           var sexs=this.addCustomer.radio;
+            if(sexs == 'man'){
+              owner.sex = 1; 
+            }else{
+              owner.sex = 0;
+            }
+            // console.log(this.addCustomer.radio);
+            owner.nationality=this.addCustomer.nationality;
+            owner.nation=this.addCustomer.nation;
+            owner.nativeAddress=this.addCustomer.place;
+            owner.politicsStatus=this.addCustomer.political;
+            owner.idCard=this.addCustomer.card;
+            owner.birthday=this.addCustomer.birth;
+            owner.phone=this.addCustomer.phone;
+            owner.email=this.addCustomer.mail;
+            owner.postcode=this.addCustomer.post;
+            owner.linkman=this.addCustomer.contact;
+            owner.linkphone=this.addCustomer.contactPhone;
+            owner.address=this.addCustomer.address;
+            owner.fax=this.addCustomer.fax;
+            this.$ajax.put(url+"owner/update",owner
+            ).then((res) => {
+                this.form = res.data
+				        // console.log(this.form);
+            })
+        },
         goBack(){
             window.history.back()
         },
         handleChange(file, fileList) {
-        this.fileList = fileList.slice(-2);
-      },
+      //   // this.fileList = fileList.slice(-1);
+       },
       // 上传成功后的回调
-    uploadSuccess (response, file, fileList) {
-      console.log('上传文件', response)
-    },
+    // uploadSuccess (response, file, fileList) {
+    //   console.log('上传文件', response)
+    // },
     // 上传错误
-    uploadError (response, file, fileList) {
-      console.log('上传失败，请重试！')
-    },
+    // uploadError (response, file, fileList) {
+    //   console.log('上传失败，请重试！')
+    // },
     }
 }
 </script>

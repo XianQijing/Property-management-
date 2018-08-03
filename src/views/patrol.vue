@@ -6,7 +6,12 @@
             <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail">
                 <div class="zhuangxiu">
                     <el-form-item label="巡检日期:">
-                        <el-input v-model="detail.day"></el-input>
+                        <el-date-picker
+                            v-model="detail.day"
+                            type="date"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                            placeholder="选择日期">
+                            </el-date-picker>
                     </el-form-item>
                 </div>
                 <div class="zhuangxiu">
@@ -32,14 +37,14 @@
                 </div>
                 <div class="zhuangxiu">
                     <el-form-item label="是否违规:">
-                        <el-radio v-model="detail.radio" label="1">是</el-radio>
-                        <el-radio v-model="detail.radio" label="2">否</el-radio>
+                        <el-radio v-model="detail.violation" label="1">是</el-radio>
+                        <el-radio v-model="detail.violation" label="2">否</el-radio>
                     </el-form-item>
                 </div>
                 
                     
                 <el-form-item label="巡查说明：">
-                    <el-input type="textarea" :rows="4">
+                    <el-input v-model="detail.remark" type="textarea" :rows="4">
                 </el-input>
                 </el-form-item>
                    
@@ -47,12 +52,14 @@
             </div>
         </div>
         <div class="nn">
-            <button class="nextStep">保存</button><button class="cancel" @click="goBack">返回</button>
+            <button class="nextStep" @click="addOne">保存</button><button class="cancel" @click="goBack">返回</button>
             </div>
     </div>
 </template>
 
 <script>
+import url from '../assets/Req.js'
+
 export default {
     name:'patrol',
     data(){
@@ -68,7 +75,43 @@ export default {
             
         }
     },
+     mounted(){
+        console.log(this.$route.query.id)
+         this.id = this.$route.query.id
+       
+    },
     methods: {
+        //增加巡查记录
+        addOne(){
+            var adornPatrol={};
+            adornPatrol.applyid = this.id;
+            adornPatrol.patrolTime = this.detail.day;
+            console.log(this.detail.day)
+            adornPatrol.patrolNumber = this.detail.number;
+            adornPatrol.patrolMan = this.detail.phone;
+            adornPatrol.patrolPhone = this.detail.person;
+            if(this.detail.radio==1){
+                adornPatrol.isAchieve = 1;
+            }else{
+                adornPatrol.isAchieve = 0;
+            }
+            if(this.detail.violation==1){
+                adornPatrol.isIllegal = 1;
+            }else{
+                adornPatrol.isIllegal = 0;
+            }
+            console.log(adornPatrol.isIllegal)
+            adornPatrol.patrolContent = this.detail.remark;
+            if(this.detail.pass == true){
+                adornPatrol.isPass = 1;
+            }else{
+                adornPatrol.isPass = 0;
+            }
+           this.$ajax.post(url+"adornPatrol/insert",adornPatrol).then((res) => {
+              this.form = res.data
+              console.log(this.form);
+            })
+        },
       goBack(){
           window.history.back()
       }

@@ -2,116 +2,115 @@
 	<div class="HelloWorld">
 		<nav-bar/>
     <div class="container">
-	<div class="row">
-		<div class="personal col-md-12">
-			<nav-header :name="username"></nav-header>
-		</div>
-	</div>
-	<div class="row">
-		<div class="personal col-md-12">
-			<p>个人首页</p>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-4">
-			<div class="title1">
-				<p class="tongzhi">通知</p>
-				<div  class="bodymain">
-				<div v-for="ok in inform" :key="ok.id" class="notic-body">
-					<p :class="ok.class">{{ok.title}}</p><span>{{ok.main}}</span><span class="time">{{ok.time}}</span>
-				</div>
-				</div>
-			</div>
-		</div>
+      <div class="row">
+        <div class="personal col-md-12">
+          <nav-header :name="username"></nav-header>
+        </div>
+      </div>
+      <div class="row" v-if="DetailShow">
+        <div class="personal col-md-12">
+          <p>个人首页</p>
+        </div>
+      </div>
+      <div class="row" v-if="DetailShow">
+        <div class="col-md-4">
+          <div class="title1">
+            <p class="tongzhi">通知</p>
+            <div  class="bodymain">
+            <div v-for="ok in inform" :key="ok.id" class="notic-body" @click="toDetail">
+              <p :class="ok.class">{{ok.title}}</p><span>{{ok.main}}</span><span class="time">{{ok.time}}</span>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="title1">
+            <p class="richeng">快捷工作台</p>
+              <div class="bodymain">
+                <div class="aa">
+                <div class="card">
+                  <img src="@/assets/card-yuangong.png">
+                  <div class="linkto">
+                    <p>员工<span style="float:right">0个</span></p>
+                    <div class="link">
+                  <span><a>添加员工</a></span><span><a>导入员工</a></span><span><a>权限管理</a></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <img src="@/assets/card-zuhu.png">
+                  <div class="linkto">
+                    <p>租户<span style="float:right">0个</span></p>
+                    <div class="link">
+                  <span>添加租户</span><span>导入租户</span><span>迁入审核</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <img src="@/assets/card-tingche.png">
+                  <div class="linkto">
+                    <p>停车<span style="float:right">0个</span></p>
+                    <div class="link">
+                  <span style="color:white">添加员工</span><span>添加车位</span><span>导入车位</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <img src="@/assets/card-duanxin.png">
+                  <div class="linkto">
+                    <p>短信<span style="float:right">0个</span></p>
+                    <div class="link">
+                  <span @click="task1">短信群发</span><span>模板设计</span><span>短信记录</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <img src="@/assets/card-chaobiao.png">
+                  <div class="linkto">
+                    <p>抄表记录<span style="float:right">0个</span></p>
+                    <div class="link">
+                  <span>录入数据</span><span>导入表单</span><span>导出表单</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <img src="@/assets/card-jiaofei.png">
+                  <div class="linkto">
+                    <p>缴费通知<span style="float:right">0个</span></p>
+                    <div class="link">
+                  <span style="color:white">添加员工</span><span>发送短信</span><span>查看详情</span>
+                    </div>
+                  </div>
+                </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" v-if="DetailShow">
+        <div class="col-md-4">
+          <div class="title1" >
+            <p class="tongzhi">待办任务</p>
+            <div class="bodymain">
+              <div v-for="nn in task1" :key="nn.id" class="notic-body">
+              <p :class="nn.class">{{nn.title}}</p><span>{{nn.main}}</span><span class="time">{{nn.time}}</span>
+            </div>
+            </div>
+          </div>
+        </div>
 
-		<div class="col-md-8">
-			<div class="title1">
-				<p class="richeng">快捷工作台</p>
-					<div class="bodymain">
-						<div class="aa">
-						<div class="card">
-							<img src="@/assets/card-yuangong.png">
-							<div class="linkto">
-								<p>员工<span style="float:right">0个</span></p>
-								<div class="link">
-							<span><a>添加员工</a></span><span><a>导入员工</a></span><span><a>权限管理</a></span>
-								</div>
-							</div>
-						</div>
-						<div class="card">
-							<img src="@/assets/card-zuhu.png">
-							<div class="linkto">
-								<p>租户<span style="float:right">0个</span></p>
-								<div class="link">
-							<span>添加租户</span><span>导入租户</span><span>迁入审核</span>
-								</div>
-							</div>
-						</div>
-						<div class="card">
-							<img src="@/assets/card-tingche.png">
-							<div class="linkto">
-								<p>停车<span style="float:right">0个</span></p>
-								<div class="link">
-							<span style="color:white">添加员工</span><span>添加车位</span><span>导入车位</span>
-								</div>
-							</div>
-						</div>
-						<div class="card">
-							<img src="@/assets/card-duanxin.png">
-							<div class="linkto">
-								<p>短信<span style="float:right">0个</span></p>
-								<div class="link">
-							<span @click="task1">短信群发</span><span>模板设计</span><span>短信记录</span>
-								</div>
-							</div>
-						</div>
-						<div class="card">
-							<img src="@/assets/card-chaobiao.png">
-							<div class="linkto">
-								<p>抄表记录<span style="float:right">0个</span></p>
-								<div class="link">
-							<span>录入数据</span><span>导入表单</span><span>导出表单</span>
-								</div>
-							</div>
-						</div>
-						<div class="card">
-							<img src="@/assets/card-jiaofei.png">
-							<div class="linkto">
-								<p>缴费通知<span style="float:right">0个</span></p>
-								<div class="link">
-							<span style="color:white">添加员工</span><span>发送短信</span><span>查看详情</span>
-								</div>
-							</div>
-						</div>
-						</div>
-					</div>
-			</div>
-		</div>
-	</div>
+        <div class="col-md-8">
+          <div class="title1">
+            <p class="liucheng">收费统计</p>
+            <div class="bodymain">
+            </div>
+          </div>
+        </div>
 
-	<div class="row">
-		<div class="col-md-4">
-			<div class="title1" >
-				<p class="tongzhi">待办任务</p>
-				<div class="bodymain">
-					<div v-for="nn in task1" :key="nn.id" class="notic-body">
-					<p :class="nn.class">{{nn.title}}</p><span>{{nn.main}}</span><span class="time">{{nn.time}}</span>
-				</div>
-				</div>
-			</div>
+      </div>
+      <DetailsNotification v-if="!DetailShow" />
 		</div>
-
-		<div class="col-md-8">
-			<div class="title1">
-				<p class="liucheng">收费统计</p>
-				<div class="bodymain">
-				</div>
-			</div>
-		</div>
-
-	</div>
-		</div> 
-    </div>
+  </div>
 </template>
 
 <script>
@@ -119,6 +118,7 @@ import NavBar from '.././components/NavBar.vue'
 import NavHeader from '.././components/NavHeader.vue'
 import { setCookie,getCookie,delCookie } from '.././assets/js/cookie.js'
 import url from '../assets/Req.js'
+import DetailsNotification from '../views/DetailsNotification'
 
 export default {
 	name:'HelloWorld',
@@ -132,7 +132,6 @@ export default {
 					main:'关于端午放假通知',
 					time: '2018-07-01',
 					id:10
-
 				},
 				{
 					class: 'xitong',
@@ -140,7 +139,6 @@ export default {
 					main:'关于端午放假通知',
 					time: '2018-07-01',
 					id: 11
-
 				},
 				{
 					class: 'xitong',
@@ -148,7 +146,6 @@ export default {
 					main:'关于端午放假通知',
 					time: '2018-07-01',
 					id: 12
-
 				}
 			],
 			task1: [
@@ -174,7 +171,8 @@ export default {
 					id: 23
 				}
 			],
-			tuling:""
+      tuling:"",
+      DetailShow: true
     }
   },
 
@@ -182,23 +180,26 @@ export default {
 			let uname = getCookie('phone')
 			this.$ajax.get( url + '/user/findById',{
 				params:{
-						'token': sessionStorage.getItem('userId'),
-					}
+					'token': sessionStorage.getItem('userId'),
+				}
 			}).then(res => {
 				console.log(res.data)
 			})
             this.username = uname
             /*如果cookie不存在，则跳转到登录页*/
-            if(uname == ""){
-                this.$router.push('/')
-            }
+            // if(uname == ""){
+            //     this.$router.push('/')
+            // }
   },
   
   methods:{
+    toDetail () {
+      this.DetailShow = false
+    },
 	  quit(){
-                /*删除cookie*/
-                delCookie('username')
-            },
+      /*删除cookie*/
+      delCookie('username')
+    },
 	  task(){
 		  this.$ajax.get('/').then((res) => {
 			  this.task1 = res.data
@@ -207,7 +208,8 @@ export default {
   },
   components: {
     NavBar,
-	NavHeader
+    NavHeader,
+    DetailsNotification
   }
 }
 </script>
@@ -363,6 +365,7 @@ html {
 .notic-body{
 	margin-top: 30px;
 	border-bottom: 1px solid #eeeeee;
+  cursor: pointer;
 }
 .time {
 	float: right;
