@@ -48,13 +48,12 @@
 		methods: {
 			//登录
 			sumbitLogin() {
-				var remember = document.getElementById('reme')
+				var remember = document.getElementById('remember')
 				if(this.phone == "" || this.password == "") {
 					alert("请输入用户名或密码")
 				} else {
 					/*接口请求*/
 					this.$ajax.post(url + 'login/login_in', qs.stringify({
-
 							'phone': this.phone,
 							'password': this.password,
 							'remember':'5'
@@ -67,7 +66,8 @@
 							this.showTishi = true
 							this.$router.push('/HelloWorld')
 							sessionStorage.setItem('userId',res.data.data.token)
-							sessionStorage.setItem('judge',res.data.data)
+							// 没有值
+							// sessionStorage.setItem('judge',res.data.data)
 
 							if (this.remember = true){
 								setCookie('phone',this.phone,1000*60)//保存帐号到cookie，有效期7天
