@@ -337,6 +337,7 @@ import qs from 'qs';
 
 
 
+
 let id = 1000;
 export default {
     name: 'department',
@@ -347,6 +348,7 @@ export default {
             children: []
         }];
         return{
+            daaa:'',
             pageNo: 1,
             pageSize: 1,
             pageSizesList: [1, 2, 3, 4, 5],
