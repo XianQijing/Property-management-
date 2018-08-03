@@ -6,18 +6,24 @@
 
 <script>
 export default {
-  name: 'App'
+  name: "App"
 }
 </script>
+
 <style>
 a:hover {
-  text-decoration:none!important;
-  color: none!important;
+  text-decoration: none !important;
+  color: none !important;
 }
-html, body {
+html,
+body {
   height: 100%;
 }
-
+.container {
+  max-width: 1800px;
+}
+/* @media (min-width: 1200px)
+.container {
+  max-width: 1140px;
+} */
 </style>
-
-
