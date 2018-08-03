@@ -779,15 +779,16 @@
 		//提交短信编辑
 		noteTemplateUpdate(){
       // console.log(this.id);
-			this.bianji == true,
-			this.tianjia == false
-			var noteTemplate={};
-			noteTemplate.id=this.id;
-      noteTemplate.title=birthDay1(this.addMessage.title);
-      noteTemplate.content=this.addMessage.content;
-      noteTemplate.signature=this.addMessage.sign;
+			this.bianji = true,
+			this.tianjia = false
+			var noteTemplate = {};
+      noteTemplate.id = this.id;
+      noteTemplate.title = this.addMessage.title;
+      noteTemplate.content = this.addMessage.content;
+      noteTemplate.signature = this.addMessage.sign;
 			// console.log(noteTemplate);
 			this.$ajax.put(url+'noteTemplate/update',noteTemplate).then(res => {
+        console.log(res)
 				this.modify = false
 				this.gettemplate()
 			})
@@ -987,6 +988,7 @@ function birthDay (data) {
   if (data === '37') return '短信调查'
 }
 function birthDay1 (data) {
+  console.log(data)
   if (data === '节日祝福') return '32'
   if (data === '生日祝福') return '33'
   if (data === '活动通知') return '34'
