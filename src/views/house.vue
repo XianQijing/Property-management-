@@ -57,8 +57,9 @@
 						<el-tab-pane label="楼宇">
 							<div class="main">
 								<div v-if="tabIndex === '1'"><router-view></router-view></div>
-								<router-link :to="{path: '/house/addBuild'}"><button class="add">+ 添加</button></router-link><button class="delect">删除</button>
-								<el-table :data="build" style="width: 100%">
+								<router-link :to="{path: '/house/addBuild'}"><button class="add">+ 添加</button></router-link>
+                <button class="delect" id="delect" @click="allDeletelou('building')">删除</button>
+								<el-table :data="build" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="precinctName" label="所属小区" width="180"></el-table-column>
 									<el-table-column prop="namec" label="楼宇名称" width="180"></el-table-column>
@@ -108,7 +109,10 @@
                   <router-view class="Next"></router-view>
                   <!-- <router-view class="daoru"></router-view> -->
                 </div>
-								<router-link :to="{name: 'Next',query:{id:'qq'}}"><button class="add">+ 添加</button></router-link><router-link :to="{name: 'Daoru'}"><button class="import">分配楼宇</button></router-link><button class="cash">+ 添加收费标准</button><button class="delect" @click="allDelete">删除</button>
+								<router-link :to="{name: 'Next',query:{id:'qq'}}"><button class="add">+ 添加</button></router-link>
+                <!-- <router-link :to="{name: 'Daoru'}"><button class="import">分配楼宇</button></router-link>
+                <button class="cash">+ 添加收费标准</button> -->
+                <button class="delect" id="roomDelete" @click="allDeletelou('room')">删除</button>
 								<el-table :data="room" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="id" label="房屋编号" width="140"></el-table-column>
@@ -158,8 +162,8 @@
 									<!-- <router-view class="carCharge"></router-view> -->
                 </div>
 								<router-link :to="{name: 'AddCar',query:{id:'ww'}}"><button class="add">+ 添加</button></router-link>
-                <router-link :to="{name: 'Daoru'}"><button class="add">导入</button></router-link>
-                <button class="cash">+ 添加收费标准</button>
+                <!-- <router-link :to="{name: 'Daoru'}"><button class="add">导入</button></router-link> -->
+                <!-- <button class="cash">+ 添加收费标准</button> -->
                 <button class="delect" @click="allDelete">删除</button>
 								<el-table :data="car" style="width: 100%" >
 									<el-table-column type="selection" width="55"></el-table-column>
@@ -372,24 +376,56 @@ export default {
         },
       ],
       totalDataNumberCar: 100,//数据的总数,
-      tabIndex: ''
+      tabIndex: '',
+      // 楼宇id的集合
+      louIdArr: []
     }
   },
   mounted() {
-      this.getAdmin()
-      this.getRoom(),
-      this.getRoomStandard()
-      this.getBuild()
-      this.getCar()
+    this.getAdmin()
+    this.getRoom()
+    this.getRoomStandard()
+    this.getBuild()
+    this.getCar()
   },
-  
   methods: {
+    // 楼宇批量删除
+    allDeletelou (judge) {
+      // DELETE /room/deleteRoom/{id}
+      if (this.multipleSelection.length > 0) {
+        this.multipleSelection.forEach(v => {
+          this.louIdArr.push(v.id)
+        })
+        if (judge === 'building') {
+          this.$ajax.delete(url + 'building/deleteBuilding/' + this.louIdArr).then((res) => {
+            if (res.data.status === 200) {
+              this.getBuild()
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+            }
+          })
+        } else if (judge === 'room') {
+          this.$ajax.delete(url + 'room/deleteRoom/' + this.louIdArr).then((res) => {
+            if (res.data.status === 200) {
+              this.getRoom()
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+            }
+          })
+        }
+      }
+    },
     changePosition() {
       // console.log(this.position)
     },
     handleClick(tab, event) {
       // console.log(tab.index);
       this.tabIndex = tab.index
+      this.multipleSelection = []
       this.$router.push('/house')
     },
     handleSizeChange(val) {
@@ -467,10 +503,18 @@ export default {
     buildDelete(index,rows) {
       let that = this;
       that.id = this.build[index].id;
+      // DELETE /building/deleteBuilding/{id}
       // console.log(this.id);
-      rows.splice(index, 1);
-      this.$ajax.post('url' + this.id).then((res) => {
-        this.getBuild()
+      // rows.splice(index, 1);
+      this.$ajax.delete(url + 'building/deleteBuilding/' + that.id).then((res) => {
+        console.log(res.data)
+        if (res.data.status === 200) {
+          this.getBuild()
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        }
       })
     },
     getCar(){
@@ -543,12 +587,14 @@ export default {
     roomDelete(index,rows) {
       let that = this;
       that.id = this.room[index].id;
-      // console.log(this.id);
-      rows.splice(index, 1);
-      // console.log(this.room)
-      
-      this.$ajax.post('url' + this.id).then((res) => {
-        this.getRoom()
+      this.$ajax.delete(url + 'room/deleteRoom/' + that.id).then((res) => {
+        if (res.data.status === 200) {
+          this.getRoom()
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        }
       })
     },
     //跳转车辆
@@ -578,9 +624,18 @@ export default {
       // })
     },
     handleSelectionChange (val) {
-          //val 为选中数据的集合
+      //val 为选中数据的集合
       this.multipleSelection = val
-      console.log(this.multipleSelection)
+      if (val.length > 0) {
+        // 楼宇批量删除按钮
+        document.getElementById('delect').style.background = 'red'
+        // 房间批量删除按钮
+        document.getElementById('roomDelete').style.background = 'red'
+      } else {
+        document.getElementById('delect').style.background = '#f5f5f5'
+        document.getElementById('roomDelete').style.background = '#f5f5f5'
+      }
+      // console.log(this.multipleSelection)
     },
     allDelete() {
       let comments = this.multipleSelection
@@ -590,12 +645,12 @@ export default {
         num.push(comments[i].id)
         // console.log(num)
       }
-          // 写this.$axios
+      // 写this.$axios
       this.$ajax.get(this.$host + 'allDle.do', {params: {'commentsId':num}}).then(resp => {
         // console.log(resp.data)
         // console.log(comments.length)
         for (let j = 0;j<comments.length;j++){
-        this.room.splice(comments[j], 1)
+          this.room.splice(comments[j], 1)
         }
         this.toggleSelection()
       })
@@ -609,6 +664,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+button {
+  cursor: pointer;
+}
 	.container {
 		width: 88%;
 		position: relative;

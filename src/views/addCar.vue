@@ -104,6 +104,7 @@ export default {
     background: white;
     z-index: 2000;
     width: 100%;
+    height: 100%;
 }
 .tianjia{
     vertical-align: top;

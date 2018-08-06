@@ -4,32 +4,32 @@
     <div class="tianjia">
       <div class="input">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
-          <el-form-item label="所属小区" prop="region">
+          <el-form-item label="所属小区" prop="precinct">
             <el-select v-model="ruleForm.precinct" placeholder="请选择活动区域">
               <el-option v-for="(items, index) in rows" :key="index" :value="items.id" :label="items.namec"></el-option>
               <!-- <el-option label="区域二" value="beijing"></el-option> -->
             </el-select>
           </el-form-item>
-          <el-form-item label="楼宇名称" prop="roomnumber">
+          <el-form-item label="楼宇名称" prop="namec">
             <el-input v-model="ruleForm.namec" placeholder="请输入楼宇名称"></el-input>
             <!-- <el-input v-model="ruleForm.roomnumber" placeholder="请输入楼宇名称" :value="ruleForm.input"></el-input> -->
           </el-form-item>
-          <el-form-item label="房间数量" prop="buildArea">
+          <el-form-item label="房间数量" prop="room">
             <el-input v-model="ruleForm.room" placeholder="请输入单元数量" @blur="blur"></el-input>
           </el-form-item>
-          <el-form-item label="楼宇层数" prop="roomArea">
+          <el-form-item label="楼宇层数" prop="layer">
             <el-input v-model="ruleForm.layer" placeholder="请输入楼宇层数" @blur="blur"></el-input>
           </el-form-item>
-          <el-form-item label="楼宇类型" prop="publicArea">
+          <el-form-item label="楼宇类型" prop="buildingType">
             <el-input v-model="ruleForm.buildingType" placeholder="请输入楼宇类型"></el-input>
           </el-form-item>
-          <el-form-item label="楼宇结构" prop="roomType">
+          <el-form-item label="楼宇结构" prop="flatFabric">
             <el-input v-model="ruleForm.flatFabric" placeholder="请输入楼宇结构"></el-input>
           </el-form-item>
-          <el-form-item label="楼宇朝向" prop="roomLabel">
+          <el-form-item label="楼宇朝向" prop="buildingTowards">
             <el-input v-model="ruleForm.buildingTowards" placeholder="请输入楼宇朝向"></el-input>
           </el-form-item>
-          <el-form-item label="备注" prop="houseType">
+          <el-form-item label="备注" prop="comment">
             <el-input v-model="ruleForm.comment" placeholder="请输入备注"></el-input>
           </el-form-item>
         </el-form>
@@ -174,7 +174,7 @@ export default {
         // loading图标
         this.fullscreenLoading = true
         if (this.$route.query.id) {
-          this.$ajax.post(url + 'building/updateBuilding/', data2).then(res => {
+          this.$ajax.put(url + 'building/updateBuilding/', data2).then(res => {
             // console.log(res.data)
             if (res.data.status === 200) {
               this.fullscreenLoading = false
@@ -202,6 +202,7 @@ export default {
     background: white;
     z-index: 2000;
     width: 100%;
+    height: 100%;
 }
 .tianjia{
     vertical-align: top;
