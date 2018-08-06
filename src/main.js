@@ -9,7 +9,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 // import qs from 'qs'
 
-
 axios.interceptors.request.use(
   config => {
     // 这里写死一个token，你需要在这里取到你设置好的token的值
@@ -20,7 +19,7 @@ axios.interceptors.request.use(
       // if(config.params){
       //   config.params.token=token
       // }else{
-      //   config.params={}
+      //   config.params= {}
       //   config.params.token=token
       // }
     }
@@ -28,7 +27,8 @@ axios.interceptors.request.use(
   },
   error => {
     return Promise.reject(error)
-  })
+  }
+)
 
 axios.defaults.withCredentials = true
 Vue.prototype.$ajax = axios
