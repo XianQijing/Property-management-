@@ -7,7 +7,7 @@
             <el-form :model="addCustomer" ref="addCustomer" label-width="130px" class="demo-addCustomer">
 
                 <el-form-item label="房屋类型：" prop="roomType">
-                   <el-input v-model="addCustomer.houseType" placeholder="请输入房屋类型"></el-input>
+                   <el-input v-model="addCustomer.roomType" placeholder="请输入房屋类型"></el-input>
                 </el-form-item>
 
                 <el-form-item label="楼宇：" prop="buildings">
@@ -67,28 +67,41 @@ export default {
             addCustomer: {
                 roomType:'',
                 buildings:'',
-                roomNumber:'',
-                coveredArea: '',
+                roomNumber:1,
+                coveredArea: 1,
                 pricing: '',
-                renting: '',
-                reserve: ''
+                renting: 1,
+                reserve: 1,
+                id:1,
+                precinct:1
             },
             builds:[
             ],
         }
     },
     mounted(){
-        console.log(this.$route.query.msg)
+        console.log(this.$route.query.id)
         if(this.$route.query.msg == "tianjia"){
             this.name = '添加',
             this.addCustomer = {}
-            this.$ajax.get(url + 'building/flndAll/1/999').then(res => {
-                console.log(res);
-                this.builds=res.data.data.rows
-                //goBack()
-            })
+            // this.$ajax.get(url + 'building/flndAll/1/999').then(res => {
+            //     // console.log(res);
+            //     this.builds=res.data.data.rows
+            //     //goBack()
+            // })
         }else{
             this.name = '编辑'
+            this.id = this.$route.query.id
+            this.$ajax.get(url + 'housingResource/flndHById/'+this.id).then(res => {
+                console.log(res.data.data)
+                this.addCustomer.roomType = res.data.data.roomType
+                this.addCustomer.buildings = res.data.data.buildinges.id
+                this.addCustomer.roomNumber = res.data.data.roomNumber
+                this.addCustomer.coveredArea = res.data.data.coveredArea
+                this.addCustomer.pricing = res.data.data.pricing
+                this.addCustomer.renting = res.data.data.renting
+                this.addCustomer.reserve = res.data.data.reserve
+            })
         }
     },
     methods:{
@@ -103,10 +116,20 @@ export default {
         },
         save(){
             var housingResourceVO={}
-           housingResourceVO= this.addCustomer
+                housingResourceVO.buildings= '1808016T8CPZFBXP',
+                housingResourceVO.coveredArea= this.addCustomer.coveredArea,
+                housingResourceVO.precinct= this.addCustomer.precinct,
+                housingResourceVO.pricing=this.addCustomer.pricing,
+                housingResourceVO.renting=this.addCustomer.renting,
+                housingResourceVO.reserve=this.addCustomer.reserve,
+                housingResourceVO.roomNumber=this.addCustomer.roomNumber,
+                housingResourceVO.roomType="string"
+            
+        //    housingResourceVO= this.addCustomer
             this.$ajax.post(url + 'housingResource/insertRoom',housingResourceVO).then(res => {
                 console.log(res);
-                //goBack()
+                alert('成功')
+                this.goBack()
             })
         },
         goBack(){

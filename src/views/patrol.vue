@@ -9,7 +9,7 @@
                         <el-date-picker
                             v-model="detail.day"
                             type="date"
-                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                            format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
                             placeholder="选择日期">
                             </el-date-picker>
                     </el-form-item>

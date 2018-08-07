@@ -8,11 +8,11 @@
                     <el-form-item label="租户姓名:">
                         <el-input v-model="detail.name" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="负责人电话:">
-                        <el-input v-model="detail.principal_phone" clearable></el-input>
-                    </el-form-item>
                     <el-form-item label="关联房屋:">
                         <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange"></el-cascader>
+                    </el-form-item>
+                    <el-form-item label="负责人电话:">
+                        <el-input v-model="detail.principal_phone" clearable></el-input>
                     </el-form-item>
                     <div class="zhuangxiu">
                     <el-form-item label="开始装修时间:">
@@ -52,7 +52,7 @@
         <div class="tianjia">
             <div class="input">
                    <el-form-item label="手机号：">
-                        <el-input v-model="detail.phone" clearable></el-input>
+                        <el-input v-model="detail.phone" v-on:blur="transform" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-input v-model="detail.leaseType" clearable></el-input>
@@ -210,13 +210,14 @@ export default {
     mounted(){
         console.log(this.$route.query.id)
          this.id = this.$route.query.id
-         this.$ajax.get(url + 'room/flndByClientId'+'').then(res => {
-               
+         this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
                 this.options=res.data;
-            })
+         })
         if(this.$route.query.msg == 8){
             this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
                 this.detail = res.data;
+                this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
+                console.log(this.detail.house)
             })
         }else(
             this.datail = ''
@@ -225,6 +226,27 @@ export default {
     methods: {
       handleRemove(file, fileList) {
         console.log(file, fileList);
+      },
+      transform:function(){
+          if(!this.detail.name){
+              alert("请先输入业主姓名");
+          }else if(!this.detail.phone){
+              alert("请输入电话号码");
+          }else{
+           this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
+                var aa = "";
+                if(!res.data){
+                    alert("业主姓名和业主电话号码输入有误！");
+                    aa = "aaa";
+                }else{
+                    aa = res.data.id;
+                }
+                 this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                     this.options=res.data;
+                 })
+                console.log(res.data)
+            })
+          }
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;

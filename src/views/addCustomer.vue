@@ -1,161 +1,453 @@
 <template>
-  <div class="addCustomer">
-    <h3>{{name}}客户事件</h3>
-    <div class="tianjia">
-      <div class="input">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm" size='small' :disabled="ww">
-          <div id="fenkai">
-            <el-form-item label="客户名字：" prop="roomnumber">
-              <el-input v-model="ruleForm.roomnumber" placeholder="请输入客户名字"></el-input>
-            </el-form-item>
-            <el-form-item label="客户手机号：" prop="publicArea">
-              <el-input v-model="ruleForm.publicArea" placeholder="请输入客户手机号"></el-input>
-            </el-form-item>
-            <el-form-item label="关联房屋：" prop="region">
-              <el-select :value="ruleForm.region" v-model="ruleForm.region" placeholder="请选择活动楼宇" >
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="事件类型：" prop="buildArea">
-              <el-select v-model="ruleForm.region" placeholder="请选择时间类型">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="处理情况：" prop="roomLabel" v-show="pan">
-              <el-input v-model="ruleForm.roomLabel" placeholder="请输入处理情况"></el-input>
-            </el-form-item>
-            <el-form-item label="处理时间：" prop="roomLabel" v-show="pan">
-              <el-date-picker v-model="ruleForm.time" type="datetime" placeholder="选择日期时间"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="回访时间：" prop="roomLabel" v-show="show">
-              <el-date-picker v-model="ruleForm.time" type="datetime" placeholder="选择日期时间"></el-date-picker>
-            </el-form-item>
-          </div>
-          
-          <div id="fenkai1">
-            <el-form-item label="事情描述：" prop="publicArea">
-              <el-input v-model="ruleForm.publicArea" placeholder="请输入描述事情"></el-input>
-            </el-form-item>
-            <el-form-item label="受理人：" prop="roomType">
-              <el-input v-model="ruleForm.roomType" placeholder="请输入受理人姓名"></el-input>
-            </el-form-item>
-            <el-form-item label="处理方式：" prop="publicArea" v-show="duan">
-              <el-input v-model="ruleForm.publicArea" placeholder="请输入处理方式"></el-input>
-            </el-form-item>
-            <el-form-item label="处理满意度：" prop="roomLabel" v-show="pan">
-              <el-input v-model="ruleForm.roomLabel" placeholder="请输入处理满意度"></el-input>
-            </el-form-item>
-            <el-form-item label="回访情况：" prop="roomLabel" v-show="show">
-              <el-input v-model="ruleForm.roomLabel" placeholder="请输入回访情况"></el-input>
-            </el-form-item>
-            <el-form-item label="发生时间:" prop="publicArea">
-              <el-date-picker
-                  v-model="ruleForm.time"
-                  type="datetime"
-                  placeholder="选择日期时间">
-              </el-date-picker>
-            </el-form-item>
-            <el-form-item label="回访满意度：" prop="roomLabel" v-show="pan">
-              <el-input v-model="ruleForm.roomLabel" placeholder="请输入回访满意度"></el-input>
-            </el-form-item>
-            <el-form-item label="备注：" prop="houseType" v-show="pan">
-              <el-input v-model="ruleForm.houseType" placeholder="请输入房屋类型"></el-input>
-            </el-form-item>
-          </div>
-        </el-form>
-      </div>
-      <div class="nn">
-        <button class="nextStep">保存</button><button class="cancel" @click="goBack">返回</button>
-      </div>
+    <div class="addCustomer">
+        <h3>{{name}}客户事件</h3>
+        <div class="tianjia">
+            <div class="input">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm" size='small' :disabled="ww">
+                <div id="fenkai">
+                <el-form-item label="客户名字：" prop="name">
+                <el-input v-model="ruleForm.name" placeholder="请输入客户名字"></el-input>
+                </el-form-item>
+                <el-form-item label="客户手机号：" prop="phone">
+                <el-input v-model="ruleForm.phone" v-on:blur="transform" placeholder="请输入客户手机号"></el-input>
+                </el-form-item>
+               <el-form-item label="关联房屋：" prop="house">
+                    <!-- <el-select :value="ruleForm.house" v-model="ruleForm.house" placeholder="请选择活动楼宇" > -->
+                    <el-cascader expand-trigger="hover" :options="options" v-model="ruleForm.house" @change="handleChange"></el-cascader>
+                </el-form-item>
+                
+                <el-form-item label="事件类型：" prop="event_type">
+                <el-select v-model="ruleForm.event_type" placeholder="请选择事件类型">
+                   <el-option
+						v-for="item in ways"
+							:key="item.id"
+							:label="item.value"
+							:value="item.id">
+					</el-option>
+                    </el-select>
+                </el-form-item>
+                
+                <el-form-item label="处理情况：" prop="process_condition" v-show="pan">
+                <el-input v-model="ruleForm.process_condition" placeholder="请输入处理情况"></el-input>
+                </el-form-item>
+                
+                <el-form-item label="处理时间：" prop="processTime" v-show="pan">
+                <el-date-picker
+                        v-model="ruleForm.processTime"
+                        type="datetime"
+                        format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                        placeholder="选择日期时间">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="回访时间：" prop="visitDate" v-show="show">
+                <el-date-picker
+                        v-model="ruleForm.visitDate"
+                        type="datetime"
+                        format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                        placeholder="选择日期时间">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="事件损失：" prop="loss" v-show="duan">
+				<el-input v-model="ruleForm.event_loss" placeholder="请输入事件造成的损失"></el-input>
+				</el-form-item>
+                
+                </div>
+                <div id="fenkai1">
+                    <el-form-item label="事情描述：" prop="event_depict">
+                <el-input v-model="ruleForm.event_depict" placeholder="请输入描述事情"></el-input>
+                </el-form-item>
+                    <el-form-item label="受理人：" prop="agent">
+                <el-input v-model="ruleForm.agent" placeholder="请输入受理人姓名"></el-input>
+                </el-form-item>
+                    <el-form-item label="处理方式：" prop="process_mode" v-show="duan">
+                <el-input v-model="ruleForm.process_mode" placeholder="请输入处理方式"></el-input>
+                </el-form-item>
+                
+                <el-form-item label="处理满意度：" prop="process_cacsi" >
+                <el-input v-model="ruleForm.process_cacsi" placeholder="请输入处理满意度"></el-input>
+                </el-form-item>
+                <el-form-item label="回访情况：" prop="visit_condition" v-show="show">
+                <el-input v-model="ruleForm.visit_condition" placeholder="请输入回访情况"></el-input>
+                </el-form-item>
+                <el-form-item label="发生时间:" prop="eventDate">
+                    <el-date-picker
+                        v-model="ruleForm.eventDate"
+                        type="datetime"
+                        format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                        placeholder="选择日期时间">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="回访满意度：" prop="visit_cacsi" v-show="pan">
+                <el-input v-model="ruleForm.visit_cacsi" placeholder="请输入回访满意度"></el-input>
+                </el-form-item>
+                <el-form-item label="备注：" prop="remarks" v-show="pan">
+                <el-input v-model="ruleForm.remarks" placeholder="请输入房屋类型"></el-input>
+                </el-form-item>
+                </div>
+            </el-form>
+            </div>
+            <div class="nn">
+            <button class="nextStep" @click="addOne">保存</button><button class="cancel" @click="goBack">返回</button>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
+
+import url from '../assets/Req.js'	
+
 export default {
-  name: 'addCustomer',
-  data(){
-    return{
-      name:'',
-      pan:false,
-      duan:true,
-      ww:false,
-      show:true,
-      ruleForm: {
-        region: 'shanghai',
-        roomnumber: '',
-        buildArea:'',
-        houseType: '',
-        roomLabel: '',
-        roomType: '',
-        roomArea: '',
-        publicArea:'',
-        time:'',
+    name: 'addCustomer',
+    data(){
+        return{
+            name:'',
+            pan:false,
+            duan:true,
+            ww:false,
+            show:true,
+            ways:[
+
+            ],
+            options: [
+          {
+          value: 'bangongqu',
+          label: '办公区',
+          children: [{
+              value: 'Azuo',
+              label: 'A座',
+              children: [{
+                value: '101',
+                label: '101'
+              }, {
+                value: '102',
+                label: '102'
+              }, {
+                value: '103',
+                label: '103'
+              }, {
+                value: '104',
+                label: '104'
+              },
+              {
+                value: '105',
+                label: '105'
+              }]
+          }, 
+          {
+            value: 'Bzuo',
+            label: 'B座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          },{
+            value: 'Czuo',
+            label: 'C座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          }]
+        },{
+          value: 'yanjiedianpu',
+          label: '沿街店铺',
+          children: [{
+            value: 'axure',
+            label: 'Axure Components'
+          }, {
+            value: 'sketch',
+            label: 'Sketch Templates'
+          }, {
+            value: 'jiaohu',
+            label: '组件交互文档'
+          }]
+        }],
+        rules: {
+          name: [
+            { required: true, message: '请输入所在楼层', trigger: 'blur' },
+          ],
+          region: [
+            { required: true, message: '请选择小区/楼宇/单元', trigger: 'change' }
+          ],
+          roomnumber: [
+            { required: true, message: '请输入房号', trigger: 'blur' }
+          ],
+          buildArea: [
+            { required: true, message: '请输入建筑面积', trigger: 'blur' }
+          ]
+        },
+            ruleForm: {
+                house: [],
+                event_type:'',
+                name: '',
+                process_condition:'',
+                processTime: '',
+                datetime: '',
+                visitDate: '',
+                event_depict: '',
+                phone:'',
+                agent:'',
+                process_mode:'',
+                process_cacsi:'',
+                visit_condition:'',
+                eventDate:'',
+                visit_cacsi:'',
+                remarks:''
+            },
+            input:{
+                house:["bangongqu","Azuo","105"],
+                event_type:'12',
+                name: '121',
+                process_condition:'12',
+                processTime: '2017.6.23',
+                datetime: '',
+                visitDate: '2017.6.23',
+                event_depict: 'qwq',
+                phone:'123123111231',
+                agent:'er',
+                process_mode:'wr',
+                process_cacsi:'wq',
+                visit_condition:'qr',
+                eventDate:'2017.6.23',
+                visit_cacsi:'1241',
+                remarks:'142'
+            },
+
+        
+        }
+    },
+    mounted(){
+        this.id = this.$route.query.id
+        this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
+                this.options=res.data;
+        })
+        if(this.$route.query.msg === 2){    //客户反馈信息查看 
+            this.ww = true,
+            this.name = '查看'
+            this.pan = true,
+            this.duan = false,
+            this.show = true
+            //返回反馈信息的下拉框
+            this.$ajax.get(url + 'serviceAccept/findByDictType/3').then(res => {
+                this.ways=res.data;
+            })
+             this.$ajax.get(url +'feedbackMessage/findIdVO/'+this.id).then(res => {
+                this.ruleForm = res.data;
+                this.ruleForm.event_type = res.data.category;
+                this.ruleForm.visitDate = res.data.visitTime;
+                this.ruleForm.event_depict = res.data.content;
+                this.ruleForm.agent = res.data.handler;
+                this.ruleForm.eventDate = res.data.occurrenceTime;
+                this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                 console.log(this.id)       
+            })
+        }else if(this.$route.query.msg === 3){    //客户反馈信息修改
+            this.name = '修改'
+            this.pan = true,
+            this.duan = false
+            this.show = true
+            //返回反馈信息的下拉框
+             this.$ajax.get(url + 'serviceAccept/findByDictType/3').then(res => {
+                this.ways=res.data;
+            })
+             this.$ajax.get(url +'feedbackMessage/findIdVO/'+this.id).then(res => {
+                this.ruleForm = res.data;
+                this.ruleForm.event_type = res.data.category;
+                this.ruleForm.visitDate = res.data.visitTime;
+                this.ruleForm.event_depict = res.data.content;
+                this.ruleForm.agent = res.data.handler;
+               this.ruleForm.eventDate = res.data.occurrenceTime;
+               this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                 console.log(this.id)       
+            })
+        }else if(this.$route.query.msg === 1){    //客户事件新增
+            this.name = '新增',
+            this.pan = false,
+            this.duan = true,
+            this.show = false
+            this.$ajax.get(url + 'serviceAccept/findByDictType/4').then(res => {
+                this.ways=res.data;
+            })
+            
+        }else if(this.$route.query.msg === 4){  //客户事件查看
+            this.name = '查看',
+            this.pan = false,
+            this.duan = true,
+            this.ww = true,
+            this.show = true
+            this.$ajax.get(url + 'serviceAccept/findByDictType/4').then(res => {
+                this.ways=res.data;
+            })
+            this.$ajax.get(url +'customerEvent/findIdVO/'+this.id).then(res => {
+                this.ruleForm = res.data;
+                this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.ruleForm.process_cacsi = res.data.cacsi;
+            })
+        }else if(this.$route.query.msg === 5){   //客户事件回访
+            this.name = '回访',
+            this.pan = false,
+            this.duan = true,
+            this.show = true,
+            this.$ajax.get(url + 'serviceAccept/findByDictType/4').then(res => {
+                this.ways=res.data;
+            })
+           this.$ajax.get(url +'customerEvent/findIdVO/'+this.id).then(res => {
+                this.ruleForm = res.data;
+                this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.ruleForm.process_cacsi = res.data.cacsi;
+            })     
+        }else{                              //客户反馈信息新增
+            this.name = '新增'
+            this.pan = true,
+            this.duan = false,
+            this.show = true
+             this.$ajax.get(url + 'serviceAccept/findByDictType/3').then(res => {
+                this.ways=res.data;
+            })
+        }
+    },
+    methods:{
+        transform:function(){
+          if(!this.ruleForm.name){
+              alert("请先输入业主姓名");
+          }else if(!this.ruleForm.phone){
+              alert("请输入电话号码");
+          }else{
+           this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.ruleForm.name+'/'+this.ruleForm.phone).then(res => {
+                var aa = "";
+                if(!res.data){
+                    alert("业主姓名和业主电话号码输入有误！");
+                    aa = "aaa";
+                }else{
+                    aa = res.data.id;
+                }
+                 this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                     this.options=res.data;
+                 })
+                console.log(res.data)
+            })
+          }
       },
-      input:{
-        region: 'shanghai',
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入所在楼层', trigger: 'blur' },
-        ],
-        region: [
-          { required: true, message: '请选择小区/楼宇/单元', trigger: 'change' }
-        ],
-        roomnumber: [
-          { required: true, message: '请输入房号', trigger: 'blur' }
-        ],
-        buildArea: [
-          { required: true, message: '请输入建筑面积', trigger: 'blur' }
-        ]
-      },
+         //修改或新增
+	   addOne(){
+            var customerEventVO={};   //客户事件的数据
+            customerEventVO.name=this.ruleForm.name;           //租户姓名
+            customerEventVO.phone=this.ruleForm.phone;   //电话号码
+            console.log(this.ruleForm.house);
+            var arr=this.ruleForm.house;
+            customerEventVO.room=arr[arr.length-1];//关联房屋
+            customerEventVO.event_type=this.ruleForm.event_type;   //事件类型
+            customerEventVO.event_depict=this.ruleForm.event_depict;   //事情描述
+            customerEventVO.agent=this.ruleForm.agent;   //受理人
+            customerEventVO.process_mode=this.ruleForm.process_mode;   //处理方式
+            customerEventVO.eventDate=this.ruleForm.eventDate;   //发生时间
+            customerEventVO.visitDate = this.ruleForm.visitDate;  //回访时间
+            customerEventVO.visit_condition = this.ruleForm.visit_condition;  //回访情况
+            customerEventVO.event_loss = this.ruleForm.event_loss;   //事件损失
+            customerEventVO.cacsi = this.ruleForm.process_cacsi;   //处理满意度
+
+
+            var feedbackMessageVO={};
+            feedbackMessageVO.name=this.ruleForm.name;           //租户姓名
+            feedbackMessageVO.phone=this.ruleForm.phone;   //电话号码
+            var arr=this.ruleForm.house;
+            feedbackMessageVO.room=arr[arr.length-1];//关联房屋
+            feedbackMessageVO.category=this.ruleForm.event_type;   //事件类型
+            feedbackMessageVO.process_condition = this.ruleForm.process_condition;  //处理情况
+            feedbackMessageVO.processTime = this.ruleForm.processTime;  //处理时间
+            feedbackMessageVO.visitTime = this.ruleForm.visitDate;  //回访时间
+            feedbackMessageVO.content=this.ruleForm.event_depict;   //事情描述
+            feedbackMessageVO.handler=this.ruleForm.agent;   //受理人
+            feedbackMessageVO.process_cacsi=this.ruleForm.process_cacsi;   //处理满意度
+            feedbackMessageVO.visit_condition=this.ruleForm.visit_condition;   //回访情况
+            feedbackMessageVO.occurrenceTime=this.ruleForm.eventDate;   //反馈时间
+            feedbackMessageVO.visit_cacsi=this.ruleForm.visit_cacsi;   //回访满意度
+            feedbackMessageVO.remarks=this.ruleForm.remarks;   //备注
+          
+        if(this.$route.query.msg === 2){   //客户反馈信息查看
+           
+        }else if(this.$route.query.msg === 3){  //客户反馈信息修改
+            feedbackMessageVO.id = this.id;
+            this.$ajax.put(url+"feedbackMessage/update",feedbackMessageVO).then((res) => {
+                        if(res.data=="seccess"){
+                            alert("添加数据成功");
+                        }else{
+                            alert("失败");
+                        }
+            })
+          
+        }else if(this.$route.query.msg === 1){    //客户事件新增
+            this.$ajax.post(url+"customerEvent/insert",customerEventVO).then((res) => {
+                if(res.data=="seccess"){
+                            alert("添加数据成功");
+                }else{
+                 alert("失败");
+                }
+            })
+            
+        }else if(this.$route.query.msg === 4){  //客户事件查看
+          
+          
+        }else if(this.$route.query.msg === 5){   //客户事件回访
+            customerEventVO.id = this.id;
+           this.$ajax.put(url+"customerEvent/update",customerEventVO).then((res) => {
+                this.form = res.data
+                console.log(this.form);
+                 if(res.data=="seccess"){
+                      alert("修改数据成功");
+                }else{
+                     alert("失败");
+                }
+            })
+         
+        }else{                            //客户反馈信息新增
+            this.$ajax.post(url+"feedbackMessage/insert",feedbackMessageVO).then((res) => {
+                    this.form = res.data
+                    console.log(this.form);
+                    if(res.data=="seccess"){
+                         alert("修改数据成功");
+                     }else{
+                            alert("失败");
+                     }
+            })
+        }
+            
+        },
+        goBack(){
+            window.history.back()
+        },
+        handleChange(value) {
+        //console.log(value);
+      }
     }
-  },
-  mounted(){
-    this.id = this.$route.query.id
-    if(this.$route.query.msg === 1){
-      this.name = '新增',
-      this.pan = false,
-      this.duan = true,
-      this.show = false
-    }else if(this.$route.query.msg === 2){
-      this.ww = true,
-      this.name = '查看'
-      this.pan = true,
-      this.duan = false,
-      this.show = true
-    }else if(this.$route.query.msg === 3){
-      this.name = '修改'
-      this.pan = true,
-      this.duan = false
-      this.show = true
-    }else if(this.$route.query.msg === 4){
-      this.name = '查看',
-      this.pan = false,
-      this.duan = true,
-      this.ww = true,
-      this.show = true
-      console.log(this.id)
-    }else if(this.$route.query.msg === 5){
-      this.name = '新增',
-      this.pan = false,
-      this.duan = true,
-      this.show = false,
-      console.log(this.id)
-    }else{
-      this.name = '新增'
-      this.pan = true,
-      this.duan = false,
-      this.show = true
-    }
-  },
-  methods:{
-    goBack(){
-      window.history.back()
-    }
-  }
+
 }
 </script>
 

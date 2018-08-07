@@ -13,9 +13,14 @@
                         
                     </el-form-item>
                     <el-form-item label="服务类别:">
-                        <el-select v-model="detail.service_classes" placeholder="请选择小区">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
+                        
+                        <el-select v-model="detail.service_classes" placeholder="服务类别">
+                            <el-option
+								v-for="item in service"
+								:key="item.value"
+								:label="item.value"
+								:value="item.value">
+							</el-option>
                         </el-select>
                     </el-form-item>
                      <div class="zhuangxiu">
@@ -40,10 +45,7 @@
                     </div>
                     
                     <el-form-item label="派工至:">
-                        <el-select v-model="detail.handler" placeholder="请选择小区">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                        </el-select>
+                        <el-input v-model="detail.handler" clearable></el-input>
                     </el-form-item>
 
 
@@ -53,15 +55,19 @@
         <div class="tianjia">
             <div class="input">
                     <el-form-item label="手机号：">
-                        <el-input v-model="detail.phone" clearable></el-input>
+                        <el-input v-model="detail.phone" v-on:blur="transform" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-input v-model="detail.leaseType" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="报修方式:">
-                        <el-select v-model="detail.way" placeholder="请选择小区">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
+                        <el-select v-model="detail.way" placeholder="报修方式">
+                            <el-option
+								v-for="item in ways"
+								:key="item.value"
+								:label="item.value"
+								:value="item.value">
+							</el-option>
                         </el-select>
                     </el-form-item>
                     <div class="zhuangxiu">
@@ -133,6 +139,12 @@ export default {
                 require: '',
                 textarea:'',
             },
+            service:[
+
+            ],
+            ways:[
+
+            ],
             options: [
           {
           value: 'bangongqu',
@@ -235,13 +247,20 @@ export default {
     mounted(){
         console.log(this.$route.query.id)
          this.id = this.$route.query.id
-         this.$ajax.get(url + 'room/flndByClientId'+'').then(res => {
-               
+         this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
                 this.options=res.data;
-            })
+         })
+        
+         this.$ajax.get(url + 'serviceAccept/findByDictType/1').then(res => {
+                this.service=res.data;
+         })
+         this.$ajax.get(url + 'serviceAccept/findByDictType/2').then(res => {
+                this.ways=res.data;
+         })
         if(this.$route.query.msg == 8){
             this.$ajax.get(url +'serviceAccept/findIdVO/'+this.id).then(res => {
                 this.detail = res.data;
+                this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
             })
         }else(
             this.datail = ''
@@ -254,19 +273,38 @@ export default {
     //   handlePictureCardPreview(file) {
     //     this.dialogImageUrl = file.url;
     //   },
+    transform:function(){
+          if(!this.detail.name){
+              alert("请先输入业主姓名");
+          }else if(!this.detail.phone){
+              alert("请输入电话号码");
+          }else{
+           this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
+                var aa = "";
+                if(!res.data){
+                    alert("业主姓名和业主电话号码输入有误！");
+                    aa = "aaa";
+                }else{
+                    aa = res.data.id;
+                }
+                 this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                     this.options=res.data;
+                 })
+                console.log(res.data)
+            })
+          }
+      },
 
-    //修改或新增装修申请
+    //修改或新增服务派工
 	   addOne(){
             var serviceAcceptVO={};
             serviceAcceptVO.name=this.detail.name;           //租户姓名
             serviceAcceptVO.service_classes=this.detail.service_classes;   //服务类别
             var arr=this.detail.house;
             serviceAcceptVO.roomNumber=arr[arr.length-1];//关联房屋
-            alert(serviceAcceptVO.roomNumber);
             serviceAcceptVO.startTime=this.detail.startTime;    //开始时间
             serviceAcceptVO.endTime=this.detail.endTime;    //结束时间
             serviceAcceptVO.dispatchingTime=this.detail.dispatchingTime;    //派工时间
-            alert(serviceAcceptVO.endTime)
             serviceAcceptVO.handler=this.detail.handler;    //派工至
             serviceAcceptVO.phone=this.detail.phone;    //手机号
             serviceAcceptVO.leaseType=this.detail.leaseType;   //类型

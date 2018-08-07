@@ -177,6 +177,7 @@ export default {
          this.$ajax.get(url +'serviceAccept/findIdVO/'+this.id).then(res => {
                 console.log(res.data)
                 this.detail = res.data;
+                this.detail.house =  res.data.buildingName+"-"+res.data.roomNumber;
          })
     },
     methods: {
@@ -196,6 +197,11 @@ export default {
             this.$ajax.post(url+"serviceVisit/insert",serviceVisit).then((res) => {
                 this.form = res.data
                 console.log(this.form);
+                 if(res.data=="seccess"){
+                         alert("添加数据成功");
+                     }else{
+                            alert("失败");
+                     }
             })
         
         },

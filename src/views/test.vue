@@ -241,7 +241,7 @@ export default {
 }
 .nn {
     width: 20%;
-    margin: 4% 0 0 40%;
+    margin: 4% 0 50% 40%;
     display: flex;
     justify-content: space-between;
 }

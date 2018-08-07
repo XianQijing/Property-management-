@@ -8,7 +8,7 @@
                         <el-date-picker
 							v-model="detail.day"
 							type="datetime"
-                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                            format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
                             style="width:50%"
 							placeholder="选择日期时间">
                          </el-date-picker>
@@ -54,7 +54,7 @@
                     </el-form-item>
 
                     <el-form-item label="关联房屋:">
-                        <el-input :value="input.roomNumber"></el-input>
+                        <el-input :value="input.house"></el-input>
                     </el-form-item>
                     <el-form-item label="负责人电话:">
                         <el-input :value="input.principal_phone"></el-input>
@@ -154,6 +154,7 @@ export default {
          this.id = this.$route.query.id
          this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
             this.input = res.data;
+            this.input.house = res.data.buildingName+"-"+res.data.roomNumber;
          })
      
     },

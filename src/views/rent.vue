@@ -8,12 +8,12 @@
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane label="房源管理" name="first">
                             <div class="main">
-								<div>
+								<div v-if="this.indexTable === '0'">
 									<router-view class="rent_addhouse"></router-view>
-								    <router-view class="rent_edit"></router-view>
+								    <!-- <router-view class="rent_edit"></router-view> -->
 								</div>
 								<router-link :to="{name: 'Rent_addhouse',query:{msg:'tianjia'}}"><button class="add">添加房源</button></router-link>
-                                <div class="fenye" style="display:inline-block" id="btn"><button>全部数据</button><button>只显示已租数据</button><button>只显示未租数据</button></div>
+                                <div class="fenye" style="display:inline-block" id="btn"><button @click="display(1)" class="active">全部数据</button><button @click="display(2)">只显示已租数据</button><button @click="display(3)">只显示未租数据</button></div>
 								<el-table :data="tableData" style="width: 100%">
 									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
 									<el-table-column prop="build" label="楼宇" width="180"></el-table-column>
@@ -49,11 +49,11 @@
 									<router-view class="relationshipAdd"></router-view>
 								    <router-view class="householdDetail"></router-view>
 								</div> -->
-								<!--<router-link :to="{name: 'RelationshipAdd'}">--><button class="add" @click="shangji('','','tianjia')">添加商机</button><!--</router-link>-->
+								<!--<router-link :to="{name: 'RelationshipAdd'}">--><button class="add" @click="shangji('0','0','tianjia')">添加商机</button><!--</router-link>-->
 								<el-table :data="tableDataBusiness" style="width: 100%">
 									<el-table-column prop="namec" label="客户姓名" width="180"></el-table-column>
 									<el-table-column prop="phone" label="联系方式" width="180"></el-table-column>
-									<el-table-column prop="visiting_way" label="来访方式"></el-table-column>
+									<el-table-column prop="visitingWay" label="来访方式"></el-table-column>
 									<el-table-column prop="clientType" label="客户类型"></el-table-column>
 									<el-table-column prop="areaNeed" label="需求面积(平方米)"></el-table-column>
 									<el-table-column prop="priceNeed" label="需求价格(元/月)"></el-table-column>
@@ -65,7 +65,7 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
-													<span @click="shangji(scope.$index,tableDataBusiness,'bianji')"><el-dropdown-item>查看</el-dropdown-item></span>
+													<span @click="shangji(scope.$index,tableDataBusiness,'chakan')"><el-dropdown-item>查看</el-dropdown-item></span>
 													<span  @click="shangji(scope.$index,tableDataBusiness,'gengxin')"><el-dropdown-item>更新</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -90,11 +90,11 @@
                         <el-tab-pane label="合同管理">
 
                             <div class="main">
-								<div>
+								<div  v-if="this.indexTable === '2'">
 									<router-view class="rent_contract_change"></router-view>
 								    <!-- <router-view class="householdDetail"></router-view> -->
 								</div>
-								<!--<router-link :to="{name: 'RelationshipAdd'}">--><button class="add">导入合同</button><!--</router-link>-->
+								<button class="add" @click="houseSource('0','0','add')">导入合同</button>
 								<el-table :data="tableDataContract" style="width: 100%">
 									<el-table-column prop="owner.name" label="客户姓名" width="180"></el-table-column>
 									<el-table-column prop="owner.phone" label="联系方式" width="180"></el-table-column>
@@ -111,8 +111,8 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
-													<router-link :to="{name:'Rent_contract_change'}"><el-dropdown-item>查看/修改</el-dropdown-item></router-link>
-													<!-- <el-dropdown-item>修改</el-dropdown-item> -->
+													<span @click="houseSource(scope.$index,tableDataContract,'watch')"><el-dropdown-item>查看</el-dropdown-item></span>
+													<span @click="houseSource(scope.$index,tableDataContract,'edit')"><el-dropdown-item>修改</el-dropdown-item></span>
                                                     <el-dropdown-item>导出</el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -147,41 +147,46 @@
                 <el-form :model="shuru" ref="shuru" label-width="130px" class="demo-shuru" size="mini" :disabled="edit">
                 
                     <el-form-item label="客户姓名:">
-                    <el-input v-model="upload.name" :placeholder="shuru.name"></el-input>
+                    <el-input v-model="upload.namec" :placeholder="shuru.namec"></el-input>
                     </el-form-item>
                     <el-form-item label="联系方式:">
                     <el-input v-model="upload.phone" :placeholder="shuru.phone"></el-input>
                     </el-form-item>
                     <el-form-item label="客户类别:">
-                    <el-input v-model="upload.type" :placeholder="shuru.type"></el-input>
+                    <el-input v-model="upload.clientType" :placeholder="shuru.clientType"></el-input>
                     </el-form-item>
-                    <el-form-item label="需求面积:" prop="roomArea">
-                    <el-input v-model="upload.roomArea" :placeholder="shuru.area">
+                    <el-form-item label="需求面积:" prop="areaNeed">
+                    <el-input v-model="upload.areaNeed" :placeholder="shuru.areaNeed">
                         <template slot="append">平方米</template>
                     </el-input>
                     </el-form-item>
                     <el-form-item label="需求价格:">
-                    <el-input v-model="upload.price" :placeholder="shuru.price">
+                    <el-input v-model="upload.priceNeed" :placeholder="shuru.priceNeed">
                         <template slot="append">元/月</template>
                     </el-input>
                     </el-form-item>
                     <el-form-item label="来访方式:">
-                    <el-input v-model="upload.visit" :placeholder="shuru.visit"></el-input>
+                    <el-input v-model="upload.visitingWay" :placeholder="shuru.visitingWay"></el-input>
                     </el-form-item>
                     <el-form-item label="来访时间:" >
-                    <el-input v-model="upload.time" :placeholder="shuru.time"></el-input>
+                    <el-input v-model="upload.visitTime" :placeholder="shuru.visitTime"></el-input>
                     </el-form-item>
-                    <el-form-item label="是否已看房">
-                    <el-input v-model="upload.watch" :placeholder="shuru.watch"></el-input>
+                    <el-form-item label="是否已看房:">
+                    <el-radio v-model="upload.seeHouse" label="0">否</el-radio>
+                    <el-radio v-model="upload.seeHouse" label="1">是</el-radio>
                     </el-form-item>
                     <el-form-item label="备注:">
-                    <el-input v-model="upload.remarks" :placeholder="shuru.remarks"  ></el-input>
+                    <el-input v-model="upload.comment" :placeholder="shuru.comment"  ></el-input>
                     </el-form-item>
                 </el-form>
-                <span slot="footer" class="dialog-footer">
+                <span slot="footer" class="dialog-footer" v-show="add">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="save">确 定</el-button>
+                    <el-button type="primary" @click="addChange()">确 定</el-button>
                 </span>
+                <!-- <span slot="footer" class="dialog-footer" v-show="editOne">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="addChange(1)">确 定</el-button>
+                </span> -->
 
             </el-dialog>
         </div>
@@ -199,10 +204,11 @@ export default {
             tanchuang:'查看商机',
             edit:true,
             dialogVisible: false,
-            
+            add:true,
+            editOne:false,
             modify:false,
             activeName: 'first',
-
+            indexTable:'0',
             //房源管理
 			pageNo: 1,
             pageSize: 10,
@@ -223,117 +229,102 @@ export default {
             pageSizesListContract: [1, 2, 3, 4, 5],
             tableDataContract: [],//返回的结果集合
             totalDataNumberContract: 400,//数据的总数,
-            
+            precinct:1,
+            id:'',
+            bb:1,
             //商机管理-查看
             shuru: 
             {
-                name: 'sdgh',
-                phone: '19848668654',
-                type: '门面房',
-                area: '60',
-                price: '20000',
-                visit: '电话',
-                time: '2018-07-16',
-                watch: '是',
-                remarks:''
+                namec: '请输入客户姓名',
+                phone: '请输入联系方式',
+                clientType: '请输入客户类别',
+                areaNeed: '请输入需求面积',
+                priceNeed: '请输入需求价格',
+                visitingWay: '请输入来访方式',
+                visitTime: '请输入来访时间',
+                comment:''
             },
             //商机管理-更新
             upload:{
-                name: '',
-                phone: ' ',
-                type: ' ',
-                area: ' ',
-                price: ' ',
-                visit: ' ',
-                time: ' ',
-                watch: ' ',
-                remarks:''
+                namec: '',
+                phone: '',
+                clientType: '',
+                area: '',
+                priceNeed: '',
+                visitingWay: '',
+                visitTime: '',
+                seeHouse: '0',
+                comment:''
             }
         }
     },
-    mountd:
-        function () {
-            var btn  = document.getElementById('btn');
-            var btnlist = btn.children;
-            for (var i = 0;i < btnlist.length;i++){
-                btn[i].index = i;
-                
-            }
-        },
+    
     mounted(){
         this.flndAllHousingResource(),
         this.flndAllBusiness(),
-        this.flndAllContract()
+        this.flndAllContract(),
+        this.nn()
     },
     methods:{
         changePosition() {
-            console.log(this.position)
+            // console.log(this.position)
 		},
 		handleClick(tab, event) {
-			console.log(tab, event);
+            // console.log(tab.index);
+            this.indexTable = tab.index
+            this.$router.push('/rent')
         },
-        save(){
-            var prospectiveCustomer={}
-            prospectiveCustomer.namec=upload.name
-            prospectiveCustomer.phone=upload.phone
-            prospectiveCustomer.clientType=upload.type
-            prospectiveCustomer.areaNeed=upload.roomArea
-            prospectiveCustomer.priceNeed=upload.price
-            prospectiveCustomer.visitingWay=upload.visit
-            prospectiveCustomer.visitingWay=upload.visit
-
-            this.$ajax.get(url + 'prospectiveCustomer/addProspectiveCustomer',prospectiveCustomer).then((res) => {
-                console.log(res)
-            })
-        },
+        
         //房源管理=>查询全部
         flndAllHousingResource(){
             this.$ajax.get(url + 'housingResource/flndAllHousingResource/'+this.pageNo+'/'+this.pageSize).then((res) => {
-                console.log(res)
+                
                 this.tableData=res.data.data.rows
                 this.totalDataNumber=res.data.data.records
             })
         },handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            // console.log(`每页 ${val} 条`);
             this.pageSize=val;
-            this.flndAllHousingResource()
+            this.display(this.bb)
         },handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            // console.log(`当前页: ${val}`);
             this.pageNo=val;
-            this.flndAllHousingResource()
+            // this.flndAllHousingResource()
+            this.display(this.bb)
         },
 
 
         //商机管理
         flndAllBusiness(){
-            this.$ajax.get(url + 'housingResource/flndAllHousingResource/'+this.pageNoBusiness+'/'+this.pageSizeBusiness).then((res) => {
-                console.log(res)
+            this.$ajax.get(url + 'prospectiveCustomer/flndAll/'+this.pageNoBusiness+'/'+this.pageSizeBusiness).then((res) => {
+                // console.log(res)
                 this.tableDataBusiness=res.data.data.rows
                 this.totalDataNumberBusiness=res.data.data.records
             })
         },handleSizeChangeBusiness(val) {
-            console.log(`每页 ${val} 条`);
+            // console.log(`每页 ${val} 条`);
             this.pageSizeBusiness=val;
             this.flndAllBusiness()
         },handleCurrentChangeBusiness(val) {
-            console.log(`当前页: ${val}`);
+            // console.log(`当前页: ${val}`);
             this.pageNoBusiness=val;
+
             this.flndAllBusiness()
         },
 
         //合同管理
         flndAllContract(){
             this.$ajax.get(url + 'contract/flndAll/'+this.pageNoContract+'/'+this.pageSizeContract).then((res) => {
-                console.log(res)
+                // console.log(res)
                 this.tableDataContract=res.data.data.rows
                 this.totalDataNumberContract=res.data.data.records
             })
         },handleSizeChangeContract(val) {
-            console.log(`每页 ${val} 条`);
+            // console.log(`每页 ${val} 条`);
             this.pageSizeContract=val;
             this.flndAllContract()
         },handleCurrentChangeContract(val) {
-            console.log(`当前页: ${val}`);
+            // console.log(`当前页: ${val}`);
             this.pageNoContract=val;
             this.flndAllContract()
         },
@@ -350,21 +341,123 @@ export default {
             let that = this;
             this.msg = msg;
             this.dialogVisible = true;
-            this.msg = msg;
-            if(this.msg == "bianji"){
+            
+            if(this.msg == "chakan"){
                 this.id = this.tableDataBusiness[index].id;
                 this.edit = true
-                console.log(this.id)
                 this.tanchuang = "查看详情"
+                this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
+                    console.log(res.data.data)
+                    this.upload = res.data.data
+                })
             }else if(this.msg == "gengxin"){
                 this.id = this.tableDataBusiness[index].id;
                 this.edit = false
-                console.log(this.id)
+                // console.log(this.id)
                 this.tanchuang = "更新商机"
-            }
-            else{
+                this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
+                    console.log(res.data.data)
+                    this.upload = res.data.data
+                })
+            }else{
+                this.edit = false,
                 this.tanchuang = "添加商机"
-                this.edit = false
+                this.upload = {
+                    seeHouse:'0'
+                }
+            }
+        },
+        // addShangji(){
+        //         this.upload = {},
+        //         this.tanchuang = "添加商机"
+        //         this.edit = false,
+        //         this.dialogVisible = true;
+        // },
+        //显示房源
+        display(precinct){
+            this.bb = precinct
+            // console.log(this.bb)
+            if (this.bb === 1){
+                this.flndAllHousingResource()
+                this.bb === 1;
+                // console.log(this.precinct)
+            }else if(this.bb === 2){
+                this.bb === 2;
+                this.$ajax.get(url + 'housingResource/selectOccupancy'+this.pageNo+'/'+this.pageSize).then(res => {
+                    // console.log(res)
+                    this.tableData=res.data.data.rows
+                    this.totalDataNumber=res.data.data.records
+                })
+            }else if(this.bb === 3){
+                this.bb === 3;
+                // console.log(this.bb)
+                this.$ajax.get(url + 'housingResource/selectUnleased'+this.pageNo+'/'+this.pageSize).then(res => {
+                    // console.log(res)
+                    this.tableData=res.data.data.rows
+                    this.totalDataNumber=res.data.data.records
+                })
+            }
+        },
+
+        //添加商机
+        addChange(){
+            var prospectiveCustomer={}
+            prospectiveCustomer.namec=this.upload.namec
+            prospectiveCustomer.phone=this.upload.phone
+            prospectiveCustomer.clientType=this.upload.clientType
+            prospectiveCustomer.areaNeed=this.upload.areaNeed
+            prospectiveCustomer.priceNeed=this.upload.priceNeed
+            prospectiveCustomer.visitingWay=this.upload.visitingWay
+            prospectiveCustomer.comment=this.upload.comment
+            if(this.msg === "tianjia"){
+                this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',{
+                    data:prospectiveCustomer
+                }).then(res => {
+                    alert('成功')
+                    this.dialogVisible = false
+                })
+            }else if(this.msg === "gengxin"){
+                this.$ajax.put(url+'prospectiveCustomer/updateProspectiveCustomer',
+                    {
+                        "namec":this.upload.namec,
+                        "phone":this.upload.phone,
+                        "clientType":this.upload.clientTyp,
+                        "areaNeed":this.upload.areaNeed,
+                        "priceNeed":this.upload.priceNeed,
+                        "visitingWay":this.upload.visitingWay,
+                        "id":this.id,
+                        "comment":this.upload.comment
+                    }
+                ).then(res => {
+                    alert('更新成功')
+                    this.dialogVisible = false
+                })
+            }else{
+                this.dialogVisible = false
+            }
+        },
+        //房源的添加和修改
+        houseSource(index,rows,msg){
+            if(msg == 'add'){
+            this.$router.push({name:'Rent_contract_change',query:{msg:msg}})
+            }else if(msg == 'watch'){
+                this.$router.push({name: 'Rent_contract_change',query:{id:this.tableDataContract[index].id,msg:msg}})
+            }else if(msg == 'edit'){
+                this.$router.push({name: 'Rent_contract_change',query:{id:this.tableDataContract[index].id,msg:msg}})
+            }
+        },
+        nn(){
+            var card = document.getElementById("btn");
+            var cardlist = card.children;
+
+            for (var i = 0; i < cardlist.length; i++){
+                cardlist[i].index = i;
+                cardlist[i].onclick = function() {
+                    for (var m = 0; m <cardlist.length; m++){
+                        cardlist[m].className = "";
+                    }
+                    this.className = "active"
+                }
             }
         }
         
@@ -446,5 +539,9 @@ export default {
     border: 1px solid rgb(217, 217, 217);
     color: rgb(138, 138, 138);
     border-radius: 5px;
+}
+.active {
+  border: 1px solid #32a8ee !important;
+  color: #32a8ee !important;
 }
 </style>

@@ -6,7 +6,9 @@
             <div class="input">
             <el-form :model="addCustomer" :rules="rules" ref="addCustomer" label-width="130px" size="small" class="demo-addCustomer" :disabled="edit">
                <el-form-item label="关联房屋:" prop="selectRoom">
-                   <el-input v-model="addCustomer.selectRoom" placeholder="关联房屋" :disabled="true"></el-input>
+                   <div class="block">
+                   <el-cascader expand-trigger="hover" :options="options" v-model="addCustomer.selectRoom" @change="handleChange"></el-cascader>
+                   </div>
                 </el-form-item>
 
                 <el-form-item label="姓名:" prop="name">
@@ -220,16 +222,16 @@ export default {
       },
       sa(){
         // console.log(this.roomid)
-            this.$ajax.get(url + 'room/flndByClientId'+'').then(res => {
+            this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
                 // console.log(res.data)
                 // console.log(res)
                 this.options=res.data;
                
             })
             this.$ajax.get(url + 'owner/get/'+this.id+'/'+this.roomid+'').then(res => {
-                console.log(res.data.sexs)
-                this.addCustomer.name=res.data.name;
-                //this.addCustomer.selectRoom=res.data.buildingName+res.data.roomNumber;
+              this.addCustomer.name=res.data.name;
+                this.addCustomer.selectRoom=[res.data.precinct, res.data.buildings, res.data.roomid];
+                console.log(this.addCustomer.selectRoom)
                 this.addCustomer.radio=res.data.sexs;
                 this.addCustomer.nationality=res.data.nationality;
                 this.addCustomer.nation=res.data.nation;
@@ -243,7 +245,8 @@ export default {
                 this.addCustomer.contact=res.data.linkman;
                 this.addCustomer.contactPhone=res.data.linkphone;
                 this.addCustomer.address=res.data.address;
-                 this.addCustomer.fax=res.data.fax;
+                this.addCustomer.fax=res.data.fax;
+                
             })
             if(this.$route.query.bian==="qq"){
               this.name = "编辑",
@@ -286,7 +289,7 @@ export default {
             this.$ajax.put(url+"owner/update",owner
             ).then((res) => {
                 this.form = res.data
-				        // console.log(this.form);
+				        console.log(this.form);
             })
         },
         goBack(){
