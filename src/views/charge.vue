@@ -8,21 +8,21 @@
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane label="收费参数" name="first">
                             <div class="main">
-								<button class="add" @click="qingkong(1)">新增收费项目</button>
+								<button class="add" @click="addNewProject">新增收费项目</button>
 								<el-table :data="charge" style="width: 100%">
 									<el-table-column prop="name" label="名称" width="280"></el-table-column>
 									<el-table-column prop="charge" label="收费项目" width="280"></el-table-column>
 									<el-table-column prop="meter" label="仪表种类"></el-table-column>
-                                    <el-table-column prop="remark" label="备注" width="280"></el-table-column>
+                    <el-table-column prop="remark" label="备注" width="280"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
 												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
+                              操作<i class="el-icon-arrow-down el-icon--right"></i>
+                          </span>
 												<el-dropdown-menu slot="dropdown">
 													
-											        <span @click="tanchaung(scope.$index, charge)"><el-dropdown-item>编辑</el-dropdown-item></span>
+											        <span @click="tanchaung(scope.$index, charge,2)"><el-dropdown-item>编辑</el-dropdown-item></span>
 													<span @click="chargeDelete(scope.$index, charge)"><el-dropdown-item>删除</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -41,22 +41,22 @@
                         <el-tab-pane label="仪表管理">
 
                              <div class="main">
-								<button class="add" @click="luru">录入数据</button>
+								<button class="add" @click="luru('','','add')">录入数据</button>
 								<el-table :data="meter" style="width: 100%">
 									<el-table-column prop="roomType" label="房屋类型"></el-table-column>
 									<el-table-column prop="build" label="楼宇"></el-table-column>
 									<el-table-column prop="roomNum" label="房号"></el-table-column>
 									<el-table-column prop="payItemName" label="收费项目"></el-table-column>
-									<el-table-column prop="payMonth" label="月份"></el-table-column>
+									<el-table-column prop="payMonth" label="收款日期"></el-table-column>
 									<el-table-column prop="univalence" label="单价"></el-table-column>
-									<el-table-column prop="currentRead" label="起度"></el-table-column>
-                                    <el-table-column prop="lastRead" label="止度"></el-table-column>
+									<el-table-column prop="lastRead" label="起度"></el-table-column>
+                                    <el-table-column prop="currentRead" label="止度"></el-table-column>
                                     <el-table-column prop="use" label="用量"></el-table-column>
                                     <el-table-column prop="orderPrice" label="费用"></el-table-column>
                                     <el-table-column prop="remark" label="备注"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
-											<span ><button @click="entryChange = true">编辑</button></span>
+											<span ><button @click="editThis(scope.$index,meter)">编辑</button></span>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -107,16 +107,12 @@
                         </el-form-item>
                         <el-form-item label="费用项目类型:">
                             <el-select v-model="add.payItemId" placeholder="请选择费用项目类型">
-                                <el-option label="常规费用" value="180723BR7M3G986W"></el-option>
-                                <el-option label="抄表费用" value="180723BR8PBFT354"></el-option>
-                                <el-option label="临时费用" value='180723BRAS3GHR68'></el-option>
+                                <el-option v-for="item in payItems" :label="item.name" :value="item.id" :key="item.id"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="仪表种类:">
-                            <el-select v-model="add.type" placeholder="请选择仪表种类">
-                                <el-option label="水表" value="180723BRCZ4C6YK4"></el-option>
-                                <el-option label="电表" value="180723BRFX75P6FW"></el-option>
-                                <el-option label="燃气表" value="180723BRGGG34H94"></el-option>
+                            <el-select v-model="add.type" placeholder="请选择费用项目类型">
+                                <el-option v-for="item in types" :label="item.name" :value="item.id" :key="item.id"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="备注:">
@@ -124,7 +120,11 @@
                         </el-form-item>
                     </el-form>
                 </div>
-                <span slot="footer" class="dialog-footer">
+                <span slot="footer" class="dialog-footer" v-show="addNewOne">
+                    <el-button @click="news= false">取 消</el-button>
+                    <el-button type="primary" @click="submit">确 定</el-button>
+                </span>
+                <span slot="footer" class="dialog-footer" v-show="changeOne">
                     <el-button @click="news= false">取 消</el-button>
                     <el-button type="primary" @click="createPayItem">确 定</el-button>
                 </span>
@@ -168,22 +168,28 @@
 
             <!-- 仪表管理-录入 -->
             <el-dialog
-                title="录入"
+            :title="this.name"
                 :visible.sync="entry"
                 width="30%" :model="entrydata">
                 <div class="tanchuang">
                     <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
-                        <el-form-item label="关联房屋:">
-                            <el-select v-model="entrydata.houseType">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
+                    <el-form-item label="关联房屋：" prop="house">
+                    <el-cascader expand-trigger="hover" :options="options" v-model="entrydata.houseType" @change="handleChange"></el-cascader>
+                    </el-form-item>
+                        <el-form-item label="收费项目:">
+                            <el-select v-model="entrydata.charge" placeholder="请选择费用项目类型">
+                                <el-option v-for="item in charges" :label="item.payItemMeterName" :value="item.id" :key="item.id"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="收费项目:">
-                            <el-select v-model="entrydata.charge">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
+                        <el-form-item label="录入时间:">
+                            <el-date-picker
+                              v-model="entrydata.time"
+                              type="date"
+                              placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="单价:">
+                            <el-input v-model="entrydata.univalence"></el-input>
                         </el-form-item>
                         <el-form-item label="起度:">
                             <el-input v-model="entrydata.start"></el-input>
@@ -198,13 +204,13 @@
                 </div>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="entry = false">取 消</el-button>
-                    <el-button type="primary" @click="entry = false">确 定</el-button>
+                    <el-button type="primary" @click="submitIn">确 定</el-button>
                 </span>
 
             </el-dialog>
 
             <!-- 仪表管理-编辑 -->
-            <el-dialog
+            <!-- <el-dialog
                 title="编辑"
                 :visible.sync="entryChange"
                 width="30%" :model="changedata">
@@ -238,7 +244,7 @@
                     <el-button type="primary" @click="entryChange = false">确 定</el-button>
                 </span>
 
-            </el-dialog>
+            </el-dialog> -->
         </div>
     </div>
 </template>
@@ -274,7 +280,8 @@ export default {
       pageSize2: 2,
       pageSizes2: [1, 2, 3, 4, 5],
       totalData2: 400, //customerMsg数据的总数,
-
+      addNewOne: true,
+      changeOne: false,
       name: "新建",
       modify: false,
       activeName: "first",
@@ -303,6 +310,10 @@ export default {
         type: "",
         remarks: ""
       },
+      payItems:[
+
+      ],
+      types:[],
       //收费参数-编辑
       upload: {
         name: "",
@@ -310,14 +321,99 @@ export default {
         type: " ",
         remarks: ""
       },
+      
       //仪表管理-录入
       entrydata: {
         houseType: "店铺",
         charge: "电表",
         start: "6000",
+        univalence:"1.1",
         end: "6500",
-        remarks: ""
+        remarks: "",
+        time: ""
       },
+      options: [
+          {
+          value: 'bangongqu',
+          label: '办公区',
+          children: [{
+              value: 'Azuo',
+              label: 'A座',
+              children: [{
+                value: '101',
+                label: '101'
+              }, {
+                value: '102',
+                label: '102'
+              }, {
+                value: '103',
+                label: '103'
+              }, {
+                value: '104',
+                label: '104'
+              },
+              {
+                value: '105',
+                label: '105'
+              }]
+          }, 
+          {
+            value: 'Bzuo',
+            label: 'B座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          },{
+            value: 'Czuo',
+            label: 'C座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          }]
+        },{
+          value: 'yanjiedianpu',
+          label: '沿街店铺',
+          children: [{
+            value: 'axure',
+            label: 'Axure Components'
+          }, {
+            value: 'sketch',
+            label: 'Sketch Templates'
+          }, {
+            value: 'jiaohu',
+            label: '组件交互文档'
+          }]
+        }],
+        name:"录入",
+      charges:[],
       //仪表管理-编辑
       changedata: {
         houseType: "店铺",
@@ -333,7 +429,12 @@ export default {
     };
   },
   mounted() {
-    this.nn(), this.getCharge(), this.getMeter(), this.Cost();
+    this.nn(), this.getCharge(), this.getMeter(), this.Cost(),
+    this.getPayItems(),
+    this.getType(),
+    this.getCharges(),
+    this.getOptions()
+    ;
   },
 
   //选项卡
@@ -344,7 +445,7 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
-
+    
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.pageSize = val;
@@ -394,6 +495,22 @@ export default {
           console.log(res.data);
         });
     },
+    getPayItems(){
+      this.$ajax.get(url+"pay/queryPayItemAll")
+      
+      .then(res =>{
+        this.payItems=res.data.data
+        console.log(this.payItems)
+      })
+    },
+    getType(){
+      this.$ajax.get(url+"pay/queryMeterAll")
+      
+      .then(res =>{
+        this.types=res.data.data
+        console.log(this.types)
+      })
+    },
     //删除
     chargeDelete(index, rows) {
       let that = this;
@@ -410,40 +527,77 @@ export default {
           this.getCharge();
         });
     },
+    getOptions(){
+      this.$ajax.get(url + 'room/flndByClientId/aaa')
+      
+      .then(res => {
+          this.options=res.data;
+      })
+    },
     //弹窗
-    tanchaung(index, rows) {
-      let that = this;
-      that.id = this.charge[index].id;
-      console.log(this.id);
-      this.news = true;
-      if (that.id !== "") {
-        this.name = "编辑";
-        this.$ajax
-          .get(url + "pay/queryPayItemMeter", {
-            params: {
-              payItemMeterId: this.id
-            }
-          })
-          .then(res => {
-            console.log(res);
-            var temp = res.data.data;
-            this.add = temp;
-            this.add.payItemId = temp.payItemId;
-            this.add.type = temp.meterId;
-            this.add.remarks = temp.remark;
-            this.add.name = temp.name;
-          });
+    tanchaung(index, rows, msg) {
+      if (msg === 2) {
+        let that = this;
+        (this.addNewOne = false),
+          (this.changeOne = true),
+          (that.id = this.charge[index].id);
+        console.log(this.id);
+        this.news = true;
+        if (that.id !== "") {
+          this.name = "编辑";
+          this.$ajax
+            .get(url + "pay/queryPayItemMeter", {
+              params: {
+                payItemMeterId: this.id
+              }
+            })
+            .then(res => {
+              console.log(res);
+              var temp = res.data.data;
+              this.add = temp;
+              this.add.payItemId = temp.payItemId;
+              this.add.type = temp.meterId;
+              this.add.remarks = temp.remark;
+              this.add.name = temp.name;
+            });
+        }
       }
     },
-    qingkong() {
-      (this.name = "添加"), (this.add = {});
-      this.news = true;
+    addNewProject() {
+      (this.add = {}),
+      (this.addNewOne = false),
+      (this.changeOne = true),
+      (this.news = true);
     },
     luru() {
+  
+      
       this.entrydata = {};
       this.entry = true;
+      this.name = "录入"
+      
+      
     },
+    editThis(index,rows){
+      this.entrydata = {};
+      this.entry = true;
+      this.name = "编辑"
+      that.id = this.meter[index].id;
+      // console.log(this.meter[index])
+      this.$ajax.get(url + '')
+    },
+    entry(){
+      var payMeterVO={};
+      payMeterVO.payItemMeterId = this.entrydata.charge;
+      payMeterVO.roomId=this.entrydata.houseType;
+      payMeterVO.univalence=this.entrydata.univalence;
+      payMeterVO.currentRead=this.entrydata.end;
+      payMeterVO.lastRead=this.entrydata.start;
+      payMeterVO.payMonth=this.entrydata.time;
+      payMeterVO.remake=this.entrydata.remarks;
+      console.log(payMeterVO);
 
+    },
     createPayItem() {
       var payItemVO = {};
       payItemVO.payItemMeterId = this.id;
@@ -458,6 +612,19 @@ export default {
         this.news = false;
       });
     },
+    //新增收费参数
+    submit() {
+      var payItemVO = {};
+      payItemVO.payItemMeterId = this.id;
+      payItemVO.payItemId = this.add.payItemId;
+      payItemVO.meterId = this.add.type;
+      payItemVO.payItemMeterName = this.add.name;
+      payItemVO.remake = this.add.remarks;
+      this.$ajax.post(url + "", payItemVO);
+    },
+    createInstrument(){
+      
+    },
     //应收费用
     Cost() {
       this.$ajax
@@ -466,7 +633,7 @@ export default {
             payItem: this.shouldId,
             page: this.currentPage2,
             pageSize: this.pageSize2
-          },
+          }
         })
         .then(res => {
           console.log(res);
@@ -488,6 +655,14 @@ export default {
           this.meter = res.data.data.rows;
           this.totalData1 = res.data.data.records;
         });
+    },
+    getCharges(){
+       this.$ajax.get(url+"pay/getPayItemMeterName")
+       
+       .then(res =>{
+        this.charges=res.data.data;
+        console.log(this.charges);
+       });
     },
     //
     //常规
@@ -540,6 +715,9 @@ export default {
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
+    },
+    submitIn(){
+      this.$ajax.post(url + '')
     },
     nn() {
       var card = document.getElementById("card");
