@@ -1,41 +1,24 @@
 <template>
-    <div class="department">
-        <nav-bar/>
-        <div class="container">
+  <div class="department">
+    <nav-bar/>
+    <div class="container">
             
-        <nav-header></nav-header>
-        <div class="card row">
-            <div class="col-md-12">
-                <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <!--组织机构-->
-                    <!-- <el-tab-pane label="组织机构">
-                        <ul>
-                            <el-tree :data="data5" show-checkbox="" node-key="id" default-expand-all :expand-on-click-node="false">
-                                <span class="custom-tree-node" slot-scope="{ node, data }">
-                                    <span>{{ node.label }}</span>
-                                    <span>
-                                    <el-button type="text" size="mini" @click="() => append(data)">
-                                        Append
-                                    </el-button>
-                                    <el-button type="text" size="mini" @click="() => remove(node, data)">
-                                        Delete
-                                    </el-button>
-                                    </span>
-                                </span>
-                            </el-tree>
+      <nav-header></nav-header>
+      <div class="card row">
+        <div class="col-md-12">
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <!--部门管理-->
+            <el-tab-pane label="部门管理">
+                <manage-name></manage-name>
+            </el-tab-pane>
 
-                        </ul>
-                    </el-tab-pane> -->
-                    <!--部门管理-->
-                    <el-tab-pane label="部门管理">
-                        <manage-name></manage-name>
-                    </el-tab-pane>
-
-                    <!--职员信息-->
-                    <el-tab-pane label="职员信息" name="second">
-                        <div class="main">
-                            <button @click="add = !add">+ 添加新员工</button><button @click="isShow = !isShow">导入</button><button class="shanchu" @click="allDelete">删除</button>
-                                <el-table :data="tableData" style="width: 100%" @selection-change="handleSelectionChange">
+            <!--职员信息-->
+            <el-tab-pane label="职员信息" name="second">
+              <div class="main">
+                <button @click="add = !add">+ 添加新员工</button>
+                <button @click="isShow = !isShow">导入</button>
+                <button class="shanchu" @click="allDelete">删除</button>
+                <el-table :data="tableData" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="name" label="姓名" width="180"></el-table-column>
 									<el-table-column prop="phone" label="手机号" width="180"></el-table-column>
@@ -45,11 +28,11 @@
 									<el-table-column prop="cname" label="部门"></el-table-column>
 									<el-table-column prop="remark" label="备注"></el-table-column>
 									<el-table-column>
-										<template slot-scope="scope">
+                    <template slot-scope="scope">
 											<el-dropdown>
 												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
+                          操作<i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
 												<el-dropdown-menu slot="dropdown">
 													<span @click="toUserEdit(scope.$index, tableData)"><el-dropdown-item>编辑</el-dropdown-item></span>
 													<span @click="deleteRow(scope.$index, tableData)"><el-dropdown-item>删除</el-dropdown-item></span>
@@ -58,30 +41,24 @@
 										</template>
 									</el-table-column>
 								</el-table>
-                            <div class="fenye">
+                <div class="fenye">
 									<el-pagination
-                                        @size-change="handleSizeChange"
-                                        @current-change="handleCurrentChange"
-                                        :current-page="pageNo"
-                                        :page-sizes="pageSizesList"
-                                        :page-size="pageSize"
-                                        layout="total, sizes, prev, pager, next, jumper"
-                                        :total="totalDataNumber">
-                                    </el-pagination>
-                                    <!--size-change, pageSize 改变时会触发 -->
-                                    <!-- current-change	currentPage 改变时会触发 -->
-                                    <!-- current-page	当前页数，支持 .sync 修饰符 -->
-                                    <!-- page-sizes	每页显示个数选择器的选项设置 -->
-                                    <!-- layout	组件布局，子组件名用逗号分隔 -->
-                                    <!-- total	总条目数 -->
+                      @size-change="handleSizeChange"
+                      @current-change="handleCurrentChange"
+                      :current-page="pageNo"
+                      :page-sizes="pageSizesList"
+                      :page-size="pageSize"
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :total="totalDataNumber">
+                  </el-pagination>
 								</div>
-                        </div>
-                    </el-tab-pane>
-                    <!--往来单位-->
-                    <el-tab-pane label="往来单位">
-                        <div class="main">
-                            <button @click="contact = !contact">+ 添加联系人</button><button @click="isExcelShow = !isExcelShow">导入</button><button @click="deleteAll">删除</button>
-                            <el-table :data="tableData1" style="width: 100%" @selection-change="handleSelectionChange">
+              </div>
+            </el-tab-pane>
+            <!--往来单位-->
+            <el-tab-pane label="往来单位">
+              <div class="main">
+                <button @click="contact = !contact">+ 添加联系人</button><button @click="isShow = !isShow">导入</button><button @click="test">删除</button>
+                <el-table :data="tableData1" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="btypeName" label="单位名称" width="180"></el-table-column>
 									<el-table-column prop="type" label="部门" width="180"></el-table-column>
@@ -94,320 +71,223 @@
 										<template slot-scope="scope">
 											<el-dropdown>
 												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
+                          操作<i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
 												<el-dropdown-menu slot="dropdown">
-													<el-dropdown-item><button @click="toBtypeEdit(scope.$index, tableData1)">编辑</button></el-dropdown-item>
-													<el-dropdown-item><button @click="deleteRowB(scope.$index, tableData1)">删除</button></el-dropdown-item>
+													<el-dropdown-item>房屋操作</el-dropdown-item>
+													<el-dropdown-item>编辑</el-dropdown-item>
+													<el-dropdown-item><button @click="deleteRowB(scope.$index, tableData)">删除</button></el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
 									</el-table-column>
 								</el-table>
-                                <div class="fenye">
+                <div class="fenye">
 									<el-pagination
-                                        @size-change="handleSizeChangeB"
-                                        @current-change="handleCurrentChangeB"
-                                        :current-page="pageNoB"
-                                        :page-sizes="pageSizesListB"
-                                        :page-size="pageSizeB"
-                                        layout="total, sizes, prev, pager, next, jumper"
-                                        :total="totalDataNumberB">
-                                    </el-pagination>
-                                    <!--size-change, pageSize 改变时会触发 -->
-                                    <!-- current-change	currentPage 改变时会触发 -->
-                                    <!-- current-page	当前页数，支持 .sync 修饰符 -->
-                                    <!-- page-sizes	每页显示个数选择器的选项设置 -->
-                                    <!-- layout	组件布局，子组件名用逗号分隔 -->
-                                    <!-- total	总条目数 -->
+                      @size-change="handleSizeChangeB"
+                      @current-change="handleCurrentChangeB"
+                      :current-page="pageNoB"
+                      :page-sizes="pageSizesListB"
+                      :page-size="pageSizeB"
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :total="totalDataNumberB">
+                  </el-pagination>
 								</div>
-                        </div>
-                    </el-tab-pane>
-                </el-tabs>
-            </div>   
-        </div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>   
+      </div>
 
 
         <!-- 职员信息-编辑 -->
-        <el-dialog
-            title="编辑员工"
-            :visible.sync="zhiyuan"
-            width="30%">
-            <ul class="shuru">
-                        <li>
-                            <label for="name">姓名:</label>
-                            <input id="name"  placeholder="请输入姓名" v-model="addpersonEdit.name">
-                        </li>
-                        <li>
-                            <label for="nickname">昵称:</label>
-                            <input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname">
-                        </li>
-                        <li>
-                            <label for="phone">手机号:</label>
-                            <input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number">
-                        </li>
-                        <li>
-                            <label for="mima">密码:</label>
-                            <input id="mima" type="password" placeholder="请输入密码" v-model="addpersonEdit.mima">
-                        </li>
-                        <li>
-                            <label for="wechat">微信号:</label>
-                            <input id="wechart" placeholder="请输入微信号" v-model="addpersonEdit.wechat">
-                        </li>
-                        <li>
-                            <label for="email">邮箱:</label>
-                            <input id="email" placeholder="请输入邮箱" v-model="addpersonEdit.email">
-                        </li>
-                        <li>
-                            <label for="position">角色:</label>
-                            <select id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
-                                <option v-for="items in options" :key="items.id" :value="items.id" :label="items.name"></option>
-                            </select>
-                        </li>
-                        <li>
-                            <label for="gangwei">岗位:</label>
-                            <select id="gangwei" placeholder="请输入岗位" v-model="addpersonEdit.gangwei">
-                                <option value="180717116472055595008">总经理</option>
-                                <option value="180717124465488855040">adaf</option>
-                            </select>
-                        </li>
-                        <li>
-                            <label for="remark">备注:</label>
-                            <input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu">
-                        </li>
-                    </ul>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="zhiyuan = false">取 消</el-button>
-                <el-button type="primary" @click="editUser()">确 定</el-button>
-            </span>
-        </el-dialog>
-            <!--导入弹窗-->
-            <el-dialog
-                    title="导入"
-                    :visible.sync="isShow"
-                    width="30%">
-                    <div class="put">
-                        <p>导入设置:</p>
-                        <form>
-                            <ul class="shuju">
-                                <li>
-                                    <el-radio v-model="radio" label="0">重复数据不导入</el-radio>
-                                    </li>
-                                <li>
-                            <el-radio v-model="radio" label="1">重复数据覆盖</el-radio>
-                             </li>
-                            </ul>
-                        </form>
-                        <div class="upload">
-                            <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
-                             </div>
-                        <div>{{this.file}}</div>
-                        </div>
-                        
-                        <div>
-                            <p>如何导入通讯录</p>
-                                <ul class="liebiao">
-                                 <li class="how">数据导入采用Excel表格导入</li>
-                                 <li>1、不支持Excel公式导入，尽量去除所有文字和表格样式</li>
-                                 <li>2、只支持工作表1导入</li>
-                                 <li>3、请点击下载微小区实例</li>
-                                 <li>4、如需导入时间，时间格式必须为YYYY-MM-DD(例如：2016-01-01)</li>
-                                 <li class="how">必须项目(必须项目不能为空且不能重复)</li>
-                                 <li>姓名</li>
-                                 <li>手机号（必须是手机格式且不能重复）</li>
-                                 <li>密码不得带‘.’（小数点）</li>
-                                 <li>部门（必须与组织架构对应）</li>
-                                 <li>选填项目（选填项目可以为空）</li>
-                                 <li>微信（填写员工微信号）</li>
-                                 <li>昵称（填写员工昵称）</li>
-                                 <li>职位（填写员工职位）</li>
-                                 <li>备注</li>
-                            </ul>
-                        </div>
-                        <div class="footer1">
-                            <button class="confirm" @click="submit">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
-                        </div>
-                </el-dialog>
-
-                <!--往来单位导入弹窗-->
-            <el-dialog
-                    title="导入"
-                    :visible.sync="isExcelShow"
-                    width="30%">
-                    <div class="put">
-                        <p>导入设置:</p>
-                        <form>
-                            <ul class="shuju">
-                                <li>
-                                    <el-radio v-model="radioBtype" label="0">重复数据不导入</el-radio>
-                                    </li>
-                                <li>
-                            <el-radio v-model="radioBtype" label="1">重复数据覆盖</el-radio>
-                             </li>
-                            </ul>
-                        </form>
-                        <div class="upload">
-                            <span>选择excel上传：</span><div class="file"><input type="file" @change="getBtypePath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
-                             </div>
-                        <div>{this.fileBtype}</div>
-                        </div>
-                        
-                        <div>
-                            <p>如何导入通讯录</p>
-                                <ul class="liebiao">
-                                 <li class="how">数据导入采用Excel表格导入</li>
-                                 <li>1、不支持Excel公式导入，尽量去除所有文字和表格样式</li>
-                                 <li>2、只支持工作表1导入</li>
-                                 <li>3、请点击下载微小区实例</li>
-                                 <li>4、如需导入时间，时间格式必须为YYYY-MM-DD(例如：2016-01-01)</li>
-                                 <li class="how">必须项目(必须项目不能为空且不能重复)</li>
-                                 <li>姓名</li>
-                                 <li>手机号（必须是手机格式且不能重复）</li>
-                                 <li>部门（必须与组织架构对应）</li>
-                                 <li>选填项目（选填项目可以为空）</li>
-                                 <li>微信（填写员工微信号）</li>
-                                 <li>昵称（填写员工昵称）</li>
-                                 <li>职位（填写员工职位）</li>
-                                 <li>备注</li>
-                            </ul>
-                        </div>
-                        <div class="footer1">
-                            <button class="confirm" @click="submitBtype">确定</button><button class="cancel" @click="isExcelShow = !isExcelShow">取消</button>
-                        </div>
-                </el-dialog>
-            <!--添加新员工弹窗-->
-            <el-dialog
-                title="添加新员工"
-                :visible.sync="add"
-                width="30%">
-                    <el-form  :model="addperson" ref="addperson" label-width="80px" size="small" class="chuang">
-                        <el-form-item label="姓名:">
-                            <el-input placeholder="请输入姓名" v-model="addperson.name"></el-input>
-                        </el-form-item>
-                        <el-form-item label="昵称:">
-                            <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
-                        </el-form-item>
-                        <el-form-item label="手机号:">
-                            <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
-                        </el-form-item>
-                        <el-form-item label="密码:">
-                            <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
-                        </el-form-item>
-                        <el-form-item label="微信号:">
-                            <el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
-                        </el-form-item>
-                        <el-form-item label="邮箱:">
-                            <el-input id="email" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
-                        </el-form-item>
-                        <el-form-item label="角色:">
-                            <el-select  id="position" placeholder="请输入职位" v-model="addperson.position">
-                                <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="岗位:">
-                            <el-select  id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei">
-                                <el-option label="总经理" value=180717116472055595008>总经理</el-option>
-                                <el-option label="adaf" value=180717124465488855040>adaf</el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="备注:">
-                            <el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <div class="footer">
-                            <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="add = !add">取消</button>
-                        </div>
-            </el-dialog>
-            <!--外部联系人-->
-            <el-dialog
-                title="添加外部联系人"
-                :visible.sync="contact"
-                width="30%">
-                <el-form ref="form" :model="btype" label-width="80px" size="small" class="chuang">
-                <el-form-item label="单位名称:">
-                            <el-input id="btypeName"  placeholder="请输入单位" v-model="btype.btypeName"></el-input>
-                </el-form-item>
-                <el-form-item label="行业:">
-                            <el-input id="type" placeholder="请输入行业" v-model="btype.type"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名:">
-                            <el-input id="linkman" placeholder="请输入姓名" v-model="btype.linkman"></el-input>
-                </el-form-item>
-                <el-form-item label="职务:">
-                            <el-input id="business" placeholder="请输入职务" v-model="btype.business"></el-input>
-                </el-form-item>
-                <el-form-item label="联系电话:">
-                            <el-input id="phone" placeholder="请输入联系电话" v-model="btype.phone"></el-input>
-                </el-form-item>
-                <el-form-item label="地址:">
-                            <el-input id="address" placeholder="请输入地址" v-model="btype.address"></el-input>
-                </el-form-item>
-                <el-form-item label="备注:">
-                            <el-input id="remark" placeholder="请输入备注" v-model="btype.remark"></el-input>
-                </el-form-item>
-                </el-form>
-                <div class="footer">
-                            <button class="confirm" @click="addBtype">确定</button><button class="cancel" @click="contact = !contact">取消</button>
-                </div>
-            </el-dialog>
-
-            <!-- 往来单位-编辑 -->
-            <el-dialog
-                title="编辑往来单位"
-                :visible.sync="wanglai"
-                width="30%">
-                <ul class="shuru">
-                            <li>
-                                <label for="btypeName">单位名称:</label>
-                                <input id="btypeName"  placeholder="请输入单位名称" v-model="addbtypeEdit.btypeName">
-                            </li>
-                            <li>
-                                <label for="type">行业:</label>
-                                <input id="type" placeholder="请输入行业" v-model="addbtypeEdit.type">
-                            </li>
-                            <li>
-                                <label for="linkman">姓名:</label>
-                                <input id="linkman" placeholder="请输入姓名" v-model="addbtypeEdit.linkman">
-                            </li>
-                            <li>
-                                <label for="business">职务:</label>
-                                <input id="business" placeholder="请输入职务" v-model="addbtypeEdit.business">
-                            </li>
-                            <li>
-                                <label for="phone">联系电话:</label>
-                                <input id="phone" placeholder="请输入联系电话" v-model="addbtypeEdit.phone">
-                            </li>
-                            <li>
-                                <label for="address">地址:</label>
-                                <input id="address" placeholder="请输入地址" v-model="addbtypeEdit.address">
-                            </li>
-                            <li>
-                                <label for="remark">备注:</label>
-                                <input id="remark" placeholder="请输入邮箱" v-model="addbtypeEdit.remark">
-                            </li>
-                        </ul>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="wanglai = false">取 消</el-button>
-                    <el-button type="primary" @click="editBtype()">确 定</el-button>
-                </span>
-            </el-dialog>
-
-            <!--修改-->
-            <div class="xiugai" v-show="modify">
-                <div class="modal-content">
-                    <div class="atitle">
-                        <span class="close" @click="modify = !modify">&times;</span>
-                        <p>添加部门</p>
-                    </div>
-                    <div class="body">
-                        部门名称 <input type="text" v-model="position" @keyup="changePosition">
-                    </div>
-                    <div class="footer">
-                        <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="modify = !modify">取消</button>
-                    </div>
-                </div>
-            </div>
+      <el-dialog
+        title="编辑员工"
+        :visible.sync="zhiyuan"
+        width="30%">
+        <ul class="shuru">
+          <li>
+              <label for="name">姓名:</label>
+              <input id="name"  placeholder="请输入姓名" v-model="addpersonEdit.name">
+          </li>
+          <li>
+              <label for="nickname">昵称:</label>
+              <input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname">
+          </li>
+          <li>
+              <label for="phone">手机号:</label>
+              <input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number">
+          </li>
+          <li>
+              <label for="mima">密码:</label>
+              <input id="mima" type="password" placeholder="请输入密码" v-model="addpersonEdit.mima">
+          </li>
+          <li>
+              <label for="wechat">微信号:</label>
+              <input id="wechart" placeholder="请输入微信号" v-model="addpersonEdit.wechat">
+          </li>
+          <li>
+              <label for="email">邮箱:</label>
+              <input id="email" placeholder="请输入邮箱" v-model="addpersonEdit.email">
+          </li>
+          <li>
+              <label for="position">角色:</label>
+              <select id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
+                  <option value="180717116472055595008">总经理</option>
+                  <option value="180717124465488855040">adaf</option>
+              </select>
+          </li>
+          <li>
+              <label for="gangwei">岗位:</label>
+              <input id="gangwei"  placeholder="请输入岗位" v-model="addpersonEdit.gangwei">
+          </li>
+          <li>
+              <label for="remark">备注:</label>
+              <input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu">
+          </li>
+        </ul>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="zhiyuan = false">取 消</el-button>
+            <el-button type="primary" @click="editUser()">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!--导入弹窗-->
+      <el-dialog
+        title="导入"
+        :visible.sync="isShow"
+        width="30%">
+        <div class="put">
+          <p>导入设置:</p>
+          <form>
+            <ul class="shuju">
+              <li>
+                <el-radio v-model="radio" label="0">重复数据不导入</el-radio>
+              </li> 
+              <li>
+                <el-radio v-model="radio" label="1">重复数据覆盖</el-radio>
+              </li>
+            </ul>
+          </form>
+          <div class="upload">
+            <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
+          </div>
+          <div>{{this.file}}</div>
         </div>
+                    
+        <div>
+          <p>如何导入通讯录</p>
+          <ul class="liebiao">
+            <li class="how">数据导入采用Excel表格导入</li>
+            <li>1、不支持Excel公式导入，尽量去除所有文字和表格样式</li>
+            <li>2、只支持工作表1导入</li>
+            <li>3、请点击下载微小区实例</li>
+            <li>4、如需导入时间，时间格式必须为YYYY-MM-DD(例如：2016-01-01)</li>
+            <li class="how">必须项目(必须项目不能为空且不能重复)</li>
+            <li>姓名</li>
+            <li>手机号（必须是手机格式且不能重复）</li>
+            <li>部门（必须与组织架构对应）</li>
+            <li>选填项目（选填项目可以为空）</li>
+            <li>微信（填写员工微信号）</li>
+            <li>昵称（填写员工昵称）</li>
+            <li>职位（填写员工职位）</li>
+            <li>备注</li>
+          </ul>
+        </div>
+        <div class="footer1">
+          <button class="confirm" @click="submit">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
+        </div>
+      </el-dialog>
+      <!--添加新员工弹窗-->
+      <el-dialog
+        title="添加新员工"
+        :visible.sync="add"
+        width="30%">
+        <el-form  :model="addperson" ref="addperson" label-width="80px" size="small" class="chuang">
+            <el-form-item label="姓名:">
+                <el-input placeholder="请输入姓名" v-model="addperson.name"></el-input>
+            </el-form-item>
+            <el-form-item label="昵称:">
+                <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号:">
+                <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
+            </el-form-item>
+            <el-form-item label="密码:">
+                <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
+            </el-form-item>
+            <el-form-item label="微信号:">
+                <el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱:">
+                <el-input id="email" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
+            </el-form-item>
+            <el-form-item label="角色:">
+                <el-select  id="position" placeholder="请输入职位" v-model="addperson.position">
+                    <el-option label="总经理" value=180717116472055595008>总经理</el-option>
+                    <el-option label="adaf" value=180717124465488855040>adaf</el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="岗位:">
+                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
+                <el-cascader id="gangwei" expand-trigger="hover" :options="options" v-model="addperson.gangwei" @change="handleChange"></el-cascader>
+            </el-form-item>
+            <el-form-item label="备注:">
+                <el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
+            </el-form-item>
+        </el-form>
+        <div class="footer">
+          <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="add = !add">取消</button>
+        </div>
+      </el-dialog>
+      <!--外部联系人-->
+      <el-dialog
+          title="添加外部联系人"
+          :visible.sync="contact"
+          width="30%">
+          <el-form ref="form" :model="btype" label-width="80px" size="small" class="chuang">
+          <el-form-item label="单位名称:">
+                      <el-input id="btypeName"  placeholder="请输入单位" v-model="btype.btypeName"></el-input>
+          </el-form-item>
+          <el-form-item label="部门:">
+                      <el-input id="type" placeholder="请输入部门" v-model="btype.type"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名:">
+                      <el-input id="linkman" placeholder="请输入姓名" v-model="btype.linkman"></el-input>
+          </el-form-item>
+          <el-form-item label="职务:">
+                      <el-input id="business" placeholder="请输入职务" v-model="btype.business"></el-input>
+          </el-form-item>
+          <el-form-item label="联系电话:">
+                      <el-input id="phone" placeholder="请输入联系电话" v-model="btype.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="地址:">
+                      <el-input id="address" placeholder="请输入地址" v-model="btype.address"></el-input>
+          </el-form-item>
+          <el-form-item label="备注:">
+                      <el-input id="remark" placeholder="请输入备注" v-model="btype.remark"></el-input>
+          </el-form-item>
+          </el-form>
+          <div class="footer">
+                      <button class="confirm" @click="addBtype">确定</button><button class="cancel" @click="contact = !contact">取消</button>
+          </div>
+      </el-dialog>
+
+      <!--修改-->
+      <div class="xiugai" v-show="modify">
+        <div class="modal-content">
+          <div class="atitle">
+            <span class="close" @click="modify = !modify">&times;</span>
+            <p>添加部门</p>
+          </div>
+          <div class="body">
+            部门名称 <input type="text" v-model="position" @keyup="changePosition">
+          </div>
+          <div class="footer">
+            <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="modify = !modify">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
 </template>
 
@@ -433,11 +313,12 @@ export default {
             children: []
         }];
         return{
+            Data: [],
+            options: [],
             file:'',
             src:'',
             username:'',
             radio:'0',
-            radioBtype:'0',
             pageNo: 1,
             pageSize: 1,
             pageSizesList: [1, 2, 3, 4, 5],
@@ -448,11 +329,9 @@ export default {
             totalDataNumberB: 1,//数据的总数,
             // toggle:'',
             zhiyuan:false,
-            wanglai:false,
             multipleSelection: [],
             person: [],
             isShow:false,
-            isExcelShow:false,
             add:false,
             activeName: 'second',
             contact:false,
@@ -491,10 +370,10 @@ export default {
                 post:'',
                 position:'',
                 beizhu:'',
-                gangwei: '',
+                gangwei: [],
                 mima:''
             },
-            addpersonEdit:{
+            addpersonEdit:[{
                 name:'',
                 number:'',
                 wechat:'',
@@ -504,15 +383,6 @@ export default {
                 beizhu:'',
                 gangwei: '',
                 mima:''
-            },
-            addbtypeEdit:[{
-                btypeName:'',
-                type:'',
-                linkman:'',
-                business:'',
-                phone:'',
-                address:'',
-                remark:''
             }],
             btype:{
                 btypeName: "",
@@ -524,54 +394,7 @@ export default {
                 remark: ""
             },
             form:{},
-            // data: [
-                // {
-                //     children:[
-                //         {
-                //             children:[],
-                //             key:"bm_0_5680",
-                //             label:"11111",
-                //             value:"5680"
-                //         },
-                //     ],
-                //     key:"bm_0_5680",
-                //     label:"的身上",
-                //     value:"5680",
-                // },
-                // {
-                //     children:[],
-                //     key:"bm_0_5680",
-                //     label:"的身上",
-                //     value:"5680"
-                // },
-                // {
-                //     children:[],
-                //     key:"bm_0_5680",
-                //     label:"的身上",
-                //     value:"5680"
-                // },
-                // {
-                //     children:[],
-                //     key:"bm_0_5680",
-                //     label:"的身上",
-                //     value:"5680"
-                // },
-                // {
-                //     children:[],
-                //     key:"bm_0_5680",
-                //     label:"的身上",
-                //     value:"5680"
-                // },
-                // {
-                //     children:[],
-                //     key:"bm_0_5680",
-                //     label:"的身上",
-                //     value:"5680"
-                // }
-            // ],
             position: '',
-            tabIndex:'',
-            options:[]
         }
     },
     components:{
@@ -590,28 +413,54 @@ export default {
   }
 },
 mounted(){
+    // /company/findAll
+    this.$ajax.get(url + 'company/findAll').then((res) => {
+        // console.log(res.data.data)
+        this.Data = res.data.data
+        this.options = this.transTreeData(this.Data)
+        console.log(this.options)
+    })
+    
     this.staff(),
-    this.Btype(),
-    this.putOptions()
-    if (this.$route.query.tabPane){
-        this.activeName = this.$route.query.tabPane
-    }
-        },
-    methods:{
-        //下拉框
-        putOptions(){
-            this.$ajax.get(url + 'role/findRole').then(res => {
-                // console.log(res.data.data)
-                this.options = res.data.data
-            })
-        },
+            // /*页面挂载获取保存的cookie值，渲染到页面上*/
+            // let uname = getCookie('username')
+            // this.name = uname
+            // /*如果cookie不存在，则跳转到登录页*/
+            // if(uname == ""){
+            //     this.$router.push('/')
+            // }
+    this.Btype()
+},
+methods:{
+    handleChange () {},
+    transTreeData (items) {
+        // console.log(items)
+        if(items.length > 0){
+            var curpid = 0 
+            var parent = this.findChild(curpid)
+            return parent;
+        } else {
+            return [];
+        }
+    },
+    findChild (curpid) {
+        var _arr = [];
+        var items = this.Data;
+        var length = items.length;
+        for(var i = 0; i < length; i++){
+            if(items[i].parentId == curpid){
+                var _obj = items[i];
+                _obj.children = this.findChild(_obj.id);
+                _arr.push(_obj);
+            }
+        }
+        return _arr;
+    },
         changePosition() {
 			// console.log(this.position)
 		},
 		handleClick(tab, event) {
-			// console.log(tab.index);
-            // this.tabIndex=tab.index
-            this.$router.push('/Department')
+			// console.log(tab, event);
         },
         //职员信息
         handleSizeChange(val) {
@@ -643,33 +492,17 @@ mounted(){
             that.id = this.tableData[index].id;
             // console.log(that.id);
             // rows.splice(index, 1);
-            this.$ajax.get(url + 'user/findById',{params:{"token":that.id}}).then((res) => {
+            this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
                 this.addpersonEdit.name = res.data.data.name;
                 this.addpersonEdit.nickname = res.data.data.username;
                 this.addpersonEdit.number = res.data.data.phone;
                 this.addpersonEdit.mima = res.data.data.password;
                 this.addpersonEdit.wechat = res.data.data.wechat;
                 this.addpersonEdit.email = res.data.data.email;
-                this.addpersonEdit.position = res.data.data.roleId;
+                this.addpersonEdit.roleId = res.data.data.roleId;
                 this.addpersonEdit.gangwei = res.data.data.orgId;
                 this.addpersonEdit.beizhu = res.data.data.remark;
                 this.zhiyuan = true;
-			})
-        },  
-        //to往来单位编辑
-        toBtypeEdit(index, rows){
-            let that = this;
-            that.id = this.tableData1[index].id;
-            // console.log(that.id);
-            this.$ajax.get(url + 'btype/findById',{params:{"id":that.id}}).then((res) => {
-                this.addbtypeEdit.btypeName = res.data.data.btypeName;
-                this.addbtypeEdit.type = res.data.data.type;
-                this.addbtypeEdit.linkman = res.data.data.linkman;
-                this.addbtypeEdit.business = res.data.data.business;
-                this.addbtypeEdit.phone = res.data.data.phone;
-                this.addbtypeEdit.address = res.data.data.address;
-                this.addbtypeEdit.remark = res.data.data.remark;
-                this.wanglai = true;
 			})
         },
         //职员删除
@@ -678,7 +511,7 @@ mounted(){
             that.id = this.tableData[index].id;
             // console.log(that.id);
             // rows.splice(index, 1);
-            this.$ajax.post(url + 'user/deleteById',"id="+this.id).then((res) => {
+            this.$ajax.post(url + 'user/logicDelete',"id="+this.id).then((res) => {
 			})
         },
         //往来单位删除
@@ -691,185 +524,142 @@ mounted(){
 			})
         },
         
-//         foo:function (event) {
-//             formdata = new FormData();
-//             formdata.append('file',event.target.files[0]);
-//             formdata.append('action','test');
-//         axios({
-//         url:'test.php',
-//         method:'post',
-//         data:formdata,
-//         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    // }).then((res)=>{console.log(res)})
-// },
-        //职员信息
-        staff(){
-            this.$ajax.get(url + 'user/findUser',{params:{'page':this.pageNo,'pageSize':this.pageSize}}).then((res) => {
-                // console.log(res)
-                this.tableData = res.data.data.rows;
-                this.totalDataNumber=res.data.data.records;
-            })
-        },
-        //往来单位信息
-        Btype(){
-            this.$ajax.get(url + 'btype/findAll',{params:{'page':this.pageNoB,'pageSize':this.pageSizeB}}).then((res) => {
-                // console.log(res)
-                this.tableData1 = res.data.data.rows;
-                this.totalDataNumberB=res.data.data.records;
-            })
-        },
-        //添加员工
-        addOne(){
-            var users={};
-            users.name=this.addperson.name;
-            users.username=this.addperson.nickname;
-            users.phone=this.addperson.number;
-            users.password=this.addperson.mima;
-            users.wechat=this.addperson.wechat;
-            users.email=this.addperson.email;
-            users.orgId=this.addperson.gangwei;
-            users.remark=this.addperson.beizhu;
-            users.roleId=this.addperson.position;
-            this.$ajax.post(url+"user/insert",users
-            ).then((res) => {
-                this.form = res.data
-                // console.log('this.form')
-            })
-        },
-        editUser(){
-            var users={};
-            users.id = this.id;
-            // console.log(id);
-            users.name=this.addpersonEdit.name;
-            users.username=this.addpersonEdit.nickname;
-            users.phone=this.addpersonEdit.number;
-            users.wechat=this.addpersonEdit.wechat;
-            users.email=this.addpersonEdit.email;
-            users.orgId=this.addpersonEdit.gangwei;
-            users.password=this.addpersonEdit.mima;
-            users.remark=this.addpersonEdit.beizhu;
-            users.roleId=this.addpersonEdit.position;
-            this.$ajax.post(url+"user/update",users
-            ).then((res) => {
-                this.form = res.data
-                // console.log('this.form')
-                this.zhiyuan = false;
-            })
-        },
-        test(){
-            // this.value
-            this.multipleSelection = val
-            // console.log(this.multipleSelection)
-        },
-        //添加往来单位
-        addBtype(){
-        var btype={};
-        btype.btypeName =this.btype.btypeName;
-        btype.type = this.btype.type;
-        btype.linkman = this.btype.linkman;
-        btype.business = this.btype.business;
-        btype.phone = this.btype.phone;
-        btype.address = this.btype.address;
-        btype.remark = this.btype.remark;
-        this.$ajax.post(url+"btype/insert",btype).then((res) => {
+        //         foo:function (event) {
+        //             formdata = new FormData();
+        //             formdata.append('file',event.target.files[0]);
+        //             formdata.append('action','test');
+        //         axios({
+        //         url:'test.php',
+        //         method:'post',
+        //         data:formdata,
+        //         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        //     }).then((res)=>{console.log(res)})
+        // },
+    //职员信息
+    staff(){
+        this.$ajax.get(url + 'user/findUser',{params:{'page':this.pageNo,'pageSize':this.pageSize}}).then((res) => {
+            // console.log(res)
+            this.tableData = res.data.data.rows;
+            this.totalDataNumber=res.data.data.records;
+        })
+    },
+    //往来单位信息
+    Btype(){
+        this.$ajax.get(url + 'btype/findAll',{params:{'page':this.pageNoB,'pageSize':this.pageSizeB}}).then((res) => {
+            // console.log(res)
+            this.tableData1 = res.data.data.rows;
+            this.totalDataNumberB=res.data.data.records;
+        })
+    },
+    //添加员工
+    addOne(){
+        var users={};
+        users.name=this.addperson.name;
+        users.username=this.addperson.nickname;
+        users.phone=this.addperson.number;
+        users.password=this.addperson.mima;
+        users.wechat=this.addperson.wechat;
+        users.email=this.addperson.email;
+        users.orgId=this.addperson.gangwei;
+        users.remark=this.addperson.beizhu;
+        users.roleId=this.addperson.position;
+        this.$ajax.post(url+"user/insert",users
+        ).then((res) => {
             this.form = res.data
             // console.log('this.form')
-            this.contact = false
         })
-        },
-        //编辑往来单位
-        editBtype(){
-            var btype={};
-            btype.id = this.id;
-            // console.log(id);
-            btype.btypeName=this.addbtypeEdit.btypeName;
-            btype.type=this.addbtypeEdit.type;
-            btype.linkman=this.addbtypeEdit.linkman;
-            btype.business=this.addbtypeEdit.business;
-            btype.phone=this.addbtypeEdit.phone;
-            btype.address=this.addbtypeEdit.address;
-            btype.remark=this.addbtypeEdit.remark;
-            this.$ajax.post(url+'btype/update',btype
-            ).then((res) => {
-                this.form = res.data
-                // console.log('this.form')
-                this.wanglai = false;
-            })
-        },
-        append(data) {
-            const newChild = { id: id++, label: 'testtest', children: [] };
-            if (!data.children) {
-            this.$set(data, 'children', []);
-            }
-            data.children.push(newChild);
-        },
+    },
+    editUser(){
+        var users={};
+        users.id = this.id;
+        // console.log(id);
+        users.name=this.addpersonEdit.name;
+        users.username=this.addpersonEdit.nickname;
+        users.phone=this.addpersonEdit.number;
+        users.wechat=this.addpersonEdit.wechat;
+        users.email=this.addpersonEdit.email;
+        users.orgId=this.addpersonEdit.gangwei;
+        users.password=this.addpersonEdit.mima;
+        users.remark=this.addpersonEdit.beizhu;
+        users.roleId=this.addpersonEdit.position;
+        this.$ajax.post(url+"user/update",users
+        ).then((res) => {
+            this.form = res.data
+            // console.log('this.form')
+            this.zhiyuan = false;
+        })
+    },
+    test(){
+        this.value
+    },
+    //添加往来单位
+    addBtype(){
+       var btype={};
+       btype.btypeName =this.btype.btypeName;
+       btype.type = this.btype.type;
+       btype.linkman = this.btype.linkman;
+       btype.business = this.btype.business;
+       btype.phone = this.btype.phone;
+       btype.address = this.btype.address;
+       btype.remark = this.btype.remark;
+       this.$ajax.post(url+"btype/insert",btype).then((res) => {
+           this.form = res.data
+        //    console.log('this.form')
+           this.contact = false
+       })
+    },
+    append(data) {
+        const newChild = { id: id++, label: 'testtest', children: [] };
+        if (!data.children) {
+          this.$set(data, 'children', []);
+        }
+        data.children.push(newChild);
+      },
 
-        remove(node, data) {
-            const parent = node.parent;
-            const children = parent.data.children || parent.data;
-            const index = children.findIndex(d => d.id === data.id);
-            children.splice(index, 1);
-        },
-        
-        //删除
-        handleSelectionChange (val) {
+      remove(node, data) {
+        const parent = node.parent;
+        const children = parent.data.children || parent.data;
+        const index = children.findIndex(d => d.id === data.id);
+        children.splice(index, 1);
+      },
+      
+      //删除
+            handleSelectionChange (val) {
             //val 为选中数据的集合
-            this.multipleSelection = val
-            // console.log(this.multipleSelection)
-        },
-        //职员信息批量删除
-        allDelete() {
-            let comments = this.multipleSelection
-            // console.log(comments.id)
-            let num = []
-            for (let i = 0;i<comments.length;i++) {
+                this.multipleSelection = val
+                // console.log(this.multipleSelection)
+            },
+			allDelete() {
+                let comments = this.multipleSelection
+				// console.log(comments.id)
+                let num = []
+                for (let i = 0;i<comments.length;i++) {
                 num.push(comments[i].id)
                 this.$ajax.post(url + "user/delete","id="+num)
             }
             // console.log(num)
         },
-        //往来单位批量删除
-        deleteAll(){
-            let comments = this.multipleSelection
-            let num = []
-            for (let i = 0;i<comments.length;i++) {
-                num.push(comments[i].id)
-                this.$ajax.post(url + "btype/deleteAll","id="+num)
-            }
-            console.log(num)
-        },
-        getPath(e){
+        //上传的方法
+         getPath(e){
             // console.log(e.target.value)
-                
-            this.path = e.target.value;
-            this.file = e.currentTarget.files[0]//百度是没有name的
-                
+            
+            // this.path = e.target.value;
+            this.file = e.currentTarget.files[0].name//百度是没有name的
+            
             // console.log(this.src)
         },
-        getBtypePath(e){
-            this.pathBtype = e.target.value;
-            this.fileBtype = e.currentTarget.files[0]
-        },
         submit(){
-            let formData = new FormData()
-            // console.log('filePath'+this.file)
-            formData.append('file', this.file)
+            var formData = new FormData()
+            // console.log(this.files)
+            formData.append('path', this.file)
             formData.append('status', this.radio)
             this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                console.log(res)
-            })
-        },
-        submitBtype(){
-            let formData = new FormData()
-            // console.log('filePath'+this.fileBtype)
-            formData.append('file', this.fileBtype)
-            formData.append('status', this.radioBtype)
-            this.$ajax.post(url+ 'btype/excelImport',formData).then(res => {
                 // console.log(res)
             })
         }
     }
 }
+
 </script>
 
 <style scoped>

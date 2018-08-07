@@ -138,12 +138,12 @@ export default {
         if (this.name !=='') {
         data.children.push(newChild);
         this.dialogVisible = false;
-        console.log(data.id)
+        // console.log(data.id)
         }else{
             
         }
         this.$ajax.get(url + '',"id="+data.id).then(res=>{
-            console.log(res)
+            // console.log(res)
         })
       },
       back(e){
@@ -163,7 +163,7 @@ export default {
                         "pageSize":this.pageSizeCustomerMsg
                     }
                 }).then((res) => {
-                    console.log(res.data.data)
+                    // console.log(res.data.data)
 					this.tableData2 = res.data.data.rows
 					this.totalDataNumbercustomerMsg = res.data.data.records
 				})
@@ -177,7 +177,7 @@ export default {
         children.splice(index, 1);
         
         this.$ajax.post(url + 'company/delete',"id="+data.id).then(res=>{
-            console.log(res)
+            // console.log(res)
         })
       },
 
@@ -201,19 +201,19 @@ export default {
                         "pageSize":this.pageSizeCustomerMsg
                     }
           }).then(res => {
-              console.log(res.data.data.rows)
+            //   console.log(res.data.data.rows)
               this.tableData2= res.data.data.rows
               this.totalDataNumbercustomerMsg = res.data.data.records
             //   console.log(res.data.data)
           })
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        // console.log(`每页 ${val} 条`);
         this.pageSizeCustomerMsg = val;
         this.getcustomerMsg()
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        // console.log(`当前页: ${val}`);
         this.pageNoCustomerMsg = val;
         this.getcustomerMsg()
       },
@@ -225,7 +225,7 @@ export default {
                         "pageSize":this.pageSizeCustomerMsg
                     }
                 }).then((res) => {
-                    console.log(res.data.data)
+                    // console.log(res.data.data)
 					this.tableData2 = res.data.data.rows
 					this.totalDataNumbercustomerMsg = res.data.data.records
 				})
@@ -234,7 +234,7 @@ export default {
                 this.tableData2[index].id;
                 rows.splice(index, 1);
                 this.$ajax.post(url + 'user/logicDelete',"id="+this.tableData2[index].id).then(res => {
-                    console.log(res)
+                    // console.log(res)
                 })
             }
       }

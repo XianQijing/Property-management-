@@ -115,8 +115,8 @@
                 <button class="delect" id="roomDelete" @click="allDeletelou('room')">删除</button>
 								<el-table :data="room" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="id" label="房屋编号" width="140"></el-table-column>
-									<el-table-column prop="precincts.namec" label="小区" width="108"></el-table-column>
+									<el-table-column prop="id" label="房屋编号" width="160"></el-table-column>
+									<el-table-column prop="precincts.namec" label="小区" width="128"></el-table-column>
 									<el-table-column prop="building" label="楼宇" width="108"></el-table-column>
 									<el-table-column prop="ste" label="单元号" width="124"></el-table-column>
 									<el-table-column prop="floor" label="所在楼层" width="140"></el-table-column>
