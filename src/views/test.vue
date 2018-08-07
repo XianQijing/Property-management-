@@ -116,13 +116,13 @@ export default {
       roomStandard.remark = this.carForm.remarks
       if (this.$route.query.id !== "add") {
         roomStandard.id = this.$route.query.id
-        console.log(roomStandard)
+        // console.log(roomStandard)
         this.$ajax.put(url + 'roomStandard/updateRoomStandard', roomStandard).then(res => {
           console.log(res.data)
-          // if (res.data.status === 200) {
-          //   // this.fullscreenLoading = false
-          //   window.history.go(-1)
-          // }
+          if (res.data.status === 200) {
+            // this.fullscreenLoading = false
+            window.history.go(-1)
+          }
         })
       } else if(this.$route.query.id === "add") {
         this.$ajax.post(url + 'roomStandard/addRoomStandard', roomStandard).then(res => {
