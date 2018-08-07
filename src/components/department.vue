@@ -435,28 +435,28 @@ methods:{
     handleChange () {},
     transTreeData (items) {
         // console.log(items)
-        if(items.length > 0){
-            var curpid = 0 
-            var parent = this.findChild(curpid)
-            return parent;
-        } else {
-            return [];
-        }
+      if(items.length > 0){
+        var curpid = 0 
+        var parent = this.findChild(curpid)
+        return parent;
+      }
     },
     findChild (curpid) {
-        var _arr = [];
-        var items = this.Data;
-        var length = items.length;
-        for(var i = 0; i < length; i++){
-            if(items[i].parentId == curpid){
-                var _obj = items[i];
-                _obj.children = this.findChild(_obj.id);
-                _arr.push(_obj);
-            }
+      var _arr = [];
+      var items = this.Data;
+      var length = items.length;
+      for(var i = 0; i < length; i++){
+        if(items[i].parentId == curpid){
+          var _obj = items[i];
+          _obj.children = this.findChild(_obj.id);
+          _arr.push(_obj);
         }
+      }
+      if (_arr.length > 0) {
         return _arr;
+      }
     },
-        changePosition() {
+    changePosition() {
 			// console.log(this.position)
 		},
 		handleClick(tab, event) {
@@ -560,12 +560,20 @@ methods:{
         users.password=this.addperson.mima;
         users.wechat=this.addperson.wechat;
         users.email=this.addperson.email;
-        users.orgId=this.addperson.gangwei;
+        if (Array.isArray(this.addperson.gangwei)) {
+          users.orgId = this.addperson.gangwei[this.addperson.gangwei.length - 1]
+        } else {
+          users.orgId=this.addperson.gangwei;
+        }
         users.remark=this.addperson.beizhu;
         users.roleId=this.addperson.position;
+        console.log(users)
         this.$ajax.post(url+"user/insert",users
         ).then((res) => {
             this.form = res.data
+            if (res.data.status === 200) {
+              window.history.go(0)
+            }
             // console.log('this.form')
         })
     },
