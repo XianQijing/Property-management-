@@ -111,8 +111,8 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
-													<span @click="houseSource(scope.$index,tableDataContract,'watch')"><el-dropdown-item>查看</el-dropdown-item></span>
-													<span @click="houseSource(scope.$index,tableDataContract,'edit')"><el-dropdown-item>修改</el-dropdown-item></span>
+													<router-link :to="{name:'Rent_contract_change'}"><el-dropdown-item>查看</el-dropdown-item></router-link>
+													<el-dropdown-item>修改</el-dropdown-item>
                                                     <el-dropdown-item>导出</el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>

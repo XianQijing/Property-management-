@@ -41,7 +41,7 @@
                         <el-tab-pane label="仪表管理">
 
                              <div class="main">
-								<button class="add" @click="luru">录入数据</button>
+								<button class="add" @click="luru('','','add')">录入数据</button>
 								<el-table :data="meter" style="width: 100%">
 									<el-table-column prop="roomType" label="房屋类型"></el-table-column>
 									<el-table-column prop="build" label="楼宇"></el-table-column>
@@ -56,7 +56,7 @@
                                     <el-table-column prop="remark" label="备注"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
-											<span ><button @click="entryChange = true">编辑</button></span>
+											<span ><button @click="editThis(scope.$index,meter)">编辑</button></span>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -168,7 +168,7 @@
 
             <!-- 仪表管理-录入 -->
             <el-dialog
-                title="录入"
+            :title="this.name"
                 :visible.sync="entry"
                 width="30%" :model="entrydata">
                 <div class="tanchuang">
@@ -204,13 +204,13 @@
                 </div>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="entry = false">取 消</el-button>
-                    <el-button type="primary" @click="entry = false">确 定</el-button>
+                    <el-button type="primary" @click="submitIn">确 定</el-button>
                 </span>
 
             </el-dialog>
 
             <!-- 仪表管理-编辑 -->
-            <el-dialog
+            <!-- <el-dialog
                 title="编辑"
                 :visible.sync="entryChange"
                 width="30%" :model="changedata">
@@ -244,7 +244,7 @@
                     <el-button type="primary" @click="entryChange = false">确 定</el-button>
                 </span>
 
-            </el-dialog>
+            </el-dialog> -->
         </div>
     </div>
 </template>
@@ -412,6 +412,7 @@ export default {
             label: '组件交互文档'
           }]
         }],
+        name:"录入",
       charges:[],
       //仪表管理-编辑
       changedata: {
@@ -569,8 +570,21 @@ export default {
       (this.news = true);
     },
     luru() {
+  
+      
       this.entrydata = {};
       this.entry = true;
+      this.name = "录入"
+      
+      
+    },
+    editThis(index,rows){
+      this.entrydata = {};
+      this.entry = true;
+      this.name = "编辑"
+      that.id = this.meter[index].id;
+      // console.log(this.meter[index])
+      this.$ajax.get(url + '')
     },
     entry(){
       var payMeterVO={};
@@ -701,6 +715,9 @@ export default {
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
+    },
+    submitIn(){
+      this.$ajax.post(url + '')
     },
     nn() {
       var card = document.getElementById("card");

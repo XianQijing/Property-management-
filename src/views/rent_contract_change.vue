@@ -208,11 +208,6 @@ export default {
             this.watchOne=false
             this.edit = false
         }else if(this.$route.query.msg === "edit"){
-            this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
-                // console.log(res)
-                this.detail = res.data.data
-                this.detail.startTime = [res.data.data.startTime,res.data.data.endTime]
-            })
             this.addOne=false,
             this.changeOne=true,
             this.watchOne=false
@@ -247,7 +242,6 @@ export default {
                 ).then(res => {
                     if(res.data.status === 200){
                         alert('成功')
-                        window.history.go(-1)
                     }
                 })
         },
