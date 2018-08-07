@@ -186,7 +186,8 @@ export default {
     mounted(){
         this.id = this.$route.query.id
         this.message = this.$route.query.msg
-        console.log(this.message)
+        // console.log(this.message)
+
         this.$ajax.get(url + 'room/flndAll/1/10').then(res => {
             console.log(res.data.data.rows)
             this.options = res.data.data.rows
@@ -246,7 +247,7 @@ export default {
                 })
         },
         sumbit(){
-            var data1 = {
+            var contractVO = {
                         "address":this.detail.owner.address,
                         "afterTheRent":this.detail.afterTheRent,
                         "amplification":this.detail.riseMoney,
@@ -268,7 +269,7 @@ export default {
                         "payTime":this.detail.payTime,
                         "comment":this.detail.comment
                         }
-            this.$ajax.post(url + 'contract/addContract', {data:data1}).then(res => {
+            this.$ajax.post(url + 'contract/addContract', {data:contractVO}).then(res => {
                     console.log(res)
                 })
         },
