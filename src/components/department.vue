@@ -8,7 +8,7 @@
         <div class="col-md-12">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <!--部门管理-->
-            <el-tab-pane label="部门管理">
+            <el-tab-pane label="部门管理" name="first">
                 <manage-name></manage-name>
             </el-tab-pane>
 
@@ -55,7 +55,7 @@
               </div>
             </el-tab-pane>
             <!--往来单位-->
-            <el-tab-pane label="往来单位">
+            <el-tab-pane label="往来单位" name="third">
               <div class="main">
                 <button @click="contact = !contact">+ 添加联系人</button><button @click="isShow = !isShow">导入</button><button @click="test">删除</button>
                 <el-table :data="tableData1" style="width: 100%" @selection-change="handleSelectionChange">
@@ -133,8 +133,7 @@
           <li>
               <label for="position">角色:</label>
               <select id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
-                  <option value="180717116472055595008">总经理</option>
-                  <option value="180717124465488855040">adaf</option>
+                  <option v-for="roles in role" :key="roles.id" :value="roles.id" :label="roles.name"></option>
               </select>
           </li>
           <li>
@@ -223,8 +222,7 @@
             </el-form-item>
             <el-form-item label="角色:">
                 <el-select  id="position" placeholder="请输入职位" v-model="addperson.position">
-                    <el-option label="总经理" value=180717116472055595008>总经理</el-option>
-                    <el-option label="adaf" value=180717124465488855040>adaf</el-option>
+                  <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="岗位:">
@@ -333,7 +331,7 @@ export default {
             person: [],
             isShow:false,
             add:false,
-            activeName: 'second',
+            activeName: 'first',
             contact:false,
             modify:false,
             selectArr: [],
@@ -395,6 +393,7 @@ export default {
             },
             form:{},
             position: '',
+            role:[]
         }
     },
     components:{
@@ -418,17 +417,13 @@ mounted(){
         // console.log(res.data.data)
         this.Data = res.data.data
         this.options = this.transTreeData(this.Data)
-        console.log(this.options)
+        // console.log(this.options)
     })
-    
+    this.$ajax.get(url + 'role/findRole').then(res=> {
+        console.log(res.data.data)
+        this.role = res.data.data
+    })
     this.staff(),
-            // /*页面挂载获取保存的cookie值，渲染到页面上*/
-            // let uname = getCookie('username')
-            // this.name = uname
-            // /*如果cookie不存在，则跳转到登录页*/
-            // if(uname == ""){
-            //     this.$router.push('/')
-            // }
     this.Btype()
 },
 methods:{

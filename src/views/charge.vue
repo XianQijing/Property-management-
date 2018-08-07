@@ -717,7 +717,21 @@ export default {
         });
     },
     submitIn(){
-      this.$ajax.post(url + '')
+      var data = {
+        "":this.entrydata.houseType,//关联房屋
+        "":this.entrydata.charge,//收费项目
+        "":this.entrydata.time,//录入时间
+        "":this.entrydata.univalence,//单价
+        "":this.entrydata.start,//起度
+        "":this.entrydata.end,//止
+        "":this.entrydata.remarks
+      }
+      console.log(data)
+      this.$ajax.post(url + '',data).then(res => {
+        if(res.data.status === 200){
+          alert('成功')
+        }
+      })
     },
     nn() {
       var card = document.getElementById("card");
