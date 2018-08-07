@@ -621,7 +621,7 @@
 			}
 		},
 		mounted() {
-			 this.getbase(),
+      		this.getbase(),
 			this.getMoveOut(),
 			this.gettemplate(),
 			this.getsended(),
@@ -637,9 +637,7 @@
 				//console.log(this.position)
 			},
 			handleClick(tab, event) {
-				console.log(tab.index);
-				this.tabIndex = tab.index
-				this.$router.push('/relationship')
+				console.log(tab, event);
 			},
 			handleSizeChange(val) {
 				this.pageSize = val;

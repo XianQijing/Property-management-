@@ -164,8 +164,8 @@
 								<router-link :to="{name: 'AddCar',query:{id:'ww'}}"><button class="add">+ 添加</button></router-link>
                 <!-- <router-link :to="{name: 'Daoru'}"><button class="add">导入</button></router-link> -->
                 <!-- <button class="cash">+ 添加收费标准</button> -->
-                <button class="delect" @click="allDelete">删除</button>
-								<el-table :data="car" style="width: 100%" >
+                <button class="delect" id="carDelete" @click="allDeletelou('car')">删除</button>
+								<el-table :data="car" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="parkingSpots.plateNumbers" label="车辆编号" width="180"></el-table-column>
 									<el-table-column prop="precincts.namec" label="所属小区" width="180"></el-table-column>
@@ -185,7 +185,7 @@
 													<!-- <el-dropdown-item>绑定住户</el-dropdown-item> -->
 													<!-- <el-dropdown-item><router-link :to="{name: 'CarCharge'}" style="color: #606266;">添加收费标准</router-link></el-dropdown-item> -->
 													<span @click="jumpCar(scope.$index, car)"><el-dropdown-item>编辑 / 详情</el-dropdown-item></span>
-													<el-dropdown-item><button @click="buildDelete(scope.$index, car)">删除</button></el-dropdown-item>
+													<el-dropdown-item><button @click="carDelete(scope.$index, car)">删除</button></el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
@@ -228,8 +228,8 @@
                           操作<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
 												<el-dropdown-menu slot="dropdown">
-													<span @click="jumpHouse(scope.$index, yanshou)"><el-dropdown-item>查看 / 编辑</el-dropdown-item></span>
-													<el-dropdown-item><button @click="houseDelete(scope.$index, yanshou)">删除</button></el-dropdown-item>
+													<span @click="jumpHouse(scope.$index, tableDataRoomStandard)"><el-dropdown-item>查看 / 编辑</el-dropdown-item></span>
+													<el-dropdown-item><button @click="houseDelete(scope.$index, tableDataRoomStandard)">删除</button></el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
@@ -286,6 +286,7 @@ export default {
           acceptanceState:'',
           acceptanceTime:'',
           remark:'',
+          id: ''
         }
       ],//返回的结果集合
       totalDataNumberRoomStandard: 100,//数据的总数,
@@ -389,9 +390,8 @@ export default {
     this.getCar()
   },
   methods: {
-    // 楼宇批量删除
+    // 批量删除
     allDeletelou (judge) {
-      // DELETE /room/deleteRoom/{id}
       if (this.multipleSelection.length > 0) {
         this.multipleSelection.forEach(v => {
           this.louIdArr.push(v.id)
@@ -410,6 +410,16 @@ export default {
           this.$ajax.delete(url + 'room/deleteRoom/' + this.louIdArr).then((res) => {
             if (res.data.status === 200) {
               this.getRoom()
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+            }
+          })
+        } else if (judge === 'car') {
+          this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + this.louIdArr).then((res) => {
+            if (res.data.status === 200) {
+              this.getCar()
               this.$message({
                 message: '删除成功',
                 type: 'success'
@@ -562,8 +572,14 @@ export default {
     getRoomStandard() {
       this.$ajax.get(url + 'roomStandard/flndAll/'+this.pageNoRoomStandard+'/'+this.pageSizeRoomStandard+'',{}).then(res => {
         this.tableDataRoomStandard = res.data.data.rows
+        res.data.data.rows.forEach((v, k) => {
+          if (v.room) {
+            if (v.room.indexOf(',') !== -1) {
+              this.tableDataRoomStandard[k].room = v.room.split(',')[0]
+            }
+          }
+        })
         this.totalDataNumberRoomStandard =  res.data.data.records
-        // console.log(this.room)
       })
     },
     handleSizeChange(val) {
@@ -604,24 +620,40 @@ export default {
       // console.log(this.car[index].id)
       this.$router.push({name: 'AddCar',query:{id:that.id}})
     },
+    carDelete (index,rows) {
+      let that = this;
+      that.id = this.car[index].id;
+      this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + that.id).then((res) => {
+        if (res.data.status === 200) {
+          this.getCar()
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        }
+      })
+    },
     //跳转房产验收
     jumpHouse(index,rows){
       let that = this;
-      that.id = this.yanshou[index].id;
+      that.id = this.tableDataRoomStandard[index].id;
       // console.log(this.yanshou[index].id)
       this.$router.push({name: 'Test',query:{id:that.id}})
     },
     //删除房产
     houseDelete(index,rows) {
       let that = this;
-      that.id = this.yanshou[index].id;
-      // console.log(this.id);
-      rows.splice(index, 1);
-      // console.log(this.room)
-      
-      // this.$ajax.post('url' + this.id).then((res) => {
-      // 	this.getRoom()
-      // })
+      that.id = this.tableDataRoomStandard[index].id;
+      // DELETE /roomStandard/deleteRoomStandard/{id
+      this.$ajax.delete(url + 'roomStandard/deleteRoomStandard/' + that.id).then((res) => {
+        if (res.data.status === 200) {
+          this.getRoomStandard()
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        }
+      })
     },
     handleSelectionChange (val) {
       //val 为选中数据的集合
@@ -631,9 +663,12 @@ export default {
         document.getElementById('delect').style.background = 'red'
         // 房间批量删除按钮
         document.getElementById('roomDelete').style.background = 'red'
+        // 车辆管理批量删除按钮
+        document.getElementById('carDelete').style.background = 'red'
       } else {
         document.getElementById('delect').style.background = '#f5f5f5'
         document.getElementById('roomDelete').style.background = '#f5f5f5'
+        document.getElementById('carDelete').style.background = '#f5f5f5'
       }
       // console.log(this.multipleSelection)
     },

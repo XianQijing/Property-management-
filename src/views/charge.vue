@@ -173,12 +173,9 @@
                 width="30%" :model="entrydata">
                 <div class="tanchuang">
                     <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
-                        <el-form-item label="关联房屋:">
-                            <el-select v-model="entrydata.houseType">
-                                <el-option label="区域一" value="1808017F37TMDA5P"></el-option>
-                                <el-option label="区域二" value="1808017GKSMGWG9P"></el-option>
-                            </el-select>
-                        </el-form-item>
+                    <el-form-item label="关联房屋：" prop="house">
+                    <el-cascader expand-trigger="hover" :options="options" v-model="entrydata.houseType" @change="handleChange"></el-cascader>
+                    </el-form-item>
                         <el-form-item label="收费项目:">
                             <el-select v-model="entrydata.charge" placeholder="请选择费用项目类型">
                                 <el-option v-for="item in charges" :label="item.payItemMeterName" :value="item.id" :key="item.id"></el-option>
@@ -335,6 +332,86 @@ export default {
         remarks: "",
         time: ""
       },
+      options: [
+          {
+          value: 'bangongqu',
+          label: '办公区',
+          children: [{
+              value: 'Azuo',
+              label: 'A座',
+              children: [{
+                value: '101',
+                label: '101'
+              }, {
+                value: '102',
+                label: '102'
+              }, {
+                value: '103',
+                label: '103'
+              }, {
+                value: '104',
+                label: '104'
+              },
+              {
+                value: '105',
+                label: '105'
+              }]
+          }, 
+          {
+            value: 'Bzuo',
+            label: 'B座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          },{
+            value: 'Czuo',
+            label: 'C座',
+            children: [{
+              value: '101',
+              label: '101'
+            }, {
+              value: '102',
+              label: '102'
+            }, {
+              value: '103',
+              label: '103'
+            }, {
+              value: '104',
+              label: '104'
+            },
+            {
+              value: '105',
+              label: '105'
+            }]
+          }]
+        },{
+          value: 'yanjiedianpu',
+          label: '沿街店铺',
+          children: [{
+            value: 'axure',
+            label: 'Axure Components'
+          }, {
+            value: 'sketch',
+            label: 'Sketch Templates'
+          }, {
+            value: 'jiaohu',
+            label: '组件交互文档'
+          }]
+        }],
       charges:[],
       //仪表管理-编辑
       changedata: {
@@ -354,7 +431,8 @@ export default {
     this.nn(), this.getCharge(), this.getMeter(), this.Cost(),
     this.getPayItems(),
     this.getType(),
-    this.getCharges()
+    this.getCharges(),
+    this.getOptions()
     ;
   },
 
@@ -447,6 +525,13 @@ export default {
         .then(res => {
           this.getCharge();
         });
+    },
+    getOptions(){
+      this.$ajax.get(url + 'room/flndByClientId/aaa')
+      
+      .then(res => {
+          this.options=res.data;
+      })
     },
     //弹窗
     tanchaung(index, rows, msg) {
