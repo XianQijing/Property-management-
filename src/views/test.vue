@@ -99,7 +99,7 @@ export default {
       // console.log(value);
     },
     getRoomList () {
-      this.$ajax.get(url + 'room/flndByClientId').then(res => {
+      this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
         // console.log(res)
         this.options = res.data;
       })
@@ -190,7 +190,7 @@ function status2 (data) {
 }
 .nn {
     width: 20%;
-    margin: 4% 0 50% 40%;
+    margin: 4% 0 0 40%;
     display: flex;
     justify-content: space-between;
 }

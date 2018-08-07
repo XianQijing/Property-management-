@@ -100,7 +100,7 @@
       </div>
 
 
-        <!-- 职员信息-编辑 -->
+      <!-- 职员信息-编辑 -->
       <el-dialog
         title="编辑员工"
         :visible.sync="zhiyuan"
@@ -503,7 +503,7 @@ methods:{
                 this.addpersonEdit.gangwei = res.data.data.orgId;
                 this.addpersonEdit.beizhu = res.data.data.remark;
                 this.zhiyuan = true;
-			})
+			      })
         },
         //职员删除
         deleteRow(index, rows) {
