@@ -132,8 +132,8 @@
                 </el-select>
             </el-form-item>
               <el-form-item label="岗位:">
-                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
-                <el-cascader id="gangwei1" expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
+                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->{{addpersonEdit.gangwei}}
+                <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
             </el-form-item>
             <el-form-item label="备注:">
                 <el-input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu"></el-input>
@@ -374,6 +374,7 @@ export default {
                 post:'',
                 position:'',
                 beizhu:'',
+                // gangwei: ['1'],
                 gangwei: [],
                 mima:''
             },
@@ -412,7 +413,7 @@ mounted(){
         // console.log(res.data.data)
         this.Data = res.data.data
         this.options = this.transTreeData(this.Data)
-        // console.log(this.options)
+        console.log(this.options)
     })
     this.$ajax.get(url + 'role/findRole').then(res=> {
         // console.log(res.data.data)
@@ -483,9 +484,9 @@ methods:{
             that.id = this.tableData[index].id;
             // console.log(that.id);
             // rows.splice(index, 1);
-            console.log(this.options)
+            // console.log(this.options)
             this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 this.addpersonEdit.name = res.data.data.name;
                 this.addpersonEdit.nickname = res.data.data.username;
                 this.addpersonEdit.number = res.data.data.phone;
@@ -496,15 +497,13 @@ methods:{
                 // this.addpersonEdit.gangwei = res.data.data.orgId;
                 this.addpersonEdit.beizhu = res.data.data.remark;
                 this.zhiyuan = true;
-<<<<<<< HEAD
                 this.$ajax.get(url + 'company/findById?id='+res.data.data.orgId).then(res=> {
-                    console.log(res.data.data)
-                    this.addpersonEdit.gangwei = res.data.data[0].parentIds.split(',')
+                    let arr = res.data.data[0].parentIds.split(',').slice(1)
+                    arr.push(res.data.data[0].value)
+                    this.addpersonEdit.gangwei = arr
+                    // console.log(this.addpersonEdit.gangwei)
                 })
 			})
-=======
-			      })
->>>>>>> 7eb0774735160e35a229e6d06ff0a312a1b9865f
         },
         //职员删除
         deleteRow(index, rows) {
@@ -595,8 +594,7 @@ methods:{
         users.password=this.addpersonEdit.mima;
         users.remark=this.addpersonEdit.beizhu;
         users.roleId=this.addpersonEdit.position;
-        this.$ajax.post(url+"user/update",users
-        ).then((res) => {
+        this.$ajax.post(url+"user/update",users).then((res) => {
             this.form = res.data
             // console.log('this.form')
             this.zhiyuan = false;
