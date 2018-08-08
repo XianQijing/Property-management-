@@ -1,65 +1,62 @@
 <template>
-    <div class="manage">
-        <el-container>
-            <el-aside width="200px">
-                <div class="departNav">
-        <h1>部门</h1>
-       <el-tree :data="data5"  node-key="id" default-expand-all  @node-click="back">
-      <span class="custom-tree-node" slot-scope="{ node, data }">
-        <span>{{ node.label }}</span>
-        <div class="aa">
-          <img src=".././assets/add.png" @click="() => qq(data)" class="tianjia">
-          <img src=".././assets/delet.png" class="shanchu"  @click="() => remove(node, data)"/>
+  <div class="manage">
+    <el-container>
+      <el-aside width="200px">
+        <div class="departNav">
+          <h1>部门</h1>
+          <el-tree :data="data5"  node-key="id" default-expand-all  @node-click="back" :expand-on-click-node="false">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span>{{ node.label }}</span>
+              <div class="aa">
+                <img src=".././assets/add.png" @click="() => qq(node, data)" class="tianjia">
+                <img src=".././assets/delet.png" class="shanchu"  @click="() => remove(node, data)"/>
+              </div>
+            </span>
+          </el-tree>
+
+          <el-dialog
+            title="添加"
+            :visible.sync="dialogVisible"
+            width="30%">
+            <div class="mingcheng">
+              <div class="name1">部门名称：</div>
+              <el-input v-model="name"></el-input>
+            </div>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button type="primary" @click="() => append(this.pp)">确 定</el-button>
+            </span>
+          </el-dialog>
         </div>
-      </span>
-    </el-tree>
-    <el-dialog
-  title="添加"
-  :visible.sync="dialogVisible"
-  width="30%">
-  <div class="mingcheng">
-  <div class="name1">部门名称：</div>
-    <el-input v-model="name"></el-input>
-    </div>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="() => append(this.pp)">确 定</el-button>
-  </span>
-</el-dialog>
-
-    </div>
-            </el-aside>
-            <el-main>
+      </el-aside>
+      <el-main>
         <div class="body">
-            <div class="title">
-                <h3>人员</h3><span>共5条记录</span>
-                </div>
-                    <el-table :data="tableData2" style="width: 100%">
-                        <el-table-column type="selection" width="55"></el-table-column>
-                        <el-table-column prop="username" label="用户名"></el-table-column>
-                        <el-table-column prop="name" label="姓名"></el-table-column>
-                        <el-table-column prop="cname" label="所属部门"></el-table-column>
-                        <el-table-column prop="rname" label="岗位"></el-table-column>
-                        <!-- <el-table-column prop="file" label="个人文档"></el-table-column> -->
-                        <el-table-column label="停用">
-                            <template  slot-scope="scope">
-                            <button class="stop" @click="stop(scope.$index,tableData2)">停用</button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <div class="fenye">
-                    <div class="fenye">
-                        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNoCustomerMsg"  :page-size="pageSizeCustomerMsg" :page-sizes="pageSizesListCustomerMsg" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumbercustomerMsg">
-
-                        </el-pagination>
-                    </div>
-                </div>
-                </div>
-                
-            </el-main>
-            
-        </el-container>
-    </div>
+          <div class="title">
+            <h3>人员</h3><span>共5条记录</span>
+          </div>
+          <el-table :data="tableData2" style="width: 100%">
+              <el-table-column type="selection" width="55"></el-table-column>
+              <el-table-column prop="username" label="用户名"></el-table-column>
+              <el-table-column prop="name" label="姓名"></el-table-column>
+              <el-table-column prop="cname" label="所属部门"></el-table-column>
+              <el-table-column prop="rname" label="岗位"></el-table-column>
+              <!-- <el-table-column prop="file" label="个人文档"></el-table-column> -->
+              <el-table-column label="停用">
+                  <template  slot-scope="scope">
+                  <button class="stop" @click="stop(scope.$index,tableData2)">停用</button>
+                  </template>
+              </el-table-column>
+          </el-table>
+          <div class="fenye">
+            <div class="fenye">
+              <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNoCustomerMsg"  :page-size="pageSizeCustomerMsg" :page-sizes="pageSizesListCustomerMsg" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumbercustomerMsg">
+              </el-pagination>
+            </div>
+          </div>
+        </div>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script>
@@ -67,177 +64,175 @@
 import url from '../assets/Req.js'
 let id = 1000;
 export default {
-    name: 'manage',
-    data(){
-        return{
-        data5: [],
-        dialogVisible: false,
-        pageNoCustomerMsg: 1,
-        pageSizeCustomerMsg: 2,
-        pageSizesListCustomerMsg: [1,2, 3, 4, 5],
-        totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
-        name:'',
-        id:'',
-        rules: {
-          name: [
-            { required: true, message: '请输入名称', trigger: 'blur' },
-          ]},
-            tableData2: [
-                {
-                    userName: 'admin',
-                    name2: '系统管理员',
-                    position2: '所有部门',
-                    post2: '部门经理',
-                    role: '系统管理员',
-                    file: '2048M',
-                },
-                {
-                    userName: 'admin',
-                    name2: '系统管理员',
-                    position2: '所有部门',
-                    post2: '部门经理',
-                    role: '系统管理员',
-                    file: '2048M',
-                },
-                {
-                    userName: 'admin',
-                    name2: '系统管理员',
-                    position2: '所有部门',
-                    post2: '部门经理',
-                    role: '系统管理员',
-                    file: '2048M',
-                },
-                {
-                    userName: 'admin',
-                    name2: '系统管理员',
-                    position2: '所有部门',
-                    post2: '部门经理',
-                    role: '系统管理员',
-                    file: '2048M',
-                },
-                {
-                    userName: 'admin',
-                    name2: '系统管理员',
-                    position2: '所有部门',
-                    post2: '部门经理',
-                    role: '系统管理员',
-                    file: '2048M',
-                },
-            ]
-        }
-    },
-    mounted(){
-        this.getbumen()
-    },
-    methods: {
-      append(data) {
-        const newChild = { id: id++, label: this.name, children: [] };
-        if (!data.children) {
-          this.$set(data, 'children', []);
-        }
-        if (this.name !=='') {
+  name: 'manage',
+  data () {
+    return {
+      data5: [],
+      dialogVisible: false,
+      pageNoCustomerMsg: 1,
+      pageSizeCustomerMsg: 2,
+      pageSizesListCustomerMsg: [1,2, 3, 4, 5],
+      totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
+      name:'',
+      id:'',
+      rules: {
+        name: [
+          { required: true, message: '请输入名称', trigger: 'blur' },
+        ]
+      },
+      tableData2: [
+        {
+          userName: 'admin',
+          name2: '系统管理员',
+          position2: '所有部门',
+          post2: '部门经理',
+          role: '系统管理员',
+          file: '2048M',
+        },
+        {
+          userName: 'admin',
+          name2: '系统管理员',
+          position2: '所有部门',
+          post2: '部门经理',
+          role: '系统管理员',
+          file: '2048M',
+        },
+        {
+          userName: 'admin',
+          name2: '系统管理员',
+          position2: '所有部门',
+          post2: '部门经理',
+          role: '系统管理员',
+          file: '2048M',
+        },
+        {
+          userName: 'admin',
+          name2: '系统管理员',
+          position2: '所有部门',
+          post2: '部门经理',
+          role: '系统管理员',
+          file: '2048M',
+        },
+        {
+          userName: 'admin',
+          name2: '系统管理员',
+          position2: '所有部门',
+          post2: '部门经理',
+          role: '系统管理员',
+          file: '2048M',
+        },
+      ]
+    }
+  },
+  mounted () {
+    this.getbumen()
+  },
+  methods: {
+    append (data) {
+      const newChild = { id: id++, label: this.name, children: [] };
+      if (!data.children) {
+        this.$set(data, 'children', []);
+      }
+      if (this.name !=='') {
         data.children.push(newChild);
         this.dialogVisible = false;
         // console.log(data.id)
-        }else{
-            
-        }
-        this.$ajax.get(url + '',"id="+data.id).then(res=>{
-            // console.log(res)
-        })
-      },
-      back(e){
-            // console.log(e);
-            this.$ajax.post(url + 'company/findCompanyById',"id="+e.id).then(res =>{
-                var child = res.data.data;
-                // console.log(child)
-                if (!e.children) {
-                    this.$set(e, 'children', []);
-                    }
-                    this.id = e.id
-                e.children = res.data.data
-                this.$ajax.get(url+'company/findUser',{
-                    params:{
-                        "id":this.id,
-                        "page":1,
-                        "pageSize":this.pageSizeCustomerMsg
-                    }
-                }).then((res) => {
-                    // console.log(res.data.data)
-					this.tableData2 = res.data.data.rows
-					this.totalDataNumbercustomerMsg = res.data.data.records
-				})
-            })
-            
-      },
-      remove(node, data) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
-        
-        this.$ajax.post(url + 'company/delete',"id="+data.id).then(res=>{
-            // console.log(res)
-        })
-      },
-
-      qq(data){
-      this.dialogVisible = true;
-      this.pp = data;
-      this.name = '';
-      },
-
-      getbumen(){
-          this.$ajax.get(url + 'company/findCompany').then(res => {
-              var data = res.data.data
-            //   console.log(res.data.data)
-              this.data5= res.data.data
-            //   console.log(res.data.data)
-          }),
-          this.$ajax.get(url + 'company/findUser',{
-              params:{
-                        "id":1,
-                        "page":this.pageNoCustomerMsg,
-                        "pageSize":this.pageSizeCustomerMsg
-                    }
-          }).then(res => {
-            //   console.log(res.data.data.rows)
-              this.tableData2= res.data.data.rows
-              this.totalDataNumbercustomerMsg = res.data.data.records
-            //   console.log(res.data.data)
-          })
-      },
-      handleSizeChange(val) {
-        // console.log(`每页 ${val} 条`);
-        this.pageSizeCustomerMsg = val;
-        this.getcustomerMsg()
-      },
-      handleCurrentChange(val) {
-        // console.log(`当前页: ${val}`);
-        this.pageNoCustomerMsg = val;
-        this.getcustomerMsg()
-      },
-      getcustomerMsg() {
-                this.$ajax.get(url+'company/findUser',{
-                    params:{
-                        "id":this.id,
-                        "page":this.pageNoCustomerMsg,
-                        "pageSize":this.pageSizeCustomerMsg
-                    }
-                }).then((res) => {
-                    // console.log(res.data.data)
-					this.tableData2 = res.data.data.rows
-					this.totalDataNumbercustomerMsg = res.data.data.records
-				})
-            },
-            stop(index,rows){
-                this.tableData2[index].id;
-                rows.splice(index, 1);
-                this.$ajax.post(url + 'user/logicDelete',"id="+this.tableData2[index].id).then(res => {
-                    // console.log(res)
-                })
-            }
       }
+      this.$ajax.post(url + 'company/insert?id='+data.id + '&name=' + this.name).then((res) => {
+        console.log(res.data)
+      })
+    },
+    back (e) {
+      // console.log(e);
+      this.$ajax.post(url + 'company/findCompanyById',"id="+e.id).then(res =>{
+        var child = res.data.data;
+        // console.log(child)
+        if (!e.children) {
+          this.$set(e, 'children', []);
+        }
+        this.id = e.id
+        e.children = res.data.data
+        this.$ajax.get(url+'company/findUser',{
+          params:{
+            "id":this.id,
+            "page":1,
+            "pageSize":this.pageSizeCustomerMsg
+          }
+        }).then((res) => {
+          // console.log(res.data.data)
+          this.tableData2 = res.data.data.rows
+          this.totalDataNumbercustomerMsg = res.data.data.records
+        })
+      })
+    },
+    remove (node, data) {
+      const parent = node.parent;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex(d => d.id === data.id);
+      children.splice(index, 1);
+      this.$ajax.post(url + 'company/delete',"id="+data.id).then(res=>{
+        // console.log(res)
+      })
+    },
+    qq (node, data) {
+      // console.log(data)
+      if (node.level !== 3) {
+        this.dialogVisible = true;
+        this.pp = data;
+        this.name = '';
+      }
+    },
+    getbumen () {
+      this.$ajax.get(url + 'company/findCompany').then(res => {
+        var data = res.data.data
+      //   console.log(res.data.data)
+        this.data5= res.data.data
+      //   console.log(res.data.data)
+      }),
+      this.$ajax.get(url + 'company/findUser',{
+        params:{
+          "id":1,
+          "page":this.pageNoCustomerMsg,
+          "pageSize":this.pageSizeCustomerMsg
+        }
+      }).then(res => {
+        //   console.log(res.data.data.rows)
+        this.tableData2= res.data.data.rows
+        this.totalDataNumbercustomerMsg = res.data.data.records
+        //   console.log(res.data.data)
+      })
+    },
+    handleSizeChange(val) {
+      // console.log(`每页 ${val} 条`);
+      this.pageSizeCustomerMsg = val;
+      this.getcustomerMsg()
+    },
+    handleCurrentChange(val) {
+      // console.log(`当前页: ${val}`);
+      this.pageNoCustomerMsg = val;
+      this.getcustomerMsg()
+    },
+    getcustomerMsg() {
+      this.$ajax.get(url+'company/findUser',{
+        params:{
+          "id":this.id,
+          "page":this.pageNoCustomerMsg,
+          "pageSize":this.pageSizeCustomerMsg
+        }
+      }).then((res) => {
+        // console.log(res.data.data)
+        this.tableData2 = res.data.data.rows
+        this.totalDataNumbercustomerMsg = res.data.data.records
+      })
+    },
+    stop(index,rows){
+      this.tableData2[index].id;
+      rows.splice(index, 1);
+      this.$ajax.post(url + 'user/logicDelete',"id="+this.tableData2[index].id).then(res => {
+        // console.log(res)
+      })
+    }
+  }
 }
 </script>
 
