@@ -13,8 +13,8 @@
 									<router-view class="relationshipAdd"></router-view>
 								    <!-- <router-view class="householdDetail"></router-view> -->
 								</div>
-								<button class="delect">迁出</button>
-								<el-table :data="base" style="width: 100%">
+								<button class="delect" id="delect">迁出</button>
+								<el-table :data="base" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="name" label="姓名" width="180"></el-table-column>
 									<el-table-column prop="phone" label="手机号" width="180"></el-table-column>
@@ -53,19 +53,19 @@
 								<router-view class="householdDetail"></router-view>
 								</div>
 								<el-table :data="MoveOut" style="width: 100%">
-									<el-table-column type="selection"></el-table-column>
-									<el-table-column prop="name" label="姓名"></el-table-column>
-									<el-table-column prop="phone" label="手机号"></el-table-column>
-									<el-table-column prop="leaseType" label="租用类型"></el-table-column>
-									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
-									<el-table-column prop="roomNumber" label="房号"></el-table-column>
-									<el-table-column prop="inTime" label="迁入时间"></el-table-column>
-									<el-table-column prop="outTime" label="迁出时间"></el-table-column>
-                                    <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column>
-                                    <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
+									<el-table-column type="selection" width="55"></el-table-column>
+									<el-table-column prop="name" label="姓名" width="140"></el-table-column>
+									<el-table-column prop="phone" label="手机号" width="148"></el-table-column>
+									<el-table-column prop="leaseType" label="租用类型" width="148"></el-table-column>
+									<el-table-column prop="buildingName" label="楼宇" width="124"></el-table-column>
+									<el-table-column prop="roomNumber" label="房号" width="140"></el-table-column>
+									<el-table-column prop="inTime" label="迁入时间" width="148"></el-table-column>
+									<el-table-column prop="outTime" label="迁出时间" width="172"></el-table-column>
+                                    <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column> -->
+                                    <!-- <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
 									<el-table-column>
 										<template slot-scope="scope">
-												<span style="color:rgb(50, 168, 238)" @click="detail(scope.$index, MoveOut)">
+												<span style="color:rgb(50, 168, 238)" @click="details(scope.$index, MoveOut)">
                                                     查看详情
                                                 </span>
 										</template>
@@ -214,7 +214,7 @@
 												<el-dropdown-menu slot="dropdown">
 													<span @click="toServer(scope.$index,server,8,'server')"><el-dropdown-item>查看</el-dropdown-item></span>
 													<span @click="toServer(scope.$index,server,8,'return')"><el-dropdown-item>回访</el-dropdown-item></span>
-													<el-dropdown-item>派工</el-dropdown-item>
+													<!-- <el-dropdown-item>派工</el-dropdown-item> -->
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
@@ -621,7 +621,7 @@
 			}
 		},
 		mounted() {
-      		this.getbase(),
+			 this.getbase(),
 			this.getMoveOut(),
 			this.gettemplate(),
 			this.getsended(),
@@ -637,7 +637,9 @@
 				//console.log(this.position)
 			},
 			handleClick(tab, event) {
-				console.log(tab, event);
+				console.log(tab.index);
+				this.tabIndex = tab.index
+				this.$router.push('/relationship')
 			},
 			handleSizeChange(val) {
 				this.pageSize = val;
@@ -672,13 +674,21 @@
 			//客户基本资料-详情
 			detail(index,rows){
 				let that = this;
-				that.id = this.base[index].id;
-				console.log(this.base[index].id)
+				that.id = this.base[index].customer;
+				// console.log(this.base[index])
 				that.roomid = this.base[index].roomid;
-				console.log(this.base[index].roomid)
+				// console.log(this.base[index].roomid)
 				if(!this.roomid){
 					this.roomid = '0';
 				}
+				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
+			},
+			details(index,rows){
+				let that = this;
+				that.id = this.MoveOut[index].customer;
+				console.log(this.MoveOut[index].customer)
+				that.roomid = this.MoveOut[index].room;
+				// console.log(this.MoveOut[index].roomid)
 				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
 			},
 			//客户基本资料-编辑
@@ -706,7 +716,7 @@
 			//获取MoveOut
 			getMoveOut() {
 				this.$ajax.get(url+'moveOut/condition/'+this.pageNoMoveOut+'/'+this.pageSizeMoveOut).then((res) => {
-					//alert(res.data.data.rows[0].name);
+					console.log (res.data.data.rows);
 					this.MoveOut = res.data.data.rows
 					this.totalDataNumberMoveOut = res.data.data.records
 				})
@@ -760,8 +770,8 @@
 				this.addMessage = {},
 				this.modify = true,
 				this.name = '添加',
-				this.tianjia == true,
-				this.bianji == false
+				this.tianjia = true,
+				this.bianji = false
 			},
 		//编辑短信弹窗
 		noteTemplateEdit(index,rows){
@@ -769,8 +779,8 @@
 				that.id = this.template[index].id;
                 console.log(this.id);
 				this.modify = true,
-				this.bianji == true,
-				this.tianjia == false
+				this.bianji = true,
+				this.tianjia = false
                 if(that.id !== ''){
                     this.name = '编辑'
                     this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
@@ -806,8 +816,23 @@
 					this.getMoveOut()
 				})
 			},
-
-
+			handleSelectionChange (val) {
+      //val 为选中数据的集合
+      this.multipleSelection = val
+      if (val.length > 0) {
+        // 楼宇批量删除按钮
+        document.getElementById('delect').style.background = 'red'
+        // 房间批量删除按钮
+        document.getElementById('roomDelete').style.background = 'red'
+        // 车辆管理批量删除按钮
+        document.getElementById('carDelete').style.background = 'red'
+      } else {
+        document.getElementById('delect').style.background = '#f5f5f5'
+        document.getElementById('roomDelete').style.background = '#f5f5f5'
+        document.getElementById('carDelete').style.background = '#f5f5f5'
+      }
+      // console.log(this.multipleSelection)
+    },
 			handleSizeChangesended(val) {
 				this.pageSizeSended = val;
 				this.getsended()

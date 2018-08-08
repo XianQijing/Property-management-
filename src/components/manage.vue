@@ -8,7 +8,7 @@
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <div class="aa">
-          <img src=".././assets/add.png" @click="() => qq(data)" class="tianjia">
+          <img src=".././assets/add.png" @click="() => qq(node, data)" class="tianjia" >
           <img src=".././assets/delet.png" class="shanchu"  @click="() => remove(node, data)"/>
         </div>
       </span>
@@ -73,11 +73,12 @@ export default {
         data5: [],
         dialogVisible: false,
         pageNoCustomerMsg: 1,
-        pageSizeCustomerMsg: 2,
-        pageSizesListCustomerMsg: [1,2, 3, 4, 5],
+        pageSizeCustomerMsg: 10,
+        pageSizesListCustomerMsg: [10,20, 50, 100],
         totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
         name:'',
         id:'',
+        isThird: true,
         rules: {
           name: [
             { required: true, message: '请输入名称', trigger: 'blur' },
@@ -142,12 +143,12 @@ export default {
         }else{
             
         }
-        this.$ajax.get(url + '',"id="+data.id).then(res=>{
+        this.$ajax.post(url + 'company/insert?id='+data.id +'&name='+this.name).then(res=>{
             // console.log(res)
         })
       },
       back(e){
-            // console.log(e);
+            this.id = e.id
             this.$ajax.post(url + 'company/findCompanyById',"id="+e.id).then(res =>{
                 var child = res.data.data;
                 // console.log(child)
@@ -181,11 +182,17 @@ export default {
         })
       },
 
-      qq(data){
-      this.dialogVisible = true;
-      this.pp = data;
-      this.name = '';
-      },
+      qq (node, data) {
+      // console.log(data)
+      if (node.level !== 3) {
+        this.dialogVisible = true;
+        this.pp = data;
+        this.name = '';
+        // this.isThird = true
+      } else {
+        //   this.isThird = false
+      }
+    },
 
       getbumen(){
           this.$ajax.get(url + 'company/findCompany').then(res => {
@@ -231,9 +238,9 @@ export default {
 				})
             },
             stop(index,rows){
-                this.tableData2[index].id;
+                var thisId = this.tableData2[index].id;
                 rows.splice(index, 1);
-                this.$ajax.post(url + 'user/logicDelete',"id="+this.tableData2[index].id).then(res => {
+                this.$ajax.post(url + 'user/logicDelete',"id="+thisId).then(res => {
                     // console.log(res)
                 })
             }

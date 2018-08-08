@@ -33,9 +33,10 @@ export default {
       name: '123123'
     }
   },
-	// props:{
-	// 	name:''
-	// },
+	mounted(){
+    let uname = getCookie("phone");
+    this.name = uname
+  },
 	methods: {
     signOut () {
       console.log(12)

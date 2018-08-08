@@ -383,6 +383,7 @@ export default {
     }
   },
   mounted() {
+    this.activeName = this.$route.query.tabPane
     this.getAdmin()
     this.getRoom()
     this.getRoomStandard()
@@ -390,6 +391,8 @@ export default {
     this.getCar()
     if(this.$route.query.tabPane){
       this.activeName = this.$route.query.tabPane
+    }else{
+      this.activeName = 'first'
     }
   },
   methods: {

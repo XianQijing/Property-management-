@@ -6,7 +6,7 @@
             <div class="input">
                 
                     <el-form-item label="姓名:">
-                        <el-input v-model="detail.name" clearable></el-input>
+                        <el-input v-model="detail.name" v-on:blur="transformName" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="关联房屋:">
                         <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange"></el-cascader>
@@ -247,9 +247,7 @@ export default {
     mounted(){
         console.log(this.$route.query.id)
          this.id = this.$route.query.id
-         this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
-                this.options=res.data;
-         })
+         
         
          this.$ajax.get(url + 'serviceAccept/findByDictType/1').then(res => {
                 this.service=res.data;
@@ -261,9 +259,13 @@ export default {
             this.$ajax.get(url +'serviceAccept/findIdVO/'+this.id).then(res => {
                 this.detail = res.data;
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.editChange(res.data.name,res.data.phone)
             })
         }else(
-            this.datail = ''
+            this.datail = '',
+            this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
+                this.options=res.data;
+            })
         )
     },
     methods: {
@@ -273,16 +275,79 @@ export default {
     //   handlePictureCardPreview(file) {
     //     this.dialogImageUrl = file.url;
     //   },
-    transform:function(){
+    
+    editChange(a,b){
+            this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
+                var aa = "";
+                    if(!res.data){
+                        aa = "aaa";
+                    }else{
+                        aa = res.data.id;
+                    }
+                    this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                        this.options=res.data;
+                    })
+                })
+        },
+    //失去焦点事件，当移开姓名时判断
+      transformName:function(){
           if(!this.detail.name){
-              alert("请先输入业主姓名");
+              this.$message({
+                message: '请先输入业主姓名',
+                 type: 'error'
+               })
+            
+          }else{
+              if(!this.detail.phone){
+                  this.$ajax.get(url + 'owner/findByName/'+this.detail.name).then(res => {
+                       if(res.data.length==0){
+                           this.$message({
+                                message: '没有找到该业主的任何信息',
+                                type: 'error'
+                            })
+                          
+                         this.detail.name = null;
+                       }
+                       console.log(res.data)
+                   })
+                 }else{
+                      this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
+                        if(!res.data){
+                             this.$message({
+                                message: '业主绑定的电话号码有误，请重新输入！',
+                                type: 'error'
+                            })
+                         
+                            this.detail.phone = null;
+                        }
+                        console.log(res.data)
+                    })
+                 }
+              }
+      },
+    //失去焦点事件，当移开电话时判断
+      transform:function(){
+          if(!this.detail.name){
+               this.$message({
+                      message: '请先输入业主姓名',
+                    type: 'error'
+                }) 
+
           }else if(!this.detail.phone){
-              alert("请输入电话号码");
+                         this.$message({
+                                message: '请输入电话号码',
+                                type: 'error'
+                            }) 
+
           }else{
            this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
                 var aa = "";
                 if(!res.data){
-                    alert("业主姓名和业主电话号码输入有误！");
+                     this.$message({
+                                message: '业主绑定的电话号码有误，请重新输入！',
+                                type: 'error'
+                            })
+                    this.detail.phone = null;
                     aa = "aaa";
                 }else{
                     aa = res.data.id;
@@ -319,11 +384,21 @@ export default {
                 this.$ajax.put(url+"serviceAccept/update",serviceAcceptVO).then((res) => {
                     this.form = res.data
                     console.log(this.form);
+                     if(res.data=="seccess"){
+                         alert("修改数据成功");
+                     }else{
+                            alert("失败");
+                     }
                 })
             }else{
                 this.$ajax.post(url+"serviceAccept/insert",serviceAcceptVO).then((res) => {
                     this.form = res.data
                     console.log(this.form);
+                     if(res.data=="seccess"){
+                         alert("增加数据成功");
+                     }else{
+                            alert("失败");
+                     }
                 })
             }
             

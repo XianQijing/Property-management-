@@ -38,7 +38,7 @@
 							</div>
                         </el-tab-pane>
 
-                        <el-tab-pane label="仪表管理">
+                        <el-tab-pane label="仪表管理" name="second">
 
                              <div class="main">
 								<button class="add" @click="luru('','','add')">录入数据</button>
@@ -68,7 +68,7 @@
 							</div>                 
                         </el-tab-pane>
 
-                        <el-tab-pane label="应收费用">
+                        <el-tab-pane label="应收费用" name="third">
 
                             <div class="main">
                                 <div id="card"><button @click="feiyong3">临时费用</button><button @click="feiyong2">抄表费用</button><button class="active" @click="feiyong1">常规费用</button></div>
@@ -434,7 +434,11 @@ export default {
     this.getType(),
     this.getCharges(),
     this.getOptions()
-    ;
+    if(this.$route.query.tabPane){
+      this.activeName = this.$route.query.tabPane
+    }else{
+      this.activeName = 'first'
+    }
   },
 
   //选项卡

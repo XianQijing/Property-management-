@@ -88,8 +88,8 @@ export default {
             adornPatrol.patrolTime = this.detail.day;
             console.log(this.detail.day)
             adornPatrol.patrolNumber = this.detail.number;
-            adornPatrol.patrolMan = this.detail.phone;
-            adornPatrol.patrolPhone = this.detail.person;
+            adornPatrol.patrolMan = this.detail.person;
+            adornPatrol.patrolPhone = this.detail.phone;
             if(this.detail.radio==1){
                 adornPatrol.isAchieve = 1;
             }else{
@@ -110,6 +110,11 @@ export default {
            this.$ajax.post(url+"adornPatrol/insert",adornPatrol).then((res) => {
               this.form = res.data
               console.log(this.form);
+               if(res.data=="seccess"){
+                         alert("修改数据成功");
+                }else{
+                            alert("失败");
+                 }
             })
         },
       goBack(){

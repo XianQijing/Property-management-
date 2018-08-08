@@ -122,7 +122,9 @@
 		margin: 1% 40%;
         width: 20%;
 	}
-	
+	.container {
+    max-width: 1920px;
+}
 	.welcome {
 		font-family: "Microsoft YaHei";
 		color: rgb(255, 196, 76);

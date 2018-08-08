@@ -6,7 +6,7 @@
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm" size='small' :disabled="ww">
                 <div id="fenkai">
                 <el-form-item label="客户名字：" prop="name">
-                <el-input v-model="ruleForm.name" placeholder="请输入客户名字"></el-input>
+                <el-input v-model="ruleForm.name" v-on:blur="transformName" placeholder="请输入客户名字"></el-input>
                 </el-form-item>
                 <el-form-item label="客户手机号：" prop="phone">
                 <el-input v-model="ruleForm.phone" v-on:blur="transform" placeholder="请输入客户手机号"></el-input>
@@ -245,9 +245,7 @@ export default {
     },
     mounted(){
         this.id = this.$route.query.id
-        this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
-                this.options=res.data;
-        })
+        
         if(this.$route.query.msg === 2){    //客户反馈信息查看 
             this.ww = true,
             this.name = '查看'
@@ -266,7 +264,9 @@ export default {
                 this.ruleForm.agent = res.data.handler;
                 this.ruleForm.eventDate = res.data.occurrenceTime;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.editChange(res.data.name,res.data.phone)
                  console.log(this.id)       
+                 
             })
         }else if(this.$route.query.msg === 3){    //客户反馈信息修改
             this.name = '修改'
@@ -285,7 +285,8 @@ export default {
                 this.ruleForm.agent = res.data.handler;
                this.ruleForm.eventDate = res.data.occurrenceTime;
                this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
-                 console.log(this.id)       
+               this.editChange(res.data.name,res.data.phone)
+                 console.log(this.id)   
             })
         }else if(this.$route.query.msg === 1){    //客户事件新增
             this.name = '新增',
@@ -294,6 +295,9 @@ export default {
             this.show = false
             this.$ajax.get(url + 'serviceAccept/findByDictType/4').then(res => {
                 this.ways=res.data;
+            })
+            this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
+                this.options=res.data;
             })
             
         }else if(this.$route.query.msg === 4){  //客户事件查看
@@ -309,6 +313,7 @@ export default {
                 this.ruleForm = res.data;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.ruleForm.process_cacsi = res.data.cacsi;
+                this.editChange(res.data.name,res.data.phone)
             })
         }else if(this.$route.query.msg === 5){   //客户事件回访
             this.name = '回访',
@@ -322,6 +327,7 @@ export default {
                 this.ruleForm = res.data;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.ruleForm.process_cacsi = res.data.cacsi;
+                this.editChange(res.data.name,res.data.phone)
             })     
         }else{                              //客户反馈信息新增
             this.name = '新增'
@@ -331,19 +337,85 @@ export default {
              this.$ajax.get(url + 'serviceAccept/findByDictType/3').then(res => {
                 this.ways=res.data;
             })
+            this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
+                this.options=res.data;
+             })
         }
     },
     methods:{
-        transform:function(){
+
+        editChange(a,b){
+            this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
+                var aa = "";
+                    if(!res.data){
+                        aa = "aaa";
+                    }else{
+                        aa = res.data.id;
+                    }
+                    this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                        this.options=res.data;
+                    })
+                })
+        },
+     //失去焦点事件，当移开姓名时判断
+      transformName:function(){
           if(!this.ruleForm.name){
-              alert("请先输入业主姓名");
+              this.$message({
+                message: '请先输入业主姓名',
+                 type: 'error'
+               })
+            
+          }else{
+              if(!this.ruleForm.phone){
+                  this.$ajax.get(url + 'owner/findByName/'+this.ruleForm.name).then(res => {
+                       if(res.data.length==0){
+                           this.$message({
+                                message: '没有找到该业主的任何信息',
+                                type: 'error'
+                            })
+                          
+                         this.ruleForm.name = null;
+                       }
+                       console.log(res.data)
+                   })
+                 }else{
+                      this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.ruleForm.name+'/'+this.ruleForm.phone).then(res => {
+                        if(!res.data){
+                             this.$message({
+                                message: '业主绑定的电话号码有误，请重新输入！',
+                                type: 'error'
+                            })
+                         
+                            this.ruleForm.phone = null;
+                        }
+                        console.log(res.data)
+                    })
+                 }
+              }
+      },
+    //失去焦点事件，当移开电话时判断
+      transform:function(){
+          if(!this.ruleForm.name){
+               this.$message({
+                      message: '请先输入业主姓名',
+                    type: 'error'
+                }) 
+
           }else if(!this.ruleForm.phone){
-              alert("请输入电话号码");
+                         this.$message({
+                                message: '请输入电话号码',
+                                type: 'error'
+                            }) 
+
           }else{
            this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.ruleForm.name+'/'+this.ruleForm.phone).then(res => {
                 var aa = "";
                 if(!res.data){
-                    alert("业主姓名和业主电话号码输入有误！");
+                     this.$message({
+                                message: '业主绑定的电话号码有误，请重新输入！',
+                                type: 'error'
+                            })
+                    this.ruleForm.phone = null;
                     aa = "aaa";
                 }else{
                     aa = res.data.id;
@@ -397,7 +469,7 @@ export default {
             feedbackMessageVO.id = this.id;
             this.$ajax.put(url+"feedbackMessage/update",feedbackMessageVO).then((res) => {
                         if(res.data=="seccess"){
-                            alert("添加数据成功");
+                            alert("修改数据成功");
                         }else{
                             alert("失败");
                         }
@@ -432,7 +504,7 @@ export default {
                     this.form = res.data
                     console.log(this.form);
                     if(res.data=="seccess"){
-                         alert("修改数据成功");
+                         alert("新增数据成功");
                      }else{
                             alert("失败");
                      }
