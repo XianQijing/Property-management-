@@ -580,7 +580,7 @@
 				template:[
 					{
 						title:'节日祝福',
-						content: '尊敬的XX用户',
+						content: '尊敬的XX用户git ',
 						sign: '魔方物业'
 					},
 				],
