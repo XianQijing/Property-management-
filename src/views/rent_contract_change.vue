@@ -7,13 +7,13 @@
             <div class="input">
                 
                     <el-form-item label="承租方:">
-                        <el-input v-model="detail.owner.name" :placeholder="input.name"></el-input>
+                        <el-input v-model="detail.owner.namec" :placeholder="input.namec"></el-input>
                     </el-form-item>
                     <el-form-item label="联系地址:">
                         <el-input v-model="detail.owner.address" :placeholder="input.address"></el-input>
                     </el-form-item>
                     <el-form-item label="关联房屋:">{{detail.rooms.codes}}
-                        <el-select v-model="detail.rooms.codes">
+                        <el-select v-model="detail.room">
                         <el-option v-for="item in options" :key="item.id" :label="item.roomNumber" :value="item.id">
                         </el-option>
                         </el-select>
@@ -126,6 +126,7 @@ export default {
             id:'',
             detail: {
                 id: "",
+                riseMoney:0,
                 startTime: [],
                 paymentAmount: 1,
                 paymentTime: "",
@@ -134,12 +135,13 @@ export default {
                 strataFee: 1,
                 rentFreeTime: "",
                 payTime: "",
+                room:'',
                 cashDeposit: 1,
                 cashPledge: 1,
-                total: 1,
+                total: '',
                 comment: "",
                 owner: {
-                    name: "",
+                    namec: "",
                     phone: "",
                     address: ""
                 },
@@ -159,7 +161,7 @@ export default {
 
             },
             input: {
-                name: '请输入姓名',
+                namec: '请输入姓名',
                 address: '请输入联系地址',
                 house: '请输入关联房屋',
                 endtime: '请选择结束时间',
@@ -186,7 +188,7 @@ export default {
     mounted(){
         this.id = this.$route.query.id
         this.message = this.$route.query.msg
-        // console.log(this.message)
+        console.log(this.id)
 
         this.$ajax.get(url + 'room/flndAll/1/10').then(res => {
             console.log(res.data.data.rows)
@@ -224,7 +226,7 @@ export default {
                         "cashDeposit":this.detail.cashDeposit,
                         "cashPledge":this.detail.cashPledge,
                         "comment":this.detail.total,
-                        "name":this.detail.owner.name,
+                        "namec":this.detail.owner.namec,
                         "phone":this.detail.owner.phone,
                         "room":this.detail.rooms.codes,
                         "strataFee":this.detail.strataFee,
@@ -253,15 +255,15 @@ export default {
                         "amplification":this.detail.riseMoney,
                         "cashDeposit":this.detail.cashDeposit,
                         "cashPledge":this.detail.cashPledge,
-                        "comment":this.detail.total,
-                        "name":this.detail.owner.name,
+                        "comment":this.detail.comment,
+                        "namec":this.detail.owner.namec,
                         "phone":this.detail.owner.phone,
-                        "room":this.detail.rooms.codes,
+                        "room":this.detail.room,
                         "strataFee":this.detail.strataFee,
                         "total":this.detail.total,
                         "startTime":this.detail.startTime[0],
                         "endTime":this.detail.startTime[1],
-                        "paymentAmount":this.detail.rooms.pricing,
+                       // "paymentAmount":this.detail.rooms.pricing,
                         "rentFreeTime":this.detail.rentFreeTime,
                         // "rooms.coveredArea":this.detail.building.codes,
                         // "rooms.roomType":this.detail.rooms.useId,
@@ -269,8 +271,8 @@ export default {
                         "payTime":this.detail.payTime,
                         "comment":this.detail.comment
                         }
-            this.$ajax.post(url + 'contract/addContract', {data:contractVO}).then(res => {
-                    console.log(res)
+            this.$ajax.post(url + 'contract/addContract', contractVO).then(res => {
+                    this.goBack()
                 })
         },
       goBack(){

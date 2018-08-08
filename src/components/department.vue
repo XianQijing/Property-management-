@@ -57,7 +57,9 @@
             <!--往来单位-->
             <el-tab-pane label="往来单位" name="third">
               <div class="main">
-                <button @click="contact = !contact">+ 添加联系人</button><button @click="isShow = !isShow">导入</button><button @click="test">删除</button>
+                <button @click="contact = !contact">+ 添加联系人</button>
+                <!-- <button @click="isShow = !isShow">导入</button> -->
+                <button @click="test">删除</button>
                 <el-table :data="tableData1" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="btypeName" label="单位名称" width="180"></el-table-column>
@@ -105,46 +107,38 @@
         title="编辑员工"
         :visible.sync="zhiyuan"
         width="30%">
-        <ul class="shuru">
-          <li>
-              <label for="name">姓名:</label>
-              <input id="name"  placeholder="请输入姓名" v-model="addpersonEdit.name">
-          </li>
-          <li>
-              <label for="nickname">昵称:</label>
-              <input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname">
-          </li>
-          <li>
-              <label for="phone">手机号:</label>
-              <input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number">
-          </li>
-          <li>
-              <label for="mima">密码:</label>
-              <input id="mima" type="password" placeholder="请输入密码" v-model="addpersonEdit.mima">
-          </li>
-          <li>
-              <label for="wechat">微信号:</label>
-              <input id="wechart" placeholder="请输入微信号" v-model="addpersonEdit.wechat">
-          </li>
-          <li>
-              <label for="email">邮箱:</label>
-              <input id="email" placeholder="请输入邮箱" v-model="addpersonEdit.email">
-          </li>
-          <li>
-              <label for="position">角色:</label>
-              <select id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
-                  <option v-for="roles in role" :key="roles.id" :value="roles.id" :label="roles.name"></option>
-              </select>
-          </li>
-          <li>
-              <label for="gangwei">岗位:</label>
-              <input id="gangwei"  placeholder="请输入岗位" v-model="addpersonEdit.gangwei">
-          </li>
-          <li>
-              <label for="remark">备注:</label>
-              <input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu">
-          </li>
-        </ul>
+        <el-form  :model="addpersonEdit" ref="addpersonEdit" label-width="80px" size="small" class="chuang">
+              <el-form-item label="姓名:">
+                <el-input placeholder="请输入姓名" v-model="addpersonEdit.name"></el-input>
+            </el-form-item>
+            <el-form-item label="昵称:">
+                <el-input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname"></el-input>
+            </el-form-item>
+              <el-form-item label="手机号:">
+                <el-input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number"></el-input>
+            </el-form-item>
+              <el-form-item label="密码:">
+                <el-input id="mima" placeholder="新增密码" v-model="addpersonEdit.mima" type="password"></el-input>
+            </el-form-item>
+              <el-form-item label="微信号:">
+                <el-input id="wechart" placeholder="请输入微信号" v-model="addpersonEdit.wechat"></el-input>
+            </el-form-item>
+              <el-form-item label="邮箱:">
+                <el-input id="email" placeholder="请输入邮箱" v-model="addpersonEdit.email"></el-input>
+            </el-form-item>
+              <el-form-item label="角色:">
+                <el-select  id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
+                  <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
+                </el-select>
+            </el-form-item>
+              <el-form-item label="岗位:">
+                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
+                <el-cascader id="gangwei1" expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
+            </el-form-item>
+            <el-form-item label="备注:">
+                <el-input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu"></el-input>
+            </el-form-item>
+        </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="zhiyuan = false">取 消</el-button>
             <el-button type="primary" @click="editUser()">确 定</el-button>
@@ -184,6 +178,7 @@
             <li class="how">必须项目(必须项目不能为空且不能重复)</li>
             <li>姓名</li>
             <li>手机号（必须是手机格式且不能重复）</li>
+            <li>密码不得带‘.’（小数点）</li>
             <li>部门（必须与组织架构对应）</li>
             <li>选填项目（选填项目可以为空）</li>
             <li>微信（填写员工微信号）</li>
@@ -371,7 +366,7 @@ export default {
                 gangwei: [],
                 mima:''
             },
-            addpersonEdit:[{
+            addpersonEdit:{
                 name:'',
                 number:'',
                 wechat:'',
@@ -379,9 +374,9 @@ export default {
                 post:'',
                 position:'',
                 beizhu:'',
-                gangwei: '',
+                gangwei: [],
                 mima:''
-            }],
+            },
             btype:{
                 btypeName: "",
                 type: "",
@@ -420,7 +415,8 @@ mounted(){
         // console.log(this.options)
     })
     this.$ajax.get(url + 'role/findRole').then(res=> {
-        console.log(res.data.data)
+        // console.log(res.data.data)
+        // this.options = this.transTreeData(res.data.data)
         this.role = res.data.data
     })
     this.staff(),
@@ -487,17 +483,23 @@ methods:{
             that.id = this.tableData[index].id;
             // console.log(that.id);
             // rows.splice(index, 1);
+            console.log(this.options)
             this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
+                console.log(res.data.data)
                 this.addpersonEdit.name = res.data.data.name;
                 this.addpersonEdit.nickname = res.data.data.username;
                 this.addpersonEdit.number = res.data.data.phone;
                 this.addpersonEdit.mima = res.data.data.password;
                 this.addpersonEdit.wechat = res.data.data.wechat;
                 this.addpersonEdit.email = res.data.data.email;
-                this.addpersonEdit.roleId = res.data.data.roleId;
-                this.addpersonEdit.gangwei = res.data.data.orgId;
+                this.addpersonEdit.position = res.data.data.roleId;
+                // this.addpersonEdit.gangwei = res.data.data.orgId;
                 this.addpersonEdit.beizhu = res.data.data.remark;
                 this.zhiyuan = true;
+                this.$ajax.get(url + 'company/findById?id='+res.data.data.orgId).then(res=> {
+                    console.log(res.data.data)
+                    this.addpersonEdit.gangwei = res.data.data[0].parentIds.split(',')
+                })
 			})
         },
         //职员删除
@@ -581,7 +583,11 @@ methods:{
         users.phone=this.addpersonEdit.number;
         users.wechat=this.addpersonEdit.wechat;
         users.email=this.addpersonEdit.email;
-        users.orgId=this.addpersonEdit.gangwei;
+        if (Array.isArray(this.addpersonEdit.gangwei)) {
+          users.orgId = this.addpersonEdit.gangwei[this.addpersonEdit.gangwei.length - 1]
+        } else {
+          users.orgId=this.addpersonEdit.gangwei
+        }
         users.password=this.addpersonEdit.mima;
         users.remark=this.addpersonEdit.beizhu;
         users.roleId=this.addpersonEdit.position;

@@ -44,7 +44,7 @@
 												<a @click="isShow = !isShow">导入员工</a>
 											</span>
 											<span>
-												<router-link :to="{name: 'Department',query:{tabPane:'0'}}"><a>权限管理</a></router-link>
+												<router-link :to="{name: 'Department',query:{tabPane:'first'}}"><a>权限管理</a></router-link>
 											</span>
 										</div>
 									</div>
@@ -56,6 +56,7 @@
 											<span style="float:right">{{countWork[1].count}}个</span>
 										</p>
 										<div class="link">
+											<span style="color:white">添加员工</span> 
 											<!-- <span>添加租户</span>
 											<span>导入租户</span>
 											<span>迁入审核</span> -->
@@ -69,9 +70,9 @@
 											<span style="float:right">{{countWork[2].count}}个</span>
 										</p>
 										<div class="link">
-											<span style="color:white">添加员工</span>
+											<span style="color:white">添加员工</span> 
 											<router-link :to="{name: 'AddCar',query:{id:'ww'}}"><span>添加车位</span></router-link>
-											<router-link :to="{name: 'Daoru'}"><span>导入车位</span></router-link>
+											<!-- <router-link :to="{name: 'Daoru'}"><span>导入车位</span></router-link> -->
 										</div>
 									</div>
 								</div>
@@ -82,6 +83,7 @@
 											<span style="float:right">{{countWork[3].count}}个</span>
 										</p>
 										<div class="link">
+											<span style="color:white">添加员工</span> 
 											<!-- <span @click="task1">短信群发</span> -->
 											<router-link :to="{name: 'Relationship',query:{tabPane:'2'}}"><span>模板设计</span></router-link>
 											<router-link :to="{name: 'Relationship',query:{tabPane:'3'}}"><span>短信记录</span></router-link>
@@ -95,6 +97,7 @@
 											<span style="float:right">{{countWork[4].count}}个</span>
 										</p>
 										<div class="link">
+											<span style="color:white">添加员工</span> 
 											<router-link :to="{name: 'Charge',query:{tabPane:'1'}}"><span>录入数据</span></router-link>
 											<!-- <span>导入表单</span>
 											<span>导出表单</span> -->
@@ -108,7 +111,7 @@
 											<span style="float:right">{{countWork[5].count}}个</span>
 										</p>
 										<div class="link">
-											<!-- <span style="color:white">添加员工</span> -->
+											<span style="color:white">添加员工</span> 
 											<!-- <span>发送短信</span> -->
 											<router-link :to="{name: 'Relationship',query:{tabPane:'3'}}"><span>查看详情</span></router-link>
 										</div>

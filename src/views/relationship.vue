@@ -53,16 +53,16 @@
 								<router-view class="householdDetail"></router-view>
 								</div>
 								<el-table :data="MoveOut" style="width: 100%">
-									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="name" label="姓名" width="140"></el-table-column>
-									<el-table-column prop="phone" label="手机号" width="148"></el-table-column>
-									<el-table-column prop="leaseType" label="租用类型" width="148"></el-table-column>
-									<el-table-column prop="buildingName" label="楼宇" width="124"></el-table-column>
-									<el-table-column prop="roomNumber" label="房号" width="140"></el-table-column>
-									<el-table-column prop="inTime" label="迁入时间" width="148"></el-table-column>
-									<el-table-column prop="outTime" label="迁出时间" width="172"></el-table-column>
-                                    <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column>
-                                    <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column>
+									<el-table-column type="selection"></el-table-column>
+									<el-table-column prop="name" label="姓名"></el-table-column>
+									<el-table-column prop="phone" label="手机号"></el-table-column>
+									<el-table-column prop="leaseType" label="租用类型"></el-table-column>
+									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
+									<el-table-column prop="roomNumber" label="房号"></el-table-column>
+									<el-table-column prop="inTime" label="迁入时间"></el-table-column>
+									<el-table-column prop="outTime" label="迁出时间"></el-table-column>
+                                    <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column>
+                                    <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
 									<el-table-column>
 										<template slot-scope="scope">
 												<span style="color:rgb(50, 168, 238)" @click="detail(scope.$index, MoveOut)">

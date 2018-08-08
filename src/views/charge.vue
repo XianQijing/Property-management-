@@ -174,7 +174,7 @@
                 <div class="tanchuang">
                     <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
                     <el-form-item label="关联房屋：" prop="house">
-                    <el-cascader expand-trigger="hover" :options="options" v-model="entrydata.houseType" @change="handleChange"></el-cascader>
+                    <el-cascader expand-trigger="hover" :options="options" v-model="entrydata.houseType"></el-cascader>
                     </el-form-item>
                         <el-form-item label="收费项目:">
                             <el-select v-model="entrydata.charge" placeholder="请选择费用项目类型">
@@ -192,13 +192,13 @@
                             <el-input v-model="entrydata.univalence"></el-input>
                         </el-form-item>
                         <el-form-item label="起度:">
-                            <el-input v-model="entrydata.start"></el-input>
+                            <el-input v-model="entrydata.lastRead"></el-input>
                         </el-form-item>
                         <el-form-item label="止度:">
-                            <el-input v-model="entrydata.end"></el-input>
+                            <el-input v-model="entrydata.currentRead"></el-input>
                         </el-form-item>
                         <el-form-item label="备注:">
-                            <el-input v-model="entrydata.remarks"></el-input>
+                            <el-input v-model="entrydata.remark"></el-input>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -324,7 +324,7 @@ export default {
       
       //仪表管理-录入
       entrydata: {
-        houseType: "店铺",
+        houseType: [],
         charge: "电表",
         start: "6000",
         univalence:"1.1",
@@ -570,33 +570,27 @@ export default {
       (this.news = true);
     },
     luru() {
-  
-      
       this.entrydata = {};
       this.entry = true;
       this.name = "录入"
-      
-      
+
     },
     editThis(index,rows){
       this.entrydata = {};
       this.entry = true;
       this.name = "编辑"
-      that.id = this.meter[index].id;
       // console.log(this.meter[index])
-      this.$ajax.get(url + '')
-    },
-    entry(){
-      var payMeterVO={};
-      payMeterVO.payItemMeterId = this.entrydata.charge;
-      payMeterVO.roomId=this.entrydata.houseType;
-      payMeterVO.univalence=this.entrydata.univalence;
-      payMeterVO.currentRead=this.entrydata.end;
-      payMeterVO.lastRead=this.entrydata.start;
-      payMeterVO.payMonth=this.entrydata.time;
-      payMeterVO.remake=this.entrydata.remarks;
-      console.log(payMeterVO);
-
+      this.$ajax.get(url + 'pay/getMeterManagementById',{
+              params: {
+                payMeterId : this.meter[index].id
+              }
+            })
+      .then(res =>{
+        this.entrydata=res.data.data;
+        this.entrydata.houseType=res.data.data.arrList;
+        this.entrydata.charge = res.data.data.payItemMeterId
+        this.entrydata.time = res.data.data.paymentDay
+      })
     },
     createPayItem() {
       var payItemVO = {};
@@ -717,17 +711,18 @@ export default {
         });
     },
     submitIn(){
-      var data = {
-        "":this.entrydata.houseType,//关联房屋
-        "":this.entrydata.charge,//收费项目
-        "":this.entrydata.time,//录入时间
-        "":this.entrydata.univalence,//单价
-        "":this.entrydata.start,//起度
-        "":this.entrydata.end,//止
-        "":this.entrydata.remarks
+      var arr=this.entrydata.houseType;
+      var payMeterVO = {
+        "roomId":arr[arr.length-1],//关联房屋
+        "payItemMeterId":this.entrydata.charge,//收费项目
+        "payMonth":this.entrydata.time,//录入时间
+        "univalence":this.entrydata.univalence,//单价
+        "lastRead":this.entrydata.start,//起度
+        "currentRead":this.entrydata.end,//止
+        "remark":this.entrydata.remarks
       }
-      console.log(data)
-      this.$ajax.post(url + '',data).then(res => {
+      console.log(payMeterVO)
+      this.$ajax.post(url + 'pay/createPayMeter',payMeterVO).then(res => {
         if(res.data.status === 200){
           alert('成功')
         }

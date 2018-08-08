@@ -155,7 +155,7 @@
 							</div>
             </el-tab-pane>
 
-						<el-tab-pane label="车辆管理">
+						<el-tab-pane label="车辆管理" name="fourth">
 							<div class="main">
 								<div v-if="tabIndex === '3'">
 									<router-view class="addCar"></router-view>
@@ -388,6 +388,9 @@ export default {
     this.getRoomStandard()
     this.getBuild()
     this.getCar()
+    if(this.$route.query.tabPane){
+      this.activeName = this.$route.query.tabPane
+    }
   },
   methods: {
     // 批量删除

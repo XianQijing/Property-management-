@@ -111,8 +111,8 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
-													<router-link :to="{name:'Rent_contract_change'}"><el-dropdown-item>查看</el-dropdown-item></router-link>
-													<el-dropdown-item>修改</el-dropdown-item>
+													<span  @click="houseSource(scope.$index,tableDataContract,'watch')"><el-dropdown-item>查看</el-dropdown-item></span>
+													<span  @click="houseSource(scope.$index,tableDataContract,'edit')"><el-dropdown-item>修改</el-dropdown-item></span>
                                                     <el-dropdown-item>导出</el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -181,12 +181,12 @@
                 </el-form>
                 <span slot="footer" class="dialog-footer" v-show="add">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="addChange()">确 定</el-button>
+                    <el-button type="primary" @click="addChange('tianjia')">确 定1</el-button>
                 </span>
-                <!-- <span slot="footer" class="dialog-footer" v-show="editOne">
+                <span slot="footer" class="dialog-footer" v-show="editOne">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="addChange(1)">确 定</el-button>
-                </span> -->
+                    <el-button type="primary" @click="addChange('gengxin')">确 定2</el-button>
+                </span>
 
             </el-dialog>
         </div>
@@ -353,6 +353,8 @@ export default {
             }else if(this.msg == "gengxin"){
                 this.id = this.tableDataBusiness[index].id;
                 this.edit = false
+                this.editOne = true
+                this.add = false
                 // console.log(this.id)
                 this.tanchuang = "更新商机"
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
@@ -361,6 +363,8 @@ export default {
                 })
             }else{
                 this.edit = false,
+                this.editOne = false
+                this.add = true
                 this.tanchuang = "添加商机"
                 this.upload = {
                     seeHouse:'0'
@@ -400,7 +404,7 @@ export default {
         },
 
         //添加商机
-        addChange(){
+        addChange(msg){
             var prospectiveCustomer={}
             prospectiveCustomer.namec=this.upload.namec
             prospectiveCustomer.phone=this.upload.phone
@@ -410,9 +414,9 @@ export default {
             prospectiveCustomer.visitingWay=this.upload.visitingWay
             prospectiveCustomer.comment=this.upload.comment
             if(this.msg === "tianjia"){
-                this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',{
-                    data:prospectiveCustomer
-                }).then(res => {
+                this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',
+                    prospectiveCustomer
+                ).then(res => {
                     alert('成功')
                     this.dialogVisible = false
                 })
