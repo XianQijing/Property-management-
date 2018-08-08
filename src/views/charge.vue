@@ -111,7 +111,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="仪表种类:">
-                            <el-select v-model="add.type" placeholder="请选择费用项目类型">
+                            <el-select v-model="add.meterId" placeholder="请选择费用项目类型">
                                 <el-option v-for="item in types" :label="item.name" :value="item.id" :key="item.id"></el-option>
                             </el-select>
                         </el-form-item>
@@ -177,14 +177,14 @@
                     <el-cascader expand-trigger="hover" :options="options" v-model="entrydata.houseType"></el-cascader>
                     </el-form-item>
                         <el-form-item label="收费项目:">
-                            <el-select v-model="entrydata.charge" placeholder="请选择费用项目类型">
+                            <el-select v-model="entrydata.payItemMeterId" placeholder="请选择费用项目类型">
                                 <el-option v-for="item in charges" :label="item.payItemMeterName" :value="item.id" :key="item.id"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="录入时间:">
                             <el-date-picker
-                              v-model="entrydata.time"
-                              type="date"
+                              v-model="entrydata.paymentDay"
+                              type="datetime"
                               placeholder="选择日期">
                             </el-date-picker>
                         </el-form-item>
@@ -200,6 +200,7 @@
                         <el-form-item label="备注:">
                             <el-input v-model="entrydata.remark"></el-input>
                         </el-form-item>
+                        
                     </el-form>
                 </div>
                 <span slot="footer" class="dialog-footer">
@@ -258,6 +259,7 @@ export default {
   name: "charge",
   data() {
     return {
+      updatePayMeterId:'',
       //应收费用的id
       shouldId: "180723BR7M3G986W",
       entryChange: false,
@@ -287,6 +289,7 @@ export default {
       activeName: "first",
       //收费参数
       charge: [],
+      ceshi: '2018-08-05 17:04:45',
       //仪表管理
       meter: [],
       //应收费用
@@ -556,7 +559,6 @@ export default {
               var temp = res.data.data;
               this.add = temp;
               this.add.payItemId = temp.payItemId;
-              this.add.type = temp.meterId;
               this.add.remarks = temp.remark;
               this.add.name = temp.name;
             });
@@ -576,27 +578,29 @@ export default {
 
     },
     editThis(index,rows){
-      this.entrydata = {};
+      // this.entrydata = {};
       this.entry = true;
       this.name = "编辑"
-      // console.log(this.meter[index])
+      console.log(this.meter[index].id)
+      this.updatePayMeterId = this.meter[index].id
       this.$ajax.get(url + 'pay/getMeterManagementById',{
               params: {
                 payMeterId : this.meter[index].id
               }
             })
       .then(res =>{
-        this.entrydata=res.data.data;
+        console.log(res.data.data.paymentDay);
+        this.entrydata = res.data.data;
         this.entrydata.houseType=res.data.data.arrList;
-        this.entrydata.charge = res.data.data.payItemMeterId
-        this.entrydata.time = res.data.data.paymentDay
+        //this.entrydata.time = res.data.data.paymentDay
+        console.log(this.entrydata)
       })
     },
     createPayItem() {
       var payItemVO = {};
       payItemVO.payItemMeterId = this.id;
       payItemVO.payItemId = this.add.payItemId;
-      payItemVO.meterId = this.add.type;
+      payItemVO.meterId = this.add.meterId;
       payItemVO.payItemMeterName = this.add.name;
       payItemVO.remake = this.add.remarks;
       console.info(payItemVO);
@@ -611,7 +615,7 @@ export default {
       var payItemVO = {};
       payItemVO.payItemMeterId = this.id;
       payItemVO.payItemId = this.add.payItemId;
-      payItemVO.meterId = this.add.type;
+      payItemVO.meterId = this.add.meterId;
       payItemVO.payItemMeterName = this.add.name;
       payItemVO.remake = this.add.remarks;
       this.$ajax.post(url + "", payItemVO);
@@ -711,22 +715,42 @@ export default {
         });
     },
     submitIn(){
+      if(this.name == "录入"){
       var arr=this.entrydata.houseType;
       var payMeterVO = {
         "roomId":arr[arr.length-1],//关联房屋
-        "payItemMeterId":this.entrydata.charge,//收费项目
-        "payMonth":this.entrydata.time,//录入时间
+        "payItemMeterId":this.entrydata.payItemMeterId,//收费项目
+        "payMonth":this.entrydata.paymentDay,//录入时间
         "univalence":this.entrydata.univalence,//单价
-        "lastRead":this.entrydata.start,//起度
-        "currentRead":this.entrydata.end,//止
-        "remark":this.entrydata.remarks
+        "lastRead":this.entrydata.lastRead,//起度
+        "currentRead":this.entrydata.currentRead,//止
+        "remark":this.entrydata.remark  //备注
       }
       console.log(payMeterVO)
       this.$ajax.post(url + 'pay/createPayMeter',payMeterVO).then(res => {
         if(res.data.status === 200){
           alert('成功')
+          this.entry = false
         }
-      })
+      })}else {
+      var arr=this.entrydata.houseType;
+      var payMeter = {
+        "id":this.updatePayMeterId,
+        "roomId":arr[arr.length-1],//关联房屋
+        "payItemMeterId":this.entrydata.payItemMeterId,//收费项目
+        "payMonth":this.entrydata.paymentDay,//录入时间
+        "univalence":this.entrydata.univalence,//单价
+        "lastRead":this.entrydata.lastRead,//起度
+        "currentRead":this.entrydata.currentRead,//止
+        "remark":this.entrydata.remark  //备注
+      }
+      console.log(payMeter)
+      this.$ajax.post(url + 'pay/updatePayMeter',payMeter).then(res => {
+        if(res.data.status === 200){
+          alert('成功')
+          this.entry = false
+        }
+      })}
     },
     nn() {
       var card = document.getElementById("card");

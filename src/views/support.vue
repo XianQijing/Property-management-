@@ -23,7 +23,7 @@
 
                         <el-tab-pane label="租赁分析">
                              <div class="main1">
-                                 <div id="rent" style="height:40vh;width: 50vw"></div>
+                                 <div id="rent" style="height:40vh;margin:100px auto;width: 50vw"></div>
 							</div>                 
                         </el-tab-pane>
 
@@ -33,12 +33,13 @@
                                     <li class="active">上半年</li>
                                     <li>下半年</li>
                                 </ul>
-                                </div>
+                                
                             <div id="ww">
                                 <div id="shouru" style="height:55vh;margin:50px auto;width: 50vw">
                                 </div>
                                 <div id="xc" style="display:none;height:55vh;margin:50px auto;width: 50vw"></div>
-							</div>                 
+							</div>    
+                            </div>             
                         </el-tab-pane>
 
                         <el-tab-pane label="水电报表">

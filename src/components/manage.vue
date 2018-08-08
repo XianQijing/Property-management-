@@ -147,7 +147,7 @@ export default {
         })
       },
       back(e){
-            // console.log(e);
+            this.id = e.id
             this.$ajax.post(url + 'company/findCompanyById',"id="+e.id).then(res =>{
                 var child = res.data.data;
                 // console.log(child)

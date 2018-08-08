@@ -7,13 +7,13 @@
             <div class="input">
                 
                     <el-form-item label="承租方:">
-                        <el-input v-model="detail.owner.namec" :placeholder="input.namec"></el-input>
+                        <el-input v-model="detail.owner.name" :placeholder="input.name"></el-input>
                     </el-form-item>
                     <el-form-item label="联系地址:">
                         <el-input v-model="detail.owner.address" :placeholder="input.address"></el-input>
                     </el-form-item>
-                    <el-form-item label="关联房屋:">{{detail.rooms.codes}}
-                        <el-select v-model="detail.room">
+                    <el-form-item label="关联房屋:">
+                        <el-select v-model="detail.room">{{detail.room}}
                         <el-option v-for="item in options" :key="item.id" :label="item.roomNumber" :value="item.id">
                         </el-option>
                         </el-select>
@@ -51,10 +51,10 @@
                         <el-input v-model="detail.owner.phone" :placeholder="input.phone"></el-input>
                     </el-form-item>
                     <el-form-item label="建筑面积：">
-                        <el-input v-model="detail.building.codes" :placeholder="input.area"></el-input>
+                        <el-input v-model="detail.rooms.coveredArea" :placeholder="input.area"></el-input>
                     </el-form-item>
                     <el-form-item label="店铺类型：">
-                        <el-input v-model="detail.rooms.useId" :placeholder="input.type"></el-input>
+                        <el-input v-model="detail.rooms.roomType" :placeholder="input.type"></el-input>
                     </el-form-item>
                     <el-form-item label="交付时间：">
                         <el-date-picker
@@ -104,13 +104,13 @@
         </el-form>
         </div>
         <div class="nn" v-show="addOne">
-            <button class="nextStep"  @click="sumbit">确定1</button><button class="cancel" @click="goBack">返回</button>
+            <button class="nextStep"  @click="sumbit">确定</button><button class="cancel" @click="goBack">返回</button>
         </div>
         <div class="nn" v-show="watchOne">
-            <button class="nextStep"  @click="goBack">确定2</button><button class="cancel" @click="goBack">返回</button>
+            <button class="nextStep"  @click="goBack">确定</button><button class="cancel" @click="goBack">返回</button>
         </div>
         <div class="nn" v-show="changeOne">
-            <button class="nextStep"  @click="sumbit1">确定3</button><button class="cancel" @click="goBack">返回</button>
+            <button class="nextStep"  @click="sumbit1">确定</button><button class="cancel" @click="goBack">返回</button>
         </div>
     </div>
 </template>
@@ -141,7 +141,7 @@ export default {
                 total: '',
                 comment: "",
                 owner: {
-                    namec: "",
+                    name: "",
                     phone: "",
                     address: ""
                 },
@@ -161,7 +161,7 @@ export default {
 
             },
             input: {
-                namec: '请输入姓名',
+                name: '请输入姓名',
                 address: '请输入联系地址',
                 house: '请输入关联房屋',
                 endtime: '请选择结束时间',
@@ -188,12 +188,9 @@ export default {
     mounted(){
         this.id = this.$route.query.id
         this.message = this.$route.query.msg
-        console.log(this.id)
 
-        this.$ajax.get(url + 'room/flndAll/1/10').then(res => {
-            console.log(res.data.data.rows)
-            this.options = res.data.data.rows
-            console.log(this.options)
+        this.$ajax.get(url + 'room/flndAllRoom').then(res => {
+            this.options = res.data.data
         })
         if (this.$route.query.msg === "watch"){
             this.addOne = false,
@@ -201,9 +198,10 @@ export default {
             this.watchOne = true
             this.edit = true,
             this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
-                // console.log(res)
                 this.detail = res.data.data
+                console.log(res.data.data)
                 this.detail.startTime = [res.data.data.startTime,res.data.data.endTime]
+                this.detail.room = res.data.data.room
             })
         }else if(this.$route.query.msg === "add"){
             this.addOne=true,
@@ -215,6 +213,10 @@ export default {
             this.changeOne=true,
             this.watchOne=false
             this.edit = false
+            this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
+                this.detail = res.data.data
+                this.detail.startTime = [res.data.data.startTime,res.data.data.endTime]
+            })
         }
     },
     methods: {
@@ -226,7 +228,7 @@ export default {
                         "cashDeposit":this.detail.cashDeposit,
                         "cashPledge":this.detail.cashPledge,
                         "comment":this.detail.total,
-                        "namec":this.detail.owner.namec,
+                        "name":this.detail.owner.name,
                         "phone":this.detail.owner.phone,
                         "room":this.detail.rooms.codes,
                         "strataFee":this.detail.strataFee,
@@ -244,7 +246,8 @@ export default {
                 this.$ajax.put(url + 'contract/updateContract/'+this.id,data2
                 ).then(res => {
                     if(res.data.status === 200){
-                        alert('成功')
+                        alert('编辑成功')
+                        this.goBack()
                     }
                 })
         },
@@ -256,7 +259,7 @@ export default {
                         "cashDeposit":this.detail.cashDeposit,
                         "cashPledge":this.detail.cashPledge,
                         "comment":this.detail.comment,
-                        "namec":this.detail.owner.namec,
+                        "name":this.detail.owner.name,
                         "phone":this.detail.owner.phone,
                         "room":this.detail.room,
                         "strataFee":this.detail.strataFee,
@@ -272,7 +275,12 @@ export default {
                         "comment":this.detail.comment
                         }
             this.$ajax.post(url + 'contract/addContract', contractVO).then(res => {
-                    this.goBack()
+                if(res.data.status === 200){
+                        alert('添加成功')
+                        this.goBack()
+                    }else{
+                        alert(res.data.msg)
+                    }
                 })
         },
       goBack(){

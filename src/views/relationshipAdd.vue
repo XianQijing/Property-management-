@@ -221,13 +221,10 @@ export default {
         // console.log(file);
       },
       sa(){
-        // console.log(this.roomid)
-            this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
-                // console.log(res.data)
-                // console.log(res)
-                this.options=res.data;
+          //  this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
+          //     this.options=res.data;
                
-            })
+          //   })
             this.$ajax.get(url + 'owner/get/'+this.id+'/'+this.roomid+'').then(res => {
               this.addCustomer.name=res.data.name;
                 this.addCustomer.selectRoom=[res.data.precinct, res.data.buildings, res.data.roomid];
@@ -246,7 +243,7 @@ export default {
                 this.addCustomer.contactPhone=res.data.linkphone;
                 this.addCustomer.address=res.data.address;
                 this.addCustomer.fax=res.data.fax;
-                
+                this.editChange(res.data.name,res.data.phone)
             })
             if(this.$route.query.bian==="qq"){
               this.name = "编辑",
@@ -260,6 +257,20 @@ export default {
               this.edit = true
             }
       },
+        //编辑事件时弹出该客户已有的房间
+      editChange(a,b){
+            this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
+                var aa = "";
+                    if(!res.data){
+                        aa = "aaa";
+                    }else{
+                        aa = res.data.id;
+                    }
+                    this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                        this.options=res.data;
+                    })
+                })
+        },
       //修改客户资料
 			addOne(){
             var owner={};
@@ -289,7 +300,12 @@ export default {
             this.$ajax.put(url+"owner/update",owner
             ).then((res) => {
                 this.form = res.data
-				        console.log(this.form);
+                console.log(this.form);
+                 if(res.data=="seccess"){
+                         alert("修改数据成功");
+                }else{
+                            alert("失败");
+                }
             })
         },
         goBack(){

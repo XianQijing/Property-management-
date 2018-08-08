@@ -245,9 +245,7 @@ export default {
     },
     mounted(){
         this.id = this.$route.query.id
-        this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
-                this.options=res.data;
-        })
+        
         if(this.$route.query.msg === 2){    //客户反馈信息查看 
             this.ww = true,
             this.name = '查看'
@@ -266,7 +264,9 @@ export default {
                 this.ruleForm.agent = res.data.handler;
                 this.ruleForm.eventDate = res.data.occurrenceTime;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.editChange(res.data.name,res.data.phone)
                  console.log(this.id)       
+                 
             })
         }else if(this.$route.query.msg === 3){    //客户反馈信息修改
             this.name = '修改'
@@ -285,7 +285,8 @@ export default {
                 this.ruleForm.agent = res.data.handler;
                this.ruleForm.eventDate = res.data.occurrenceTime;
                this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
-                 console.log(this.id)       
+               this.editChange(res.data.name,res.data.phone)
+                 console.log(this.id)   
             })
         }else if(this.$route.query.msg === 1){    //客户事件新增
             this.name = '新增',
@@ -294,6 +295,9 @@ export default {
             this.show = false
             this.$ajax.get(url + 'serviceAccept/findByDictType/4').then(res => {
                 this.ways=res.data;
+            })
+            this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
+                this.options=res.data;
             })
             
         }else if(this.$route.query.msg === 4){  //客户事件查看
@@ -309,6 +313,7 @@ export default {
                 this.ruleForm = res.data;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.ruleForm.process_cacsi = res.data.cacsi;
+                this.editChange(res.data.name,res.data.phone)
             })
         }else if(this.$route.query.msg === 5){   //客户事件回访
             this.name = '回访',
@@ -322,6 +327,7 @@ export default {
                 this.ruleForm = res.data;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.ruleForm.process_cacsi = res.data.cacsi;
+                this.editChange(res.data.name,res.data.phone)
             })     
         }else{                              //客户反馈信息新增
             this.name = '新增'
@@ -331,9 +337,27 @@ export default {
              this.$ajax.get(url + 'serviceAccept/findByDictType/3').then(res => {
                 this.ways=res.data;
             })
+            this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
+                this.options=res.data;
+             })
         }
     },
     methods:{
+
+        editChange(a,b){
+            this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
+                var aa = "";
+                    if(!res.data){
+                        aa = "aaa";
+                    }else{
+                        aa = res.data.id;
+                    }
+                    this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                        this.options=res.data;
+                    })
+                })
+        },
+
         transform:function(){
           if(!this.ruleForm.name){
               alert("请先输入业主姓名");

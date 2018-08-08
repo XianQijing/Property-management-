@@ -12,7 +12,7 @@
 
                 <el-form-item label="楼宇：" prop="buildings">
                    <el-select v-model="addCustomer.buildings" placeholder="请选择楼宇">
-                   <el-option :label="item.namec" :value="item.id" v-for="item in builds" :key="item.id"></el-option>
+                   <el-option :label="item.namec" :value="item.id" v-for="item in namec" :key="item.id"></el-option>
                    </el-select>
                 </el-form-item>
 
@@ -77,9 +77,15 @@ export default {
             },
             builds:[
             ],
+            namec:[]
         }
     },
     mounted(){
+        this.$ajax.get(url + 'building/flndAllBuilding').then(res => {
+            
+            this.namec = res.data.data
+            console.log(this.namec)
+        })
         console.log(this.$route.query.id)
         if(this.$route.query.msg == "tianjia"){
             this.name = '添加',

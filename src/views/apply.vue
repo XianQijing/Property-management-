@@ -210,23 +210,39 @@ export default {
     mounted(){
         console.log(this.$route.query.id)
          this.id = this.$route.query.id
-         this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
-                this.options=res.data;
-         })
         if(this.$route.query.msg == 8){
             this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
                 this.detail = res.data;
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.editChange(res.data.name,res.data.phone)
                 console.log(this.detail.house)
             })
         }else(
-            this.datail = ''
+            this.datail = '',
+            this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
+                this.options=res.data;
+             })
         )
     },
     methods: {
       handleRemove(file, fileList) {
         console.log(file, fileList);
       },
+       //编辑事件时弹出该客户已有的房间
+    editChange(a,b){
+            this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
+                var aa = "";
+                    if(!res.data){
+                        aa = "aaa";
+                    }else{
+                        aa = res.data.id;
+                    }
+                    this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                        this.options=res.data;
+                    })
+                })
+        },
+    //失去焦点事件，当移开电话时判断
       transform:function(){
           if(!this.detail.name){
               alert("请先输入业主姓名");
@@ -277,11 +293,21 @@ export default {
                 this.$ajax.put(url+"adornApply/update",adornApplyvo).then((res) => {
                     this.form = res.data
                     console.log(this.form);
+                     if(res.data=="seccess"){
+                         alert("修改数据成功");
+                     }else{
+                            alert("失败");
+                     }
                 })
             }else{
                 this.$ajax.post(url+"adornApply/insert",adornApplyvo).then((res) => {
                     this.form = res.data
                     console.log(this.form);
+                     if(res.data=="seccess"){
+                         alert("添加数据成功");
+                     }else{
+                            alert("失败");
+                     }
                 })
             }
             

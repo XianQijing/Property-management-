@@ -247,9 +247,7 @@ export default {
     mounted(){
         console.log(this.$route.query.id)
          this.id = this.$route.query.id
-         this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
-                this.options=res.data;
-         })
+         
         
          this.$ajax.get(url + 'serviceAccept/findByDictType/1').then(res => {
                 this.service=res.data;
@@ -261,9 +259,13 @@ export default {
             this.$ajax.get(url +'serviceAccept/findIdVO/'+this.id).then(res => {
                 this.detail = res.data;
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.editChange(res.data.name,res.data.phone)
             })
         }else(
-            this.datail = ''
+            this.datail = '',
+            this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
+                this.options=res.data;
+            })
         )
     },
     methods: {
@@ -273,6 +275,19 @@ export default {
     //   handlePictureCardPreview(file) {
     //     this.dialogImageUrl = file.url;
     //   },
+    editChange(a,b){
+            this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
+                var aa = "";
+                    if(!res.data){
+                        aa = "aaa";
+                    }else{
+                        aa = res.data.id;
+                    }
+                    this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
+                        this.options=res.data;
+                    })
+                })
+        },
     transform:function(){
           if(!this.detail.name){
               alert("请先输入业主姓名");
@@ -319,11 +334,21 @@ export default {
                 this.$ajax.put(url+"serviceAccept/update",serviceAcceptVO).then((res) => {
                     this.form = res.data
                     console.log(this.form);
+                     if(res.data=="seccess"){
+                         alert("修改数据成功");
+                     }else{
+                            alert("失败");
+                     }
                 })
             }else{
                 this.$ajax.post(url+"serviceAccept/insert",serviceAcceptVO).then((res) => {
                     this.form = res.data
                     console.log(this.form);
+                     if(res.data=="seccess"){
+                         alert("增加数据成功");
+                     }else{
+                            alert("失败");
+                     }
                 })
             }
             

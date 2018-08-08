@@ -377,7 +377,7 @@ export default {
         },
       ],
       totalDataNumberCar: 100,//数据的总数,
-      tabIndex: '',
+      tabIndex: '0',
       // 楼宇id的集合
       louIdArr: []
     }

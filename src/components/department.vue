@@ -59,11 +59,11 @@
               <div class="main">
                 <button @click="contact = !contact">+ 添加联系人</button>
                 <!-- <button @click="isShow = !isShow">导入</button> -->
-                <button @click="test">删除</button>
+                <button @click="deleteAll">删除</button>
                 <el-table :data="tableData1" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="btypeName" label="单位名称" width="180"></el-table-column>
-									<el-table-column prop="type" label="部门" width="180"></el-table-column>
+									<el-table-column prop="type" label="行业" width="180"></el-table-column>
 									<el-table-column prop="linkman" label="姓名"></el-table-column>
 									<el-table-column prop="business" label="职务"></el-table-column>
 									<el-table-column prop="phone" label="联系电话"></el-table-column>
@@ -76,8 +76,7 @@
                           操作<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
 												<el-dropdown-menu slot="dropdown">
-													<el-dropdown-item>房屋操作</el-dropdown-item>
-													<el-dropdown-item>编辑</el-dropdown-item>
+													<el-dropdown-item><button @click="toBtypeEdit(scope.$index, tableData1)">编辑</button></el-dropdown-item>
 													<el-dropdown-item><button @click="deleteRowB(scope.$index, tableData)">删除</button></el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -132,8 +131,8 @@
                 </el-select>
             </el-form-item>
               <el-form-item label="岗位:">
-                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
-                <el-cascader id="gangwei1" expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
+                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->{{addpersonEdit.gangwei}}
+                <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
             </el-form-item>
             <el-form-item label="备注:">
                 <el-input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu"></el-input>
@@ -265,6 +264,47 @@
           </div>
       </el-dialog>
 
+    <!-- 往来单位-编辑 -->
+            <el-dialog
+                title="编辑往来单位"
+                :visible.sync="wanglai"
+                width="30%">
+                <ul class="shuru">
+                            <li>
+                                <label for="btypeName">单位名称:</label>
+                                <input id="btypeName"  placeholder="请输入单位名称" v-model="addbtypeEdit.btypeName">
+                            </li>
+                            <li>
+                                <label for="type">行业:</label>
+                                <input id="type" placeholder="请输入行业" v-model="addbtypeEdit.type">
+                            </li>
+                            <li>
+                                <label for="linkman">姓名:</label>
+                                <input id="linkman" placeholder="请输入姓名" v-model="addbtypeEdit.linkman">
+                            </li>
+                            <li>
+                                <label for="business">职务:</label>
+                                <input id="business" placeholder="请输入职务" v-model="addbtypeEdit.business">
+                            </li>
+                            <li>
+                                <label for="phone">联系电话:</label>
+                                <input id="phone" placeholder="请输入联系电话" v-model="addbtypeEdit.phone">
+                            </li>
+                            <li>
+                                <label for="address">地址:</label>
+                                <input id="address" placeholder="请输入地址" v-model="addbtypeEdit.address">
+                            </li>
+                            <li>
+                                <label for="remark">备注:</label>
+                                <input id="remark" placeholder="请输入邮箱" v-model="addbtypeEdit.remark">
+                            </li>
+                        </ul>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="wanglai = false">取 消</el-button>
+                    <el-button type="primary" @click="editBtype()">确 定</el-button>
+                </span>
+            </el-dialog>
+
       <!--修改-->
       <div class="xiugai" v-show="modify">
         <div class="modal-content">
@@ -322,6 +362,7 @@ export default {
             totalDataNumberB: 1,//数据的总数,
             // toggle:'',
             zhiyuan:false,
+            wanglai:false,
             multipleSelection: [],
             person: [],
             isShow:false,
@@ -374,8 +415,18 @@ export default {
                 post:'',
                 position:'',
                 beizhu:'',
+                // gangwei: ['1'],
                 gangwei: [],
                 mima:''
+            },
+            addbtypeEdit:{
+                btypeName:'',
+                type:'',
+                linkman:'',
+                business:'',
+                phone:'',
+                address:'',
+                remark:''
             },
             btype:{
                 btypeName: "",
@@ -412,7 +463,7 @@ mounted(){
         // console.log(res.data.data)
         this.Data = res.data.data
         this.options = this.transTreeData(this.Data)
-        // console.log(this.options)
+        console.log(this.options)
     })
     this.$ajax.get(url + 'role/findRole').then(res=> {
         // console.log(res.data.data)
@@ -477,15 +528,16 @@ methods:{
             this.pageNoB = val;
             this.Btype();
         },
+        
         //to职员编辑
         toUserEdit(index, rows){
             let that = this;
             that.id = this.tableData[index].id;
             // console.log(that.id);
             // rows.splice(index, 1);
-            console.log(this.options)
+            // console.log(this.options)
             this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 this.addpersonEdit.name = res.data.data.name;
                 this.addpersonEdit.nickname = res.data.data.username;
                 this.addpersonEdit.number = res.data.data.phone;
@@ -496,15 +548,29 @@ methods:{
                 // this.addpersonEdit.gangwei = res.data.data.orgId;
                 this.addpersonEdit.beizhu = res.data.data.remark;
                 this.zhiyuan = true;
-<<<<<<< HEAD
                 this.$ajax.get(url + 'company/findById?id='+res.data.data.orgId).then(res=> {
-                    console.log(res.data.data)
-                    this.addpersonEdit.gangwei = res.data.data[0].parentIds.split(',')
+                    let arr = res.data.data[0].parentIds.split(',').slice(1)
+                    arr.push(res.data.data[0].value)
+                    this.addpersonEdit.gangwei = arr
+                    // console.log(this.addpersonEdit.gangwei)
                 })
 			})
-=======
-			      })
->>>>>>> 7eb0774735160e35a229e6d06ff0a312a1b9865f
+        },
+        //to往来单位编辑
+        toBtypeEdit(index, rows){
+            let that = this;
+            that.id = this.tableData1[index].id;
+            console.log(that.id);
+            this.$ajax.get(url + 'btype/findById',{params:{"id":that.id}}).then((res) => {
+                this.addbtypeEdit.btypeName = res.data.data.btypeName;
+                this.addbtypeEdit.type = res.data.data.type;
+                this.addbtypeEdit.linkman = res.data.data.linkman;
+                this.addbtypeEdit.business = res.data.data.business;
+                this.addbtypeEdit.phone = res.data.data.phone;
+                this.addbtypeEdit.address = res.data.data.address;
+                this.addbtypeEdit.remark = res.data.data.remark;
+                this.wanglai = true;
+			})
         },
         //职员删除
         deleteRow(index, rows) {
@@ -512,7 +578,7 @@ methods:{
             that.id = this.tableData[index].id;
             // console.log(that.id);
             // rows.splice(index, 1);
-            this.$ajax.post(url + 'user/logicDelete',"id="+this.id).then((res) => {
+            this.$ajax.post(url + 'user/deleteById',"id="+this.id).then((res) => {
 			})
         },
         //往来单位删除
@@ -595,8 +661,7 @@ methods:{
         users.password=this.addpersonEdit.mima;
         users.remark=this.addpersonEdit.beizhu;
         users.roleId=this.addpersonEdit.position;
-        this.$ajax.post(url+"user/update",users
-        ).then((res) => {
+        this.$ajax.post(url+"user/update",users).then((res) => {
             this.form = res.data
             // console.log('this.form')
             this.zhiyuan = false;
@@ -621,6 +686,25 @@ methods:{
            this.contact = false
        })
     },
+    //编辑往来单位
+        editBtype(){
+            var btype={};
+            btype.id = this.id;
+            console.log(id);
+            btype.btypeName=this.addbtypeEdit.btypeName;
+            btype.type=this.addbtypeEdit.type;
+            btype.linkman=this.addbtypeEdit.linkman;
+            btype.business=this.addbtypeEdit.business;
+            btype.phone=this.addbtypeEdit.phone;
+            btype.address=this.addbtypeEdit.address;
+            btype.remark=this.addbtypeEdit.remark;
+            this.$ajax.post(url+'btype/update',btype
+            ).then((res) => {
+                this.form = res.data
+                console.log('this.form')
+                this.wanglai = false;
+            })
+        },
     append(data) {
         const newChild = { id: id++, label: 'testtest', children: [] };
         if (!data.children) {
@@ -642,6 +726,7 @@ methods:{
                 this.multipleSelection = val
                 // console.log(this.multipleSelection)
             },
+            //职员信息批量删除
 			allDelete() {
                 let comments = this.multipleSelection
 				// console.log(comments.id)
@@ -652,19 +737,29 @@ methods:{
             }
             // console.log(num)
         },
+        //往来单位批量删除
+        deleteAll(){
+            let comments = this.multipleSelection
+            let num = []
+            for (let i = 0;i<comments.length;i++) {
+                num.push(comments[i].id)
+                this.$ajax.post(url + "btype/deleteAll","id="+num)
+            }
+            console.log(num)
+        },
         //上传的方法
          getPath(e){
             // console.log(e.target.value)
             
             // this.path = e.target.value;
-            this.file = e.currentTarget.files[0].name//百度是没有name的
+            this.file = e.currentTarget.files[0]//百度是没有name的
             
             // console.log(this.src)
         },
         submit(){
             var formData = new FormData()
             // console.log(this.files)
-            formData.append('path', this.file)
+            formData.append('file', this.file)
             formData.append('status', this.radio)
             this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
                 // console.log(res)

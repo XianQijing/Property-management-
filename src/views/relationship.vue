@@ -273,7 +273,6 @@
 								<div  v-if="tabIndex === '8'">
 									<router-view class="AddCustomer"></router-view>
 									<!-- <router-view class="return"></router-view> -->
-									
 								</div>
 								<router-link :to="{name: 'AddCustomer'}"><button class="add1">新增事件</button></router-link>
 								<el-table :data="customerMsg" style="width: 100%">
@@ -581,7 +580,7 @@
 				template:[
 					{
 						title:'节日祝福',
-						content: '尊敬的XX用户，祝您生日快乐',
+						content: '尊敬的XX用户',
 						sign: '魔方物业'
 					},
 				],
@@ -637,7 +636,8 @@
 				//console.log(this.position)
 			},
 			handleClick(tab, event) {
-				console.log(tab, event);
+				console.log(tab.index);
+				this.tabIndex = tab.index
 			},
 			handleSizeChange(val) {
 				this.pageSize = val;
@@ -760,8 +760,8 @@
 				this.addMessage = {},
 				this.modify = true,
 				this.name = '添加',
-				this.tianjia == true,
-				this.bianji == false
+				this.tianjia = true,
+				this.bianji = false
 			},
 		//编辑短信弹窗
 		noteTemplateEdit(index,rows){
@@ -769,8 +769,8 @@
 				that.id = this.template[index].id;
                 console.log(this.id);
 				this.modify = true,
-				this.bianji == true,
-				this.tianjia == false
+				this.bianji = true,
+				this.tianjia = false
                 if(that.id !== ''){
                     this.name = '编辑'
                     this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
