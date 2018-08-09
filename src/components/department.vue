@@ -2,14 +2,13 @@
   <div class="department">
     <nav-bar/>
     <div class="container">
-            
       <nav-header></nav-header>
       <div class="card row">
         <div class="col-md-12">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <!--部门管理-->
             <el-tab-pane label="部门管理" name="first">
-                <manage-name></manage-name>
+              <manage-name></manage-name>
             </el-tab-pane>
 
             <!--职员信息-->
@@ -101,47 +100,46 @@
         </div>   
       </div>
 
-
       <!-- 职员信息-编辑 -->
       <el-dialog
         title="编辑员工"
         :visible.sync="zhiyuan"
         width="30%">
         <el-form  :model="addpersonEdit" ref="addpersonEdit" label-width="80px" size="small" class="chuang">
-              <el-form-item label="姓名:">
-                <el-input placeholder="请输入姓名" v-model="addpersonEdit.name"></el-input>
-            </el-form-item>
-            <el-form-item label="昵称:">
-                <el-input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname"></el-input>
-            </el-form-item>
-              <el-form-item label="手机号:">
-                <el-input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number"></el-input>
-            </el-form-item>
-              <el-form-item label="密码:">
-                <el-input id="mima" placeholder="新增密码" v-model="addpersonEdit.mima" type="password"></el-input>
-            </el-form-item>
-              <el-form-item label="微信号:">
-                <el-input id="wechart" placeholder="请输入微信号" v-model="addpersonEdit.wechat"></el-input>
-            </el-form-item>
-              <el-form-item label="邮箱:">
-                <el-input id="email" placeholder="请输入邮箱" v-model="addpersonEdit.email"></el-input>
-            </el-form-item>
-              <el-form-item label="角色:">
-                <el-select  id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
-                  <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
-                </el-select>
-            </el-form-item>
-              <el-form-item label="岗位:">
-                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->{{addpersonEdit.gangwei}}
-                <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
-            </el-form-item>
-            <el-form-item label="备注:">
-                <el-input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu"></el-input>
-            </el-form-item>
+          <el-form-item label="姓名:">
+            <el-input placeholder="请输入姓名" v-model="addpersonEdit.name"></el-input>
+          </el-form-item>
+          <el-form-item label="昵称:">
+            <el-input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号:">
+            <el-input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number"></el-input>
+          </el-form-item>
+          <el-form-item label="密码:">
+            <el-input id="mima" placeholder="新增密码" v-model="addpersonEdit.mima" type="password"></el-input>
+          </el-form-item>
+          <el-form-item label="微信号:">
+            <el-input id="wechart" placeholder="请输入微信号" v-model="addpersonEdit.wechat"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱:">
+            <el-input id="email" placeholder="请输入邮箱" v-model="addpersonEdit.email"></el-input>
+          </el-form-item>
+          <el-form-item label="角色:">
+            <el-select  id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
+              <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="岗位:">
+            <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->{{addpersonEdit.gangwei}}
+            <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu"></el-input>
+          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="zhiyuan = false">取 消</el-button>
-            <el-button type="primary" @click="editUser()">确 定</el-button>
+          <el-button @click="zhiyuan = false">取 消</el-button>
+          <el-button type="primary" @click="editUser()">确 定</el-button>
         </span>
       </el-dialog>
       <!--导入弹窗-->
@@ -197,36 +195,36 @@
         :visible.sync="add"
         width="30%">
         <el-form  :model="addperson" ref="addperson" label-width="80px" size="small" class="chuang">
-            <el-form-item label="姓名:">
-                <el-input placeholder="请输入姓名" v-model="addperson.name"></el-input>
-            </el-form-item>
-            <el-form-item label="昵称:">
-                <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
-            </el-form-item>
-            <el-form-item label="手机号:">
-                <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
-            </el-form-item>
-            <el-form-item label="密码:">
-                <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
-            </el-form-item>
-            <el-form-item label="微信号:">
-                <el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱:">
-                <el-input id="email" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
-            </el-form-item>
-            <el-form-item label="角色:">
-                <el-select  id="position" placeholder="请输入职位" v-model="addperson.position">
-                  <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="岗位:">
-                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
-                <el-cascader id="gangwei" expand-trigger="hover" :options="options" v-model="addperson.gangwei" @change="handleChange"></el-cascader>
-            </el-form-item>
-            <el-form-item label="备注:">
-                <el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
-            </el-form-item>
+          <el-form-item label="姓名:">
+            <el-input placeholder="请输入姓名" v-model="addperson.name"></el-input>
+          </el-form-item>
+          <el-form-item label="昵称:">
+            <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号:">
+            <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
+          </el-form-item>
+          <el-form-item label="密码:">
+            <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
+          </el-form-item>
+          <el-form-item label="微信号:">
+            <el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱:">
+            <el-input id="email" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
+          </el-form-item>
+          <el-form-item label="角色:">
+            <el-select  id="position" placeholder="请输入职位" v-model="addperson.position">
+              <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="岗位:">
+            <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
+            <el-cascader id="gangwei" expand-trigger="hover" :options="options" v-model="addperson.gangwei" @change="handleChange"></el-cascader>
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
+          </el-form-item>
         </el-form>
         <div class="footer">
           <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="add = !add">取消</button>
@@ -234,35 +232,35 @@
       </el-dialog>
       <!--外部联系人-->
       <el-dialog
-          title="添加外部联系人"
-          :visible.sync="contact"
-          width="30%">
-          <el-form ref="form" :model="btype" label-width="80px" size="small" class="chuang">
+        title="添加外部联系人"
+        :visible.sync="contact"
+        width="30%">
+        <el-form ref="form" :model="btype" label-width="80px" size="small" class="chuang">
           <el-form-item label="单位名称:">
-                      <el-input id="btypeName"  placeholder="请输入单位" v-model="btype.btypeName"></el-input>
+            <el-input id="btypeName"  placeholder="请输入单位" v-model="btype.btypeName"></el-input>
           </el-form-item>
           <el-form-item label="部门:">
-                      <el-input id="type" placeholder="请输入部门" v-model="btype.type"></el-input>
+            <el-input id="type" placeholder="请输入部门" v-model="btype.type"></el-input>
           </el-form-item>
           <el-form-item label="姓名:">
-                      <el-input id="linkman" placeholder="请输入姓名" v-model="btype.linkman"></el-input>
+            <el-input id="linkman" placeholder="请输入姓名" v-model="btype.linkman"></el-input>
           </el-form-item>
           <el-form-item label="职务:">
-                      <el-input id="business" placeholder="请输入职务" v-model="btype.business"></el-input>
+            <el-input id="business" placeholder="请输入职务" v-model="btype.business"></el-input>
           </el-form-item>
           <el-form-item label="联系电话:">
-                      <el-input id="phone" placeholder="请输入联系电话" v-model="btype.phone"></el-input>
+            <el-input id="phone" placeholder="请输入联系电话" v-model="btype.phone"></el-input>
           </el-form-item>
           <el-form-item label="地址:">
-                      <el-input id="address" placeholder="请输入地址" v-model="btype.address"></el-input>
+            <el-input id="address" placeholder="请输入地址" v-model="btype.address"></el-input>
           </el-form-item>
           <el-form-item label="备注:">
-                      <el-input id="remark" placeholder="请输入备注" v-model="btype.remark"></el-input>
+            <el-input id="remark" placeholder="请输入备注" v-model="btype.remark"></el-input>
           </el-form-item>
-          </el-form>
-          <div class="footer">
-                      <button class="confirm" @click="addBtype">确定</button><button class="cancel" @click="contact = !contact">取消</button>
-          </div>
+        </el-form>
+        <div class="footer">
+          <button class="confirm" @click="addBtype">确定</button><button class="cancel" @click="contact = !contact">取消</button>
+        </div>
       </el-dialog>
 
       <!--修改-->
@@ -281,7 +279,7 @@
         </div>
       </div>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -293,140 +291,136 @@ import manageName from './manage'
 import url from '../assets/Req.js'
 import qs from 'qs';
 
-
-
-
 let id = 1000;
 export default {
-    name: 'department',
-    data(){
-        const datato = [{
-            id: 1,
-            label: '一级 1',
-            children: []
-        }];
-        return{
-            Data: [],
-            options: [],
-            file:'',
-            src:'',
-            username:'',
-            radio:'0',
-            pageNo: 1,
-            pageSize: 1,
-            pageSizesList: [1, 2, 3, 4, 5],
-            totalDataNumber: 1,//数据的总数,
-            pageNoB: 1,
-            pageSizeB: 1,
-            pageSizesListB: [1, 2, 3, 4, 5],
-            totalDataNumberB: 1,//数据的总数,
-            // toggle:'',
-            zhiyuan:false,
-            multipleSelection: [],
-            person: [],
-            isShow:false,
-            add:false,
-            activeName: 'first',
-            contact:false,
-            modify:false,
-            selectArr: [],
-            data5: JSON.parse(JSON.stringify(datato)),
-            tableData: [
-                    {
-                        id: "rnejkgtrek",
-                        name: "杨帅",
-                        username: "ys",
-                        password: "06ba0ebc6f9efec42b0c43dd2e3ce1cf",
-                        phone: "13553552222",
-                        wechat: "123.0",
-                        remark: "3.0",
-                        rname: "admin",
-                        cname: "卢比克魔方"
-                    },
-
-                ],
-            tableData1:[{
-                id:'',
-                btypeName: "123456",
-                type: "",
-                linkman: "",
-                business: "",
-                address: "",
-                phone: "",
-                remark: ""
-            }],
-            addperson:{
-                name:'',
-                number:'',
-                wechat:'',
-                nickname:'',
-                post:'',
-                position:'',
-                beizhu:'',
-                gangwei: [],
-                mima:''
-            },
-            addpersonEdit:{
-                name:'',
-                number:'',
-                wechat:'',
-                nickname:'',
-                post:'',
-                position:'',
-                beizhu:'',
-                // gangwei: ['1'],
-                gangwei: [],
-                mima:''
-            },
-            btype:{
-                btypeName: "",
-                type: "",
-                linkman: "",
-                business: "",
-                address: "",
-                phone: "",
-                remark: ""
-            },
-            form:{},
-            position: '',
-            role:[]
-        }
-    },
-    components:{
-        NavBar,
-        NavHeader,
-        departNav,
-        manageName,
-        NavBar,
-    },
-    directives: {
-  focus: {
-    // 指令的定义
-    inserted: function (el) {
-      el.focus()
+  name: 'department',
+  data(){
+    const datato = [{
+      id: 1,
+      label: '一级 1',
+      children: []
+    }];
+    return{
+      Data: [],
+      options: [],
+      file:'',
+      src:'',
+      username:'',
+      radio:'0',
+      pageNo: 1,
+      pageSize: 1,
+      pageSizesList: [1, 2, 3, 4, 5],
+      totalDataNumber: 1,//数据的总数,
+      pageNoB: 1,
+      pageSizeB: 1,
+      pageSizesListB: [1, 2, 3, 4, 5],
+      totalDataNumberB: 1,//数据的总数,
+      // toggle:'',
+      zhiyuan:false,
+      multipleSelection: [],
+      person: [],
+      isShow:false,
+      add:false,
+      activeName: 'first',
+      contact:false,
+      modify:false,
+      selectArr: [],
+      data5: JSON.parse(JSON.stringify(datato)),
+      tableData: [
+        {
+          id: "rnejkgtrek",
+          name: "杨帅",
+          username: "ys",
+          password: "06ba0ebc6f9efec42b0c43dd2e3ce1cf",
+          phone: "13553552222",
+          wechat: "123.0",
+          remark: "3.0",
+          rname: "admin",
+          cname: "卢比克魔方"
+        },
+      ],
+      tableData1:[{
+        id:'',
+        btypeName: "123456",
+        type: "",
+        linkman: "",
+        business: "",
+        address: "",
+        phone: "",
+        remark: ""
+      }],
+      addperson:{
+        name:'',
+        number:'',
+        wechat:'',
+        nickname:'',
+        post:'',
+        position:'',
+        beizhu:'',
+        gangwei: [],
+        mima:''
+      },
+      addpersonEdit:{
+        name:'',
+        number:'',
+        wechat:'',
+        nickname:'',
+        post:'',
+        position:'',
+        beizhu:'',
+        // gangwei: ['1'],
+        gangwei: [],
+        mima:''
+      },
+      btype:{
+        btypeName: "",
+        type: "",
+        linkman: "",
+        business: "",
+        address: "",
+        phone: "",
+        remark: ""
+      },
+      form:{},
+      position: '',
+      role:[]
     }
-  }
-},
-mounted(){
+  },
+  components:{
+    NavBar,
+    NavHeader,
+    departNav,
+    manageName,
+    NavBar,
+  },
+  directives: {
+    focus: {
+      // 指令的定义
+      inserted: function (el) {
+        el.focus()
+      }
+    }
+  },
+  mounted(){
     // /company/findAll
     this.$ajax.get(url + 'company/findAll').then((res) => {
-        // console.log(res.data.data)
-        this.Data = res.data.data
-        this.options = this.transTreeData(this.Data)
-        console.log(this.options)
+      // console.log(res.data.data)
+      this.Data = res.data.data
+      this.options = this.transTreeData(this.Data)
+      // console.log(this.options)
     })
     this.$ajax.get(url + 'role/findRole').then(res=> {
-        // console.log(res.data.data)
-        // this.options = this.transTreeData(res.data.data)
-        this.role = res.data.data
+      // console.log(res.data.data)
+      // this.options = this.transTreeData(res.data.data)
+      this.role = res.data.data
     })
     this.staff(),
     this.Btype()
-},
-methods:{
+  },
+  methods: {
     handleChange () {},
     transTreeData (items) {
-        // console.log(items)
+      // console.log(items)
       if(items.length > 0){
         var curpid = 0 
         var parent = this.findChild(curpid)
@@ -453,229 +447,222 @@ methods:{
 		},
 		handleClick(tab, event) {
 			// console.log(tab, event);
-        },
-        //职员信息
-        handleSizeChange(val) {
-            // console.log(`每页 ${val} 条`);
-            this.pageSize = val;
-            this.staff();
-        },
-        //职员信息
-        handleCurrentChange(val) {
-            // console.log(`当前页: ${val}`);
-            this.pageNo = val;
-            this.staff();
-        },
-        //往来单位管理
-        handleSizeChangeB(val) {
-            // console.log(`每页 ${val} 条`);
-            this.pageSizeB = val;
-            this.Btype();
-        },
-        //往来单位管理
-        handleCurrentChangeB(val) {
-            // console.log(`当前页: ${val}`);
-            this.pageNoB = val;
-            this.Btype();
-        },
-        //to职员编辑
-        toUserEdit(index, rows){
-            let that = this;
-            that.id = this.tableData[index].id;
-            // console.log(that.id);
-            // rows.splice(index, 1);
-            // console.log(this.options)
-            this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
-                // console.log(res.data.data)
-                this.addpersonEdit.name = res.data.data.name;
-                this.addpersonEdit.nickname = res.data.data.username;
-                this.addpersonEdit.number = res.data.data.phone;
-                this.addpersonEdit.mima = res.data.data.password;
-                this.addpersonEdit.wechat = res.data.data.wechat;
-                this.addpersonEdit.email = res.data.data.email;
-                this.addpersonEdit.position = res.data.data.roleId;
-                // this.addpersonEdit.gangwei = res.data.data.orgId;
-                this.addpersonEdit.beizhu = res.data.data.remark;
-                this.zhiyuan = true;
-                this.$ajax.get(url + 'company/findById?id='+res.data.data.orgId).then(res=> {
-                    let arr = res.data.data[0].parentIds.split(',').slice(1)
-                    arr.push(res.data.data[0].value)
-                    this.addpersonEdit.gangwei = arr
-                    // console.log(this.addpersonEdit.gangwei)
-                })
+    },
+    //职员信息
+    handleSizeChange(val) {
+      // console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+      this.staff();
+    },
+    //职员信息
+    handleCurrentChange(val) {
+      // console.log(`当前页: ${val}`);
+      this.pageNo = val;
+      this.staff();
+    },
+    //往来单位管理
+    handleSizeChangeB(val) {
+      // console.log(`每页 ${val} 条`);
+      this.pageSizeB = val;
+      this.Btype();
+    },
+    //往来单位管理
+    handleCurrentChangeB(val) {
+      // console.log(`当前页: ${val}`);
+      this.pageNoB = val;
+      this.Btype();
+    },
+    //to职员编辑
+    toUserEdit(index, rows){
+      let that = this;
+      that.id = this.tableData[index].id;
+      // console.log(that.id);
+      // rows.splice(index, 1);
+      // console.log(this.options)
+      this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
+        // console.log(res.data.data)
+        this.addpersonEdit.name = res.data.data.name;
+        this.addpersonEdit.nickname = res.data.data.username;
+        this.addpersonEdit.number = res.data.data.phone;
+        this.addpersonEdit.mima = res.data.data.password;
+        this.addpersonEdit.wechat = res.data.data.wechat;
+        this.addpersonEdit.email = res.data.data.email;
+        this.addpersonEdit.position = res.data.data.roleId;
+        // this.addpersonEdit.gangwei = res.data.data.orgId;
+        this.addpersonEdit.beizhu = res.data.data.remark;
+        this.zhiyuan = true;
+        this.$ajax.get(url + 'company/findById?id='+res.data.data.orgId).then(res=> {
+          let arr = res.data.data[0].parentIds.split(',').slice(1)
+          arr.push(res.data.data[0].value)
+          this.addpersonEdit.gangwei = arr
+          // console.log(this.addpersonEdit.gangwei)
+        })
 			})
-        },
-        //职员删除
-        deleteRow(index, rows) {
-            let that = this;
-            that.id = this.tableData[index].id;
-            // console.log(that.id);
-            // rows.splice(index, 1);
-            this.$ajax.post(url + 'user/logicDelete',"id="+this.id).then((res) => {
+    },
+    //职员删除
+    deleteRow(index, rows) {
+      let that = this;
+      that.id = this.tableData[index].id;
+      // console.log(that.id);
+      // rows.splice(index, 1);
+      this.$ajax.post(url + 'user/logicDelete',"id="+this.id).then((res) => {
+      })
+    },
+    //往来单位删除
+    deleteRowB(index, rows) {
+      let that = this;
+      that.id = this.tableData1[index].id;
+      // console.log(that.id);
+      // rows.splice(index, 1);
+      this.$ajax.post(url + 'btype/delete',"id="+this.id).then((res) => {
 			})
-        },
-        //往来单位删除
-        deleteRowB(index, rows) {
-            let that = this;
-            that.id = this.tableData1[index].id;
-            // console.log(that.id);
-            // rows.splice(index, 1);
-            this.$ajax.post(url + 'btype/delete',"id="+this.id).then((res) => {
-			})
-        },
-        
-        //         foo:function (event) {
-        //             formdata = new FormData();
-        //             formdata.append('file',event.target.files[0]);
-        //             formdata.append('action','test');
-        //         axios({
-        //         url:'test.php',
-        //         method:'post',
-        //         data:formdata,
-        //         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        //     }).then((res)=>{console.log(res)})
-        // },
+    },
+    // foo:function (event) {
+    //   formdata = new FormData();
+    //   formdata.append('file',event.target.files[0]);
+    //   formdata.append('action','test');
+    //   axios({
+    //     url:'test.php',
+    //     method:'post',
+    //     data:formdata,
+    //     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    //   }).then((res)=>{console.log(res)})
+    // },
     //职员信息
     staff(){
-        this.$ajax.get(url + 'user/findUser',{params:{'page':this.pageNo,'pageSize':this.pageSize}}).then((res) => {
-            // console.log(res)
-            this.tableData = res.data.data.rows;
-            this.totalDataNumber=res.data.data.records;
-        })
+      this.$ajax.get(url + 'user/findUser',{params:{'page':this.pageNo,'pageSize':this.pageSize}}).then((res) => {
+        // console.log(res)
+        this.tableData = res.data.data.rows;
+        this.totalDataNumber=res.data.data.records;
+      })
     },
     //往来单位信息
     Btype(){
-        this.$ajax.get(url + 'btype/findAll',{params:{'page':this.pageNoB,'pageSize':this.pageSizeB}}).then((res) => {
-            // console.log(res)
-            this.tableData1 = res.data.data.rows;
-            this.totalDataNumberB=res.data.data.records;
-        })
+      this.$ajax.get(url + 'btype/findAll',{params:{'page':this.pageNoB,'pageSize':this.pageSizeB}}).then((res) => {
+        // console.log(res)
+        this.tableData1 = res.data.data.rows;
+        this.totalDataNumberB=res.data.data.records;
+      })
     },
     //添加员工
     addOne(){
-        var users={};
-        users.name=this.addperson.name;
-        users.username=this.addperson.nickname;
-        users.phone=this.addperson.number;
-        users.password=this.addperson.mima;
-        users.wechat=this.addperson.wechat;
-        users.email=this.addperson.email;
-        if (Array.isArray(this.addperson.gangwei)) {
-          users.orgId = this.addperson.gangwei[this.addperson.gangwei.length - 1]
-        } else {
-          users.orgId=this.addperson.gangwei;
+      var users={};
+      users.name=this.addperson.name;
+      users.username=this.addperson.nickname;
+      users.phone=this.addperson.number;
+      users.password=this.addperson.mima;
+      users.wechat=this.addperson.wechat;
+      users.email=this.addperson.email;
+      if (Array.isArray(this.addperson.gangwei)) {
+        users.orgId = this.addperson.gangwei[this.addperson.gangwei.length - 1]
+      } else {
+        users.orgId=this.addperson.gangwei;
+      }
+      users.remark=this.addperson.beizhu;
+      users.roleId=this.addperson.position;
+      // console.log(users)
+      this.$ajax.post(url+"user/insert",users).then((res) => {
+        this.form = res.data
+        if (res.data.status === 200) {
+          window.history.go(0)
         }
-        users.remark=this.addperson.beizhu;
-        users.roleId=this.addperson.position;
-        console.log(users)
-        this.$ajax.post(url+"user/insert",users
-        ).then((res) => {
-            this.form = res.data
-            if (res.data.status === 200) {
-              window.history.go(0)
-            }
-            // console.log('this.form')
-        })
+        // console.log('this.form')
+      })
     },
     editUser(){
-        var users={};
-        users.id = this.id;
-        // console.log(id);
-        users.name=this.addpersonEdit.name;
-        users.username=this.addpersonEdit.nickname;
-        users.phone=this.addpersonEdit.number;
-        users.wechat=this.addpersonEdit.wechat;
-        users.email=this.addpersonEdit.email;
-        if (Array.isArray(this.addpersonEdit.gangwei)) {
-          users.orgId = this.addpersonEdit.gangwei[this.addpersonEdit.gangwei.length - 1]
-        } else {
-          users.orgId=this.addpersonEdit.gangwei
-        }
-        users.password=this.addpersonEdit.mima;
-        users.remark=this.addpersonEdit.beizhu;
-        users.roleId=this.addpersonEdit.position;
-        this.$ajax.post(url+"user/update",users).then((res) => {
-            this.form = res.data
-            // console.log('this.form')
-            this.zhiyuan = false;
-        })
+      var users={};
+      users.id = this.id;
+      // console.log(id);
+      users.name=this.addpersonEdit.name;
+      users.username=this.addpersonEdit.nickname;
+      users.phone=this.addpersonEdit.number;
+      users.wechat=this.addpersonEdit.wechat;
+      users.email=this.addpersonEdit.email;
+      if (Array.isArray(this.addpersonEdit.gangwei)) {
+        users.orgId = this.addpersonEdit.gangwei[this.addpersonEdit.gangwei.length - 1]
+      } else {
+        users.orgId=this.addpersonEdit.gangwei
+      }
+      users.password=this.addpersonEdit.mima;
+      users.remark=this.addpersonEdit.beizhu;
+      users.roleId=this.addpersonEdit.position;
+      this.$ajax.post(url+"user/update",users).then((res) => {
+        this.form = res.data
+        // console.log('this.form')
+        this.zhiyuan = false;
+      })
     },
     test(){
-        this.value
+      this.value
     },
     //添加往来单位
     addBtype(){
-       var btype={};
-       btype.btypeName =this.btype.btypeName;
-       btype.type = this.btype.type;
-       btype.linkman = this.btype.linkman;
-       btype.business = this.btype.business;
-       btype.phone = this.btype.phone;
-       btype.address = this.btype.address;
-       btype.remark = this.btype.remark;
-       this.$ajax.post(url+"btype/insert",btype).then((res) => {
-           this.form = res.data
-        //    console.log('this.form')
-           this.contact = false
-       })
+      var btype={};
+      btype.btypeName =this.btype.btypeName;
+      btype.type = this.btype.type;
+      btype.linkman = this.btype.linkman;
+      btype.business = this.btype.business;
+      btype.phone = this.btype.phone;
+      btype.address = this.btype.address;
+      btype.remark = this.btype.remark;
+      this.$ajax.post(url+"btype/insert",btype).then((res) => {
+        this.form = res.data
+        // console.log('this.form')
+        this.contact = false
+      })
     },
     append(data) {
-        const newChild = { id: id++, label: 'testtest', children: [] };
-        if (!data.children) {
-          this.$set(data, 'children', []);
-        }
-        data.children.push(newChild);
-      },
-
-      remove(node, data) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
-      },
-      
-      //删除
-            handleSelectionChange (val) {
-            //val 为选中数据的集合
-                this.multipleSelection = val
-                // console.log(this.multipleSelection)
-            },
-			allDelete() {
-                let comments = this.multipleSelection
-				// console.log(comments.id)
-                let num = []
-                for (let i = 0;i<comments.length;i++) {
-                num.push(comments[i].id)
-                this.$ajax.post(url + "user/delete","id="+num)
-            }
-            // console.log(num)
-        },
-        //上传的方法
-         getPath(e){
-            // console.log(e.target.value)
-            
-            // this.path = e.target.value;
-            this.file = e.currentTarget.files[0].name//百度是没有name的
-            
-            // console.log(this.src)
-        },
-        submit(){
-            var formData = new FormData()
-            // console.log(this.files)
-            formData.append('path', this.file)
-            formData.append('status', this.radio)
-            this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                // console.log(res)
-            })
-        }
+      const newChild = { id: id++, label: 'testtest', children: [] };
+      if (!data.children) {
+        this.$set(data, 'children', []);
+      }
+      data.children.push(newChild);
+    },
+    remove(node, data) {
+      const parent = node.parent;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex(d => d.id === data.id);
+      children.splice(index, 1);
+    },
+    //删除
+    handleSelectionChange (val) {
+      //val 为选中数据的集合
+      this.multipleSelection = val
+      // console.log(this.multipleSelection)
+    },
+    allDelete() {
+      let comments = this.multipleSelection
+      // console.log(comments.id)
+      let num = []
+      for (let i = 0; i < comments.length; i++) {
+        num.push(comments[i].id)
+        this.$ajax.post(url + "user/delete","id=" + num)
+      }
+      // console.log(num)
+    },
+    //上传的方法
+    getPath(e){
+      // console.log(e.target.value)
+      // this.path = e.target.value;
+      this.file = e.currentTarget.files[0]//百度是没有name的
+      // console.log(this.src)
+    },
+    submit(){
+      var formData = new FormData()
+      // console.log(this.files)
+      formData.append('path', this.file)
+      formData.append('status', this.radio)
+      this.$ajax.post(url + 'user/excelImport', formData).then(res => {
+        // console.log(res)
+      })
     }
+  }
 }
-
 </script>
 
 <style scoped>
 html {
-    background-color: #eeeeee !important;
+  background-color: #eeeeee !important;
 }
 body {
     background-color: #eeeeee !important;

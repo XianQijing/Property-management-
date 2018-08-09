@@ -13,7 +13,7 @@
 				</div>
 				<div class="password">
 					<span>
-                        <input type="checkbox"  id="remember" v-model="remember"><span class="yes">记住密码</span>
+						<input type="checkbox"  id="remember" v-model="remember"><span class="yes">记住密码</span>
 					</span>
 					<a link=""><span>忘记密码</span></a>
 				</div>

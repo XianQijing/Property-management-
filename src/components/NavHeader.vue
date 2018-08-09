@@ -38,7 +38,7 @@ export default {
 	// },
 	methods: {
     signOut () {
-      console.log(12)
+      // console.log(12)
       sessionStorage.clear()
       removeCookie('phone', '/')
       this.$router.push('/')

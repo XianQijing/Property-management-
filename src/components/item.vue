@@ -80,7 +80,7 @@ export default {
         children:[],
         class:'pp zhu'
       })
-      console.log(this.model)
+      // console.log(this.model)
       this.dialogVisible = false
     }
   }

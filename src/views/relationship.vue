@@ -48,9 +48,9 @@
 						</el-tab-pane>
 
 						<el-tab-pane label="已迁出">
-                            <div class="main">
+							<div class="main">
 								<div  v-if="tabIndex === '1'">
-								<router-view class="householdDetail"></router-view>
+									<router-view class="householdDetail"></router-view>
 								</div>
 								<el-table :data="MoveOut" style="width: 100%">
 									<el-table-column type="selection"></el-table-column>
@@ -61,13 +61,13 @@
 									<el-table-column prop="roomNumber" label="房号"></el-table-column>
 									<el-table-column prop="inTime" label="迁入时间"></el-table-column>
 									<el-table-column prop="outTime" label="迁出时间"></el-table-column>
-                                    <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column>
-                                    <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
+									<!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column>
+									<el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
 									<el-table-column>
 										<template slot-scope="scope">
-												<span style="color:rgb(50, 168, 238)" @click="detail(scope.$index, MoveOut)">
-                                                    查看详情
-                                                </span>
+											<span style="color:rgb(50, 168, 238)" @click="detail(scope.$index, MoveOut)">
+												查看详情
+											</span>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -76,7 +76,7 @@
 									</el-pagination>
 								</div>
 							</div>
-                        </el-tab-pane>
+						</el-tab-pane>
 
 						<el-tab-pane label="添加短信模板">
 							<div class="main">
@@ -126,6 +126,7 @@
 								</div>
 							</div>
 						</el-tab-pane>
+
 						<el-tab-pane label="出入证管理">
 							<div class="main">
 								
@@ -228,7 +229,7 @@
 							</div>
 						</el-tab-pane>
 
-                        <el-tab-pane label="客户事件">
+						<el-tab-pane label="客户事件">
 							<div class="main">
 								<div  v-if="tabIndex === '7'">
 									<router-view class="addCustomer"></router-view>
@@ -309,21 +310,19 @@
 							</div>
 						</el-tab-pane>
 
-						
-
 					</el-tabs>
 					
 				</div>
 			</div>
 			<!-- 添加短信弹窗 -->
 			<div class="xiugai" v-show="modify">
-                <div class="modal-content">
+				<div class="modal-content">
 					<div class="atitle">
-                        <span class="close" @click="modify = !modify">&times;</span>
-                        <p>{{this.name}}短信模板</p>
-                    </div>
+							<span class="close" @click="modify = !modify">&times;</span>
+							<p>{{this.name}}短信模板</p>
+					</div>
 					<div class="body">
-                        <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage">
+						<el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage">
 							<el-form-item label="短信标题:">
 								<el-select v-model="addMessage.title" placeholder="请输入短信标题">
 									<el-option
@@ -332,658 +331,635 @@
 										:label="item.label"
 										:value="item.value">
 									</el-option>
-                   			</el-select>
+								</el-select>
 								<br>
 								<span>仅为表示，短信不发送标题</span>
-                            </el-form-item>
+							</el-form-item>
 							<el-form-item label="短信内容:" prop="content">
-                                <el-input
-                                    type="textarea"
-                                    :rows="2"
-                                    placeholder="请输入内容"
-                                    v-model="addMessage.content">
-                                </el-input>
-                            </el-form-item>
+									<el-input
+											type="textarea"
+											:rows="2"
+											placeholder="请输入内容"
+											v-model="addMessage.content">
+									</el-input>
+							</el-form-item>
 							<el-form-item label="签名:" prop="sign">
-                                <el-input v-model="addMessage.sign"></el-input>
-                            </el-form-item>
+									<el-input v-model="addMessage.sign"></el-input>
+							</el-form-item>
 						</el-form>
-                    </div>
-                    <div class="footer" v-show="tianjia">
-                        <button class="add" @click="addOne()">确定</button><button class="delect" @click="modify = !modify">取消</button>
-                    </div>
+					</div>
+					<div class="footer" v-show="tianjia">
+							<button class="add" @click="addOne()">确定</button><button class="delect" @click="modify = !modify">取消</button>
+					</div>
 					<div class="footer" v-show="bianji">
-                        <button class="add" @click="noteTemplateUpdate">编辑</button><button class="delect" @click="modify = !modify">取消</button>
-                    </div>
-                </div>
-            </div>
+						<button class="add" @click="noteTemplateUpdate">编辑</button><button class="delect" @click="modify = !modify">取消</button>
+					</div>
+				</div>
+			</div>
 
 			<!-- 出入证添加 -->
 			<el-dialog
-                title="添加来访人员"
-                :visible.sync="dialogVisible"
-                width="30%">
+				title="添加来访人员"
+				:visible.sync="dialogVisible"
+				width="30%">
 
-                <el-form  ref="shuru" label-width="130px" class="demo-shuru" size="mini">
-					 <el-form-item label="姓名:">
-                    <el-input v-model="upload.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="手机号:">
-                    <el-input v-model="upload.phone"></el-input>
-                    </el-form-item>
-                    <el-form-item label="来访因由:">
-                    <el-input v-model="upload.reason" ></el-input>
-                    </el-form-item>
-                    <el-form-item label="来访时间:">
+				<el-form  ref="shuru" label-width="130px" class="demo-shuru" size="mini">
+					<el-form-item label="姓名:">
+						<el-input v-model="upload.name"></el-input>
+					</el-form-item>
+					<el-form-item label="手机号:">
+						<el-input v-model="upload.phone"></el-input>
+					</el-form-item>
+					<el-form-item label="来访因由:">
+						<el-input v-model="upload.reason" ></el-input>
+					</el-form-item>
+					<el-form-item label="来访时间:">
 						<el-date-picker
 							v-model="upload.time"
 							type="datetime"
                             format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
 							placeholder="选择日期时间">
 						</el-date-picker>
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                    <el-input v-model="upload.remarks">
-                    </el-input>
-                    </el-form-item>
-                </el-form>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="addInandcome">确 定</el-button>
-                </span>
+					</el-form-item>
+					<el-form-item label="备注:">
+						<el-input v-model="upload.remarks">
+						</el-input>
+					</el-form-item>
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+						<el-button @click="dialogVisible = false">取 消</el-button>
+						<el-button type="primary" @click="addInandcome">确 定</el-button>
+				</span>
 
-            </el-dialog>
+			</el-dialog>
 		</div>
 	</div>
 </template>
 
 <script>
-	import NavHeader from '@/components/NavHeader'
-	import NavBar from '@/components/NavBar'
-	 import url from '../assets/Req.js'
-	export default {
-		data() {
-			return {
-				//分页数据
-				name:'添加',
-				pageNo: 1,
-                pageSize: 2,
-                pageSizesList: [1,2, 3, 4, 5],
-                tableData: [],//返回的结果集合
-				totalDataNumber: 400,//base数据的总数,
-				totalDataNumberMoveOut: 400,//MoveOut数据的总数,
-				totalDataNumbertemplate: 400,//template数据的总数,
-				totalDataNumbersended: 400,//sended数据的总数,
-				totalDataNumberinandcome: 400,//inandcome数据的总数,
-				totalDataNumberredecorated: 400,//redecorated数据的总数,
-				totalDataNumberserver: 400,//server数据的总数,
-				totalDataNumbercustomer: 400,//customer数据的总数,
-				totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
+import NavHeader from '@/components/NavHeader'
+import NavBar from '@/components/NavBar'
+import url from '../assets/Req.js'
+export default {
+	data() {
+		return {
+			//分页数据
+			name:'添加',
+			pageNo: 1,
+			pageSize: 2,
+			pageSizesList: [1,2, 3, 4, 5],
+			tableData: [],//返回的结果集合
+			totalDataNumber: 400,//base数据的总数,
+			totalDataNumberMoveOut: 400,//MoveOut数据的总数,
+			totalDataNumbertemplate: 400,//template数据的总数,
+			totalDataNumbersended: 400,//sended数据的总数,
+			totalDataNumberinandcome: 400,//inandcome数据的总数,
+			totalDataNumberredecorated: 400,//redecorated数据的总数,
+			totalDataNumberserver: 400,//server数据的总数,
+			totalDataNumbercustomer: 400,//customer数据的总数,
+			totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
 
-				pageNoMoveOut: 1,
-                pageSizeMoveOut: 2,
-				pageSizesListMoveOut: [1,2, 3, 4, 5],
+			pageNoMoveOut: 1,
+			pageSizeMoveOut: 2,
+			pageSizesListMoveOut: [1,2, 3, 4, 5],
 
-				pageNoTemplate: 1,
-                pageSizeTemplate: 2,
-				pageSizesListTemplate: [1,2, 3, 4, 5],
-				
-				pageNoSended: 1,
-                pageSizeSended: 2,
-				pageSizesListSended: [1,2, 3, 4, 5],
-				
-				pageNoInandcome: 1,
-                pageSizeInandcome: 2,
-				pageSizesListInandcome: [1,2, 3, 4, 5],
-				
-				pageNoRedecorated: 1,
-                pageSizeRedecorated: 2,
-				pageSizesListRedecorated: [1,2, 3, 4, 5],
-				
-				pageNoServer: 1,
-                pageSizeServer: 2,
-				pageSizesListServer: [1,2, 3, 4, 5],
-				
-				pageNoCustomer: 1,
-                pageSizeCustomer: 2,
-				pageSizesListCustomer: [1,2, 3, 4, 5],
-				
-				pageNoCustomerMsg: 1,
-                pageSizeCustomerMsg: 2,
-                pageSizesListCustomerMsg: [1,2, 3, 4, 5],
-				
-				tianjia:false,
-				bianji:true,
-				dialogVisible:false,
-				modify:false,
-				activeName: 'first',
-				//出入证管理
-				inandcome: [
-					{
-						name: 'sfsd',
-						phone:'189494561',
-						reason:'dfs',
-						remarks: '困得一批',
-						time: '2018.07.25'
-					}
-				],
-				//出入证添加
-				upload: 
+			pageNoTemplate: 1,
+			pageSizeTemplate: 2,
+			pageSizesListTemplate: [1,2, 3, 4, 5],
+			
+			pageNoSended: 1,
+			pageSizeSended: 2,
+			pageSizesListSended: [1,2, 3, 4, 5],
+			
+			pageNoInandcome: 1,
+			pageSizeInandcome: 2,
+			pageSizesListInandcome: [1,2, 3, 4, 5],
+			
+			pageNoRedecorated: 1,
+			pageSizeRedecorated: 2,
+			pageSizesListRedecorated: [1,2, 3, 4, 5],
+			
+			pageNoServer: 1,
+			pageSizeServer: 2,
+			pageSizesListServer: [1,2, 3, 4, 5],
+			
+			pageNoCustomer: 1,
+			pageSizeCustomer: 2,
+			pageSizesListCustomer: [1,2, 3, 4, 5],
+			
+			pageNoCustomerMsg: 1,
+			pageSizeCustomerMsg: 2,
+			pageSizesListCustomerMsg: [1,2, 3, 4, 5],
+			
+			tianjia:false,
+			bianji:true,
+			dialogVisible:false,
+			modify:false,
+			activeName: 'first',
+			//出入证管理
+			inandcome: [
 				{
-					name: '',
-					phone: '',
-					remarks:'',
-					time: '',
-					reason:''
+					name: 'sfsd',
+					phone:'189494561',
+					reason:'dfs',
+					remarks: '困得一批',
+					time: '2018.07.25'
+				}
+			],
+			//出入证添加
+			upload: {
+				name: '',
+				phone: '',
+				remarks:'',
+				time: '',
+				reason:''
+			},
+			//装修
+			redecorated:[
+				{
+					name: 'adaef',
+					phone: '189486669841',
+					rentType: '店铺',
+					building: '门面',
+					roomNumber: 'efef',
+					area:'dawr',
+					type: 'werewe',
+					person: 'def',
+					startTime:'2018-01-01',
+					endTime:'2018-12-12',
+					id:145786414
+				}
+			],
+			//服务派工
+			server:[
+				{
+					name: 'adaef',
+					phone: '189486669841',
+					rentType: '店铺',
+					building: '门面',
+					roomNumber: 'efef',
+					area:'dawr',
+					type: 'werewe',
+					person: 'def',
+					startTime:'2018-01-01',
+					endTime:'2018-12-12'
+				}
+			],
+			//客户事件
+			customer: [
+				{
+					name: 'adaef',
+					phone: '189486669841',
+					rentType: '店铺',
+					building: '门面',
+					roomNumber: 'efef',
+					area:'dawr',
+					type: 'werewe',
+					person: 'def',
+					startTime:'2018-01-01',
+					endTime:'2018-12-12',
+					id:589641654
+				}
+			],
+			//客户信息管理
+			customerMsg: [
+				{
+					name: 'adaef',
+					phone: '189486669841',
+					rentType: '店铺',
+					building: '门面',
+					roomNumber: 'efef',
+					area:'dawr',
+					type: 'werewe',
+					person: 'def',
+					startTime:'2018-01-01',
+					endTime:'2018-12-12'
+				}
+			],
+			//客户基本资料
+			base: [{
+				name: 'A座',
+				rentType: '1',
+				build: '3',
+				phone:'146848964',
+				remarks:'fewf',
+				time:'8798',
+				templateNumber:'er'
+			}],
+			//已迁出
+			MoveOut: [
+				{
+					name:'038568',
+					phone:'魔方物业',
+					rentType:'A栋',
+					build:'1',
+					templateNumber:'4单元',
+					startTime: '105',
+					endTime:'0154',
+					ammeter:'150',
+					WaterMeter:'办公',
+					id: 2
+				}
+			],
+			car: [
+				{
+					carrentType: '卢比克魔方',
+					name: 'A座',
+					rentType: '1',
+					carType: '3',
+					state: '多层',
+					endTime: '钢筋混凝土',
+					remarks: '坐北朝南',
+					id:10,
+					ammeter:'',
 				},
-				//装修
-				redecorated:[
-					{
-						name: 'adaef',
-						phone: '189486669841',
-						rentType: '店铺',
-						building: '门面',
-						roomNumber: 'efef',
-						area:'dawr',
-						type: 'werewe',
-						person: 'def',
-						startTime:'2018-01-01',
-						endTime:'2018-12-12',
-						id:145786414
-					}
-				],
-				//服务派工
-				server:[
-					{
-						name: 'adaef',
-						phone: '189486669841',
-						rentType: '店铺',
-						building: '门面',
-						roomNumber: 'efef',
-						area:'dawr',
-						type: 'werewe',
-						person: 'def',
-						startTime:'2018-01-01',
-						endTime:'2018-12-12'
-					}
-				],
-				//客户事件
-				customer: [
-					{
-						name: 'adaef',
-						phone: '189486669841',
-						rentType: '店铺',
-						building: '门面',
-						roomNumber: 'efef',
-						area:'dawr',
-						type: 'werewe',
-						person: 'def',
-						startTime:'2018-01-01',
-						endTime:'2018-12-12',
-						id:589641654
-					}
-				],
-				//客户信息管理
-				customerMsg: [
-					{
-						name: 'adaef',
-						phone: '189486669841',
-						rentType: '店铺',
-						building: '门面',
-						roomNumber: 'efef',
-						area:'dawr',
-						type: 'werewe',
-						person: 'def',
-						startTime:'2018-01-01',
-						endTime:'2018-12-12'
-					}
-				],
-				//客户基本资料
-				base: [{
-						name: 'A座',
-						rentType: '1',
-                        build: '3',
-                        phone:'146848964',
-                        remarks:'fewf',
-                        time:'8798',
-                        templateNumber:'er'
-				}],
-				//已迁出
-                MoveOut: [
-                    
-                    {
-                        name:'038568',
-                        phone:'魔方物业',
-                        rentType:'A栋',
-                        build:'1',
-                        templateNumber:'4单元',
-                        startTime: '105',
-                        endTime:'0154',
-                        ammeter:'150',
-                        WaterMeter:'办公',
-						id: 2
-
-                    }
-				],
-				car: [{
-						carrentType: '卢比克魔方',
-						name: 'A座',
-						rentType: '1',
-						carType: '3',
-						state: '多层',
-						endTime: '钢筋混凝土',
-						remarks: '坐北朝南',
-						id:10,
-						ammeter:'',
-					},
-				],
-				//添加短信模板
-				template:[
-					{
-						title:'节日祝福',
-						content: '尊敬的XX用户，祝您生日快乐',
-						sign: '魔方物业'
-					},
-				],
-				addMessage: {
-					content:'b',
-					title: 32,
-					sign: 'a'
+			],
+			//添加短信模板
+			template:[
+				{
+					title:'节日祝福',
+					content: '尊敬的XX用户，祝您生日快乐',
+					sign: '魔方物业'
 				},
-				//短信模板下拉框
-				messageTitle:[
-					{label: "节日祝福",value: 32},
-					{label: "生日祝福",value: 33},
-					{label: "活动通知",value: 34},
-					{label: "欠费通知",value: 35},
-					{label: "费用通知",value: 36},
-					{label: "短信调查",value: 37}
-				],
-				tabIndex: '0',
-				//已发送短信
-				sended:[ {
+			],
+			addMessage: {
+				content:'b',
+				title: 32,
+				sign: 'a'
+			},
+			//短信模板下拉框
+			messageTitle: [
+				{label: "节日祝福",value: 32},
+				{label: "生日祝福",value: 33},
+				{label: "活动通知",value: 34},
+				{label: "欠费通知",value: 35},
+				{label: "费用通知",value: 36},
+				{label: "短信调查",value: 37}
+			],
+			tabIndex: '0',
+			//已发送短信
+			sended: [ 
+				{
 					name: 'sfsd',
 					phone:'dsf',
 					content:'dfs',
 					title: 'sdf',
 					time: '2018.07.25'
-				},],
-				rules: {
-                //     title: [
-                //     { required: true, message: '请输入短信标题', trigger: 'blur' },
-                //     { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-				// ],
+				}
+			],
+			rules: {
 				content: [
-                    { required: true, message: '请输入短信内容', trigger: 'blur' },
-                    { max: 246, message: '长度在246个字符以内', trigger: 'blur' }
+					{ required: true, message: '请输入短信内容', trigger: 'blur' },
+					{ max: 246, message: '长度在246个字符以内', trigger: 'blur' }
 				],
-				}
 			}
+		}
+	},
+	mounted () {
+		this.getbase(),
+		this.getMoveOut(),
+		this.gettemplate(),
+		this.getsended(),
+		this.getinandcome(),
+		this.getredecorated(),
+		this.getserver(),
+		this.getcustomer(),
+		this.getcustomerMsg()
+	},
+	methods: {
+		changePosition() {
+			//console.log(this.position)
 		},
-		mounted() {
-      		this.getbase(),
-			this.getMoveOut(),
-			this.gettemplate(),
-			this.getsended(),
-			this.getinandcome(),
-			this.getredecorated(),
-			this.getserver(),
-			this.getcustomer(),
-			this.getcustomerMsg()
+		handleClick(tab, event) {
+			console.log(tab, event);
 		},
-		
-		methods: {
-			changePosition() {
-				//console.log(this.position)
-			},
-			handleClick(tab, event) {
-				console.log(tab, event);
-			},
-			handleSizeChange(val) {
-				this.pageSize = val;
+		handleSizeChange(val) {
+			this.pageSize = val;
+			this.getbase()
+			console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChange(val) {
+			this.pageNo = val;
+			this.getbase()
+			console.log(`当前页: ${val}`);
+		},
+		//获取base
+		getbase() {
+			this.$ajax.get(url+'owner/condition/1/1/'+this.pageNo+'/'+this.pageSize).then((res) => {
+				//alert(res.data.data.rows[0].leaseType);
+				console.log(res);
+				this.base = res.data.data.rows
+				this.totalDataNumber = res.data.data.records
+			})
+		},
+		baseDelete(index,rows) {
+			let that = this;
+			that.id = this.base[index].id;
+			that.roomid = this.base[index].roomid;
+			// console.log(this.id);
+			// console.log(this.roomid);
+			rows.splice(index, 1);
+			this.$ajax.post(url+'owner/del/' + this.id+'/'+ this.roomid).then((res) => {
 				this.getbase()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChange(val) {
-				this.pageNo = val;
-				this.getbase()
-				console.log(`当前页: ${val}`);
-			},
-			//获取base
-			getbase() {
-				this.$ajax.get(url+'owner/condition/1/1/'+this.pageNo+'/'+this.pageSize).then((res) => {
-					//alert(res.data.data.rows[0].leaseType);
-					console.log(res);
-					this.base = res.data.data.rows
-					this.totalDataNumber = res.data.data.records
-				})
-			},
-			baseDelete(index,rows) {
-				let that = this;
-				that.id = this.base[index].id;
-				that.roomid = this.base[index].roomid;
-				console.log(this.id);
-				console.log(this.roomid);
-				rows.splice(index, 1);
-				this.$ajax.post(url+'owner/del/' + this.id+'/'+ this.roomid).then((res) => {
-					this.getbase()
-				})                                                                                                                            
-			},
-			//客户基本资料-详情
-			detail(index,rows){
-				let that = this;
-				that.id = this.base[index].id;
-				console.log(this.base[index].id)
-				that.roomid = this.base[index].roomid;
-				console.log(this.base[index].roomid)
-				if(!this.roomid){
-					this.roomid = '0';
-				}
-				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
-			},
-			//客户基本资料-编辑
-			customerEdit(index,rows){
-				let that = this;
-				that.id = this.base[index].id;
-				console.log(this.base[index].id)
-				//alert(this.base[index].roomid);
-				that.roomid = this.base[index].roomid;
-				console.log(this.base[index].roomid)
-				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'qq'}})
-			},
-
-
-			handleSizeChangeMoveOut(val) {
-				this.pageSizeMoveOut = val;
+			})                                                                                                                            
+		},
+		//客户基本资料-详情
+		detail(index,rows){
+			let that = this;
+			that.id = this.base[index].id;
+			// console.log(this.base[index].id)
+			that.roomid = this.base[index].roomid;
+			// console.log(this.base[index].roomid)
+			if (!this.roomid) {
+				this.roomid = '0';
+			}
+			this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
+		},
+		//客户基本资料-编辑
+		customerEdit(index,rows){
+			let that = this;
+			that.id = this.base[index].id;
+			// console.log(this.base[index].id)
+			//alert(this.base[index].roomid);
+			that.roomid = this.base[index].roomid;
+			// console.log(this.base[index].roomid)
+			this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'qq'}})
+		},
+		handleSizeChangeMoveOut(val) {
+			this.pageSizeMoveOut = val;
+			this.getMoveOut()
+			// console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChangeMoveOut(val) {
+			this.pageNoMoveOut = val;
+			this.getMoveOut()
+			// console.log(`当前页: ${val}`);
+		},
+		//获取MoveOut
+		getMoveOut() {
+			this.$ajax.get(url+'moveOut/condition/'+this.pageNoMoveOut+'/'+this.pageSizeMoveOut).then((res) => {
+				//alert(res.data.data.rows[0].name);
+				this.MoveOut = res.data.data.rows
+				this.totalDataNumberMoveOut = res.data.data.records
+			})
+		},
+		//删除所选行
+		templateDelete(index,rows) {
+			let that = this;
+			that.id = this.MoveOut[index].id;
+			// console.log(this.id);
+			rows.splice(index, 1);
+			// console.log(this.MoveOut)
+			this.$ajax.post(url+'moveOut/del/' + this.id).then((res) => {
 				this.getMoveOut()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChangeMoveOut(val) {
-				this.pageNoMoveOut = val;
-				this.getMoveOut()
-				console.log(`当前页: ${val}`);
-			},
-			//获取MoveOut
-			getMoveOut() {
-				this.$ajax.get(url+'moveOut/condition/'+this.pageNoMoveOut+'/'+this.pageSizeMoveOut).then((res) => {
-					//alert(res.data.data.rows[0].name);
-					this.MoveOut = res.data.data.rows
-					this.totalDataNumberMoveOut = res.data.data.records
-				})
-			},
-			//删除所选行
-			templateDelete(index,rows) {
-				let that = this;
-				that.id = this.MoveOut[index].id;
-				console.log(this.id);
-				rows.splice(index, 1);
-				console.log(this.MoveOut)
-				this.$ajax.post(url+'moveOut/del/' + this.id).then((res) => {
-					this.getMoveOut()
-				})
-			},
-
-
-			handleSizeChangetemplate(val) {
-				this.pageSizeTemplate = val;
-				this.gettemplate()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChangetemplate(val) {
-				this.pageNoTemplate = val;
-				this.gettemplate()
-				console.log(`当前页: ${val}`);
-			},
-			//获取template 短信模板
-			gettemplate() {
-				this.$ajax.get(url+'noteTemplate/findCondition/'+this.pageNoTemplate+'/'+this.pageSizeTemplate).then((res) => {
-					this.template = res.data.data.rows
-					this.totalDataNumbertemplate = res.data.data.records
-				})
-			},
-			//增加短信模板
-			addOne(){
-            var noteTemplate={};
-            noteTemplate.title=this.addMessage.title;
-            noteTemplate.content=this.addMessage.content;
-            noteTemplate.signature=this.addMessage.sign;
-            this.$ajax.post(url+"noteTemplate/insert",noteTemplate
-            ).then((res) => {
-                this.form = res.data
-				console.log(this.form);
+			})
+		},
+		handleSizeChangetemplate(val) {
+			this.pageSizeTemplate = val;
+			this.gettemplate()
+			// console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChangetemplate(val) {
+			this.pageNoTemplate = val;
+			this.gettemplate()
+			// console.log(`当前页: ${val}`);
+		},
+		//获取template 短信模板
+		gettemplate() {
+			this.$ajax.get(url+'noteTemplate/findCondition/'+this.pageNoTemplate+'/'+this.pageSizeTemplate).then((res) => {
+				this.template = res.data.data.rows
+				this.totalDataNumbertemplate = res.data.data.records
+			})
+		},
+		//增加短信模板
+		addOne(){
+			var noteTemplate = {};
+			noteTemplate.title = this.addMessage.title;
+			noteTemplate.content = this.addMessage.content;
+			noteTemplate.signature = this.addMessage.sign;
+			this.$ajax.post(url + "noteTemplate/insert" ,noteTemplate).then((res) => {
+				this.form = res.data
+				// console.log(this.form);
 				this.modify = false
 				this.gettemplate()
-            })
+			})
 		},
 		//添加短信弹窗
-			addDuanxin(){
-				this.addMessage = {},
-				this.modify = true,
-				this.name = '添加',
-				this.tianjia == true,
-				this.bianji == false
-			},
+		addDuanxin(){
+			this.addMessage = {},
+			this.modify = true,
+			this.name = '添加',
+			this.tianjia == true,
+			this.bianji == false
+		},
 		//编辑短信弹窗
 		noteTemplateEdit(index,rows){
-                let that = this;
-				that.id = this.template[index].id;
-                console.log(this.id);
-				this.modify = true,
-				this.bianji == true,
-				this.tianjia == false
-                if(that.id !== ''){
-                    this.name = '编辑'
-                    this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
-						this.addMessage.title = birthDay(res.data.title);
-						this.addMessage.content = res.data.content;
-						this.addMessage.sign = res.data.signature;
-					})
-                }
+			let that = this;
+			that.id = this.template[index].id;
+			// console.log(this.id);
+			this.modify = true,
+			this.bianji == true,
+			this.tianjia == false
+			if (that.id !== '') {
+				this.name = '编辑'
+				this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
+					this.addMessage.title = birthDay(res.data.title);
+					this.addMessage.content = res.data.content;
+					this.addMessage.sign = res.data.signature;
+				})
+			}
 		},
 		//提交短信编辑
 		noteTemplateUpdate(){
-            console.log(this.id);
+			// console.log(this.id);
 			this.bianji == true,
 			this.tianjia == false
 			var noteTemplate={};
 			noteTemplate.id=this.id;
-            noteTemplate.title=birthDay1(this.addMessage.title);
-           	noteTemplate.content=this.addMessage.content;
-            noteTemplate.signature=this.addMessage.sign;
-			console.log(noteTemplate);
+			noteTemplate.title=birthDay1(this.addMessage.title);
+			noteTemplate.content=this.addMessage.content;
+			noteTemplate.signature=this.addMessage.sign;
+			// console.log(noteTemplate);
 			this.$ajax.put(url+'noteTemplate/update',noteTemplate).then(res => {
 				this.modify = false
 				this.gettemplate()
 			})
 		},
-			//删除所选行短信模板
-			noteTemplateDelete(index,rows) {
-				let that = this;
-				that.id = this.template[index].id;
-				console.log(this.id);
-				rows.splice(index, 1);
-				this.$ajax.delete(url+'noteTemplate/del/' + this.id).then((res) => {
-					this.getMoveOut()
-				})
-			},
-
-
-			handleSizeChangesended(val) {
-				this.pageSizeSended = val;
-				this.getsended()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChangesended(val) {
-				this.pageNoSended = val;
-				this.getsended()
-				console.log(`当前页: ${val}`);
-			},
-			//获取sended 短信记录
-			getsended() {
-				this.$ajax.get(url+'note/findCondition/'+this.pageNoSended+'/'+this.pageSizeSended).then((res) => {
-					this.sended = res.data.data.rows
-					this.totalDataNumbersended = res.data.data.records
-				})
-			},
-
-
-			handleSizeChangeinandcome(val) {
-				this.pageSizeInandcome = val;
-				this.getinandcome()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChangeinandcome(val) {
-				this.pageNoInandcome = val;
-				this.getinandcome()
-				console.log(`当前页: ${val}`);
-			},
-			//获取inandcome 出入证记录
-			getinandcome() {
-				this.$ajax.get(url+'visit/record/'+this.pageNoInandcome+'/'+this.pageSizeInandcome).then((res) => {
-					this.inandcome = res.data.data.rows
-					this.totalDataNumberinandcome = res.data.data.records
-				})
-			},
-			//增加出入证记录
-			addInandcome(){
-            var visit={};
-            visit.name=this.upload.name;
-            visit.phone=this.upload.phone;
+		//删除所选行短信模板
+		noteTemplateDelete(index,rows) {
+			let that = this;
+			that.id = this.template[index].id;
+			// console.log(this.id);
+			rows.splice(index, 1);
+			this.$ajax.delete(url+'noteTemplate/del/' + this.id).then((res) => {
+				this.getMoveOut()
+			})
+		},
+		handleSizeChangesended(val) {
+			this.pageSizeSended = val;
+			this.getsended()
+			// console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChangesended(val) {
+			this.pageNoSended = val;
+			this.getsended()
+			// console.log(`当前页: ${val}`);
+		},
+		//获取sended 短信记录
+		getsended() {
+			this.$ajax.get(url+'note/findCondition/'+this.pageNoSended+'/'+this.pageSizeSended).then((res) => {
+				this.sended = res.data.data.rows
+				this.totalDataNumbersended = res.data.data.records
+			})
+		},
+		handleSizeChangeinandcome(val) {
+			this.pageSizeInandcome = val;
+			this.getinandcome()
+			// console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChangeinandcome(val) {
+			this.pageNoInandcome = val;
+			this.getinandcome()
+			// console.log(`当前页: ${val}`);
+		},
+		//获取inandcome 出入证记录
+		getinandcome() {
+			this.$ajax.get(url+'visit/record/'+this.pageNoInandcome+'/'+this.pageSizeInandcome).then((res) => {
+				this.inandcome = res.data.data.rows
+				this.totalDataNumberinandcome = res.data.data.records
+			})
+		},
+		//增加出入证记录
+		addInandcome(){
+			var visit={};
+			visit.name=this.upload.name;
+			visit.phone=this.upload.phone;
 			visit.reason=this.upload.reason;
 			visit.time=this.upload.time;
 			visit.remarks=this.upload.remarks;
-			console.log(visit)
-            this.$ajax.post(url+"visit/insert",visit
-            ).then((res) => {
-                this.form = res.data
-				console.log(this.form);
+			// console.log(visit)
+			this.$ajax.post(url+"visit/insert",visit).then((res) => {
+				this.form = res.data
+				// console.log(this.form);
 				this.dialogVisible = false
 				this.getinandcome()
-            })
+			})
+		},
+		handleSizeChangeredecorated(val) {
+			this.pageSizeRedecorated = val;
+			this.getredecorated()
+			// console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChangeredecorated(val) {
+			this.pageNoRedecorated = val;
+			this.getredecorated()
+			// console.log(`当前页: ${val}`);
+		},
+		//获取redecorated 装修管理记录
+		getredecorated() {
+			this.$ajax.get(url+'adornApply/condition/1/'+this.pageNoRedecorated+'/'+this.pageSizeRedecorated).then((res) => {
+				this.redecorated = res.data.data.rows
+				this.totalDataNumberredecorated = res.data.data.records
+			})
+		},
+		//装修管理
+		toApply(index,row,msg,toWhere){
+			this.toWhere = toWhere;
+			let that = this;
+			that.id = this.redecorated[index].id;
+			this.msg = msg
+			if (this.toWhere == "chakan") {
+				this.$router.push({name: 'Apply', query: {id: that.id, msg: this.msg}})
+			} else if (this.toWhere == "yanshou") {
+				this.$router.push({name: 'Check', query: {id: that.id}})
+			} else if (this.toWhere == "xunjian") {
+				this.$router.push({name: 'Patrol', query: {id: that.id}})
+			}
+		},
+		handleSizeChangeserver(val) {
+			this.pageSizeServer = val;
+			this.getserver()
+			// console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChangeserver(val) {
+			this.pageNoServer = val;
+			this.getserver()
+			// console.log(`当前页: ${val}`);
+		},
+		//获取server 服务派工记录
+		getserver() {
+			this.$ajax.get(url+'serviceAccept/condition/1/'+this.pageNoServer+'/'+this.pageSizeServer).then((res) => {
+				this.server = res.data.data.rows
+				this.totalDataNumberserver = res.data.data.records
+			})
+		},
+		//服务派工的新增修改
+		toServer(index,row,msg,toWhere){
+			this.toWhere = toWhere;
+			let that = this;
+			that.id = this.server[index].id;
+			this.msg = msg
+			if(this.toWhere == "server"){
+				this.$router.push({name:'Server1',query:{id:that.id,msg:this.msg}})
+			}else if(this.toWhere == "return"){
+				this.$router.push({name:'Return',query:{id:that.id}})
+			}
+		},
+		handleSizeChangecustomer(val) {
+			this.pageSizeCustomer = val;
+			this.getcustomer()
+			// console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChangecustomer(val) {
+			this.pageNoCustomer = val;
+			this.getcustomer()
+			// console.log(`当前页: ${val}`);
+		},
+		//获取customer 客户事件记录
+		getcustomer() {
+			this.$ajax.get(url+'customerEvent/condition/1/'+this.pageNoCustomer+'/'+this.pageSizeCustomer).then((res) => {
+				this.customer = res.data.data.rows
+				this.totalDataNumbercustomer = res.data.data.records
+			})
+		},
+		handleSizeChangecustomerMsg(val) {
+			this.pageSizeCustomerMsg = val;
+			this.getcustomerMsg()
+			// console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChangecustomerMsg(val) {
+			this.pageNoCustomerMsg = val;
+			this.getcustomerMsg()
+			// console.log(`当前页: ${val}`);
+		},
+		//获取customerMsg 客户反馈信息记录
+		getcustomerMsg() {
+			this.$ajax.get(url+'feedbackMessage/condition/1/'+this.pageNoCustomerMsg+'/'+this.pageSizeCustomerMsg).then((res) => {
+				this.customerMsg = res.data.data.rows
+				this.totalDataNumbercustomerMsg = res.data.data.records
+			})
 		},
 		
-
-			handleSizeChangeredecorated(val) {
-				this.pageSizeRedecorated = val;
-				this.getredecorated()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChangeredecorated(val) {
-				this.pageNoRedecorated = val;
-				this.getredecorated()
-				console.log(`当前页: ${val}`);
-			},
-			//获取redecorated 装修管理记录
-			getredecorated() {
-				this.$ajax.get(url+'adornApply/condition/1/'+this.pageNoRedecorated+'/'+this.pageSizeRedecorated).then((res) => {
-					this.redecorated = res.data.data.rows
-					this.totalDataNumberredecorated = res.data.data.records
-				})
-			},
-			//装修管理
-			toApply(index,row,msg,toWhere){
-				this.toWhere = toWhere;
-				let that = this;
-				that.id = this.redecorated[index].id;
-				this.msg = msg
-				if(this.toWhere == "chakan"){
-					this.$router.push({name:'Apply',query:{id:that.id,msg:this.msg}})
-				}else if(this.toWhere == "yanshou"){
-					this.$router.push({name:'Check',query:{id:that.id}})
-				}else if(this.toWhere == "xunjian"){
-					this.$router.push({name:'Patrol',query:{id:that.id}})
-				}
-			},
-
-
-			handleSizeChangeserver(val) {
-				this.pageSizeServer = val;
-				this.getserver()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChangeserver(val) {
-				this.pageNoServer = val;
-				this.getserver()
-				console.log(`当前页: ${val}`);
-			},
-			//获取server 服务派工记录
-			getserver() {
-				this.$ajax.get(url+'serviceAccept/condition/1/'+this.pageNoServer+'/'+this.pageSizeServer).then((res) => {
-					this.server = res.data.data.rows
-					this.totalDataNumberserver = res.data.data.records
-				})
-			},
-			//服务派工的新增修改
-			toServer(index,row,msg,toWhere){
-				this.toWhere = toWhere;
-				let that = this;
-				that.id = this.server[index].id;
-				this.msg = msg
-				if(this.toWhere == "server"){
-					this.$router.push({name:'Server1',query:{id:that.id,msg:this.msg}})
-				}else if(this.toWhere == "return"){
-					this.$router.push({name:'Return',query:{id:that.id}})
-				}
-			},
-
-			handleSizeChangecustomer(val) {
-				this.pageSizeCustomer = val;
-				this.getcustomer()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChangecustomer(val) {
-				this.pageNoCustomer = val;
-				this.getcustomer()
-				console.log(`当前页: ${val}`);
-			},
-			//获取customer 客户事件记录
-			getcustomer() {
-				this.$ajax.get(url+'customerEvent/condition/1/'+this.pageNoCustomer+'/'+this.pageSizeCustomer).then((res) => {
-					this.customer = res.data.data.rows
-					this.totalDataNumbercustomer = res.data.data.records
-				})
-			},
-
-
-			handleSizeChangecustomerMsg(val) {
-				this.pageSizeCustomerMsg = val;
-				this.getcustomerMsg()
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChangecustomerMsg(val) {
-				this.pageNoCustomerMsg = val;
-				this.getcustomerMsg()
-				console.log(`当前页: ${val}`);
-			},
-			//获取customerMsg 客户反馈信息记录
-			getcustomerMsg() {
-				this.$ajax.get(url+'feedbackMessage/condition/1/'+this.pageNoCustomerMsg+'/'+this.pageSizeCustomerMsg).then((res) => {
-					this.customerMsg = res.data.data.rows
-					this.totalDataNumbercustomerMsg = res.data.data.records
-				})
-			},
-			
-			//客户事件--查看
-			see(index,row,msg){
-				let that = this;
-				that.id = this.customer[index].id;
-				this.msg = msg
-				this.$router.push({name:'AddCustomer',query:{id:that.id,msg:this.msg}})
-			},
-			//客户信息管理--查看
-			see1(index,row,msg){
-				let that = this;
-				that.id = this.customerMsg[index].id;
-				this.msg = msg
-				this.$router.push({name:'AddCustomer',query:{id:that.id,msg:this.msg}})
-			}
-
+		//客户事件--查看
+		see(index,row,msg){
+			let that = this;
+			that.id = this.customer[index].id;
+			this.msg = msg
+			this.$router.push({name:'AddCustomer',query:{id:that.id,msg:this.msg}})
 		},
-		components: {
-			NavHeader,
-			NavBar
+		//客户信息管理--查看
+		see1(index,row,msg){
+			let that = this;
+			that.id = this.customerMsg[index].id;
+			this.msg = msg
+			this.$router.push({name:'AddCustomer',query:{id:that.id,msg:this.msg}})
 		}
+	},
+	components: {
+		NavHeader,
+		NavBar
 	}
+}
 function birthDay (data) {
   if (data === '32') return '节日祝福'
   if (data === '33') return '生日祝福'
@@ -993,7 +969,6 @@ function birthDay (data) {
   if (data === '37') return '短信调查'
 }
 function birthDay1 (data) {
-  console.log(data)
   if (data === '节日祝福') return '32'
   if (data === '生日祝福') return '33'
   if (data === '活动通知') return '34'

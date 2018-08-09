@@ -2,18 +2,17 @@
 	<div class="notice">
 		<nav-bar/>
     <div class="container">
-	<div class="row">
-		<div class="personal col-md-12">
-			<nav-header :name="username"></nav-header>
-		</div>
-	</div>
-	<div class="row">
-		<div class="personal col-md-12">
-
-		</div>
-	</div>
+			<div class="row">
+				<div class="personal col-md-12">
+					<nav-header :name="username"></nav-header>
+				</div>
+			</div>
+			<div class="row">
+				<div class="personal col-md-12">
+				</div>
+			</div>
 		</div> 
-    </div>
+	</div>
 </template>
 
 <script>
@@ -24,18 +23,15 @@ import url from '../assets/Req.js'
 export default {
 	name:'notice',
   data(){
-      return{}
+		return{}
   },
-
   mounted(){
-			
   },
-  
   methods:{
   },
   components: {
     NavBar,
-	NavHeader
+		NavHeader
   }
 }
 </script>

@@ -13,7 +13,6 @@
               </div>
             </span>
           </el-tree>
-
           <el-dialog
             title="添加"
             :visible.sync="dialogVisible"

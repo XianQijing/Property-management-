@@ -1,6 +1,5 @@
 <template>
     <div class="biaoqian">
-        
     </div>
 </template>
 

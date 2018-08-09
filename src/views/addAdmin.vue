@@ -127,16 +127,6 @@ export default {
     goBack () {
       window.history.back()
     },
-    submit () {
-      this.$ajax.post(url + '',{
-        param:{},
-        data:{
-            '':this.ruleForm.namec
-        }
-      }).then(res => {
-        goBack()
-      })
-    },
     save(){
       var precinctVO = {
         'namec':this.ruleForm.namec, 
@@ -159,7 +149,7 @@ export default {
         this.$ajax.post(url + 'precinct/insertPrecinct',precinctVO).then(res => {
           if (res.data.status === 200) {
             // this.fullscreenLoading = false
-            window.history.go(-1)
+            window.history.back()
           }
         })
       } else if (this.$route.query.msg === "bianji") {
@@ -169,7 +159,7 @@ export default {
           // console.log(res.data)
           if (res.data.status === 200) {
             // this.fullscreenLoading = false
-            window.history.go(-1)
+            window.history.back()
           }
         })
       }
