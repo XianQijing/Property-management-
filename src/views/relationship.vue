@@ -13,8 +13,8 @@
 									<router-view class="relationshipAdd"></router-view>
 								    <!-- <router-view class="householdDetail"></router-view> -->
 								</div>
-								<button class="delect">迁出</button>
-								<el-table :data="base" style="width: 100%">
+								<!-- <button class="delect" id="delect">迁出</button> -->
+								<el-table :data="base" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="name" label="姓名" width="180"></el-table-column>
 									<el-table-column prop="phone" label="手机号" width="180"></el-table-column>
@@ -47,25 +47,25 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="已迁出">
+						<el-tab-pane label="已迁出" name="second">
                             <div class="main">
 								<div  v-if="tabIndex === '1'">
 								<router-view class="householdDetail"></router-view>
 								</div>
 								<el-table :data="MoveOut" style="width: 100%">
-									<el-table-column type="selection"></el-table-column>
-									<el-table-column prop="name" label="姓名"></el-table-column>
-									<el-table-column prop="phone" label="手机号"></el-table-column>
-									<el-table-column prop="leaseType" label="租用类型"></el-table-column>
-									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
-									<el-table-column prop="roomNumber" label="房号"></el-table-column>
-									<el-table-column prop="inTime" label="迁入时间"></el-table-column>
-									<el-table-column prop="outTime" label="迁出时间"></el-table-column>
-                                    <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column>
-                                    <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
+									<el-table-column type="selection" width="55"></el-table-column>
+									<el-table-column prop="name" label="姓名" width="140"></el-table-column>
+									<el-table-column prop="phone" label="手机号" width="148"></el-table-column>
+									<el-table-column prop="leaseType" label="租用类型" width="148"></el-table-column>
+									<el-table-column prop="buildingName" label="楼宇" width="124"></el-table-column>
+									<el-table-column prop="roomNumber" label="房号" width="140"></el-table-column>
+									<el-table-column prop="inTime" label="迁入时间" width="148"></el-table-column>
+									<el-table-column prop="outTime" label="迁出时间" width="172"></el-table-column>
+                                    <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column> -->
+                                    <!-- <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
 									<el-table-column>
 										<template slot-scope="scope">
-												<span style="color:rgb(50, 168, 238)" @click="detail(scope.$index, MoveOut)">
+												<span style="color:rgb(50, 168, 238)" @click="details(scope.$index, MoveOut)">
                                                     查看详情
                                                 </span>
 										</template>
@@ -78,7 +78,7 @@
 							</div>
                         </el-tab-pane>
 
-						<el-tab-pane label="添加短信模板">
+						<el-tab-pane label="添加短信模板" name="third">
 							<div class="main">
 								
 								<button class="add"  @click="addDuanxin">添加</button>
@@ -108,7 +108,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="已发送短信">
+						<el-tab-pane label="已发送短信" name="fourth">
 							<div class="main">
 								
 								<button style="visibility: hidden;">添加</button>
@@ -126,7 +126,7 @@
 								</div>
 							</div>
 						</el-tab-pane>
-						<el-tab-pane label="出入证管理">
+						<el-tab-pane label="出入证管理" name="fifth">
 							<div class="main">
 								
 								<button class="add" @click="dialogVisible = true">添加</button>
@@ -145,7 +145,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="装修管理">
+						<el-tab-pane label="装修管理" name="sixth">
 							<div class="main">
 								<div  v-if="tabIndex === '5'">
 									<router-view class="apply"></router-view>
@@ -187,7 +187,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="服务派工">
+						<el-tab-pane label="服务派工" name="seventh">
 							<div class="main">
 								<div  v-if="tabIndex === '6'">
 									<router-view class="server"></router-view>
@@ -214,7 +214,7 @@
 												<el-dropdown-menu slot="dropdown">
 													<span @click="toServer(scope.$index,server,8,'server')"><el-dropdown-item>查看</el-dropdown-item></span>
 													<span @click="toServer(scope.$index,server,8,'return')"><el-dropdown-item>回访</el-dropdown-item></span>
-													<el-dropdown-item>派工</el-dropdown-item>
+													<!-- <el-dropdown-item>派工</el-dropdown-item> -->
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
@@ -228,7 +228,7 @@
 							</div>
 						</el-tab-pane>
 
-                        <el-tab-pane label="客户事件">
+                        <el-tab-pane label="客户事件" name="eighth">
 							<div class="main">
 								<div  v-if="tabIndex === '7'">
 									<router-view class="addCustomer"></router-view>
@@ -245,7 +245,7 @@
 									<el-table-column prop="visit_condition" label="回访情况"></el-table-column>
 									<el-table-column prop="cacsi" label="满意度"></el-table-column>
 									<el-table-column prop="eventDate" label="发生时间"></el-table-column>
-									<el-table-column prop="remarks" label="备注"></el-table-column>
+									<!-- <el-table-column prop="remarks" label="备注"></el-table-column> -->
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -268,7 +268,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="客户信息管理">
+						<el-tab-pane label="客户信息管理" name="ninth">
 							<div class="main">
 								<div  v-if="tabIndex === '8'">
 									<router-view class="AddCustomer"></router-view>
@@ -315,15 +315,14 @@
 				</div>
 			</div>
 			<!-- 添加短信弹窗 -->
-			<div class="xiugai" v-show="modify">
-                <div class="modal-content">
-					<div class="atitle">
-                        <span class="close" @click="modify = !modify">&times;</span>
-                        <p>{{this.name}}短信模板</p>
-                    </div>
-					<div class="body">
+			<el-dialog
+					:title="this.name"
+					:visible.sync="modify"
+					width="30%"
+					>
+					
                         <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage">
-							<el-form-item label="短信标题:">
+							<el-form-item label="短信标题:" prop="title">
 								<el-select v-model="addMessage.title" placeholder="请输入短信标题">
 									<el-option
 										v-for="item in messageTitle"
@@ -347,15 +346,22 @@
                                 <el-input v-model="addMessage.sign"></el-input>
                             </el-form-item>
 						</el-form>
-                    </div>
-                    <div class="footer" v-show="tianjia">
+						<span slot="footer" class="dialog-footer" v-show="tianjia">
+							<el-button @click="modify = false">取 消</el-button>
+							<el-button type="primary" @click="addOne()">确 定</el-button>
+						</span>
+						<span slot="footer" class="dialog-footer" v-show="bianji">
+							<el-button @click="modify = false">取 消</el-button>
+							<el-button type="primary" @click="noteTemplateUpdate">确 定</el-button>
+						</span>
+                    <!-- <div class="footer" v-show="tianjia">
                         <button class="add" @click="addOne()">确定</button><button class="delect" @click="modify = !modify">取消</button>
                     </div>
 					<div class="footer" v-show="bianji">
                         <button class="add" @click="noteTemplateUpdate">编辑</button><button class="delect" @click="modify = !modify">取消</button>
-                    </div>
-                </div>
-            </div>
+                    </div> -->
+			</el-dialog>
+			
 
 			<!-- 出入证添加 -->
 			<el-dialog
@@ -363,25 +369,26 @@
                 :visible.sync="dialogVisible"
                 width="30%">
 
-                <el-form  ref="shuru" label-width="130px" class="demo-shuru" size="mini">
-					 <el-form-item label="姓名:">
+                <el-form  ref="shuru" label-width="130px" class="demo-shuru" style="margin:0 10% 0 0">
+					 <el-form-item label="姓名:" prop="name">
                     <el-input v-model="upload.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号:">
+                    <el-form-item label="手机号:" prop="phone">
                     <el-input v-model="upload.phone"></el-input>
                     </el-form-item>
-                    <el-form-item label="来访因由:">
+                    <el-form-item label="来访因由:" prop="reason">
                     <el-input v-model="upload.reason" ></el-input>
                     </el-form-item>
-                    <el-form-item label="来访时间:">
+                    <el-form-item label="来访时间:" prop="time">
 						<el-date-picker
 							v-model="upload.time"
 							type="datetime"
                             format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
-							placeholder="选择日期时间">
+							placeholder="选择日期时间"
+							style="width:100%">
 						</el-date-picker>
                     </el-form-item>
-                    <el-form-item label="备注:">
+                    <el-form-item label="备注:" prop="remarks">
                     <el-input v-model="upload.remarks">
                     </el-input>
                     </el-form-item>
@@ -404,7 +411,7 @@
 		data() {
 			return {
 				//分页数据
-				name:'添加',
+				name:'添加短信模板',
 				pageNo: 1,
                 pageSize: 2,
                 pageSizesList: [1,2, 3, 4, 5],
@@ -608,19 +615,37 @@
 					time: '2018.07.25'
 				},],
 				rules: {
-                //     title: [
-                //     { required: true, message: '请输入短信标题', trigger: 'blur' },
-                //     { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-				// ],
+                    title: [
+                    { required: true, message: '请输入短信标题', trigger: 'blur' },
+				],
 				content: [
                     { required: true, message: '请输入短信内容', trigger: 'blur' },
                     { max: 246, message: '长度在246个字符以内', trigger: 'blur' }
 				],
+				sign:[
+					{ required: true, message:'请输入签名',trigger: 'blur'}
+				],
+		
+				name: [
+					{ required: true, message: '请输入姓名', trigger: 'blur' },
+				],
+				phone: [
+					{ required: true, message: '请输入手机号', trigger: 'blur' },
+				],
+				reason: [
+					{ required: true, message: '请输入来访因由', trigger: 'blur' },
+				],
+				time: [
+					{ required: true, message: '请输入时间', trigger: 'blur' },
+				],
+				remarks:[
+					{ required: true, message: '请输入备注', trigger: 'blur' },
+				]
 				}
 			}
 		},
 		mounted() {
-      		this.getbase(),
+			 this.getbase(),
 			this.getMoveOut(),
 			this.gettemplate(),
 			this.getsended(),
@@ -629,6 +654,11 @@
 			this.getserver(),
 			this.getcustomer(),
 			this.getcustomerMsg()
+			if(this.$route.query.tabPane){
+				this.activeName = this.$route.query.tabPane
+			}else{
+				this.activeName = 'first'
+			}
 		},
 		
 		methods: {
@@ -636,24 +666,25 @@
 				//console.log(this.position)
 			},
 			handleClick(tab, event) {
-				console.log(tab.index);
+				// console.log(tab.index);
 				this.tabIndex = tab.index
+				this.$router.push('/relationship')
 			},
 			handleSizeChange(val) {
 				this.pageSize = val;
 				this.getbase()
-				console.log(`每页 ${val} 条`);
+				// console.log(`每页 ${val} 条`);
 			},
 			handleCurrentChange(val) {
 				this.pageNo = val;
 				this.getbase()
-				console.log(`当前页: ${val}`);
+				// console.log(`当前页: ${val}`);
 			},
 			//获取base
 			getbase() {
 				this.$ajax.get(url+'owner/condition/1/1/'+this.pageNo+'/'+this.pageSize).then((res) => {
 					//alert(res.data.data.rows[0].leaseType);
-					console.log(res);
+					// console.log(res);
 					this.base = res.data.data.rows
 					this.totalDataNumber = res.data.data.records
 				})
@@ -662,8 +693,8 @@
 				let that = this;
 				that.id = this.base[index].id;
 				that.roomid = this.base[index].roomid;
-				console.log(this.id);
-				console.log(this.roomid);
+				// console.log(this.id);
+				// console.log(this.roomid);
 				rows.splice(index, 1);
 				this.$ajax.post(url+'owner/del/' + this.id+'/'+ this.roomid).then((res) => {
 					this.getbase()
@@ -673,22 +704,30 @@
 			detail(index,rows){
 				let that = this;
 				that.id = this.base[index].id;
-				console.log(this.base[index].id)
+				// console.log(this.base[index])
 				that.roomid = this.base[index].roomid;
-				console.log(this.base[index].roomid)
+				// console.log(this.base[index].roomid)
 				if(!this.roomid){
 					this.roomid = '0';
 				}
+				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
+			},
+			details(index,rows){
+				let that = this;
+				that.id = this.MoveOut[index].customer;
+				// console.log(this.MoveOut[index].customer)
+				that.roomid = this.MoveOut[index].room;
+				// console.log(this.MoveOut[index].roomid)
 				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
 			},
 			//客户基本资料-编辑
 			customerEdit(index,rows){
 				let that = this;
 				that.id = this.base[index].id;
-				console.log(this.base[index].id)
+				// console.log(this.base[index].id)
 				//alert(this.base[index].roomid);
 				that.roomid = this.base[index].roomid;
-				console.log(this.base[index].roomid)
+				// console.log(this.base[index].roomid)
 				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'qq'}})
 			},
 
@@ -696,17 +735,14 @@
 			handleSizeChangeMoveOut(val) {
 				this.pageSizeMoveOut = val;
 				this.getMoveOut()
-				console.log(`每页 ${val} 条`);
 			},
 			handleCurrentChangeMoveOut(val) {
 				this.pageNoMoveOut = val;
 				this.getMoveOut()
-				console.log(`当前页: ${val}`);
 			},
 			//获取MoveOut
 			getMoveOut() {
 				this.$ajax.get(url+'moveOut/condition/'+this.pageNoMoveOut+'/'+this.pageSizeMoveOut).then((res) => {
-					//alert(res.data.data.rows[0].name);
 					this.MoveOut = res.data.data.rows
 					this.totalDataNumberMoveOut = res.data.data.records
 				})
@@ -715,9 +751,7 @@
 			templateDelete(index,rows) {
 				let that = this;
 				that.id = this.MoveOut[index].id;
-				console.log(this.id);
 				rows.splice(index, 1);
-				console.log(this.MoveOut)
 				this.$ajax.post(url+'moveOut/del/' + this.id).then((res) => {
 					this.getMoveOut()
 				})
@@ -727,12 +761,10 @@
 			handleSizeChangetemplate(val) {
 				this.pageSizeTemplate = val;
 				this.gettemplate()
-				console.log(`每页 ${val} 条`);
 			},
 			handleCurrentChangetemplate(val) {
 				this.pageNoTemplate = val;
 				this.gettemplate()
-				console.log(`当前页: ${val}`);
 			},
 			//获取template 短信模板
 			gettemplate() {
@@ -749,17 +781,24 @@
             noteTemplate.signature=this.addMessage.sign;
             this.$ajax.post(url+"noteTemplate/insert",noteTemplate
             ).then((res) => {
+				if(res.status){
                 this.form = res.data
-				console.log(this.form);
+				this.$message({
+					message: '成功',
+					type: 'success'
+			});
 				this.modify = false
 				this.gettemplate()
+				}else{
+					this.$message.error('添加失败');
+				}
             })
 		},
 		//添加短信弹窗
 			addDuanxin(){
 				this.addMessage = {},
 				this.modify = true,
-				this.name = '添加',
+				this.name = '添加短信模板',
 				this.tianjia = true,
 				this.bianji = false
 			},
@@ -767,12 +806,11 @@
 		noteTemplateEdit(index,rows){
                 let that = this;
 				that.id = this.template[index].id;
-                console.log(this.id);
 				this.modify = true,
 				this.bianji = true,
 				this.tianjia = false
                 if(that.id !== ''){
-                    this.name = '编辑'
+                    this.name = '编辑短信模板'
                     this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
 						this.addMessage.title = birthDay(res.data.title);
 						this.addMessage.content = res.data.content;
@@ -792,8 +830,16 @@
             noteTemplate.signature=this.addMessage.sign;
 			console.log(noteTemplate);
 			this.$ajax.put(url+'noteTemplate/update',noteTemplate).then(res => {
+				if(res.status === 200){
+					this.$message({
+					message: '成功',
+					type: 'success'
+			});
 				this.modify = false
 				this.gettemplate()
+				}else{
+					this.$message.error('修改失败');
+				}
 			})
 		},
 			//删除所选行短信模板
@@ -806,8 +852,23 @@
 					this.getMoveOut()
 				})
 			},
-
-
+			handleSelectionChange (val) {
+      //val 为选中数据的集合
+      this.multipleSelection = val
+      if (val.length > 0) {
+        // 楼宇批量删除按钮
+        document.getElementById('delect').style.background = 'red'
+        // 房间批量删除按钮
+        document.getElementById('roomDelete').style.background = 'red'
+        // 车辆管理批量删除按钮
+        document.getElementById('carDelete').style.background = 'red'
+      } else {
+        document.getElementById('delect').style.background = '#f5f5f5'
+        document.getElementById('roomDelete').style.background = '#f5f5f5'
+        document.getElementById('carDelete').style.background = '#f5f5f5'
+      }
+      // console.log(this.multipleSelection)
+    },
 			handleSizeChangesended(val) {
 				this.pageSizeSended = val;
 				this.getsended()
@@ -846,6 +907,7 @@
 			},
 			//增加出入证记录
 			addInandcome(){
+				if(this.upload.name){
             var visit={};
             visit.name=this.upload.name;
             visit.phone=this.upload.phone;
@@ -855,11 +917,23 @@
 			console.log(visit)
             this.$ajax.post(url+"visit/insert",visit
             ).then((res) => {
+				console.log(res)
+				if(res.status === 200){
                 this.form = res.data
-				console.log(this.form);
+				this.$message({
+          message: '添加成功',
+          type: 'success'
+        });
 				this.dialogVisible = false
 				this.getinandcome()
-            })
+				}
+			})}
+			else{
+				this.$message({
+          message: '请输入姓名',
+          type: 'warning'
+        });
+			}
 		},
 		
 
@@ -1231,5 +1305,8 @@ a{
 	margin-top: 15%;
     width: 70%;
     height: 60%;
+}
+.footer {
+	float: right;
 }
 </style>

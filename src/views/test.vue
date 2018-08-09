@@ -75,7 +75,7 @@ export default {
       this.name = "编辑"
       // GET /roomStandard/flndById/{id}
       this.$ajax.get(url + 'roomStandard/flndById/' + this.id).then(res => {
-        console.log(res.data.data)
+        // console.log(res.data.data)
         this.carForm.region = res.data.data.room.split(',')
         this.carForm.project = res.data.data.projectAcceptance
         this.carForm.standard = res.data.data.acceptanceStandard
@@ -121,6 +121,10 @@ export default {
           console.log(res.data)
           if (res.data.status === 200) {
             // this.fullscreenLoading = false
+            this.$message({
+          message: '成功',
+          type: 'success'
+        })
             window.history.go(-1)
           }
         })
@@ -128,6 +132,10 @@ export default {
         this.$ajax.post(url + 'roomStandard/addRoomStandard', roomStandard).then(res => {
           if (res.data.status === 200) {
             // this.fullscreenLoading = false
+            this.$message({
+          message: '成功',
+          type: 'success'
+        })
             window.history.go(-1)
           }
         })

@@ -1,17 +1,17 @@
 <template>
     <div class="apply">
         <h3>装修申请</h3>
-        <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail">
+        <el-form :model="detail" ref="detail" :rules="rules" label-width="130px" class="demo-detail">
         <div class="tianjia">
             <div class="input">
                 
-                    <el-form-item label="租户姓名:">
-                        <el-input v-model="detail.name" clearable></el-input>
+                    <el-form-item label="租户姓名:" prop="name">
+                        <el-input v-model="detail.name" v-on:blur="transformName" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="关联房屋:">
+                    <el-form-item label="关联房屋:" prop="house">
                         <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange"></el-cascader>
                     </el-form-item>
-                    <el-form-item label="负责人电话:">
+                    <el-form-item label="负责人电话:" prop="principal_phone">
                         <el-input v-model="detail.principal_phone" clearable></el-input>
                     </el-form-item>
                     <div class="zhuangxiu">
@@ -51,7 +51,7 @@
 
         <div class="tianjia">
             <div class="input">
-                   <el-form-item label="手机号：">
+                   <el-form-item label="手机号：" prop="phone">
                         <el-input v-model="detail.phone" v-on:blur="transform" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
@@ -60,7 +60,7 @@
                     <el-form-item label="装修保证金：">
                         <el-input v-model="detail.cash_deposit" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="负责人身份证号:">
+                    <el-form-item label="负责人身份证号:" prop="principal_card">
                         <el-input v-model="detail.principal_card" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="施工负责人:">
@@ -187,6 +187,23 @@ export default {
             label: '组件交互文档'
           }]
         }],
+         rules: {
+          name: [
+            { required: true, message: '请输入租户姓名', trigger: 'blur' },
+          ],
+          house: [
+            { required: true, message: '请选择关联房屋', trigger: 'change' }
+          ],
+          phone: [
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+          ],
+          principal_phone: [
+            { required: true, message: '请输入负责人手机号', trigger: 'blur' },
+          ],
+          principal_card:[
+            { required: true, message: '请输入负责人身份证号', trigger: 'blur' },
+          ]
+         }
             
             // input: {
             //     name: '李文',
@@ -242,17 +259,61 @@ export default {
                     })
                 })
         },
+    //失去焦点事件，当移开姓名时判断
+      transformName:function(){
+          if(!this.detail.name){
+              this.$message({
+                message: '请先输入业主姓名',
+                 type: 'error'
+               })
+            
+          }else{
+              if(!this.detail.phone){
+                  this.$ajax.get(url + 'owner/findByName/'+this.detail.name).then(res => {
+                       if(res.data.length==0){
+                           this.$message({
+                                message: '没有找到该业主的任何信息',
+                                type: 'error'
+                            })
+                          
+                         this.detail.name = null;
+                       }
+                       console.log(res.data)
+                   })
+                 }else{
+                      this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
+                        if(!res.data){
+                             
+                            this.detail.phone = null;
+                        }
+                        console.log(res.data)
+                    })
+                 }
+              }
+      },
     //失去焦点事件，当移开电话时判断
       transform:function(){
           if(!this.detail.name){
-              alert("请先输入业主姓名");
+               this.$message({
+                      message: '请先输入业主姓名',
+                    type: 'error'
+                }) 
+
           }else if(!this.detail.phone){
-              alert("请输入电话号码");
+                         this.$message({
+                                message: '请输入电话号码',
+                                type: 'error'
+                            }) 
+
           }else{
            this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
                 var aa = "";
                 if(!res.data){
-                    alert("业主姓名和业主电话号码输入有误！");
+                     this.$message({
+                                message: '业主绑定的电话号码有误，请重新输入！',
+                                type: 'error'
+                            })
+                    this.detail.phone = null;
                     aa = "aaa";
                 }else{
                     aa = res.data.id;
@@ -275,7 +336,6 @@ export default {
             console.log(this.detail.house);
             var arr=this.detail.house;
             adornApplyvo.roomNumber=arr[arr.length-1];//关联房屋
-            alert(adornApplyvo.roomNumber);
             adornApplyvo.startTime=this.detail.startTime;    //开始装修时间
             adornApplyvo.endTime=this.detail.endTime;    //预估结束时间
             console.log(this.detail.natureName)
@@ -294,9 +354,16 @@ export default {
                     this.form = res.data
                     console.log(this.form);
                      if(res.data=="seccess"){
-                         alert("修改数据成功");
+                          this.$message({
+                                message: '修改数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
                      }else{
-                            alert("失败");
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
                      }
                 })
             }else{
@@ -304,9 +371,16 @@ export default {
                     this.form = res.data
                     console.log(this.form);
                      if(res.data=="seccess"){
-                         alert("添加数据成功");
+                          this.$message({
+                                message: '新增数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
                      }else{
-                            alert("失败");
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
                      }
                 })
             }

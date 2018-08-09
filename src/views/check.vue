@@ -177,6 +177,11 @@ export default {
            this.$ajax.post(url+"adornCheck/insert",adornCheck).then((res) => {
               this.form = res.data
               console.log(this.form);
+               if(res.data=="seccess"){
+                         alert("添加数据成功");
+                }else{
+                            alert("失败");
+                }
             })
         },
       goBack(){

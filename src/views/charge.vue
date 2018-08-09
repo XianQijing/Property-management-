@@ -437,7 +437,11 @@ export default {
     this.getType(),
     this.getCharges(),
     this.getOptions()
-    ;
+    if(this.$route.query.tabPane){
+      this.activeName = this.$route.query.tabPane
+    }else{
+      this.activeName = 'first'
+    }
   },
 
   //选项卡

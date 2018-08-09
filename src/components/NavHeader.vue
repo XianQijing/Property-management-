@@ -30,12 +30,22 @@ export default {
   name: 'NavHeader',
   data () {
     return {
-      name: '123123'
+      name: '123123',
+      token: ''
     }
   },
-  mounted(){
+	mounted(){
     let uname = getCookie("phone");
     this.name = uname
+    // this.token = sessionStorage.getItem("userId")
+    if(!sessionStorage.getItem("userId")){
+    console.log(sessionStorage.getItem("userId"))
+    this.$router.push('/')
+    }else{
+
+    }
+    //   this.$router.push('/')
+    
   },
 	methods: {
     signOut () {

@@ -120,6 +120,10 @@ export default {
             // console.log(res.data)
             if (res.data.status === 200) {
               this.fullscreenLoading = false
+              this.$message({
+          message: '成功',
+          type: 'success'
+        })
               window.history.go(-1)
             }
           })
@@ -128,6 +132,10 @@ export default {
             // console.log(res.data)
             if (res.data.status === 200) {
               // this.fullscreenLoading = false
+              this.$message({
+          message: '成功',
+          type: 'success'
+        })
               window.history.go(-1)
             }
           })

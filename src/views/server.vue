@@ -1,20 +1,20 @@
 <template>
     <div class="server">
         <h3>服务派单</h3>
-        <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail">
+        <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail" :rules="rules">
         <div class="tianjia">
             <div class="input">
                 
-                    <el-form-item label="姓名:">
-                        <el-input v-model="detail.name" clearable></el-input>
+                    <el-form-item label="姓名:" prop="name">
+                        <el-input v-model="detail.name" v-on:blur="transformName" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="关联房屋:">
-                        <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange"></el-cascader>
+                    <el-form-item label="关联房屋:" prop="house">
+                        <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange" style="width:100%"></el-cascader>
                         
                     </el-form-item>
                     <el-form-item label="服务类别:">
                         
-                        <el-select v-model="detail.service_classes" placeholder="服务类别">
+                        <el-select v-model="detail.service_classes" placeholder="服务类别" style="width:100%">
                             <el-option
 								v-for="item in service"
 								:key="item.value"
@@ -54,14 +54,14 @@
 
         <div class="tianjia">
             <div class="input">
-                    <el-form-item label="手机号：">
+                    <el-form-item label="手机号：" prop="phone">
                         <el-input v-model="detail.phone" v-on:blur="transform" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-input v-model="detail.leaseType" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="报修方式:">
-                        <el-select v-model="detail.way" placeholder="报修方式">
+                        <el-select v-model="detail.way" placeholder="报修方式" style="width:100%">
                             <el-option
 								v-for="item in ways"
 								:key="item.value"
@@ -224,7 +224,18 @@ export default {
             value: 'jiaohu',
             label: '组件交互文档'
           }]
-        }]
+        }],
+        rules: {
+          name: [
+            { required: true, message: '请输入姓名', trigger: 'blur' },
+          ],
+          house:[
+              { required: true, message: '请选择关联房屋', trigger: 'change'}
+          ],
+          phone: [
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+          ]
+          }
             // input: {
             //     name: '李文',
             //     sex: '男',
@@ -275,6 +286,7 @@ export default {
     //   handlePictureCardPreview(file) {
     //     this.dialogImageUrl = file.url;
     //   },
+    
     editChange(a,b){
             this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
                 var aa = "";
@@ -288,16 +300,60 @@ export default {
                     })
                 })
         },
-    transform:function(){
+    //失去焦点事件，当移开姓名时判断
+      transformName:function(){
           if(!this.detail.name){
-              alert("请先输入业主姓名");
+              this.$message({
+                message: '请先输入业主姓名',
+                 type: 'error'
+               })
+            
+          }else{
+              if(!this.detail.phone){
+                  this.$ajax.get(url + 'owner/findByName/'+this.detail.name).then(res => {
+                       if(res.data.length==0){
+                           this.$message({
+                                message: '没有找到该业主的任何信息',
+                                type: 'error'
+                            })
+                          
+                         this.detail.name = null;
+                       }
+                       console.log(res.data)
+                   })
+                 }else{
+                      this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
+                        if(!res.data){
+                            this.detail.phone = null;
+                        }
+                        console.log(res.data)
+                    })
+                 }
+              }
+      },
+    //失去焦点事件，当移开电话时判断
+      transform:function(){
+          if(!this.detail.name){
+               this.$message({
+                      message: '请先输入业主姓名',
+                    type: 'error'
+                }) 
+
           }else if(!this.detail.phone){
-              alert("请输入电话号码");
+                         this.$message({
+                                message: '请输入电话号码',
+                                type: 'error'
+                            }) 
+
           }else{
            this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
                 var aa = "";
                 if(!res.data){
-                    alert("业主姓名和业主电话号码输入有误！");
+                     this.$message({
+                                message: '业主绑定的电话号码有误，请重新输入！',
+                                type: 'error'
+                            })
+                    this.detail.phone = null;
                     aa = "aaa";
                 }else{
                     aa = res.data.id;
@@ -324,7 +380,6 @@ export default {
             serviceAcceptVO.phone=this.detail.phone;    //手机号
             serviceAcceptVO.leaseType=this.detail.leaseType;   //类型
             serviceAcceptVO.way=this.detail.way;   //报修方式
-            alert(serviceAcceptVO.way);
             serviceAcceptVO.receiverTime=this.detail.receiverTime;    //工时
             serviceAcceptVO.professional_list=this.detail.professional_list;    //专业分类
             serviceAcceptVO.problem=this.detail.problem;    //要求处理事项
@@ -334,20 +389,34 @@ export default {
                 this.$ajax.put(url+"serviceAccept/update",serviceAcceptVO).then((res) => {
                     this.form = res.data
                     console.log(this.form);
-                     if(res.data=="seccess"){
-                         alert("修改数据成功");
+                    if(res.data=="seccess"){
+                          this.$message({
+                                message: '修改数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
                      }else{
-                            alert("失败");
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
                      }
                 })
             }else{
                 this.$ajax.post(url+"serviceAccept/insert",serviceAcceptVO).then((res) => {
                     this.form = res.data
                     console.log(this.form);
-                     if(res.data=="seccess"){
-                         alert("增加数据成功");
+                    if(res.data=="seccess"){
+                          this.$message({
+                                message: '增加数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
                      }else{
-                            alert("失败");
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
                      }
                 })
             }

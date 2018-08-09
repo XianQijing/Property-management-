@@ -131,7 +131,11 @@
                 </el-select>
             </el-form-item>
               <el-form-item label="岗位:">
+<<<<<<< HEAD
                 <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->{{addpersonEdit.gangwei}}
+=======
+                <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input>{{addpersonEdit.gangwei}} -->
+>>>>>>> XianQijing
                 <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
             </el-form-item>
             <el-form-item label="备注:">
@@ -353,11 +357,11 @@ export default {
             username:'',
             radio:'0',
             pageNo: 1,
-            pageSize: 1,
-            pageSizesList: [1, 2, 3, 4, 5],
+            pageSize: 10,
+            pageSizesList: [10, 20, 50, 100],
             totalDataNumber: 1,//数据的总数,
             pageNoB: 1,
-            pageSizeB: 1,
+            pageSizeB: 10,
             pageSizesListB: [1, 2, 3, 4, 5],
             totalDataNumberB: 1,//数据的总数,
             // toggle:'',
