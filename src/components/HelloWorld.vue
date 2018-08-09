@@ -349,7 +349,7 @@ export default {
                 }
             })
             .then(res => {
-                console.log(res.data);
+                // console.log(res.data);
             });
 				this.countWorkMethod();
 				this.countNoteMethod()
@@ -369,7 +369,7 @@ export default {
         //快捷工作台
         countWorkMethod() {
             this.$ajax.get(url + "/index/countWork").then(res => {
-                console.log(res.data);
+                // console.log(res.data);
                 this.countWork = res.data;
             });
         },
@@ -387,7 +387,7 @@ export default {
             users.roleId = this.addperson.position;
             this.$ajax.post(url + "user/insert", users).then(res => {
                 this.form = res.data;
-                console.log(res.data);
+                // console.log(res.data);
             });
         },
 				//导入员工
@@ -398,24 +398,24 @@ export default {
             // this.path = e.target.value;
             this.file = e.currentTarget.files[0].name//百度是没有name的
             
-            console.log(this.src)
+            // console.log(this.src)
         },
         submit(){
             var formData = new FormData()
-            console.log(this.files)
+            // console.log(this.files)
             formData.append('path', this.file)
             formData.append('status', this.radio)
             this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                console.log(res)
+                // console.log(res)
             })
 				},
 				//通知
 				countNoteMethod(){
             this.$ajax.get(url+ 'index/countNote').then(res => {
                                 //this.inform
-                                for(var i=0;i<5;i++){
-                                this.inform[i].title=res.data[i].count
-                                }
+                for(var i=0;i<5;i++){
+                    this.inform[i].title=res.data[i].count
+                }
 								
             })
 				},
@@ -429,7 +429,7 @@ export default {
             });
         },
         detail() {
-            console.log(index);
+            // console.log(index);
         }
     },
     components: {

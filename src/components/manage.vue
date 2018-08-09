@@ -1,32 +1,18 @@
 <template>
-    <div class="manage">
-        <el-container>
-            <el-aside width="200px">
-                <div class="departNav">
-        <h1>部门</h1>
-       <el-tree :data="data5"  node-key="id" default-expand-all  @node-click="back">
-      <span class="custom-tree-node" slot-scope="{ node, data }">
-        <span>{{ node.label }}</span>
-        <div class="aa">
-          <img src=".././assets/add.png" @click="() => qq(node, data)" class="tianjia" >
-          <img src=".././assets/delet.png" class="shanchu"  @click="() => remove(node, data)"/>
-        </div>
-      </span>
-    </el-tree>
-    <el-dialog
-  title="添加"
-  :visible.sync="dialogVisible"
-  width="30%">
-  <div class="mingcheng">
-  <div class="name1">部门名称：</div>
-    <el-input v-model="name"></el-input>
-    </div>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="() => append(this.pp)">确 定</el-button>
-  </span>
-</el-dialog>
-
+  <div class="manage">
+    <el-container>
+      <el-aside width="200px">
+        <div class="departNav">
+          <h1>部门</h1>
+          <el-tree :data="data5"  node-key="id" default-expand-all  @node-click="back" :expand-on-click-node="false">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span>{{ node.label }}</span>
+              <div class="aa">
+                <img src=".././assets/add.png" @click="() => qq(node, data)" class="tianjia">
+                <img src=".././assets/delet.png" class="shanchu"  @click="() => remove(node, data)"/>
+              </div>
+            </span>
+          </el-tree>
           <el-dialog
             title="添加"
             :visible.sync="dialogVisible"
