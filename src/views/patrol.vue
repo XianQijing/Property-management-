@@ -102,19 +102,20 @@ export default {
             }
             console.log(adornPatrol.isIllegal)
             adornPatrol.patrolContent = this.detail.remark;
-            if(this.detail.pass == true){
-                adornPatrol.isPass = 1;
-            }else{
-                adornPatrol.isPass = 0;
-            }
+            
            this.$ajax.post(url+"adornPatrol/insert",adornPatrol).then((res) => {
-              this.form = res.data
-              console.log(this.form);
-               if(res.data=="seccess"){
-                         alert("修改数据成功");
-                }else{
-                            alert("失败");
-                 }
+                    if(res.data=="seccess"){
+                          this.$message({
+                                message: '添加数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
+                     }else{
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
+                     }
             })
         },
       goBack(){

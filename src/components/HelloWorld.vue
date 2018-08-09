@@ -343,7 +343,7 @@ export default {
     mounted() {
         let uname = getCookie("phone");
         this.$ajax
-            .get(url + "/user/findById", {
+            .get(url + "user/findById", {
                 params: {
                     token: sessionStorage.getItem("userId")
                 }

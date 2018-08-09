@@ -302,9 +302,16 @@ export default {
                 this.form = res.data
                 console.log(this.form);
                  if(res.data=="seccess"){
-                         alert("修改数据成功");
+                         this.$message({
+            message: '成功',
+            type: 'success'
+          })
+          this.goBack()
                 }else{
-                            alert("失败");
+                            this.$message({
+            message: '失败',
+            type: 'error'
+          });
                 }
             })
         },

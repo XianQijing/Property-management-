@@ -252,7 +252,10 @@ export default {
           this.$ajax.put(url + 'room/update/' + this.$route.query.id, data).then(res => {
             // console.log(res.data)
             if (res.data.status === 200) {
-              // this.fullscreenLoading = false
+              this.$message({
+                  message: '修改成功',
+                  type: 'success'
+                })
               window.history.go(-1)
             }
           })
@@ -326,7 +329,7 @@ function toLowerCase (data) {
 
 .input {
     width: 40%;
-    margin: 4% 0 0 24%;
+    margin: 2% 0 0 24%;
 }
 .nextStep {
   border-radius: 5px;
@@ -351,7 +354,7 @@ function toLowerCase (data) {
 }
 .nn {
     width: 20%;
-    margin: 4% 0 0 40%;
+    margin: 2% 0 0 40%;
     display: flex;
     justify-content: space-between;
     height: 500px;

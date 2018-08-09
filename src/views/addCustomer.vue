@@ -13,11 +13,11 @@
                 </el-form-item>
                <el-form-item label="关联房屋：" prop="house">
                     <!-- <el-select :value="ruleForm.house" v-model="ruleForm.house" placeholder="请选择活动楼宇" > -->
-                    <el-cascader expand-trigger="hover" :options="options" v-model="ruleForm.house" @change="handleChange"></el-cascader>
+                    <el-cascader expand-trigger="hover" :options="options" v-model="ruleForm.house" @change="handleChange" style="width:100%"></el-cascader>
                 </el-form-item>
                 
                 <el-form-item label="事件类型：" prop="event_type">
-                <el-select v-model="ruleForm.event_type" placeholder="请选择事件类型">
+                <el-select v-model="ruleForm.event_type" placeholder="请选择事件类型"  style="width:100%">
                    <el-option
 						v-for="item in ways"
 							:key="item.id"
@@ -31,12 +31,13 @@
                 <el-input v-model="ruleForm.process_condition" placeholder="请输入处理情况"></el-input>
                 </el-form-item>
                 
-                <el-form-item label="处理时间：" prop="processTime" v-show="pan">
+                <el-form-item label="处理时间：" prop="processTime" v-show="pan" >
                 <el-date-picker
                         v-model="ruleForm.processTime"
                         type="datetime"
                         format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
-                        placeholder="选择日期时间">
+                        placeholder="选择日期时间"
+                        style="width:100%">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="回访时间：" prop="visitDate" v-show="show">
@@ -44,7 +45,8 @@
                         v-model="ruleForm.visitDate"
                         type="datetime"
                         format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
-                        placeholder="选择日期时间">
+                        placeholder="选择日期时间"
+                        style="width:100%">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="事件损失：" prop="loss" v-show="duan">
@@ -191,13 +193,13 @@ export default {
         }],
         rules: {
           name: [
-            { required: true, message: '请输入所在楼层', trigger: 'blur' },
+            { required: true, message: '请输入客户姓名', trigger: 'blur' },
           ],
-          region: [
+          house: [
             { required: true, message: '请选择小区/楼宇/单元', trigger: 'change' }
           ],
-          roomnumber: [
-            { required: true, message: '请输入房号', trigger: 'blur' }
+          phone: [
+            { required: true, message: '请输入手机号', trigger: 'blur' }
           ],
           buildArea: [
             { required: true, message: '请输入建筑面积', trigger: 'blur' }
@@ -469,19 +471,33 @@ export default {
             feedbackMessageVO.id = this.id;
             this.$ajax.put(url+"feedbackMessage/update",feedbackMessageVO).then((res) => {
                         if(res.data=="seccess"){
-                            alert("修改数据成功");
-                        }else{
-                            alert("失败");
-                        }
+                          this.$message({
+                                message: '修改数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
+                     }else{
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
+                     }
             })
           
         }else if(this.$route.query.msg === 1){    //客户事件新增
             this.$ajax.post(url+"customerEvent/insert",customerEventVO).then((res) => {
-                if(res.data=="seccess"){
-                            alert("添加数据成功");
-                }else{
-                 alert("失败");
-                }
+               if(res.data=="seccess"){
+                          this.$message({
+                                message: '添加数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
+                     }else{
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
+                     }
             })
             
         }else if(this.$route.query.msg === 4){  //客户事件查看
@@ -490,23 +506,33 @@ export default {
         }else if(this.$route.query.msg === 5){   //客户事件回访
             customerEventVO.id = this.id;
            this.$ajax.put(url+"customerEvent/update",customerEventVO).then((res) => {
-                this.form = res.data
-                console.log(this.form);
-                 if(res.data=="seccess"){
-                      alert("修改数据成功");
-                }else{
-                     alert("失败");
-                }
+                if(res.data=="seccess"){
+                          this.$message({
+                                message: '修改数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
+                     }else{
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
+                     }
             })
          
         }else{                            //客户反馈信息新增
             this.$ajax.post(url+"feedbackMessage/insert",feedbackMessageVO).then((res) => {
-                    this.form = res.data
-                    console.log(this.form);
                     if(res.data=="seccess"){
-                         alert("新增数据成功");
+                          this.$message({
+                                message: '添加数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
                      }else{
-                            alert("失败");
+                         this.$message({
+                                message: '失败',
+                                type: 'error'
+                            }) 
                      }
             })
         }
