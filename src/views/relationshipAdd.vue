@@ -44,7 +44,7 @@
                       <el-date-picker
                           v-model="addCustomer.birth"
                           type="date"
-                          format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                          format="yyyy-MM-dd" value-format="yyyy-MM-dd HH:mm:ss"
                           placeholder="选择日期">
                         </el-date-picker>
                     </el-form-item>
@@ -301,10 +301,17 @@ export default {
             ).then((res) => {
                 this.form = res.data
                 console.log(this.form);
-                 if(res.data=="seccess"){
-                         alert("修改数据成功");
+                if(res.data=="seccess"){
+                  this.$message({
+                    message: '成功',
+                    type: 'success'
+                  })
+                  this.goBack()
                 }else{
-                            alert("失败");
+                  this.$message({
+                    message: '失败',
+                    type: 'error'
+                  });
                 }
             })
         },

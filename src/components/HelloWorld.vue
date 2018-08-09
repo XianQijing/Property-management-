@@ -38,10 +38,10 @@
 										</p>
 										<div class="link">
 											<span>
-												<a @click="add = !add">添加员工</a>
+												<router-link :to="{name: 'Department',query:{tabPane:'second'}}">添加员工</router-link>
 											</span>
 											<span>
-												<a @click="isShow = !isShow">导入员工</a>
+												<router-link :to="{name: 'Department',query:{tabPane:'second'}}">导入员工</router-link>
 											</span>
 											<span>
 												<router-link :to="{name: 'Department',query:{tabPane:'first'}}"><a>权限管理</a></router-link>
@@ -71,7 +71,7 @@
 										</p>
 										<div class="link">
 											<span style="color:white">添加员工</span> 
-											<router-link :to="{name: 'AddCar',query:{id:'ww'}}"><span>添加车位</span></router-link>
+											<router-link :to="{name: 'House',query:{tabPane:'fourth'}}"><span>添加车位</span></router-link>
 											<!-- <router-link :to="{name: 'Daoru'}"><span>导入车位</span></router-link> -->
 										</div>
 									</div>
@@ -85,8 +85,8 @@
 										<div class="link">
 											<span style="color:white">添加员工</span> 
 											<!-- <span @click="task1">短信群发</span> -->
-											<router-link :to="{name: 'Relationship',query:{tabPane:'2'}}"><span>模板设计</span></router-link>
-											<router-link :to="{name: 'Relationship',query:{tabPane:'3'}}"><span>短信记录</span></router-link>
+											<router-link :to="{name: 'Relationship',query:{tabPane:'third'}}"><span>模板设计</span></router-link>
+											<router-link :to="{name: 'Relationship',query:{tabPane:'fourth'}}"><span>短信记录</span></router-link>
 										</div>
 									</div>
 								</div>
@@ -98,7 +98,7 @@
 										</p>
 										<div class="link">
 											<span style="color:white">添加员工</span> 
-											<router-link :to="{name: 'Charge',query:{tabPane:'1'}}"><span>录入数据</span></router-link>
+											<router-link :to="{name: 'Charge',query:{tabPane:'second'}}"><span>录入数据</span></router-link>
 											<!-- <span>导入表单</span>
 											<span>导出表单</span> -->
 										</div>
@@ -113,7 +113,7 @@
 										<div class="link">
 											<span style="color:white">添加员工</span> 
 											<!-- <span>发送短信</span> -->
-											<router-link :to="{name: 'Relationship',query:{tabPane:'3'}}"><span>查看详情</span></router-link>
+											<router-link :to="{name: 'Relationship',query:{tabPane:'third'}}"><span>查看详情</span></router-link>
 										</div>
 									</div>
 								</div>
@@ -343,7 +343,7 @@ export default {
     mounted() {
         let uname = getCookie("phone");
         this.$ajax
-            .get(url + "/user/findById", {
+            .get(url + "user/findById", {
                 params: {
                     token: sessionStorage.getItem("userId")
                 }

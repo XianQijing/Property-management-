@@ -23,7 +23,7 @@
             <el-form-item label="负责人电话：">
               <el-input v-model="ruleForm.principalNumber"></el-input>
             </el-form-item>
-            <el-form-item label="楼宇数量">
+            <el-form-item label="楼宇数量">{{ruleForm.building}}
               <el-input v-model="ruleForm.building"></el-input>
             </el-form-item>
           </div>
@@ -54,9 +54,8 @@
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="车库面积：">
+            <el-form-item label="车库数：">
               <el-input v-model="ruleForm.garage">
-                  <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             <el-form-item label="车位数">
@@ -114,9 +113,9 @@ export default {
       // console.log(this.id)
       // GET /precinct/flndById/{id}/{page}/{pageSize
       this.$ajax.get(url+ 'precinct/flndById/' + this.$route.query.id).then(res => {
-        // console.log(res.data.data)
+        console.log(res.data.data)
         this.ruleForm = res.data.data
-        this.ruleForm.region = res.data.data.region.split(',')
+        this.ruleForm.region = res.data.data.region.split(',').map(Number)
         this.ruleForm.garage=res.data.data.cellParkingRelationship.garage;
         this.ruleForm.carSeatNumber=res.data.data.cellParkingRelationship.carSeatNumber;
       })
@@ -127,16 +126,23 @@ export default {
     goBack () {
       window.history.back()
     },
-    submit () {
-      this.$ajax.post(url + '',{
-        param:{},
-        data:{
-            '':this.ruleForm.namec
-        }
-      }).then(res => {
-        goBack()
-      })
-    },
+    open2() {
+        this.$message({
+          message: '成功',
+          type: 'success'
+        });
+      },
+    
+    // submit () {
+    //   this.$ajax.post(url + '',{
+    //     param:{},
+    //     data:{
+    //         '':this.ruleForm.namec
+    //     }
+    //   }).then(res => {
+    //     goBack()
+    //   })
+    // },
     save(){
       var precinctVO = {
         'namec':this.ruleForm.namec, 
@@ -158,8 +164,10 @@ export default {
       if (this.$route.query.msg === "tianjia") {
         this.$ajax.post(url + 'precinct/insertPrecinct',precinctVO).then(res => {
           if (res.data.status === 200) {
-            // this.fullscreenLoading = false
+            this.open2()
             window.history.go(-1)
+          }else{
+            this.$message.error('错了哦，这是一条错误消息');
           }
         })
       } else if (this.$route.query.msg === "bianji") {
@@ -169,7 +177,10 @@ export default {
           // console.log(res.data)
           if (res.data.status === 200) {
             // this.fullscreenLoading = false
+            this.open2()
             window.history.go(-1)
+          }else{
+            this.$message.error('错了哦，这是一条错误消息');
           }
         })
       }
@@ -184,6 +195,7 @@ export default {
     background: white;
     z-index: 2000;
     width: 100%;
+    height: 100%;
 }
 .tianjia{
     vertical-align: top;

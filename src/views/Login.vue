@@ -13,7 +13,7 @@
 				</div>
 				<div class="password">
 					<span>
-                        <input type="checkbox"  id="remember" v-model="remember"><span class="yes">记住密码</span>
+                        <input type="checkbox"  id="remember" v-model="remember" @keyup.enter.native="sumbitLogin()"><span class="yes">记住密码</span>
 					</span>
 					<a link=""><span>忘记密码</span></a>
 				</div>
@@ -41,9 +41,9 @@
 		},
 		mounted() {
 			/*页面挂载获取cookie，如果存在phone的cookie，则跳转到主页，不需登录*/
-			if(getCookie('phone')) {
-				this.$router.push('/HelloWorld')
-			}
+			// if(getCookie('phone')) {
+			// 	this.$router.push('/HelloWorld')
+			// }
 		},
 		methods: {
 			//登录
@@ -61,11 +61,11 @@
 					})).then((res) => {
 						
 						/*接口的传值是(-1,该用户不存在),(0,密码错误)，同时还会检测管理员账号的值*/
-						if(res.data.data.success == true) {
+						if(res.status === 200) {
 							console.log(res.data)
 							this.tishi = "登录成功"
 							this.showTishi = true
-							this.$router.push('/HelloWorld')
+							this.$router.push('/helloWorld')
 							sessionStorage.setItem('userId',res.data.data.token)
 							// 没有值
 							// sessionStorage.setItem('judge',res.data.data)
@@ -122,7 +122,9 @@
 		margin: 1% 40%;
         width: 20%;
 	}
-	
+	.container {
+    max-width: 1920px;
+}
 	.welcome {
 		font-family: "Microsoft YaHei";
 		color: rgb(255, 196, 76);
@@ -146,11 +148,11 @@
 		height: 38px;
 	}
 	
-	.yanzhengma {
+	/* .yanzhengma {
 		width: 50% !important;
 		margin-right: 98px !important;
 		display: inline!important;
-	}
+	} */
 	
 	.mofang {
 		display: inline;
@@ -193,7 +195,7 @@
 		overflow: hidden;
 	}
 	
-	.get {
+	/* .get {
 		background-color: rgb(118, 212, 255);
 		box-shadow: inset 0.5px 0.866px 4px 0px rgba(0, 0, 0, 0.1);
 		height: 40px;
@@ -201,7 +203,7 @@
 		color: aliceblue;
 		display: inline;
 		;
-	}
+	} */
 	
 	.switch button {
 		width: 50%;

@@ -13,7 +13,7 @@
 								<button class="add" @click="addToAdmin('','','tianjia')">+ 添加</button><button class="delect">删除</button>
 								<el-table :data="admin" style="width: 100%">
 									<el-table-column prop="namec" label="小区名称" width="180"></el-table-column>
-									<el-table-column prop="site" label="楼高"></el-table-column>
+									<el-table-column prop="region" label="所在地区"></el-table-column>
 									<el-table-column prop="overallFloorage" label="建筑面积(平方)"></el-table-column>
 									<el-table-column prop="cellParkingRelationship.garage" label="车库(座)"></el-table-column>
 									<el-table-column prop="cellParkingRelationship.carSeatNumber" label="车位(个)"></el-table-column>
@@ -54,7 +54,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="楼宇">
+						<el-tab-pane label="楼宇" name="second">
 							<div class="main">
 								<div v-if="tabIndex === '1'"><router-view></router-view></div>
 								<router-link :to="{path: '/house/addBuild'}"><button class="add">+ 添加</button></router-link>
@@ -103,7 +103,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="房间">
+						<el-tab-pane label="房间" name="third">
               <div class="main">
 								<div v-if="tabIndex === '2'">
                   <router-view class="Next"></router-view>
@@ -205,7 +205,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="房产验收">
+						<el-tab-pane label="房产验收" name="fifth">
 							<div class="main">
 								<div v-if="tabIndex === '4'">
 									<router-view class="test"></router-view>
@@ -302,7 +302,7 @@ export default {
       pageSizesListAdmin: [1, 2, 3, 4, 5],
       admin: [{
           namec: '',
-          site: '',
+          region: '',
           overallFloorage: '',
           cellParkingRelationship:{
             garage:'',
@@ -383,6 +383,11 @@ export default {
     }
   },
   mounted() {
+    if(this.$route.query.tabPane){
+      this.activeName = this.$route.query.tabPane
+      }else{
+        this.activeName = 'first'
+      }
     this.getAdmin()
     this.getRoom()
     this.getRoomStandard()
@@ -390,6 +395,8 @@ export default {
     this.getCar()
     if(this.$route.query.tabPane){
       this.activeName = this.$route.query.tabPane
+    }else{
+      this.activeName = 'first'
     }
   },
   methods: {
