@@ -13,11 +13,7 @@
 				</div>
 				<div class="password">
 					<span>
-<<<<<<< HEAD
-                        <input type="checkbox"  id="remember" v-model="remember" @keyup.enter.native="sumbitLogin()"><span class="yes">记住密码</span>
-=======
-						<input type="checkbox"  id="remember" v-model="remember"><span class="yes">记住密码</span>
->>>>>>> min
+						<input type="checkbox"  id="remember" v-model="remember" @keyup.enter.native="sumbitLogin()"><span class="yes">记住密码</span>
 					</span>
 					<a link=""><span>忘记密码</span></a>
 				</div>
