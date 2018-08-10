@@ -246,7 +246,10 @@ export default {
                 this.$ajax.put(url + 'contract/updateContract/'+this.id,data2
                 ).then(res => {
                     if(res.data.status === 200){
-                        alert('编辑成功')
+                        this.$message({
+                            message: '编辑成功',
+                            type: 'success'
+                        })
                         this.goBack()
                     }
                 })
@@ -276,7 +279,10 @@ export default {
                         }
             this.$ajax.post(url + 'contract/addContract', contractVO).then(res => {
                 if(res.data.status === 200){
-                        alert('添加成功')
+                        this.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        })
                         this.goBack()
                     }else{
                         alert(res.data.msg)
@@ -296,6 +302,7 @@ export default {
     background: white;
     z-index: 2000;
     width: 100%;
+    height: 100%;
 }
 .tianjia{
     display: inline-block;

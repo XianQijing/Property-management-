@@ -98,7 +98,7 @@ export default {
         // console.log(this.$route.query.id)
         this.id = this.$route.query.id
         this.$ajax.get(url + 'building/flndById/' + this.id).then(res => {
-          console.log(res.data.data)
+          // console.log(res.data.data)
           this.ruleForm = {
             'precinct': res.data.data.precinct,
             'namec': res.data.data.namec,

@@ -14,6 +14,7 @@ import RelationshipAdd from '@/views/relationshipAdd'
 import Rent from '@/views/rent'
 import RentAddhouse from '@/views/rent_addhouse'
 import RentContractChange from '@/views/rent_contract_change'
+import Supplement from '@/views/Supplement'
 import Charge from '@/views/charge'
 import Support from '@/views/support'
 import Apply from '@/views/apply'
@@ -158,6 +159,11 @@ export default new Router({
           path: 'Rent_contract_change',
           name: 'Rent_contract_change',
           component: RentContractChange
+        },
+        {
+          path: 'Supplement',
+          name: 'Supplement',
+          component: Supplement
         }
       ]
     },

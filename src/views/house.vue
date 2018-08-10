@@ -10,7 +10,8 @@
 						<el-tab-pane label="管理区" name="first">
 							<div class="main">
 								<div v-if="tabIndex === '0'"><router-view class="addAdmin"></router-view></div>
-								<button class="add" @click="addToAdmin('','','tianjia')">+ 添加</button><button class="delect">删除</button>
+								<button class="add" @click="addToAdmin('','','tianjia')">+ 添加</button>
+                <!-- <button class="delect">删除</button> -->
 								<el-table :data="admin" style="width: 100%">
 									<el-table-column prop="namec" label="小区名称" width="180"></el-table-column>
 									<el-table-column prop="region" label="所在地区"></el-table-column>

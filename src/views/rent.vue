@@ -13,14 +13,19 @@
 								    <!-- <router-view class="rent_edit"></router-view> -->
 								</div>
 								<router-link :to="{name: 'Rent_addhouse',query:{msg:'tianjia'}}"><button class="add">添加房源</button></router-link>
-                                <div class="fenye" style="display:inline-block" id="btn"><button @click="display(1)" class="active">全部数据</button><button @click="display(2)">只显示已租数据</button><button @click="display(3)">只显示未租数据</button></div>
+                                <div class="fenye" style="display:inline-block" id="btn">
+                                    <button @click="display(1)" class="active">全部数据</button>
+                                    <button @click="display(2)">只显示已租数据</button>
+                                    <button @click="display(3)">只显示未租数据</button>
+                                </div>
 								<el-table :data="tableData" style="width: 100%">
 									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
 									<el-table-column prop="build" label="楼宇" width="180"></el-table-column>
 									<el-table-column prop="roomNumber" label="房号"></el-table-column>
 									<el-table-column prop="coveredArea" label="建筑面积(平方米)"></el-table-column>
 									<el-table-column prop="pricing" label="价格(元/月)"></el-table-column>
-									<el-table-column prop="room_status" label="租用状态"></el-table-column>
+									<!-- <el-table-column prop="room_status" label="租用状态"></el-table-column> -->
+									<el-table-column prop="renting" label="租用状态"></el-table-column>
 									<el-table-column prop="reserve" label="预定状态"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
@@ -279,7 +284,10 @@ export default {
         flndAllHousingResource(){
             this.$ajax.get(url + 'housingResource/flndAllHousingResource/'+this.pageNo+'/'+this.pageSize).then((res) => {
                 
-                this.tableData=res.data.data.rows
+                res.data.data.rows.forEach(v => {
+                    v.reserve = status(v.reserve)
+                })
+                this.tableData = res.data.data.rows
                 this.totalDataNumber=res.data.data.records
             })
         },handleSizeChange(val) {
@@ -298,6 +306,9 @@ export default {
         flndAllBusiness(){
             this.$ajax.get(url + 'prospectiveCustomer/flndAll/'+this.pageNoBusiness+'/'+this.pageSizeBusiness).then((res) => {
                 // console.log(res)
+                res.data.data.rows.forEach(v => {
+                    v.reserve = status(v.reserve)
+                })
                 this.tableDataBusiness=res.data.data.rows
                 this.totalDataNumberBusiness=res.data.data.records
             })
@@ -316,6 +327,9 @@ export default {
         flndAllContract(){
             this.$ajax.get(url + 'contract/flndAll/'+this.pageNoContract+'/'+this.pageSizeContract).then((res) => {
                 // console.log(res)
+                res.data.data.rows.forEach(v => {
+                    v.reserve = status(v.reserve)
+                })
                 this.tableDataContract=res.data.data.rows
                 this.totalDataNumberContract=res.data.data.records
             })
@@ -347,7 +361,7 @@ export default {
                 this.edit = true
                 this.tanchuang = "查看详情"
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
-                    console.log(res.data.data)
+                    // console.log(res.data.data)
                     this.upload = res.data.data
                 })
             }else if(this.msg == "gengxin"){
@@ -358,7 +372,7 @@ export default {
                 // console.log(this.id)
                 this.tanchuang = "更新商机"
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
-                    console.log(res.data.data)
+                    // console.log(res.data.data)
                     this.upload = res.data.data
                 })
             }else{
@@ -389,6 +403,9 @@ export default {
                 this.bb === 2;
                 this.$ajax.get(url + 'housingResource/selectOccupancy'+this.pageNo+'/'+this.pageSize).then(res => {
                     // console.log(res)
+                    res.data.data.rows.forEach(v => {
+                        v.reserve = status(v.reserve)
+                    })
                     this.tableData=res.data.data.rows
                     this.totalDataNumber=res.data.data.records
                 })
@@ -397,6 +414,9 @@ export default {
                 // console.log(this.bb)
                 this.$ajax.get(url + 'housingResource/selectUnleased'+this.pageNo+'/'+this.pageSize).then(res => {
                     // console.log(res)
+                    res.data.data.rows.forEach(v => {
+                        v.reserve = status(v.reserve)
+                    })
                     this.tableData=res.data.data.rows
                     this.totalDataNumber=res.data.data.records
                 })
@@ -417,7 +437,10 @@ export default {
                 this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',
                     prospectiveCustomer
                 ).then(res => {
-                    alert('成功')
+                    this.$message({
+                        message: '成功',
+                        type: 'success'
+                    })
                     this.dialogVisible = false
                 })
             }else if(this.msg === "gengxin"){
@@ -433,7 +456,10 @@ export default {
                         "comment":this.upload.comment
                     }
                 ).then(res => {
-                    alert('更新成功')
+                    this.$message({
+                        message: '更新成功',
+                        type: 'success'
+                    })
                     this.dialogVisible = false
                 })
             }else{
@@ -467,9 +493,15 @@ export default {
         
     },
     components: {
-			NavHeader,
-			NavBar
-		},
+        NavHeader,
+        NavBar
+    },
+    filters: {
+    }
+}
+function status (data) {
+    if (data === 0) return '未预定'
+    if (data === 1) return '已预订'
 }
 </script>
 <style scoped>

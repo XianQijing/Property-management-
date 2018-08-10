@@ -53,6 +53,7 @@
 								</div>
               </div>
             </el-tab-pane>
+
             <!--往来单位-->
             <el-tab-pane label="往来单位" name="third">
               <div class="main">
@@ -142,6 +143,7 @@
           <el-button type="primary" @click="editUser()">确 定</el-button>
         </span>
       </el-dialog>
+
       <!--导入弹窗-->
       <el-dialog
         title="导入"
@@ -189,6 +191,7 @@
           <button class="confirm" @click="submit">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
         </div>
       </el-dialog>
+
       <!--添加新员工弹窗-->
       <el-dialog
         title="添加新员工"
@@ -230,6 +233,7 @@
           <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="add = !add">取消</button>
         </div>
       </el-dialog>
+
       <!--外部联系人-->
       <el-dialog
         title="添加外部联系人"
@@ -292,14 +296,15 @@ import url from '../assets/Req.js'
 import qs from 'qs';
 
 let id = 1000;
+const datato = [{
+  id: 1,
+  label: '一级 1',
+  children: []
+}]
+
 export default {
   name: 'department',
   data(){
-    const datato = [{
-      id: 1,
-      label: '一级 1',
-      children: []
-    }];
     return{
       Data: [],
       options: [],
@@ -648,18 +653,17 @@ export default {
         
         // console.log(this.src)
     },
-        submit(){
-            var formData = new FormData()
-            // console.log(this.files)
-            formData.append('path', this.file)
-            formData.append('status', this.radio)
-            this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                // console.log(res)
-            })
-        }
+    submit(){
+      var formData = new FormData()
+      // console.log(this.files)
+      formData.append('path', this.file)
+      formData.append('status', this.radio)
+      this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
+          // console.log(res)
+      })
     }
+  }
 }
-
 </script>
 
 <style scoped>
@@ -677,9 +681,9 @@ body {
 		width: 88%;
 		position: relative;
 		left: 6%;
-        background-color: #eeeeee;
-        padding: 0
-	}
+    background-color: #eeeeee;
+    padding: 0
+}
 
 
 .card ul{
@@ -765,7 +769,7 @@ select {
 }
 .fenye {
     float: right;
-        padding: 20px 0;
+    padding: 20px 0;
 }
 .fenye input {
     width: 3em;

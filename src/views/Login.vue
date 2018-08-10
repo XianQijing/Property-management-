@@ -50,7 +50,11 @@
 			sumbitLogin() {
 				var remember = document.getElementById('remember')
 				if(this.phone == "" || this.password == "") {
-					alert("请输入用户名或密码")
+					// alert("请输入用户名或密码")
+					this.$message({
+						message: '请输入用户名或密码',
+						type: 'error'
+					})
 				} else {
 					/*接口请求*/
 					this.$ajax.post(url + 'login/login_in', qs.stringify({
@@ -62,7 +66,7 @@
 						
 						/*接口的传值是(-1,该用户不存在),(0,密码错误)，同时还会检测管理员账号的值*/
 						if(res.status === 200) {
-							console.log(res.data)
+							// console.log(res.data)
 							this.tishi = "登录成功"
 							this.showTishi = true
 							this.$router.push('/helloWorld')

@@ -14,8 +14,7 @@
 								    <!-- <router-view class="householdDetail"></router-view> -->
 								</div>
 								<!-- <button class="delect" id="delect">迁出</button> -->
-								<el-table :data="base" style="width: 100%" @selection-change="handleSelectionChange">
-									<el-table-column type="selection" width="55"></el-table-column>
+								<el-table :data="base" style="width: 100%">
 									<el-table-column prop="name" label="姓名" width="180"></el-table-column>
 									<el-table-column prop="phone" label="手机号" width="180"></el-table-column>
 									<el-table-column prop="sexs" label="性别"></el-table-column>
@@ -53,7 +52,7 @@
 									<router-view class="householdDetail"></router-view>
 								</div>
 								<el-table :data="MoveOut" style="width: 100%">
-									<el-table-column type="selection" width="55"></el-table-column>
+									<!-- <el-table-column type="selection" width="55"></el-table-column> -->
 									<el-table-column prop="name" label="姓名" width="140"></el-table-column>
 									<el-table-column prop="phone" label="手机号" width="148"></el-table-column>
 									<el-table-column prop="leaseType" label="租用类型" width="148"></el-table-column>

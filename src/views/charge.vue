@@ -447,41 +447,41 @@ export default {
   //选项卡
   methods: {
     changePosition() {
-      console.log(this.position);
+      // console.log(this.position);
     },
     handleClick(tab, event) {
-      console.log(tab, event);
+      // console.log(tab, event);
     },
     
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       this.pageSize = val;
       this.getCharge();
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       this.currentPage = val;
       this.getCharge();
     },
 
     handleSizeChange1(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       this.pageSize1 = val;
       this.getMeter();
     },
     handleCurrentChange1(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       this.currentPage1 = val;
       this.getMeter();
     },
 
     handleSizeChange2(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       this.pageSize2 = val;
       this.Cost();
     },
     handleCurrentChange2(val) {
-      console.log(`当前页: ${this.currentPage2}`);
+      // console.log(`当前页: ${this.currentPage2}`);
       this.currentPage2 = val;
       this.Cost();
     },
@@ -499,7 +499,7 @@ export default {
         .then(res => {
           this.charge = res.data.data.rows;
           this.totalData = res.data.data.records;
-          console.log(res.data);
+          // console.log(res.data);
         });
     },
     getPayItems(){
@@ -507,7 +507,7 @@ export default {
       
       .then(res =>{
         this.payItems=res.data.data
-        console.log(this.payItems)
+        // console.log(this.payItems)
       })
     },
     getType(){
@@ -515,7 +515,7 @@ export default {
       
       .then(res =>{
         this.types=res.data.data
-        console.log(this.types)
+        // console.log(this.types)
       })
     },
     //删除
@@ -548,7 +548,7 @@ export default {
         (this.addNewOne = false),
           (this.changeOne = true),
           (that.id = this.charge[index].id);
-        console.log(this.id);
+        // console.log(this.id);
         this.news = true;
         if (that.id !== "") {
           this.name = "编辑";
@@ -559,7 +559,7 @@ export default {
               }
             })
             .then(res => {
-              console.log(res);
+              // console.log(res);
               var temp = res.data.data;
               this.add = temp;
               this.add.payItemId = temp.payItemId;
@@ -585,7 +585,7 @@ export default {
       // this.entrydata = {};
       this.entry = true;
       this.name = "编辑"
-      console.log(this.meter[index].id)
+      // console.log(this.meter[index].id)
       this.updatePayMeterId = this.meter[index].id
       this.$ajax.get(url + 'pay/getMeterManagementById',{
               params: {
@@ -593,11 +593,11 @@ export default {
               }
             })
       .then(res =>{
-        console.log(res.data.data.paymentDay);
+        // console.log(res.data.data.paymentDay);
         this.entrydata = res.data.data;
         this.entrydata.houseType=res.data.data.arrList;
         //this.entrydata.time = res.data.data.paymentDay
-        console.log(this.entrydata)
+        // console.log(this.entrydata)
       })
     },
     createPayItem() {
@@ -609,7 +609,10 @@ export default {
       payItemVO.remake = this.add.remarks;
       console.info(payItemVO);
       this.$ajax.post(url + "pay/createPayItemMeter", payItemVO).then(res => {
-        alert("成功");
+        this.$message({
+						message: '成功',
+						type: 'success'
+					})
         this.add == {};
         this.news = false;
       });
@@ -638,7 +641,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -653,7 +656,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.meter = res.data.data.rows;
           this.totalData1 = res.data.data.records;
         });
@@ -663,7 +666,7 @@ export default {
        
        .then(res =>{
         this.charges=res.data.data;
-        console.log(this.charges);
+        // console.log(this.charges);
        });
     },
     //
@@ -679,7 +682,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -696,7 +699,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -713,7 +716,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -730,10 +733,13 @@ export default {
         "currentRead":this.entrydata.currentRead,//止
         "remark":this.entrydata.remark  //备注
       }
-      console.log(payMeterVO)
+      // console.log(payMeterVO)
       this.$ajax.post(url + 'pay/createPayMeter',payMeterVO).then(res => {
         if(res.data.status === 200){
-          alert('成功')
+          this.$message({
+						message: '成功',
+						type: 'success'
+					})
           this.entry = false
         }
       })}else {
@@ -748,10 +754,13 @@ export default {
         "currentRead":this.entrydata.currentRead,//止
         "remark":this.entrydata.remark  //备注
       }
-      console.log(payMeter)
+      // console.log(payMeter)
       this.$ajax.post(url + 'pay/updatePayMeter',payMeter).then(res => {
         if(res.data.status === 200){
-          alert('成功')
+          this.$message({
+						message: '成功',
+						type: 'success'
+					})
           this.entry = false
         }
       })}

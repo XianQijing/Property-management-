@@ -198,9 +198,15 @@ export default {
                 this.form = res.data
                 console.log(this.form);
                  if(res.data=="seccess"){
-                         alert("添加数据成功");
+                     this.$message({
+                        message: '添加数据成功',
+                        type: 'success'
+                    })
                      }else{
-                            alert("失败");
+                        this.$message({
+                            message: '失败',
+                            type: 'error'
+                        })
                      }
             })
         
