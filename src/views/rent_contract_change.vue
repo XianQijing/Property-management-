@@ -208,17 +208,18 @@
                 <el-form ref="form" :model="form" label-width="160px" size="small">
                     <el-col :span="12">
                     <el-form-item label="交付日：">
-                    <el-date-picker v-model="date" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+                    <el-date-picker v-model="form.paymentTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="终止日：">
-                    <el-date-picker v-model="date" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+                    <el-date-picker v-model="form.terminationTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="免租装修期：">
-                    <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="请选择免租开始日期" end-placeholder="请选择免租结束日期" style="width:100%"></el-date-picker>
+                    form.startTime
+                    form.endTime
                     </el-form-item>
                     </el-col>
                 </el-form>
@@ -229,21 +230,21 @@
                 <el-form ref="form" :model="form" label-width="160px" size="small">
                     <el-col :span="12">
                     <el-form-item label="租金：">
-                    <el-input placeholder="请输入内容" v-model="date">
+                    <el-input placeholder="请输入内容" v-model="form.monthlyRent">
                         <template slot="append">元人民币/月</template>
                     </el-input>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="物业管理费：">
-                    <el-input placeholder="请输入内容" v-model="date">
+                    <el-input placeholder="请输入内容" v-model="form.monthlyManagementFee">
                         <template slot="append">元人民币/月</template>
                     </el-input>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="合计：">
-                    <el-input placeholder="请输入内容" v-model="date">
+                    <el-input placeholder="请输入内容" v-model="form.total">
                         <template slot="append">元人民币/月</template>
                     </el-input>
                     </el-form-item>
@@ -256,66 +257,66 @@
                 <el-form ref="form" :model="form" label-width="160px" size="small">
                     <el-col :span="12">
                     <el-form-item label="租赁保证金：">
-                    <el-input placeholder="请输入内容" v-model="date">
+                    <el-input placeholder="请输入内容" v-model="form.leaseCommencementDate">
                         <template slot="append">元</template>
                     </el-input>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="管理费押金：">
-                    <el-input placeholder="请输入内容" v-model="date">
+                    <el-input placeholder="请输入内容" v-model="form.cashPledge">
                         <template slot="append">元</template>
                     </el-input>
                     </el-form-item>
                     </el-col>
                     <el-form-item label="物业管理费：">
                         <el-col :span="6">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                        <el-date-picker type="date" placeholder="选择日期" v-model="form.manageStartTime" style="width: 100%;"></el-date-picker>
                         </el-col>
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.manageEndTime" style="width: 100%;"></el-time-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
-                            <el-input placeholder="请输入内容" v-model="date">
+                            <el-input placeholder="请输入内容" v-model="form.administrativeFee">
                                 <template slot="append">元</template>
                             </el-input>
                         </el-col>
                     </el-form-item>
                     <el-form-item label="租金">
                         <el-col :span="6">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                        <el-date-picker type="date" placeholder="选择日期" v-model="form.rentalStartTime" style="width: 100%;"></el-date-picker>
                         </el-col>
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.rentalEndTime" style="width: 100%;"></el-time-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
-                            <el-input placeholder="请输入内容" v-model="date">
+                            <el-input placeholder="请输入内容" v-model="form.rental">
                                 <template slot="append">元</template>
                             </el-input>
                         </el-col>
                     </el-form-item>
                     <el-form-item label="物业管理费：">
                         <el-col :span="6">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                            <el-date-picker type="date" placeholder="选择日期" v-model="form.managementCostStartTime" style="width: 100%;"></el-date-picker>
                         </el-col>   
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.managementCostEndTime" style="width: 100%;"></el-time-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
-                            <el-input placeholder="请输入内容" v-model="date">
+                            <el-input placeholder="请输入内容" v-model="form.managementCost">
                                 <template slot="append">元</template>
                             </el-input>
                         </el-col>
                     </el-form-item>
                     <el-col :span="12">
                     <el-form-item label="合计：">
-                    <el-input placeholder="请输入内容" v-model="date">
+                    <el-input placeholder="请输入内容" v-model="form.aggregate">
                         <template slot="append">元人民币/月</template>
                     </el-input>
                     </el-form-item>
@@ -385,7 +386,25 @@ export default {
                 big4: '',
             },
             form: {
-                name: ''
+                paymentTime: '',
+                terminationTime: '',
+                startTime: '',
+                endTime: '',
+                monthlyRent: '',
+                monthlyManagementFee: '',
+                total: '',
+                leaseCommencementDate: '',
+                cashPledge: '',
+                manageStartTime: '',
+                manageEndTime: '',
+                administrativeFee: '',
+                rentalStartTime: '',
+                rentalEndTime: '',
+                rental: '',
+                managementCostStartTime: '',
+                managementCostEndTime: '',
+                managementCost: '',
+                aggregate: '',
             },
             date: '',
             rules: {
