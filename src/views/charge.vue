@@ -447,41 +447,34 @@ export default {
   //选项卡
   methods: {
     changePosition() {
-      console.log(this.position);
     },
     handleClick(tab, event) {
       console.log(tab, event);
     },
     
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.pageSize = val;
       this.getCharge();
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.currentPage = val;
       this.getCharge();
     },
 
     handleSizeChange1(val) {
-      console.log(`每页 ${val} 条`);
       this.pageSize1 = val;
       this.getMeter();
     },
     handleCurrentChange1(val) {
-      console.log(`当前页: ${val}`);
       this.currentPage1 = val;
       this.getMeter();
     },
 
     handleSizeChange2(val) {
-      console.log(`每页 ${val} 条`);
       this.pageSize2 = val;
       this.Cost();
     },
     handleCurrentChange2(val) {
-      console.log(`当前页: ${this.currentPage2}`);
       this.currentPage2 = val;
       this.Cost();
     },
@@ -499,7 +492,6 @@ export default {
         .then(res => {
           this.charge = res.data.data.rows;
           this.totalData = res.data.data.records;
-          console.log(res.data);
         });
     },
     getPayItems(){
@@ -507,7 +499,6 @@ export default {
       
       .then(res =>{
         this.payItems=res.data.data
-        console.log(this.payItems)
       })
     },
     getType(){
@@ -515,7 +506,6 @@ export default {
       
       .then(res =>{
         this.types=res.data.data
-        console.log(this.types)
       })
     },
     //删除
@@ -531,7 +521,14 @@ export default {
         })
 
         .then(res => {
-          this.getCharge();
+          if(res.data.status === 200){
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.currentPage = 1
+          this.getCharge()
+          }
         });
     },
     getOptions(){
@@ -548,7 +545,6 @@ export default {
         (this.addNewOne = false),
           (this.changeOne = true),
           (that.id = this.charge[index].id);
-        console.log(this.id);
         this.news = true;
         if (that.id !== "") {
           this.name = "编辑";
@@ -559,7 +555,6 @@ export default {
               }
             })
             .then(res => {
-              console.log(res);
               var temp = res.data.data;
               this.add = temp;
               this.add.payItemId = temp.payItemId;
@@ -585,7 +580,6 @@ export default {
       // this.entrydata = {};
       this.entry = true;
       this.name = "编辑"
-      console.log(this.meter[index].id)
       this.updatePayMeterId = this.meter[index].id
       this.$ajax.get(url + 'pay/getMeterManagementById',{
               params: {
@@ -593,11 +587,9 @@ export default {
               }
             })
       .then(res =>{
-        console.log(res.data.data.paymentDay);
         this.entrydata = res.data.data;
         this.entrydata.houseType=res.data.data.arrList;
         //this.entrydata.time = res.data.data.paymentDay
-        console.log(this.entrydata)
       })
     },
     createPayItem() {
@@ -607,11 +599,16 @@ export default {
       payItemVO.meterId = this.add.meterId;
       payItemVO.payItemMeterName = this.add.name;
       payItemVO.remake = this.add.remarks;
-      console.info(payItemVO);
       this.$ajax.post(url + "pay/createPayItemMeter", payItemVO).then(res => {
-        alert("成功");
+        if(res.data.status === 200){
+          this.$message({
+            message: '编辑成功',
+            type: 'success'
+          });
         this.add == {};
         this.news = false;
+        this.getCharge()
+        }
       });
     },
     //新增收费参数
@@ -638,7 +635,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -653,7 +649,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           this.meter = res.data.data.rows;
           this.totalData1 = res.data.data.records;
         });
@@ -663,7 +658,6 @@ export default {
        
        .then(res =>{
         this.charges=res.data.data;
-        console.log(this.charges);
        });
     },
     //
@@ -679,7 +673,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -696,7 +689,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -713,7 +705,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -730,11 +721,14 @@ export default {
         "currentRead":this.entrydata.currentRead,//止
         "remark":this.entrydata.remark  //备注
       }
-      console.log(payMeterVO)
       this.$ajax.post(url + 'pay/createPayMeter',payMeterVO).then(res => {
         if(res.data.status === 200){
-          alert('成功')
+          this.$message({
+            message: '录入成功',
+            type: 'success'
+          });
           this.entry = false
+          this.getMeter()
         }
       })}else {
       var arr=this.entrydata.houseType;
@@ -748,11 +742,14 @@ export default {
         "currentRead":this.entrydata.currentRead,//止
         "remark":this.entrydata.remark  //备注
       }
-      console.log(payMeter)
       this.$ajax.post(url + 'pay/updatePayMeter',payMeter).then(res => {
         if(res.data.status === 200){
-          alert('成功')
+          this.$message({
+            message: '编辑成功',
+            type: 'success'
+          });
           this.entry = false
+          this.getMeter()
         }
       })}
     },
@@ -821,7 +818,7 @@ export default {
   padding: 0 40px 0 50px;
   width: 99%;
   margin-left: 2px;
-  height: 844px;
+  height: 810px;
 }
 .confirm {
   background-color: #32a8ee;

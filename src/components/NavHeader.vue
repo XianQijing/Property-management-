@@ -3,20 +3,20 @@
     <div class="search">
       <span>当前物业</span>
       <select>
-        <option>卢比克魔方</option>
+        <option>卢比克摩方</option>
       </select>
 
       <div class="sousuo">
         <!--搜索-->
         <form action="" method="post" style="display:inline-block;"></form>
-        <img src="../assets/add.png">
+        <img src="../assets/yonghu.png">
         <!-- <span class="demonstration"></span> -->
-        <el-dropdown trigger="click">
+        <el-dropdown>
           <span class="el-dropdown-link">
             {{name}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-button @click="signOut">登出</el-button>
+            <span @click="signOut"><el-dropdown-item>登出</el-dropdown-item></span>
           </el-dropdown-menu>
         </el-dropdown>
       </div>

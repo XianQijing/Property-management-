@@ -11,8 +11,8 @@
                 </el-form-item>
 
                 <el-form-item label="楼宇：" prop="buildings">
-                   <el-select v-model="addCustomer.buildings" placeholder="请选择楼宇">
-                   <el-option :label="item.namec" :value="item.id" v-for="item in namec" :key="item.id"></el-option>
+                   <el-select v-model="addCustomer.buildings" placeholder="请选择楼宇" style="width:100%">
+                   <el-option :label="item.namec" :value="item.id" v-for="item in builds" :key="item.id" style="width:100%"></el-option>
                    </el-select>
                 </el-form-item>
 
@@ -32,7 +32,7 @@
                 </el-form-item>
 
                 <el-form-item label="租用状态：" prop="renting">
-                   <el-select v-model="addCustomer.renting" placeholder="请选择房屋类型">
+                   <el-select v-model="addCustomer.renting" placeholder="请选择房屋类型" style="width:100%">
                    <el-option label="可租" value="0"></el-option>
                    <el-option label="不可租" value="1"></el-option>
                    <el-option label="已租" value="2"></el-option>
@@ -40,7 +40,7 @@
                 </el-form-item>
 
                 <el-form-item label="预定状态：" prop="reserve">
-                   <el-select v-model="addCustomer.reserve" placeholder="请选择房屋类型">
+                   <el-select v-model="addCustomer.reserve" placeholder="请选择房屋类型" style="width:100%">
                    <el-option label="未预定" value="0"></el-option>
                    <el-option label="已预定" value="1"></el-option>
                    </el-select>

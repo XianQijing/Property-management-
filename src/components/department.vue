@@ -167,7 +167,7 @@
           <div class="upload">
             <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
           </div>
-          <div>{{this.file}}</div>
+          <div>{{this.fileName}}</div>
         </div>
                     
         <div>
@@ -240,20 +240,20 @@
           title="添加外部联系人"
           :visible.sync="contact"
           width="30%">
-          <el-form ref="form" :model="btype" label-width="80px" size="small" class="chuang">
-          <el-form-item label="单位名称:">
+          <el-form ref="form" :model="btype" :rules="rules" label-width="90px" size="small" class="chuang">
+          <el-form-item label="单位名称:" prop="btypeName">
                       <el-input id="btypeName"  placeholder="请输入单位" v-model="btype.btypeName"></el-input>
           </el-form-item>
           <el-form-item label="部门:">
                       <el-input id="type" placeholder="请输入部门" v-model="btype.type"></el-input>
           </el-form-item>
-          <el-form-item label="姓名:">
+          <el-form-item label="姓名:" prop="linkman">
                       <el-input id="linkman" placeholder="请输入姓名" v-model="btype.linkman"></el-input>
           </el-form-item>
           <el-form-item label="职务:">
                       <el-input id="business" placeholder="请输入职务" v-model="btype.business"></el-input>
           </el-form-item>
-          <el-form-item label="联系电话:">
+          <el-form-item label="联系电话:" prop="phone">
                       <el-input id="phone" placeholder="请输入联系电话" v-model="btype.phone"></el-input>
           </el-form-item>
           <el-form-item label="地址:">
@@ -350,6 +350,7 @@ export default {
             children: []
         }];
         return{
+            fileName: '',
             Data: [],
             options: [],
             file:'',
@@ -362,7 +363,7 @@ export default {
             totalDataNumber: 1,//数据的总数,
             pageNoB: 1,
             pageSizeB: 10,
-            pageSizesListB: [1, 2, 3, 4, 5],
+            pageSizesListB: [10, 20, 50, 100],
             totalDataNumberB: 1,//数据的总数,
             // toggle:'',
             zhiyuan:false,
@@ -443,7 +444,18 @@ export default {
             },
             form:{},
             position: '',
-            role:[]
+            role:[],
+            rules: {
+                btypeName: [
+                    { required: true, message: '请输入单位名称', trigger: 'blur' }
+                ],
+                phone: [
+                    { required: true, message: '请输入手机号', trigger: 'blur' }
+                ],
+                linkman: [
+                    { required: true, message: '请输入姓名', trigger: 'blur' }
+                ]
+            }
         }
     },
     components:{
@@ -574,25 +586,69 @@ methods:{
                 this.addbtypeEdit.address = res.data.data.address;
                 this.addbtypeEdit.remark = res.data.data.remark;
                 this.wanglai = true;
+                
 			})
         },
         //职员删除
         deleteRow(index, rows) {
             let that = this;
             that.id = this.tableData[index].id;
-            // console.log(that.id);
-            // rows.splice(index, 1);
-            this.$ajax.post(url + 'user/deleteById',"id="+this.id).then((res) => {
-			})
+            this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'}).then(() => {
+                    this.$ajax.post(url + 'user/deleteById',"id="+this.id).then((res) => {
+                        if(res.data.status === 200){
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            })
+                            this.staff()
+                        }else {
+                            this.$message({
+                                message: '删除失败',
+                                type: 'error'
+                            })
+                        }
+                    })
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
+            
         },
         //往来单位删除
         deleteRowB(index, rows) {
             let that = this;
             that.id = this.tableData1[index].id;
             // console.log(that.id);
-            // rows.splice(index, 1);
-            this.$ajax.post(url + 'btype/delete',"id="+this.id).then((res) => {
-			})
+            this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'}).then(() => {
+                    this.$ajax.post(url + 'btype/delete',"id="+this.id).then((res) => {
+                        if(res.data.status === 200){
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            })
+                            this.Btype()
+                        }else {
+                            this.$message({
+                                message: '删除失败',
+                                type: 'error'
+                            })
+                        }
+                    })
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
+            
         },
         
         //         foo:function (event) {
@@ -608,6 +664,7 @@ methods:{
         // },
     //职员信息
     staff(){
+        // console.log(token)
         this.$ajax.get(url + 'user/findUser',{params:{'page':this.pageNo,'pageSize':this.pageSize}}).then((res) => {
             // console.log(res)
             this.tableData = res.data.data.rows;
@@ -643,7 +700,13 @@ methods:{
         ).then((res) => {
             this.form = res.data
             if (res.data.status === 200) {
-              window.history.go(0)
+                this.$message({
+                        message: '添加成功',
+                        type: 'success'
+                    });
+            //   window.history.go(0)
+            this.add = false
+            this.staff()
             }
             // console.log('this.form')
         })
@@ -676,19 +739,27 @@ methods:{
     },
     //添加往来单位
     addBtype(){
-       var btype={};
-       btype.btypeName =this.btype.btypeName;
-       btype.type = this.btype.type;
-       btype.linkman = this.btype.linkman;
-       btype.business = this.btype.business;
-       btype.phone = this.btype.phone;
-       btype.address = this.btype.address;
-       btype.remark = this.btype.remark;
-       this.$ajax.post(url+"btype/insert",btype).then((res) => {
-           this.form = res.data
-        //    console.log('this.form')
-           this.contact = false
-       })
+        if(this.btype.btypeName && this.btype.linkman && this.btype.phone){
+            var btype={};
+            btype.btypeName =this.btype.btypeName;
+            btype.type = this.btype.type;
+            btype.linkman = this.btype.linkman;
+            btype.business = this.btype.business;
+            btype.phone = this.btype.phone;
+            btype.address = this.btype.address;
+            btype.remark = this.btype.remark;
+            this.$ajax.post(url+"btype/insert",btype).then((res) => {
+                if(res.data.status === 200){
+                    this.$message({
+                        message: '添加成功',
+                        type: 'success'
+                    });
+                    this.form = res.data
+                    this.Btype()
+                    this.contact = false
+                }
+            })
+        }
     },
     //编辑往来单位
         editBtype(){
@@ -704,9 +775,15 @@ methods:{
             btype.remark=this.addbtypeEdit.remark;
             this.$ajax.post(url+'btype/update',btype
             ).then((res) => {
-                this.form = res.data
-                console.log('this.form')
-                this.wanglai = false;
+                if(res.data.status === 200){
+                    this.$message({
+                        message: '编辑成功',
+                        type: 'success'
+                    });
+                    this.form = res.data
+                    this.Btype()
+                    this.wanglai = false;
+                }
             })
         },
     append(data) {
@@ -737,7 +814,32 @@ methods:{
                 let num = []
                 for (let i = 0;i<comments.length;i++) {
                 num.push(comments[i].id)
-                this.$ajax.post(url + "user/delete","id="+num)
+                this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'}).then(() => {
+                    this.$ajax.post(url + "user/delete","id="+num).then(res=>{
+                    if(res.data.status === 200){
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        })
+                        this.staff()
+                    }else {
+                            this.$message({
+                                message: '删除失败',
+                                type: 'error'
+                            })
+                        }
+                    })
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
+                
+            
             }
             // console.log(num)
         },
@@ -747,7 +849,32 @@ methods:{
             let num = []
             for (let i = 0;i<comments.length;i++) {
                 num.push(comments[i].id)
-                this.$ajax.post(url + "btype/deleteAll","id="+num)
+                this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'}).then(() => {
+                    this.$ajax.post(url + "btype/deleteAll","id="+num).then(res => {
+                    if (res.data.status === 200){
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        })
+                        this.Btype()
+                    
+                        }else {
+                            this.$message({
+                                message: '删除失败',
+                                type: 'error'
+                            })
+                        }
+                    })
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
+                
             }
             console.log(num)
         },
@@ -755,7 +882,7 @@ methods:{
          getPath(e){
             // console.log(e.target.value)
             
-            // this.path = e.target.value;
+            this.fileName = e.currentTarget.files[0].name
             this.file = e.currentTarget.files[0]//百度是没有name的
             
             // console.log(this.src)
@@ -766,7 +893,17 @@ methods:{
             formData.append('file', this.file)
             formData.append('status', this.radio)
             this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                // console.log(res)
+                if(res.data.status === 200) {
+                    this.$message({
+                        message: '成功',
+                        type: 'success'
+                    })
+                }else{
+                    this.$message({
+                        message: '失败',
+                        type: 'error'
+                    })
+                }
             })
         }
     }
@@ -859,7 +996,7 @@ input{
     padding: 0 40px 0 50px;
     width: 99%;
     margin-left: 2px;
-
+    height: 810px;
 }
 
 .fenye button {
