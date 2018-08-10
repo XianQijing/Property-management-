@@ -414,7 +414,7 @@
 				//分页数据
 				name:'添加短信模板',
 				pageNo: 1,
-                pageSize: 2,
+                pageSize: 10,
                 pageSizesList: [10,20, 30, 40, 50],
                 tableData: [],//返回的结果集合
 				totalDataNumber: 400,//base数据的总数,
@@ -428,35 +428,35 @@
 				totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
 
 				pageNoMoveOut: 1,
-                pageSizeMoveOut: 2,
+                pageSizeMoveOut: 10,
 				pageSizesListMoveOut: [10,20, 30, 40, 50],
 
 				pageNoTemplate: 1,
-                pageSizeTemplate: 2,
+                pageSizeTemplate: 10,
 				pageSizesListTemplate: [10,20, 30, 40, 50],
 				
 				pageNoSended: 1,
-                pageSizeSended: 2,
+                pageSizeSended: 10,
 				pageSizesListSended: [10,20, 30, 40, 50],
 				
 				pageNoInandcome: 1,
-                pageSizeInandcome: 2,
+                pageSizeInandcome: 10,
 				pageSizesListInandcome: [10,20, 30, 40, 50],
 				
 				pageNoRedecorated: 1,
-                pageSizeRedecorated: 2,
+                pageSizeRedecorated: 10,
 				pageSizesListRedecorated: [10,20, 30, 40, 50],
 				
 				pageNoServer: 1,
-                pageSizeServer: 2,
+                pageSizeServer: 10,
 				pageSizesListServer: [10,20, 30, 40, 50],
 				
 				pageNoCustomer: 1,
-                pageSizeCustomer: 2,
+                pageSizeCustomer: 10,
 				pageSizesListCustomer: [10,20, 30, 40, 50],
 				
 				pageNoCustomerMsg: 1,
-                pageSizeCustomerMsg: 2,
+                pageSizeCustomerMsg: 10,
                 pageSizesListCustomerMsg: [10,20, 30, 40, 50],
 				
 				tianjia:false,
@@ -694,8 +694,8 @@
 				let that = this;
 				that.id = this.base[index].id;
 				that.roomid = this.base[index].roomid;
-				rows.splice(index, 1);
-				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+				// rows.splice(index, 1);
+				this.$confirm('此操作将永久迁出, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
