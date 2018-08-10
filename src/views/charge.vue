@@ -269,18 +269,18 @@ export default {
       dialogVisible: false,
       //分页数据
       currentPage: 1,
-      pageSize: 2,
-      pageSizes: [1, 2, 3, 4, 5],
+      pageSize: 10,
+      pageSizes: [10, 20, 30, 40, 50],
       totalData: 400, //customerMsg数据的总数,
       //仪表管理
       currentPage1: 1,
-      pageSize1: 2,
-      pageSizes1: [1, 2, 3, 4, 5],
+      pageSize1: 10,
+      pageSizes1: [10, 20, 30, 40, 50],
       totalData1: 400, //customerMsg数据的总数,
       //应收费用
       currentPage2: 1,
-      pageSize2: 2,
-      pageSizes2: [1, 2, 3, 4, 5],
+      pageSize2: 10,
+      pageSizes2: [10, 20, 30, 40, 50],
       totalData2: 400, //customerMsg数据的总数,
       addNewOne: true,
       changeOne: false,
@@ -512,7 +512,12 @@ export default {
     chargeDelete(index, rows) {
       let that = this;
       that.id = this.charge[index].id;
-      rows.splice(index, 1);
+      // rows.splice(index, 1);
+      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
       this.$ajax
         .delete(url + "pay/deletePayItemMeter", {
           params: {
@@ -528,7 +533,18 @@ export default {
           })
           this.currentPage = 1
           this.getCharge()
+          }else{
+            this.$message({
+            message: '删除失败',
+            type: 'error'
+          })
           }
+        });
+         }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
     },
     getOptions(){
@@ -729,6 +745,11 @@ export default {
           });
           this.entry = false
           this.getMeter()
+        }else{
+          this.$message({
+            message: this.data.msg,
+            type: 'error'
+          });
         }
       })}else {
       var arr=this.entrydata.houseType;
