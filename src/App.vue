@@ -24,6 +24,7 @@ body {
 }
 #app {
   height: 100%;
+  background: #eeeeee
 }
 /* @media (min-width: 1200px)
 .container {

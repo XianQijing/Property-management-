@@ -94,7 +94,12 @@
 									<router-view class="rent_contract_change"></router-view>
 								    <!-- <router-view class="householdDetail"></router-view> -->
 								</div>
-								<button class="add" @click="houseSource('0','0','add')">导入合同</button>
+								<button class="add" @click="houseSource('0','0','add')">新增合同</button>
+                                <button class="add" @click="isShow = true">导入合同</button>
+                                <button class="add">导出合同</button>
+                                 <div class="fenye" style="display:inline-block">
+                                     <button><img src=".././assets/down.png" style="width:16px;">模板</button>
+                                 </div>
 								<el-table :data="tableDataContract" style="width: 100%">
 									<el-table-column prop="owner.name" label="客户姓名" width="180"></el-table-column>
 									<el-table-column prop="owner.phone" label="联系方式" width="180"></el-table-column>
@@ -113,7 +118,7 @@
 												<el-dropdown-menu slot="dropdown">
 													<span  @click="houseSource(scope.$index,tableDataContract,'watch')"><el-dropdown-item>查看</el-dropdown-item></span>
 													<span  @click="houseSource(scope.$index,tableDataContract,'edit')"><el-dropdown-item>修改</el-dropdown-item></span>
-                                                    <el-dropdown-item>导出</el-dropdown-item>
+                                                    <span @click="out(scope.$index,tableDataContract)"><el-dropdown-item>导出</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
@@ -144,12 +149,12 @@
                 :visible.sync="dialogVisible"
                 width="30%">
 
-                <el-form :model="shuru" ref="shuru" label-width="130px" class="demo-shuru" size="mini" :disabled="edit">
+                <el-form :model="shuru" ref="shuru" :rules="rules" label-width="130px" class="demo-shuru" size="mini" :disabled="edit" style="margin:0 7% 0 0">
                 
-                    <el-form-item label="客户姓名:">
-                    <el-input v-model="upload.namec" :placeholder="shuru.namec"></el-input>
+                    <el-form-item label="客户姓名:" prop="namec">
+                    <el-input v-model="upload.namec" placeholder="请输入客户姓名"></el-input>
                     </el-form-item>
-                    <el-form-item label="联系方式:">
+                    <el-form-item label="联系方式:" prop="phone">
                     <el-input v-model="upload.phone" :placeholder="shuru.phone"></el-input>
                     </el-form-item>
                     <el-form-item label="客户类别:">
@@ -169,7 +174,12 @@
                     <el-input v-model="upload.visitingWay" :placeholder="shuru.visitingWay"></el-input>
                     </el-form-item>
                     <el-form-item label="来访时间:" >
-                    <el-input v-model="upload.visitTime" :placeholder="shuru.visitTime"></el-input>
+                        <el-date-picker
+                            v-model="upload.visitTime"
+                            type="datetime"
+                            placeholder="选择日期时间" style="width:100%">
+                        </el-date-picker>
+                    <!-- <el-input v-model="upload.visitTime" :placeholder="shuru.visitTime"></el-input> -->
                     </el-form-item>
                     <el-form-item label="是否已看房:">
                     <el-radio v-model="upload.seeHouse" label="0">否</el-radio>
@@ -189,6 +199,57 @@
                 </span>
 
             </el-dialog>
+
+            <el-dialog
+                title="导入合同"
+                :visible.sync="isShow"
+                width="30%">
+                <div class="put">
+                <p>导入设置:</p>
+                <form>
+                    <ul class="shuju">
+                    <li>
+                        <el-radio v-model="radio" label="0">重复数据不导入</el-radio>
+                    </li> 
+                    <li>
+                        <el-radio v-model="radio" label="1">重复数据覆盖</el-radio>
+                    </li>
+                    </ul>
+                </form>
+                <div class="upload">
+                    <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
+                </div>
+                <div>{{this.file.name}}</div>
+                </div>
+                            
+                <div>
+                <p>如何导入通讯录</p>
+                <ul class="liebiao">
+                    <li class="how">数据导入采用Excel表格导入</li>
+                    <li>1、不支持Excel公式导入，尽量去除所有文字和表格样式</li>
+                    <li>2、只支持工作表1导入</li>
+                    <li>3、请点击下载微小区实例</li>
+                    <li>4、如需导入时间，时间格式必须为YYYY-MM-DD(例如：2016-01-01)</li>
+                    <li class="how">必须项目(必须项目不能为空且不能重复)</li>
+                    <li>姓名</li>
+                    <li>手机号（必须是手机格式且不能重复）</li>
+                    <li>密码不得带‘.’（小数点）</li>
+                    <li>部门（必须与组织架构对应）</li>
+                    <li>选填项目（选填项目可以为空）</li>
+                    <li>微信（填写员工微信号）</li>
+                    <li>昵称（填写员工昵称）</li>
+                    <li>职位（填写员工职位）</li>
+                    <li>备注</li>
+                </ul>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="isShow = false">取 消</el-button>
+                    <el-button type="primary" @click="submit">确 定</el-button>
+                </span>
+                <!-- <div class="footer1">
+                <button class="confirm" @click="submit">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
+                </div> -->
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -201,6 +262,10 @@ export default {
     name:'rent',
     data(){
         return{
+            isShow: false,
+            radio: '0',
+            file: '',
+            fileName:'',
             tanchuang:'查看商机',
             edit:true,
             dialogVisible: false,
@@ -212,21 +277,21 @@ export default {
             //房源管理
 			pageNo: 1,
             pageSize: 10,
-            pageSizesList: [1, 2, 3, 4, 5],
+            pageSizesList: [10, 20, 30, 40, 50],
             tableData: [],//返回的结果集合
             totalDataNumber: 400,//数据的总数,
             
             //商机管理
 			pageNoBusiness: 1,
             pageSizeBusiness: 10,
-            pageSizesListBusiness: [1, 2, 3, 4, 5],
+            pageSizesListBusiness: [10, 20, 30, 40, 50],
             tableDataBusiness: [],//返回的结果集合
             totalDataNumberBusiness: 400,//数据的总数,
             
             //合同管理
 			pageNoContract: 1,
             pageSizeContract: 10,
-            pageSizesListContract: [1, 2, 3, 4, 5],
+            pageSizesListContract: [10, 20, 30, 40, 50],
             tableDataContract: [],//返回的结果集合
             totalDataNumberContract: 400,//数据的总数,
             precinct:1,
@@ -255,6 +320,14 @@ export default {
                 visitTime: '',
                 seeHouse: '0',
                 comment:''
+            },
+            rules:{
+                namec: [
+                        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+                    ],
+                phone: [
+                    { required: true, message: '请输入联系方式', trigger: 'blur' },
+                ],
             }
         }
     },
@@ -405,6 +478,7 @@ export default {
 
         //添加商机
         addChange(msg){
+            if(this.upload.namec&&this.upload.phone){
             var prospectiveCustomer={}
             prospectiveCustomer.namec=this.upload.namec
             prospectiveCustomer.phone=this.upload.phone
@@ -417,7 +491,10 @@ export default {
                 this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',
                     prospectiveCustomer
                 ).then(res => {
-                    alert('成功')
+                    this.$message({
+                        message: '添加成功',
+                        type: 'success'
+                    });
                     this.dialogVisible = false
                 })
             }else if(this.msg === "gengxin"){
@@ -433,11 +510,25 @@ export default {
                         "comment":this.upload.comment
                     }
                 ).then(res => {
-                    alert('更新成功')
+                    this.$message({
+                        message: '修改成功',
+                        type: 'success'
+                    });
                     this.dialogVisible = false
                 })
             }else{
                 this.dialogVisible = false
+            }
+            }else if(!this.upload.namec){
+                this.$message({
+                    message: '请输入客户姓名',
+                    type: 'warning'
+                });
+            }else{
+                this.$message({
+                    message: '请输入联系方式',
+                    type: 'warning'
+                });
             }
         },
         //房源的添加和修改
@@ -463,6 +554,45 @@ export default {
                     this.className = "active"
                 }
             }
+        },
+        //导入合同
+        getPath(e) {
+            this.file = e.currentTarget.files[0]
+        },
+        submit() {
+            var formData = new FormData()
+            formData.append('file',this.file)
+            formData.append('status',this.radio)
+            this.$ajax.post(url + 'contract/excelImport',formData).then(res => {
+                // console.log(res)
+                if(res.data.status === 200){
+                    this.$message({
+                        message: '导入成功',
+                        type: 'success'
+                    });
+                    this.isShow = false
+                    this.flndAllContract()
+                }
+            })
+        },
+
+        //导出-个人
+        out(index,rows) {
+            let id = this.tableDataContract[index].id
+            this.$ajax.get(url + 'contract/turnDown/'+id).then(res => {
+                console.log(res.data)
+                if (res.data.status === 200){
+                    this.$message({
+                        message: '导出成功',
+                        type: 'success'
+                    });
+                }else{
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'error'
+                    });
+                }
+            })
         }
         
     },
@@ -515,7 +645,7 @@ export default {
 		padding: 0 40px 0 50px;
 		width: 99%;
 		margin-left: 2px;
-		height: 844px;
+        height: 810px;
 	}
 
     .fenye button{
@@ -547,5 +677,61 @@ export default {
 .active {
   border: 1px solid #32a8ee !important;
   color: #32a8ee !important;
+}
+
+.footer1{
+    height: 30px;
+    margin: 0 !important;
+}
+
+.file {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #eeeeee;
+    border-radius: 4px;
+    padding: 4px 12px;
+    color: #999999;
+    text-decoration: none;
+    text-indent: 0;
+    line-height: 20px;
+    margin: 0!important;
+}
+.file input {
+    position: absolute;
+    opacity: 0;
+    width: 40px;
+}
+.file:hover{
+    border: 1px solid #777777;
+    color: #777777;
+}
+.put {
+    margin:58px 0px 60px 29%!important;
+}
+.put ul {
+    padding: 0
+}
+.put p{
+    display: inline-block;
+    vertical-align: top;
+}
+.put form {
+    display: inline-block;
+}
+.yuangong {
+    margin: 18px 5px;
+    font-size: 16px;
+    border-bottom: 1px solid #eeeeee;
+}
+.upload {
+    margin: 24px 0 0 0!important
+}
+.liebiao {
+    font-size: 6px;
+    line-height: 20px;
+}
+
+ul li {
+    list-style: none;
 }
 </style>
