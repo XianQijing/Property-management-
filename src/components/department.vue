@@ -162,7 +162,7 @@
           <div class="upload">
             <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
           </div>
-          <div>{{this.file}}</div>
+          <div>{{this.fileName}}</div>
         </div>
                     
         <div>
@@ -654,7 +654,17 @@ export default {
             formData.append('path', this.file)
             formData.append('status', this.radio)
             this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                // console.log(res)
+                if(res.data.status === 200) {
+                    this.$message({
+                        message: '成功',
+                        type: 'success'
+                    })
+                }else{
+                    this.$message({
+                        message: '失败',
+                        type: 'error'
+                    })
+                }
             })
         }
     }
@@ -747,7 +757,7 @@ input{
     padding: 0 40px 0 50px;
     width: 99%;
     margin-left: 2px;
-
+    height: 810px;
 }
 
 .fenye button {

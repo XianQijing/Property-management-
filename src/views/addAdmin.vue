@@ -3,28 +3,28 @@
     <h3>{{name}}小区</h3>
     <div class="tianjia">
       <div class="input">
-        <el-form :model="ruleForm" ref="ruleForm" label-width="130px" class="demo-ruleForm" size='small' >
+        <el-form :model="ruleForm" ref="ruleForm" label-width="130px" :rules="rules" class="demo-ruleForm" size='small' >
           <div id="fenkai">
-            <el-form-item label="小区名称：">
+            <el-form-item label="小区名称：" prop="namec">
               <el-input v-model="ruleForm.namec"></el-input>
             </el-form-item>
-            <el-form-item label="所在地区：">
+            <el-form-item label="所在地区：" prop="region">
               <el-cascader  :options="options" v-model="ruleForm.region" @change="handleChange"></el-cascader>
             </el-form-item>
-            <el-form-item label="详细地址：">
+            <el-form-item label="详细地址：" prop="site">
               <el-input v-model="ruleForm.site"></el-input>
             </el-form-item>
-            <el-form-item label="客服电话：">
+            <el-form-item label="客服电话：" prop="serviceTel">
               <el-input v-model="ruleForm.serviceTel"></el-input>
             </el-form-item>
-            <el-form-item label="负责人：">
+            <el-form-item label="负责人：" prop="principal">
               <el-input v-model="ruleForm.principal"></el-input>
             </el-form-item>
-            <el-form-item label="负责人电话：">
+            <el-form-item label="负责人电话：" prop="principalNumber">
               <el-input v-model="ruleForm.principalNumber"></el-input>
             </el-form-item>
-            <el-form-item label="楼宇数量">{{ruleForm.building}}
-              <el-input v-model="ruleForm.building"></el-input>
+            <el-form-item label="楼宇数量" >
+              <el-input v-model="ruleForm.building" :disabled="edit"></el-input>
             </el-form-item>
           </div>
           <div id="fenkai1">
@@ -54,12 +54,13 @@
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="车库数：">
-              <el-input v-model="ruleForm.garage">
+            <el-form-item label="车库数：" >
+              <el-input v-model="ruleForm.garage" :disabled="edit">
+                <template slot="append">个</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="车位数">
-              <el-input v-model="ruleForm.carSeatNumber">
+            <el-form-item label="车位数：">
+              <el-input v-model="ruleForm.carSeatNumber" :disabled="edit">
                   <template slot="append">个</template>
               </el-input>
             </el-form-item>
@@ -81,6 +82,7 @@ export default {
     return{
       name:'',
       // ww:false,
+      edit:true,
       ruleForm: {
         namec:'',
         region:[],
@@ -95,7 +97,28 @@ export default {
         greenArea:'',
         parkingArea:'',
         garage:'',
-        carSeatNumber:''
+        carSeatNumber:'',
+
+      },
+      rules: {
+        namec: [
+          { required: true, message: '请输入小区名称', trigger: 'blur' }
+        ],
+        principal: [
+          { required: true, message: '请输入负责人', trigger: 'blur' }
+        ],
+        principalNumber: [
+          { required: true, message: '请输入负责人电话', trigger: 'blur' }
+        ],
+        site: [
+          { required: true, message: '请输入详细地址', trigger: 'blur' }
+        ],
+        serviceTel: [
+          { required: true, message: '请输入客服电话', trigger: 'blur' }
+        ],
+        region: [
+          { required: true, message: '请选择地区', trigger: 'change' }
+        ]
       },
       options: [],
     }
@@ -109,12 +132,15 @@ export default {
     // console.log(this.$route.query.msg)
     if (this.$route.query.msg === "tianjia") {
       this.ruleForm = {}
+      this.edit = false
     } else if (this.$route.query.msg === "bianji") {
       // console.log(this.id)
+      this.edit = true
       // GET /precinct/flndById/{id}/{page}/{pageSize
       this.$ajax.get(url+ 'precinct/flndById/' + this.$route.query.id).then(res => {
         console.log(res.data.data)
         this.ruleForm = res.data.data
+        
         this.ruleForm.region = res.data.data.region.split(',').map(Number)
         this.ruleForm.garage=res.data.data.cellParkingRelationship.garage;
         this.ruleForm.carSeatNumber=res.data.data.cellParkingRelationship.carSeatNumber;
@@ -167,6 +193,7 @@ export default {
             this.open2()
             window.history.go(-1)
           }else{
+            console.log(res)
             this.$message.error('错了哦，这是一条错误消息');
           }
         })

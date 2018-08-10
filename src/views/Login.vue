@@ -4,18 +4,18 @@
 		<!--登录-->
 		<div class="col-md-12">
 			<div class="main">
-			<div><h3 class="welcome">欢迎登录</h3><h4 class="mofang">魔方物业管理系统</h4></div>
+			<div><h3 class="welcome">欢迎登录</h3><h4 class="mofang">摩方物业管理系统</h4></div>
 			<form>
 				<div class="input">
 					<input type="text" placeholder="请输入手机号" id="ss" v-model="phone">
 					<p v-show="showTishi" class="sh">{{tishi}}</p>
-					<input type="password" placeholder="请输入密码" id="ww" v-model="password">
+					<input type="password" placeholder="请输入密码" id="ww" v-model="password" @keyup.enter="sumbitLogin">
 				</div>
 				<div class="password">
 					<span>
 						<input type="checkbox"  id="remember" v-model="remember" @keyup.enter.native="sumbitLogin()"><span class="yes">记住密码</span>
 					</span>
-					<a link=""><span>忘记密码</span></a>
+					<!-- <a link=""><span>忘记密码</span></a> -->
 				</div>
 			</form>
 			<button type="sumbit" class="confirm" @click="sumbitLogin">登录</button>
@@ -115,7 +115,7 @@
 		background-repeat:no-repeat;
 		z-index: 99999999;
 		width: 100%;
-
+		height: 100%;
 	}
 	
 	.main {

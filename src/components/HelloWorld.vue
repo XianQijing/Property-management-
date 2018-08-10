@@ -515,12 +515,12 @@ html {
 
 .col-md-4 {
     position: relative;
-    height: 43.65vh;
+    height: 43.4vh;
     border-right: 5px solid #eeeeee;
 }
 .col-md-8 {
     position: relative;
-    height: 43.65vh;
+    height: 43.4vh;
 }
 
 .new {
