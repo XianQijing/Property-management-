@@ -19,7 +19,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="租赁时间:">
-                        <el-date-picker v-model="detail.startTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:100%" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                        <el-date-picker v-model="detail.startTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:100%" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
                         <!-- <el-input v-model="detail.startTime" :placeholder="input.startTime" style="width:44%"></el-input><span style="color:#c0c4cc"> —— </span>
                         <el-input v-model="detail.endtime" :placeholder="input.endtime" style="width:44%"></el-input> -->
                     </el-form-item>
@@ -50,7 +50,7 @@
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="合计:">
-                            <el-input v-model="detail.monthlyRent">
+                            <el-input v-model="form.monthlyRent">
                                 <template slot="append">月/元</template>
                             </el-input>
                         </el-form-item>
@@ -66,14 +66,14 @@
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="合计:">
-                            <el-input v-model="detail.monthlyManagementFee">
+                            <el-input v-model="form.monthlyManagementFee">
                                 <template slot="append">月/元</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     </el-row>
                     <el-form-item label="租金和物业费合计:">
-                            <el-input v-model="detail.total">
+                            <el-input v-model="form.total">
                                 <template slot="append">月/元</template>
                             </el-input>
                         </el-form-item>
@@ -124,6 +124,7 @@
                             <el-date-picker
                                 v-model="detail.paymentTime"
                                 type="date"
+                                format="yyyy-MM-dd" value-format="yyyy-MM-dd"
                                 placeholder="选择日期"
                                 style="width:100%">
                             </el-date-picker>
@@ -152,11 +153,11 @@
                         </el-form-item>
                          <el-form-item label="免租时间">
                             <el-col :span="11">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="detail.budgeStartTime" style="width: 100%;"></el-date-picker>
+                            <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.startTime" style="width: 100%;"></el-date-picker>
                             </el-col>
                             <el-col class="line" :span="2">-</el-col>
                             <el-col :span="11">
-                            <el-time-picker type="fixed-time" placeholder="选择时间" v-model="detail.budgeEndTime" style="width: 100%;"></el-time-picker>
+                            <el-time-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.endTime" style="width: 100%;"></el-time-picker>
                             </el-col>
                         </el-form-item>
                 </el-col>
@@ -208,18 +209,19 @@
                 <el-form ref="form" :model="form" label-width="160px" size="small">
                     <el-col :span="12">
                     <el-form-item label="交付日：">
-                    <el-date-picker v-model="form.paymentTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+                    <el-date-picker v-model="form.paymentTime" type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" style="width:100%"></el-date-picker>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="终止日：">
-                    <el-date-picker v-model="form.terminationTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+                    <el-date-picker v-model="form.terminationTime" type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" style="width:100%"></el-date-picker>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="免租装修期：">
-                    form.startTime
-                    form.endTime
+                        <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.startTime" style="width: 100%;"></el-date-picker>
+                        <el-col class="line" :span="3">至</el-col>
+                        <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.endTime" style="width: 100%;"></el-date-picker>
                     </el-form-item>
                     </el-col>
                 </el-form>
@@ -263,19 +265,20 @@
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                    <el-form-item label="管理费押金：">
-                    <el-input placeholder="请输入内容" v-model="form.cashPledge">
-                        <template slot="append">元</template>
-                    </el-input>
-                    </el-form-item>
+                        <el-form-item label="管理费押金：">
+                        <el-input placeholder="请输入内容" v-model="form.cashPledge">
+                            <template slot="append">元</template>
+                        </el-input>
+                        </el-form-item>
                     </el-col>
+                    <el-col :span="24">
                     <el-form-item label="物业管理费：">
                         <el-col :span="6">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.manageStartTime" style="width: 100%;"></el-date-picker>
+                        <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.manageStartTime" style="width: 100%;"></el-date-picker>
                         </el-col>
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.manageEndTime" style="width: 100%;"></el-time-picker>
+                        <el-time-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.manageEndTime" style="width: 100%;"></el-time-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
@@ -284,13 +287,14 @@
                             </el-input>
                         </el-col>
                     </el-form-item>
+                    </el-col>
                     <el-form-item label="租金">
                         <el-col :span="6">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.rentalStartTime" style="width: 100%;"></el-date-picker>
+                        <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.rentalStartTime" style="width: 100%;"></el-date-picker>
                         </el-col>
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.rentalEndTime" style="width: 100%;"></el-time-picker>
+                        <el-time-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.rentalEndTime" style="width: 100%;"></el-time-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
@@ -301,11 +305,11 @@
                     </el-form-item>
                     <el-form-item label="物业管理费：">
                         <el-col :span="6">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="form.managementCostStartTime" style="width: 100%;"></el-date-picker>
+                            <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.managementCostStartTime" style="width: 100%;"></el-date-picker>
                         </el-col>   
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.managementCostEndTime" style="width: 100%;"></el-time-picker>
+                        <el-time-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.managementCostEndTime" style="width: 100%;"></el-time-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
@@ -351,6 +355,9 @@ export default {
             nextUp:true,
             nextDown: false,
             detail: {
+                owner: {
+                    address: ''
+                },
                 id: "",
                 startTime: [],
                 tenantry: '',
@@ -435,8 +442,8 @@ export default {
         this.id = this.$route.query.id
         this.message = this.$route.query.msg
 
-        this.$ajax.get(url + 'room/flndAll/1/10').then(res => {
-            this.options = res.data.data.rows
+        this.$ajax.get(url + '/room/flndAllRoom').then(res => {
+            this.options = res.data.data
         })
         if (this.$route.query.msg === "watch"){
             this.addOne = false,
@@ -491,7 +498,7 @@ export default {
                 });
             }else{
                 var data2 = {
-                        "address":this.detail.owner.address,
+                        "address":this.detail.site,
                         "afterTheRent":this.detail.afterTheRent,
                         "amplification":this.detail.riseMoney,
                         "cashDeposit":this.detail.cashDeposit,
@@ -523,52 +530,66 @@ export default {
 
         },
         sumbit(){
-            // 接口 /contract/addContract
+            // 交付时间： paymentTime
+            // 合同终止时间： terminationTime
+            // 租赁时间： startTime   endTime
 
-            // 租金 rental
-            // 管理费 administrativeFee
-            // 月租金：monthlyRent
-            // 月物业管理费：monthlyManagementFee
-            // 租金物业费合计：total
-            // 合同终止时间：terminationTime
-            // 租赁保证金：leaseCommencementDate
+            // 月租金： monthlyRent
+            // 月物业管理费： monthlyManagementFee
+            // 租金物业费合计： total
+            
+            // 租赁保证金： leaseCommencementDate
+            // cashPledge 物业管理费押金
             // 物业管理费开始日期 manageStartTime
             // 物业管理费结束日期 manageEndTime
+            // 管理费 administrativeFee
             // 租金开始时间 rentalStartTime
             // 租金结束时间 rentalEndTime
+            // 租金 rental
             // 管理费开始时间 managementCostStartTime
             // 合同中的第二次管理费结束时间 managementCostEndTime
             // 合同中的第二次管理费 managementCost
             // 合计 aggregate
             var contractVO = {
-                "address":this.detail.owner.address,
+
+                "site":this.detail.site,
                 "afterTheRent":this.detail.afterTheRent,
-                "amplification":this.detail.riseMoney,
+                "amplification":this.detail.amplification,
                 "cashDeposit":this.detail.cashDeposit,
-                "cashPledge":this.detail.cashPledge,
-                "comment":this.detail.comment,
-                "name":this.detail.owner.name,
-                "phone":this.detail.owner.phone,
+                "tenantry":this.detail.tenantry,
                 "room":this.detail.room,
-                "strataFee":this.detail.strataFee,
-                "total":this.detail.total,
-                "startTime":this.detail.startTime[0],
-                "endTime":this.detail.startTime[1],
-                // "paymentAmount":this.detail.rooms.pricing,
-                "rentFreeTime":this.detail.rentFreeTime,
-                // "rooms.coveredArea":this.detail.building.codes,
-                // "rooms.roomType":this.detail.rooms.useId,
-                "paymentTime":this.detail.paymentTime,
-                "payTime":this.detail.payTime,
-                "comment":this.detail.comment
+                "phone":this.detail.phone,
+                "use": this.detail.use,
+                "comment":this.detail.comment,
+                "paymentTime": this.form.paymentTime,
+                "terminationTime": this.form.terminationTime,
+                "startTime": this.form.startTime,
+                "endTime": this.form.endTime,
+                "monthlyRent": this.form.monthlyRent,
+                "monthlyManagementFee": this.form.monthlyManagementFee,
+                "total": this.form.total,
+                "leaseCommencementDate": this.form.leaseCommencementDate,
+                "cashPledge": this.form.cashPledge,
+                "manageStartTime": this.form.manageStartTime,
+                "manageEndTime": this.form.manageEndTime,
+                "administrativeFee": this.form.administrativeFee,
+                "rentalStartTime": this.form.rentalStartTime,
+                "rentalEndTime": this.form.rentalEndTime,
+                "rental": this.form.rental,
+                "managementCostStartTime": this.form.managementCostStartTime,
+                "managementCostEndTime": this.form.managementCostEndTime,
+                "managementCost": this.form.managementCost,
+                "aggregate": this.form.aggregate,
             }
+            
             this.$ajax.post(url + 'contract/addContract', contractVO).then(res => {
-                if(res.data.status === 200){
-                    alert('添加成功')
-                    this.goBack()
-                }else{
-                    alert(res.data.msg)
-                }
+                console.log(res.data)
+                // if(res.data.status === 200){
+                //     alert('添加成功')
+                //     this.goBack()
+                // }else{
+                //     alert(res.data.msg)
+                // }
             })
         },
         goBack(){
@@ -652,9 +673,10 @@ font-size: 14px;color: #606266;padding-left:10px;font-weight: 700;
     width: 100%;
     min-width: 1030px;
   }
-  .supplement.el-form-item {
-    width: 50%;
+  .supplement .el-form-item {
+    /* width: 50%; */
     /* float: left; */
+    clear: both;
   }
   .supplement.con {
     padding: 0 10%;
