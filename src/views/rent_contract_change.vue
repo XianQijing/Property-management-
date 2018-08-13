@@ -14,7 +14,7 @@
                     </el-form-item>
                     <el-form-item label="关联房屋:" prop="room">
                         <el-select v-model="detail.room">
-                        <el-option v-for="item in options" :key="item.id" :label="item.roomNumber" :value="item.id">
+                            <el-option v-for="item in options" :key="item.id" :label="item.roomNumber" :value="item.id">
                         </el-option>
                         </el-select>
                     </el-form-item>
@@ -102,14 +102,14 @@
                     </el-col>
                     </el-row>
                     <el-row>
-                    <el-col :span="12">
+                    <!-- <el-col :span="12">
                         <el-form-item label="建筑面积：">
                             <el-input v-model="detail.room.coveredArea" placeholder="请输入建筑面积"></el-input>
                         </el-form-item>
-                    </el-col>
+                    </el-col> -->
                     <el-col :span="12">
                         <el-form-item label="用途：">
-                            <el-input v-model="detail.use" placeholder="请输入用途"></el-input>
+                            <el-input v-model="detail.purpose" placeholder="请输入用途"></el-input>
                         </el-form-item>
                     </el-col>
                     </el-row>
@@ -157,7 +157,7 @@
                             </el-col>
                             <el-col class="line" :span="2">-</el-col>
                             <el-col :span="11">
-                            <el-time-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.endTime" style="width: 100%;"></el-time-picker>
+                            <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.endTime" style="width: 100%;"></el-date-picker>
                             </el-col>
                         </el-form-item>
                 </el-col>
@@ -220,7 +220,7 @@
                     <el-col :span="12">
                     <el-form-item label="免租装修期：">
                         <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.startTime" style="width: 100%;"></el-date-picker>
-                        <el-col class="line" :span="3">至</el-col>
+                        <el-col class="line" :span="3" style="float:left">至</el-col>
                         <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.endTime" style="width: 100%;"></el-date-picker>
                     </el-form-item>
                     </el-col>
@@ -278,7 +278,7 @@
                         </el-col>
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.manageEndTime" style="width: 100%;"></el-time-picker>
+                        <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.manageEndTime" style="width: 100%;"></el-date-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
@@ -294,7 +294,7 @@
                         </el-col>
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.rentalEndTime" style="width: 100%;"></el-time-picker>
+                        <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.rentalEndTime" style="width: 100%;"></el-date-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
@@ -309,7 +309,7 @@
                         </el-col>   
                         <el-col class="line" :span="3">至</el-col>
                         <el-col :span="6">
-                        <el-time-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.managementCostEndTime" style="width: 100%;"></el-time-picker>
+                        <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择时间" v-model="form.managementCostEndTime" style="width: 100%;"></el-date-picker>
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
@@ -373,10 +373,10 @@ export default {
                 budget: '',
                 phone: '',
                 fax: '',
-                room: {
-                    coveredArea: ''
-                },
-                use: '',
+                // room: {
+                //     coveredArea: ''
+                // },
+                purpose: '',
                 useId: '',
                 paymentTime: '',
                 taxes: '',
@@ -551,7 +551,6 @@ export default {
             // 合同中的第二次管理费 managementCost
             // 合计 aggregate
             var contractVO = {
-
                 "site":this.detail.site,
                 "afterTheRent":this.detail.afterTheRent,
                 "amplification":this.detail.amplification,
@@ -559,7 +558,7 @@ export default {
                 "tenantry":this.detail.tenantry,
                 "room":this.detail.room,
                 "phone":this.detail.phone,
-                "use": this.detail.use,
+                "purpose": this.detail.purpose,
                 "comment":this.detail.comment,
                 "paymentTime": this.form.paymentTime,
                 "terminationTime": this.form.terminationTime,
@@ -583,13 +582,19 @@ export default {
             }
             
             this.$ajax.post(url + 'contract/addContract', contractVO).then(res => {
-                console.log(res.data)
-                // if(res.data.status === 200){
-                //     alert('添加成功')
-                //     this.goBack()
-                // }else{
-                //     alert(res.data.msg)
-                // }
+                // console.log(res.data)
+                if(res.data.status === 200){
+                    this.$message({
+                        message: '成功',
+                        type: 'success'
+                    });
+                    this.goBack()
+                } else {
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'error'
+                    });
+                }
             })
         },
         goBack(){

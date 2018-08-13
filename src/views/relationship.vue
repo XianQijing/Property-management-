@@ -402,7 +402,7 @@
 </template>
 
 <script>
-<<<<<<< HEAD
+
 import NavHeader from '@/components/NavHeader'
 import NavBar from '@/components/NavBar'
 import url from '../assets/Req.js'
@@ -464,79 +464,6 @@ export default {
 			activeName: 'first',
 			//出入证管理
 			inandcome: [
-=======
-	import NavHeader from '@/components/NavHeader'
-	import NavBar from '@/components/NavBar'
-	 import url from '../assets/Req.js'
-	export default {
-		data() {
-			return {
-				//分页数据
-				name:'添加短信模板',
-				pageNo: 1,
-                pageSize: 10,
-                pageSizesList: [10,20, 30, 40, 50],
-                tableData: [],//返回的结果集合
-				totalDataNumber: 400,//base数据的总数,
-				totalDataNumberMoveOut: 400,//MoveOut数据的总数,
-				totalDataNumbertemplate: 400,//template数据的总数,
-				totalDataNumbersended: 400,//sended数据的总数,
-				totalDataNumberinandcome: 400,//inandcome数据的总数,
-				totalDataNumberredecorated: 400,//redecorated数据的总数,
-				totalDataNumberserver: 400,//server数据的总数,
-				totalDataNumbercustomer: 400,//customer数据的总数,
-				totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
-
-				pageNoMoveOut: 1,
-                pageSizeMoveOut: 10,
-				pageSizesListMoveOut: [10,20, 30, 40, 50],
-
-				pageNoTemplate: 1,
-                pageSizeTemplate: 10,
-				pageSizesListTemplate: [10,20, 30, 40, 50],
-				
-				pageNoSended: 1,
-                pageSizeSended: 10,
-				pageSizesListSended: [10,20, 30, 40, 50],
-				
-				pageNoInandcome: 1,
-                pageSizeInandcome: 10,
-				pageSizesListInandcome: [10,20, 30, 40, 50],
-				
-				pageNoRedecorated: 1,
-                pageSizeRedecorated: 10,
-				pageSizesListRedecorated: [10,20, 30, 40, 50],
-				
-				pageNoServer: 1,
-                pageSizeServer: 10,
-				pageSizesListServer: [10,20, 30, 40, 50],
-				
-				pageNoCustomer: 1,
-                pageSizeCustomer: 10,
-				pageSizesListCustomer: [10,20, 30, 40, 50],
-				
-				pageNoCustomerMsg: 1,
-                pageSizeCustomerMsg: 10,
-                pageSizesListCustomerMsg: [10,20, 30, 40, 50],
-				
-				tianjia:false,
-				bianji:true,
-				dialogVisible:false,
-				modify:false,
-				activeName: 'first',
-				//出入证管理
-				inandcome: [
-					{
-						name: 'sfsd',
-						phone:'189494561',
-						reason:'dfs',
-						remarks: '困得一批',
-						time: '2018.07.25'
-					}
-				],
-				//出入证添加
-				upload: 
->>>>>>> 3aa2330d232f95f1ad4decbf6b6833265f0fd6ed
 				{
 					name: 'sfsd',
 					phone:'189494561',
