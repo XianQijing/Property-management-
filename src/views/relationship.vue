@@ -52,14 +52,14 @@
 									<router-view class="householdDetail"></router-view>
 								</div>
 								<el-table :data="MoveOut" style="width: 100%">
-									<!-- <el-table-column type="selection" width="55"></el-table-column> -->
-									<el-table-column prop="name" label="姓名" width="140"></el-table-column>
-									<el-table-column prop="phone" label="手机号" width="148"></el-table-column>
-									<el-table-column prop="leaseType" label="租用类型" width="148"></el-table-column>
-									<el-table-column prop="buildingName" label="楼宇" width="124"></el-table-column>
-									<el-table-column prop="roomNumber" label="房号" width="140"></el-table-column>
-									<el-table-column prop="inTime" label="迁入时间" width="148"></el-table-column>
-									<el-table-column prop="outTime" label="迁出时间" width="172"></el-table-column>
+									<el-table-column type="selection" width="55"></el-table-column>
+									<el-table-column prop="name" label="姓名"></el-table-column>
+									<el-table-column prop="phone" label="手机号"></el-table-column>
+									<el-table-column prop="leaseType" label="租用类型"></el-table-column>
+									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
+									<el-table-column prop="roomNumber" label="房号" ></el-table-column>
+									<el-table-column prop="inTime" label="迁入时间"></el-table-column>
+									<el-table-column prop="outTime" label="迁出时间"></el-table-column>
                                     <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column> -->
                                     <!-- <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
 									<el-table-column>
@@ -401,6 +401,7 @@
 </template>
 
 <script>
+
 import NavHeader from '@/components/NavHeader'
 import NavBar from '@/components/NavBar'
 import url from '../assets/Req.js'
@@ -783,12 +784,33 @@ export default {
 				let that = this;
 				that.id = this.base[index].id;
 				that.roomid = this.base[index].roomid;
-				// console.log(this.id);
-				// console.log(this.roomid);
-				rows.splice(index, 1);
-				this.$ajax.post(url+'owner/del/' + this.id+'/'+ this.roomid).then((res) => {
-					this.getbase()
-				})                                                                                                                            
+				// rows.splice(index, 1);
+				this.$confirm('此操作将永久迁出, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+					}).then(() => {
+						this.$ajax.post(url+'owner/del/' + this.id+'/'+ this.roomid).then((res) => {
+							console.log()
+							if(res.status === 200){
+								this.getbase()
+								this.$message({
+									type: 'success',
+									message: '迁出成功!'
+								})
+							}else{
+								message({
+									type: 'error',
+									message: this.msg
+								})
+							}
+						})          
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});          
+					});                                                                                                                  
 			},
 			//客户基本资料-详情
 			detail(index,rows){
@@ -938,9 +960,33 @@ export default {
 				that.id = this.template[index].id;
 				console.log(this.id);
 				rows.splice(index, 1);
+				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+					}).then(() => {
 				this.$ajax.delete(url+'noteTemplate/del/' + this.id).then((res) => {
-					this.getMoveOut()
+					if(res.status === 200){
+						this.getMoveOut()
+						this.$message({
+									type: 'success',
+									message: '删除成功!'
+								})
+					}else{
+						this.$message(
+							{
+								type: 'error',
+								message: this.msg
+							}
+								)
+					}
 				})
+				}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});          
+					}); 
 			},
 			handleSelectionChange (val) {
       //val 为选中数据的集合
@@ -1226,7 +1272,7 @@ function birthDay1 (data) {
 		padding: 0 40px 0 50px;
 		width: 99%;
 		margin-left: 2px;
-		height: 844px;
+		height: 810px;
 	}
 	
 	.biaodan span {

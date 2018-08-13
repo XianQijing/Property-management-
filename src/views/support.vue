@@ -14,8 +14,8 @@
                                     <li>下半年</li>
                                 </ul>
                             <div id="main">
-                                <div id="chart1" style="height:40vh;margin:100px auto;width: 50vw"></div>
-                                <div id="chart2" style="display:none;height:40vh;margin:100px auto;width: 50vw"></div>
+                                <div id="chart1" style="height:50vh;margin:50px auto;width: 50vw"></div>
+                                <div id="chart2" style="display:none;height:55vh;margin:50px auto;width: 50vw"></div>
                             </div>
                             </div>
 
@@ -23,7 +23,7 @@
 
                         <el-tab-pane label="租赁分析">
                              <div class="main1">
-                                 <div id="rent" style="height:40vh;margin:100px auto;width: 50vw"></div>
+                                 <div id="rent" style="height:55vh;margin:50px auto;width: 50vw"></div>
 							</div>                 
                         </el-tab-pane>
 
@@ -35,11 +35,11 @@
                                 </ul>
                                 
                             <div id="ww">
-                                <div id="shouru" style="height:55vh;margin:50px auto;width: 50vw">
+                                <div id="shouru" style="height:50vh;margin:50px auto;width: 50vw">
                                 </div>
-                                <div id="xc" style="display:none;height:55vh;margin:50px auto;width: 50vw"></div>
-							</div>    
-                            </div>             
+                                <div id="xc" style="display:none;height:50vh;margin:50px auto;width: 50vw"></div>
+							</div>   
+                            </div>              
                         </el-tab-pane>
 
                         <el-tab-pane label="水电报表">
@@ -658,7 +658,6 @@ export default {
 		padding: 0 40px 0 50px;
 		width: 99%;
 		margin-left: 2px;
-		height: 844px;
 	}
 .confirm {
     background-color: #32a8ee;

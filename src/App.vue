@@ -24,6 +24,12 @@ body {
 }
 #app {
   height: 100%;
+  background: #eeeeee
+}
+@media screen and (min-width: 1200px) {
+  .container {
+    max-width: 2000px !important;
+  }
 }
 /* @media (min-width: 1200px)
 .container {

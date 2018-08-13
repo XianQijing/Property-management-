@@ -28,7 +28,7 @@
                         </span>
                         <el-dropdown-menu slot="dropdown">
 													<span @click="addToAdmin(scope.$index, admin,'bianji')"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<span><el-dropdown-item>删除</el-dropdown-item></span>
+													<span  @click="adminDelete(scope.$index,admin)"><el-dropdown-item>删除</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
@@ -276,7 +276,7 @@ export default {
       
       pageNoRoomStandard: 1,
       pageSizeRoomStandard: 10,
-      pageSizesListRoomStandard: [1, 2, 3, 4, 5],
+      pageSizesListRoomStandard: [10, 20, 30, 40, 50],
       tableDataRoomStandard: [
         {
           room:'',
@@ -300,7 +300,7 @@ export default {
 
       pageNoAdmin: 1,
       pageSizeAdmin: 10,
-      pageSizesListAdmin: [1, 2, 3, 4, 5],
+      pageSizesListAdmin: [10, 20, 30, 40, 50],
       admin: [{
           namec: '',
           region: '',
@@ -319,7 +319,7 @@ export default {
       //楼宇
       pageNoBuilding: 1,
       pageSizeBuilding: 10,
-      pageSizesListBuilding: [1, 2, 3, 4, 5],
+      pageSizesListBuilding: [10, 20, 30, 40, 50],
       build: [
         {
           precinctName: '',
@@ -338,7 +338,7 @@ export default {
       //房间
       pageNoRoom: 1,
       pageSizeRoom: 10,
-      pageSizesListRoom: [1, 2, 3, 4, 5],
+      pageSizesListRoom: [10, 20, 30, 40, 50],
       room: [
         {
           precinct:{
@@ -360,7 +360,7 @@ export default {
       //车辆管理
       pageNoCar: 1,
       pageSizeCar: 10,
-      pageSizesListCar: [1, 2, 3, 4, 5],
+      pageSizesListCar: [10, 20, 30, 40, 50],
       car: [
         {
           parkingSpots: {
@@ -407,53 +407,75 @@ export default {
         this.multipleSelection.forEach(v => {
           this.louIdArr.push(v.id)
         })
-        if (judge === 'building') {
-          this.$ajax.delete(url + 'building/deleteBuilding/' + this.louIdArr).then((res) => {
-            if (res.data.status === 200) {
-              this.getBuild()
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-            }
-          })
-        } else if (judge === 'room') {
-          this.$ajax.delete(url + 'room/deleteRoom/' + this.louIdArr).then((res) => {
-            if (res.data.status === 200) {
-              this.getRoom()
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-            }
-          })
-        } else if (judge === 'car') {
-          this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + this.louIdArr).then((res) => {
-            if (res.data.status === 200) {
-              this.getCar()
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-            }
-          })
-        }
+        this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          if (judge === 'building') {
+            this.$ajax.delete(url + 'building/deleteBuilding/' + this.louIdArr).then((res) => {
+              if (res.data.status === 200) {
+                this.getBuild()
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+              }else{
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
+              }
+            })
+          } else if (judge === 'room') {
+            this.$ajax.delete(url + 'room/deleteRoom/' + this.louIdArr).then((res) => {
+              if (res.data.status === 200) {
+                this.getRoom()
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+              }else{
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
+              }
+            })
+          } else if (judge === 'car') {
+            this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + this.louIdArr).then((res) => {
+              if (res.data.status === 200) {
+                this.getCar()
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+              }else{
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
+              }
+            })
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       }
     },
     changePosition() {
-      // console.log(this.position)
     },
     handleClick(tab, event) {
-      // console.log(tab.index);
       this.tabIndex = tab.index
       this.multipleSelection = []
       this.$router.push('/house')
     },
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      // console.log(`当前 ${val} 页`)
       this.pp = val
       this.getAdmin(),
       this.getBuild()
@@ -470,6 +492,37 @@ export default {
       }
       
     },
+    adminDelete(index,rows){
+        let that = this;
+        that.id = this.admin[index].id;
+        rows.splice(index, 1);
+        this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$ajax.delete(url + 'precinct/deletePrecinct/'+this.id).then((res) =>{
+            if(res.data.status === 200){
+              this.getAdmin();
+              this.$message({
+                    message: '删除成功',
+                    type: 'success'
+                  })
+            }else{
+                  this.$message({
+                    message: res.data.msg,
+                    type: 'error'
+                  })
+                }
+                }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+        })
+      },
+
     //获取管理区
     getAdmin(){
       this.$ajax.get(url + 'precinct/selectPrecinct/'+this.pageNoAdmin+'/'+this.pageSizeAdmin+'',{
@@ -482,12 +535,10 @@ export default {
       })
     },
     adminSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
       this.pageSizeAdmin=val
       this.getAdmin()
     },
     adminCurrentChange(val) {
-      // console.log(`当前 ${val} 页`)
       this.pageNoAdmin=val
       this.getAdmin()
     },
@@ -500,16 +551,13 @@ export default {
       }).then((res) => {
         this.build = res.data.data.rows
         this.totalDataNumberBuilding =  res.data.data.records
-        // console.log(this.build)
       })
     },
     buildingSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
       this.pageSizeBuilding=val
       this.getBuild()
     },
     buildingCurrentChange(val) {
-      // console.log(`当前 ${val} 页`)
       this.pageNoBuilding=val
       this.getBuild()
     },
@@ -517,26 +565,37 @@ export default {
     jumpBuild(index,rows){
       let that = this;
       that.id = this.build[index].id;
-      // console.log(this.build[index].id)
       this.$router.push({name: 'AddBuild',query:{id:that.id}})
     },
     //删除build
     buildDelete(index,rows) {
       let that = this;
       that.id = this.build[index].id;
-      // DELETE /building/deleteBuilding/{id}
-      // console.log(this.id);
-      // rows.splice(index, 1);
-      this.$ajax.delete(url + 'building/deleteBuilding/' + that.id).then((res) => {
-        console.log(res.data)
-        if (res.data.status === 200) {
-          this.getBuild()
+      this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        this.$ajax.delete(url + 'building/deleteBuilding/' + that.id).then((res) => {
+          if (res.data.status === 200) {
+            this.getBuild()
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          }else{
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
+              }
+        })
+        }).catch(() => {
           this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-        }
-      })
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
     getCar(){
       this.$ajax.get(url + 'cellparkingRelatinship/selectCellParkingRelationship/'+this.pageNoCar+'/'+this.pageSizeCar+'',{
@@ -549,12 +608,10 @@ export default {
       })
     },
     carSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
       this.pageSizeCar=val
       this.getCar()
     },
     carCurrentChange(val) {
-      // console.log(`当前 ${val} 页`)
       this.pageNoCar=val
       this.getCar()
     },
@@ -565,16 +622,13 @@ export default {
       }).then(res => {
         this.room = res.data.data.rows
         this.totalDataNumberRoom =  res.data.data.records
-        // console.log(this.room)
       })
     },
     roomSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
       this.pageSizeRoom=val
       this.getRoom()
     },
     roomCurrentChange(val) {
-      // console.log(`当前 ${val} 页`)
       this.pageNoRoom=val
       this.getRoom()
     },
@@ -594,12 +648,10 @@ export default {
       })
     },
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
       this.pageSizeRoomStandard=val
       this.getRoomStandard()
     },
     handleCurrentChange(val) {
-      // console.log(`当前 ${val} 页`)
       this.pageNoRoomStandard=val
       this.getRoomStandard()
     },
@@ -607,13 +659,17 @@ export default {
     jumpRoom(index,rows){
       let that = this;
       that.id = this.room[index].id;
-      // console.log(this.room[index].id)
       this.$router.push({name: 'Next',query:{id:that.id}})
     },
     //删除room
     roomDelete(index,rows) {
       let that = this;
       that.id = this.room[index].id;
+      this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
       this.$ajax.delete(url + 'room/deleteRoom/' + that.id).then((res) => {
         if (res.data.status === 200) {
           this.getRoom()
@@ -621,19 +677,34 @@ export default {
             message: '删除成功',
             type: 'success'
           })
-        }
+        }else{
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
+              }
       })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
     //跳转车辆
     jumpCar(index,rows){
       let that = this;
       that.id = this.car[index].id;
-      // console.log(this.car[index].id)
       this.$router.push({name: 'AddCar',query:{id:that.id}})
     },
     carDelete (index,rows) {
       let that = this;
       that.id = this.car[index].id;
+       this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
       this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + that.id).then((res) => {
         if (res.data.status === 200) {
           this.getCar()
@@ -641,21 +712,35 @@ export default {
             message: '删除成功',
             type: 'success'
           })
-        }
+        }else{
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
+              }
       })
+       }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
     //跳转房产验收
     jumpHouse(index,rows){
       let that = this;
       that.id = this.tableDataRoomStandard[index].id;
-      // console.log(this.yanshou[index].id)
       this.$router.push({name: 'Test',query:{id:that.id}})
     },
     //删除房产
     houseDelete(index,rows) {
       let that = this;
       that.id = this.tableDataRoomStandard[index].id;
-      // DELETE /roomStandard/deleteRoomStandard/{id
+      this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
       this.$ajax.delete(url + 'roomStandard/deleteRoomStandard/' + that.id).then((res) => {
         if (res.data.status === 200) {
           this.getRoomStandard()
@@ -663,8 +748,19 @@ export default {
             message: '删除成功',
             type: 'success'
           })
-        }
-      })
+        }else{
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
+              }
+        })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
     handleSelectionChange (val) {
       //val 为选中数据的集合
@@ -681,20 +777,15 @@ export default {
         document.getElementById('roomDelete').style.background = '#f5f5f5'
         document.getElementById('carDelete').style.background = '#f5f5f5'
       }
-      // console.log(this.multipleSelection)
     },
     allDelete() {
       let comments = this.multipleSelection
-      // console.log(comments.id)
       let num = []
       for (let i = 0;i<comments.length;i++) {
         num.push(comments[i].id)
-        // console.log(num)
       }
       // 写this.$axios
       this.$ajax.get(this.$host + 'allDle.do', {params: {'commentsId':num}}).then(resp => {
-        // console.log(resp.data)
-        // console.log(comments.length)
         for (let j = 0;j<comments.length;j++){
           this.room.splice(comments[j], 1)
         }
@@ -766,8 +857,8 @@ button {
 	.main {
 		padding: 0 40px 0 50px;
 		width: 99%;
-		margin-left: 2px;
-		height: 844px;
+    margin-left: 2px;
+    height: 810px;
 	}
 	
 	.biaodan span {
