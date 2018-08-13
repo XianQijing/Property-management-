@@ -81,7 +81,8 @@
 						<el-tab-pane label="添加短信模板" name="third">
 							<div class="main">
 								
-								<button class="add"  @click="addDuanxin">添加</button>
+								<button class="add"  @click="addDuanxin(1)">添加</button>
+								<button class="add"  @click="addDuanxin(2)">发送</button>
 								<el-table :data="template" style="width: 100%">
 									<el-table-column prop="titleName" label="标题" width="280"></el-table-column>
 									<el-table-column prop="content" label="内容" width="480"></el-table-column>
@@ -322,7 +323,7 @@
 					width="30%"
 					>
 					
-                        <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage">
+                        <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage" v-if="msg === 1">
 							<el-form-item label="短信标题:" prop="title">
 								<el-select v-model="addMessage.title" placeholder="请输入短信标题">
 									<el-option
@@ -346,6 +347,45 @@
 							<el-form-item label="签名:" prop="sign">
                                 <el-input v-model="addMessage.sign"></el-input>
                             </el-form-item>
+						</el-form>
+						<el-form :model="textMessage" ref="textMessage" label-width="100px" class="demo-textMessage" v-if="msg === 2">
+							<el-form-item label="短信模板:">
+								<el-select v-model="textMessage.title" placeholder="请选择短信模板">
+									<el-tooltip placement="right" v-for="items in template" :key="items.id" effect="light">
+										<div slot="content">{{items.content}}</div>
+										<el-option
+											:label="items.titleName"
+											:value="items.id">
+										</el-option>
+									</el-tooltip>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="发送类型:">
+								<el-radio v-model="textMessage.radio" label="1">指定身份发送</el-radio>
+								<el-radio v-model="textMessage.radio" label="2">指定号码发送</el-radio>
+							</el-form-item>
+							<el-form-item label="发送对象:" v-if="textMessage.radio === '1'">
+								<el-select v-model="textMessage.title" placeholder="请选择小区或楼宇">
+									<el-option
+										v-for="build in base"
+										:key="build.id"	
+										:label="build.buildingName"
+										:value="build.id">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="住户状态:" v-if="textMessage.radio === '1'">
+								<el-radio v-model="textMessage.radio" label="1">已迁入</el-radio>
+								<el-radio v-model="textMessage.radio" label="2">已迁出</el-radio>
+							</el-form-item>
+							<el-form-item label="发送对象:" v-if="textMessage.radio === '2'">
+								<el-input
+									type="textarea"
+									:rows="4"
+									placeholder="请输入号码，多条以逗号隔开"
+									v-model="textMessage.textarea">
+								</el-input>
+							</el-form-item>
 						</el-form>
 						<span slot="footer" class="dialog-footer" v-show="tianjia">
 							<el-button @click="modify = false">取 消</el-button>
@@ -411,6 +451,7 @@
 	export default {
 		data() {
 			return {
+				msg: 0,
 				//分页数据
 				name:'添加短信模板',
 				pageNo: 1,
@@ -642,6 +683,11 @@
 				remarks:[
 					{ required: true, message: '请输入备注', trigger: 'blur' },
 				]
+				},
+				textMessage: {
+					title: '',
+					radio: '1',
+					textarea: ''
 				}
 			}
 		},
@@ -797,32 +843,46 @@
 			},
 			//增加短信模板
 			addOne(){
-            var noteTemplate={};
-            noteTemplate.title=this.addMessage.title;
-            noteTemplate.content=this.addMessage.content;
-            noteTemplate.signature=this.addMessage.sign;
-            this.$ajax.post(url+"noteTemplate/insert",noteTemplate
-            ).then((res) => {
-				if(res.status){
-                this.form = res.data
-				this.$message({
-					message: '成功',
-					type: 'success'
-			});
-				this.modify = false
-				this.gettemplate()
+				if(this.msg === 1){
+					var noteTemplate={};
+					noteTemplate.title=this.addMessage.title;
+					noteTemplate.content=this.addMessage.content;
+					noteTemplate.signature=this.addMessage.sign;
+					this.$ajax.post(url+"noteTemplate/insert",noteTemplate
+					).then((res) => {
+						if(res.status){
+						this.form = res.data
+						this.$message({
+							message: '成功',
+							type: 'success'
+					});
+						this.modify = false
+						this.gettemplate()
+						}else{
+							this.$message.error('添加失败');
+						}
+					})
 				}else{
-					this.$message.error('添加失败');
+					console.log(this.msg)
 				}
-            })
 		},
 		//添加短信弹窗
-			addDuanxin(){
-				this.addMessage = {},
-				this.modify = true,
-				this.name = '添加短信模板',
+			addDuanxin(msg){
+				this.msg = msg
+				this.modify = true
 				this.tianjia = true,
 				this.bianji = false
+				if(msg === 1){
+					this.addMessage = {},
+					this.name = '添加短信模板',
+					this.tianjia = true,
+					this.bianji = false
+				}else{
+					this.textMessage.title = '',
+					this.textMessage.textarea = ''
+					this.name = '短信群发'
+					this.textMessage.radio = '1'
+				}
 			},
 		//编辑短信弹窗
 		noteTemplateEdit(index,rows){
@@ -1214,15 +1274,15 @@ function birthDay1 (data) {
 	}
 	
 	
-	label {
+	/* label {
 		width: 100%;
-	}
+	} */
 	
 	.has-gutter {
 		background-color: rgb(250, 250, 250)!important;
 		box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.25)!important;
 	}
-	.el-table__header{
+	/* .el-table__header{
         background-color: rgb(250, 250, 250)!important;
 		box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.25)!important;
     }
@@ -1232,7 +1292,7 @@ function birthDay1 (data) {
 	
 	.el-dropdown {
 		width: 100px !important;
-	}
+	} */
 	
 	.modal-content1 {
 		background-color: white;
@@ -1263,13 +1323,13 @@ function birthDay1 (data) {
 	}
 	
 	
-	.el-dropdown-link {
+	/* .el-dropdown-link {
 		width: 4em !important;
 	}
 	
 	.el-dropdown {
 		width: 100px !important;
-	}
+	} */
     .cash {
   border: 1px rgb(217, 217, 217) solid;
   border-radius: 5px;
@@ -1355,4 +1415,5 @@ a{
 .footer {
 	float: right;
 }
+
 </style>

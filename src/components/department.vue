@@ -195,31 +195,31 @@
         title="添加新员工"
         :visible.sync="add"
         width="30%">
-        <el-form  :model="addperson" ref="addperson" label-width="80px" size="small" class="chuang">
-            <el-form-item label="姓名:">
+        <el-form  :model="addperson" :rules="addRules" ref="addperson" label-width="80px" size="small" class="chuang">
+            <el-form-item label="姓名:" prop="name">
                 <el-input placeholder="请输入姓名" v-model="addperson.name"></el-input>
             </el-form-item>
-            <el-form-item label="昵称:">
+            <el-form-item label="昵称:" prop="nickname">
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
             </el-form-item>
-            <el-form-item label="手机号:">
+            <el-form-item label="手机号:" prop="number">
                 <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
             </el-form-item>
-            <el-form-item label="密码:">
+            <el-form-item label="密码:" prop="mima">
                 <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
             </el-form-item>
             <el-form-item label="微信号:">
                 <el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
             </el-form-item>
-            <el-form-item label="邮箱:">
+            <el-form-item label="邮箱:" prop="email">
                 <el-input id="email" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
             </el-form-item>
-            <el-form-item label="角色:">
+            <el-form-item label="角色:" prop="position">
                 <el-select  id="position" placeholder="请输入职位" v-model="addperson.position">
                   <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="岗位:">
+            <el-form-item label="岗位:" prop="gangwei">{{addperson.gangwei}}
                 <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
                 <el-cascader id="gangwei" expand-trigger="hover" :options="options" v-model="addperson.gangwei" @change="handleChange"></el-cascader>
             </el-form-item>
@@ -451,6 +451,29 @@ export default {
                 linkman: [
                     { required: true, message: '请输入姓名', trigger: 'blur' }
                 ]
+            },
+            addRules: {
+                name: [
+                    { required: true, message: '请输入姓名', trigger: 'blur' }
+                ],
+                nickname: [
+                    { required: true, message: '请输入昵称', trigger: 'blur' }
+                ],
+                number: [
+                    { required: true, message: '请输入手机号', trigger: 'blur' }
+                ],
+                mima: [
+                    { required: true, message: '请输入密码', trigger: 'blur' }
+                ],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' }
+                ],
+                position: [
+                    { required: true, message: '请选择角色', trigger: 'change' }
+                ],
+                gangwei: [
+                    { required: true, message: '请选择岗位', trigger: 'change' }
+                ]
             }
         }
     },
@@ -478,8 +501,7 @@ mounted(){
         console.log(this.options)
     })
     this.$ajax.get(url + 'role/findRole').then(res=> {
-        // console.log(res.data.data)
-        // this.options = this.transTreeData(res.data.data)
+        
         this.role = res.data.data
     })
     this.staff(),
@@ -545,27 +567,30 @@ methods:{
         toUserEdit(index, rows){
             let that = this;
             that.id = this.tableData[index].id;
-            // console.log(that.id);
-            // rows.splice(index, 1);
-            // console.log(this.options)
             this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
-                // console.log(res.data.data)
-                this.addpersonEdit.name = res.data.data.name;
-                this.addpersonEdit.nickname = res.data.data.username;
-                this.addpersonEdit.number = res.data.data.phone;
-                this.addpersonEdit.mima = res.data.data.password;
-                this.addpersonEdit.wechat = res.data.data.wechat;
-                this.addpersonEdit.email = res.data.data.email;
-                this.addpersonEdit.position = res.data.data.roleId;
-                // this.addpersonEdit.gangwei = res.data.data.orgId;
-                this.addpersonEdit.beizhu = res.data.data.remark;
-                this.zhiyuan = true;
-                this.$ajax.get(url + 'company/findById?id='+res.data.data.orgId).then(res=> {
-                    let arr = res.data.data[0].parentIds.split(',').slice(1)
-                    arr.push(res.data.data[0].value)
-                    this.addpersonEdit.gangwei = arr
-                    // console.log(this.addpersonEdit.gangwei)
-                })
+                if(res.data.status === 200){
+                    this.addpersonEdit.name = res.data.data.name;
+                    this.addpersonEdit.nickname = res.data.data.username;
+                    this.addpersonEdit.number = res.data.data.phone;
+                    this.addpersonEdit.mima = res.data.data.password;
+                    this.addpersonEdit.wechat = res.data.data.wechat;
+                    this.addpersonEdit.email = res.data.data.email;
+                    this.addpersonEdit.position = res.data.data.roleId;
+                    // this.addpersonEdit.gangwei = res.data.data.orgId;
+                    this.addpersonEdit.beizhu = res.data.data.remark;
+                    this.zhiyuan = true;
+                    this.$ajax.get(url + 'company/findById?id='+res.data.data.orgId).then(res=> {
+                        let arr = res.data.data[0].parentIds.split(',').slice(1)
+                        arr.push(res.data.data[0].value)
+                        this.addpersonEdit.gangwei = arr
+                        // console.log(this.addpersonEdit.gangwei)
+                    })
+                }else{
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'error'
+                    })
+                }
 			})
         },
         //to往来单位编辑
@@ -662,15 +687,26 @@ methods:{
     staff(){
         // console.log(token)
         this.$ajax.get(url + 'user/findUser',{params:{'page':this.pageNo,'pageSize':this.pageSize}}).then((res) => {
-            // console.log(res)
-            this.tableData = res.data.data.rows;
-            this.totalDataNumber=res.data.data.records;
+            if(res.data.status === 200){
+                this.tableData = res.data.data.rows;
+                this.totalDataNumber=res.data.data.records;
+            }else if(res.data.status === 403){
+                this.$confirm('权限不足', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                    })
+            }else{
+                this.$message({
+                    type: 'error',
+                    message: res.data.msg
+                });
+            }
         })
     },
     //往来单位信息
     Btype(){
         this.$ajax.get(url + 'btype/findAll',{params:{'page':this.pageNoB,'pageSize':this.pageSizeB}}).then((res) => {
-            // console.log(res)
             this.tableData1 = res.data.data.rows;
             this.totalDataNumberB=res.data.data.records;
         })
@@ -691,21 +727,58 @@ methods:{
         }
         users.remark=this.addperson.beizhu;
         users.roleId=this.addperson.position;
-        console.log(users)
-        this.$ajax.post(url+"user/insert",users
-        ).then((res) => {
-            this.form = res.data
-            if (res.data.status === 200) {
-                this.$message({
-                        message: '添加成功',
-                        type: 'success'
-                    });
-            //   window.history.go(0)
-            this.add = false
-            this.staff()
-            }
-            // console.log('this.form')
-        })
+        // console.log(users)
+        if(!this.addperson.name){
+            this.$message({
+            message: '请输入姓名',
+            type: 'warning'
+            });
+        }else if(!this.addperson.nickname){
+            this.$message({
+            message: '请输入昵称',
+            type: 'warning'
+            });
+        }else if(!this.addperson.number){
+            this.$message({
+            message: '请输入手机号',
+            type: 'warning'
+            });
+        }else if(!this.addperson.mima){
+            this.$message({
+            message: '请输入密码',
+            type: 'warning'
+            });
+        }else if(!this.addperson.email){
+            this.$message({
+            message: '请输入邮箱',
+            type: 'warning'
+            });
+        }else if(!this.addperson.position){
+            this.$message({
+            message: '请输入角色',
+            type: 'warning'
+            });
+        }else if(this.addperson.gangwei.length === 0){
+            this.$message({
+            message: '请输入岗位',
+            type: 'warning'
+            });
+        }else{
+            this.$ajax.post(url+"user/insert",users
+            ).then((res) => {
+                this.form = res.data
+                if (res.data.status === 200) {
+                    this.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        });
+                //   window.history.go(0)
+                this.add = false
+                this.staff()
+                }
+                // console.log('this.form')
+            })
+        }
     },
     editUser(){
         var users={};
@@ -779,6 +852,11 @@ methods:{
                     this.form = res.data
                     this.Btype()
                     this.wanglai = false;
+                }else{
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'error'
+                    });
                 }
             })
         },

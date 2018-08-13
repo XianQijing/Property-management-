@@ -26,18 +26,26 @@
 
 <script>
 import { removeCookie, delCookie, getCookie } from '../assets/js/cookie.js'
+import url from '../assets/Req.js'
 export default {
   name: 'NavHeader',
   data () {
     return {
       name: '123123',
-      token: ''
     }
   },
 	mounted(){
-    let uname = getCookie("phone");
-    this.name = uname
-    // this.token = sessionStorage.getItem("userId")
+    this.$ajax.get(url + 'user/indexFindById',{
+      params: {
+          token: sessionStorage.getItem("userId")
+      }
+    }).then(res => {
+      if(res.data.status === 200){
+        this.name = res.data.data.username
+      }else{
+        this.$router.push('/')
+      }
+    })
     if(!sessionStorage.getItem("userId")){
     console.log(sessionStorage.getItem("userId"))
     this.$router.push('/')

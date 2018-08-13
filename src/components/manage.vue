@@ -143,9 +143,27 @@ export default {
         }else{
             
         }
-        this.$ajax.post(url + 'company/insert?id='+data.id +'&name='+this.name).then(res=>{
-            // console.log(res)
-        })
+        if(!this.name){
+            this.$message({
+                message: '请输入部门名称',
+                type: 'error'
+            })
+        }else{
+            this.$ajax.post(url + 'company/insert?id='+data.id +'&name='+this.name).then(res=>{
+                if(res.data.status===200){
+                    this.$message({
+                    message: '添加成功',
+                    type: 'success'
+                })
+                this.getbumen()
+                }else{
+                    this.$message({
+                        message: '添加失败',
+                        type: 'error'
+                    })
+                }
+            })
+        }
       },
       back(e){
             this.id = e.id
@@ -176,10 +194,30 @@ export default {
         const children = parent.data.children || parent.data;
         const index = children.findIndex(d => d.id === data.id);
         children.splice(index, 1);
-        
-        this.$ajax.post(url + 'company/delete',"id="+data.id).then(res=>{
-            // console.log(res)
-        })
+        this.$confirm('此操作将删除该部门及下属部门, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'}).then(() => {
+                    this.$ajax.post(url + 'company/delete',"id="+data.id).then(res=>{
+                        if(res.data.status === 200){
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            })
+                            this.getbumen()
+                        }else {
+                            this.$message({
+                                message: '删除失败',
+                                type: 'error'
+                            })
+                        }
+                    })
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
       },
 
       qq (node, data) {
@@ -272,7 +310,7 @@ h3{
   background-color: rgb(250, 250, 250);
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.25);
 }
-button {
+.el-main button {
   border:1px solid rgb(46, 146, 255);
   border-radius: 5px;
   background: white;
