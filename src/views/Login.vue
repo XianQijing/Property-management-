@@ -59,10 +59,10 @@
 							'remember':'5'
 						
 					})).then((res) => {
-						
+						// console.log(res.data.status)
 						/*接口的传值是(-1,该用户不存在),(0,密码错误)，同时还会检测管理员账号的值*/
-						if(res.status === 200) {
-							console.log(res.data)
+						if(res.data.status === 200) {
+							// console.log(res.data)
 							this.tishi = "登录成功"
 							this.showTishi = true
 							this.$router.push('/helloWorld')

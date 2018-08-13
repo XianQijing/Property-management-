@@ -96,7 +96,7 @@
 								</div>
 								<button class="add" @click="houseSource('0','0','add')">新增合同</button>
                                 <button class="add" @click="isShow = true">导入合同</button>
-                                <button class="add">导出合同</button>
+                                <!-- <button class="add">导出合同</button> -->
                                  <div class="fenye" style="display:inline-block">
                                      <button><img src=".././assets/down.png" style="width:16px;">模板</button>
                                  </div>
@@ -579,21 +579,35 @@ export default {
         //导出-个人
         out(index,rows) {
             let id = this.tableDataContract[index].id
-            this.$ajax.get(url + 'contract/turnDown/'+id).then(res => {
-                console.log(res.data)
-                if (res.data.status === 200){
-                    this.$message({
-                        message: '导出成功',
-                        type: 'success'
-                    });
-                }else{
+            
+            this.$ajax.get(url + 'contract/turnDown/'+id,{
+                
+            }).then(res => {
+                
+                if (res.data.status === 500){
+                    
                     this.$message({
                         message: res.data.msg,
                         type: 'error'
                     });
+                }else{
+                    window.location.href = url + 'contract/turnDown/'+id
                 }
             })
-        }
+        },
+    //      download (data) {
+    //     if (!data) {
+    //         return
+    //     }
+    //     let url = window.URL.createObjectURL(new Blob([data]))
+    //     let link = document.createElement('a')
+    //     link.style.display = 'none'
+    //     link.href = url
+    //     // link.setAttribute('download', 'excel.doc')
+
+    //     document.body.appendChild(link)
+    //     link.click()
+    // }
         
     },
     components: {
