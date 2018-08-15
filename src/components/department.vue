@@ -11,8 +11,45 @@
               <manage-name></manage-name>
             </el-tab-pane>
 
+            <!--权限管理-->
+            <el-tab-pane label="权限管理" name="second">
+              <div class="main">
+                <router-view></router-view>
+                <button @click="AddRole">+ 添加角色</button>
+                <button class="shanchu" id="roll_all_del" @click="deleteRoleAll">删除</button>
+                <el-table :data="jurisdictionData" style="width: 100%" @selection-change="handleSelectionChange">
+									<el-table-column type="selection" width="55"></el-table-column>
+									<el-table-column prop="name" label="角色" width="180"></el-table-column>
+									<el-table-column prop="createDate" label="创建时间" width="180"></el-table-column>
+									<el-table-column label="权限管理">
+                    <template slot-scope="scope">
+                      <router-link style="color: #6AC8FF; cursor: pointer;" :to="{name: 'Page', query: {id: scope.row.id}}">权限设置</router-link>
+                    </template>
+                  </el-table-column>
+									<el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <span style="cursor: pointer;" @click="edit(scope)">编辑</span>
+                      &nbsp;&nbsp;
+                      <span style="cursor: pointer;" @click="roleDel(scope)">删除</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <div class="fenye">
+                  <el-pagination
+                    @size-change="roleSizeChange"
+                    @current-change="roleCurrentChange"
+                    :current-page="rolePage.currentPage"
+                    :page-sizes="rolePage.pageArr"
+                    :page-size="rolePage.pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="rolePage.total">
+                  </el-pagination>
+                </div>
+              </div>
+            </el-tab-pane>
+
             <!--职员信息-->
-            <el-tab-pane label="职员信息" name="second">
+            <el-tab-pane label="职员信息" name="third">
               <div class="main">
                 <button @click="add = !add">+ 添加新员工</button>
                 <button @click="isShow = !isShow">导入</button>
@@ -55,7 +92,7 @@
             </el-tab-pane>
 
             <!--往来单位-->
-            <el-tab-pane label="往来单位" name="third">
+            <el-tab-pane label="往来单位" name="fourth">
               <div class="main">
                 <button @click="contact = !contact">+ 添加联系人</button>
                 <!-- <button @click="isShow = !isShow">导入</button> -->
@@ -100,6 +137,19 @@
           </el-tabs>
         </div>   
       </div>
+
+      <!-- 权限管理-添加角色 -->
+      <el-dialog :title="addOrEdit" :visible.sync="dialogFormVisible" width="30%">
+        <el-form>
+          <el-form-item label="角色名称：" label-width="120px">
+            <el-input v-model="rolename" placeholder="请输入角色名称" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="addrole">确 定</el-button>
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+        </div>
+      </el-dialog>
 
       <!-- 职员信息-编辑 -->
       <el-dialog
@@ -164,7 +214,7 @@
           <div class="upload">
             <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
           </div>
-          <div>{{this.fileName}}</div>
+          <!-- <div>{{this.fileName}}</div> -->
         </div>
                     
         <div>
@@ -288,12 +338,12 @@
 
 <script>
 import { setCookie,getCookie,delCookie } from '.././assets/js/cookie.js'
-import NavBar from '.././components/NavBar.vue'
-import NavHeader from '.././components/NavHeader.vue'
-import departNav from './departNav'
-import manageName from './manage'
-import url from '../assets/Req.js'
-import qs from 'qs';
+  import NavBar from '.././components/NavBar.vue'
+  import NavHeader from '.././components/NavHeader.vue'
+  import departNav from './departNav'
+  import manageName from './manage'
+  import url from '../assets/Req.js'
+  import qs from 'qs';
 
 let id = 1000;
 const datato = [{
@@ -306,6 +356,17 @@ export default {
   name: 'department',
   data(){
     return{
+      rolePage: {
+        currentPage: 1,
+        total: 7,
+        pageSize: 5,
+        pageArr: [1, 2, 3, 4, 5]
+      },
+      roleid: '',
+      addOrEdit: '添加角色',
+      rolename: '',
+      dialogFormVisible: false,
+      jurisdictionData: [],
       Data: [],
       options: [],
       file:'',
@@ -326,7 +387,7 @@ export default {
       person: [],
       isShow:false,
       add:false,
-      activeName: 'first',
+      activeName: 'second',
       contact:false,
       modify:false,
       selectArr: [],
@@ -409,20 +470,173 @@ export default {
   mounted(){
     // /company/findAll
     this.$ajax.get(url + 'company/findAll').then((res) => {
-      // console.log(res.data.data)
       this.Data = res.data.data
       this.options = this.transTreeData(this.Data)
-      // console.log(this.options)
     })
     this.$ajax.get(url + 'role/findRole').then(res=> {
       // console.log(res.data.data)
       // this.options = this.transTreeData(res.data.data)
       this.role = res.data.data
     })
-    this.staff(),
+    this.staff()
     this.Btype()
+    this.getRoleData()
   },
   methods: {
+    deleteRoleAll () {
+      if (this.multipleSelection.length > 0) {
+        var idArr = []
+        this.multipleSelection.forEach(v => {
+          idArr.push(v.id)
+        })
+        this.$confirm('是否确定', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$ajax.post(url + 'role/delete', {id: idArr}).then(res => {
+            if (res.data.status === 200) {
+              this.getRoleData()
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg
+              })
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      } else {
+        this.$message({
+          type: 'info',
+          message: '请选择您需要删除的角色'
+        })
+      }
+    },
+    AddRole () {
+      this.dialogFormVisible = true
+      this.addOrEdit = '添加角色'
+      this.rolename = ''
+    },
+    roleSizeChange (val) {
+      // console.log(`每页 ${val} 条`)
+      this.rolePage.pageSize = val
+      this.getRoleData()
+    },
+    roleCurrentChange (val) {
+      // console.log(`当前页: ${val}`)
+      this.rolePage.currentPage = val
+      this.getRoleData()
+    },
+    // 删除角色
+    roleDel (data) {
+      this.$confirm('是否删除此条信息', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$ajax.post(url + 'role/delete', {id: this.data.row.id}).then(res => {
+          if (res.data.status === 200) {
+            this.getRoleData()
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.msg
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 编辑角色
+    edit (data) {
+      // get  /role/findById  id 进入编辑页面接口
+      this.$ajax.get(url + 'role/findById', {
+        params: {
+          id: data.row.id
+        }
+      }).then(res => {
+        this.dialogFormVisible = true
+        this.rolename = res.data.data.name
+        this.roleid = res.data.data.id
+        this.addOrEdit = '编辑角色'
+      })
+    },
+    // 获取角色
+    getRoleData () {
+      // GET /role/findAll page当前页 pageSize每页显示条数
+      this.$ajax.get(url + 'role/findAll', {
+        params: {
+          page: this.rolePage.currentPage,
+          pageSize: this.rolePage.pageSize
+        }
+      }).then(res=> {
+        // console.log(res.data.data)
+        this.rolePage.total = res.data.data.records
+        res.data.data.rows.forEach(v => {
+          v.createDate = toDate(v.createDate)
+        })
+        this.jurisdictionData = res.data.data.rows
+      })
+    },
+    // 添加角色
+    addrole () {
+      if (this.rolename === '') {
+        this.$message({
+          message: '角色名称不能为空',
+          type: 'error'
+        })
+      } else {
+        // role/insert name
+        var insert = 'role/insert'
+        var role = {
+          name: this.rolename
+        }
+        if (this.addOrEdit === '添加角色') {
+          insert = 'role/insert'
+          role = {
+            name: this.rolename
+          }
+        } else {
+          insert = 'role/update'
+          role = {
+            name: this.rolename,
+            id: this.roleid
+          }
+        }
+        this.$ajax.post(url + insert, role).then(res=> {
+          if (res.data.status === 200) {
+            this.$message({
+              message: '角色名称添加成功',
+              type: 'success'
+            })
+            this.dialogFormVisible = false
+            this.getRoleData()
+          } else {
+            this.$message({
+              message: res.data.msg,
+              type: 'error'
+            })
+          }
+        })
+      }
+    },
     handleChange () {},
     transTreeData (items) {
       // console.log(items)
@@ -451,7 +665,8 @@ export default {
 			// console.log(this.position)
 		},
 		handleClick(tab, event) {
-			// console.log(tab, event);
+      // console.log(tab, event);
+      this.$router.push('/Department')
     },
     //职员信息
     handleSizeChange(val) {
@@ -522,17 +737,6 @@ export default {
       this.$ajax.post(url + 'btype/delete',"id="+this.id).then((res) => {
 			})
     },
-    // foo:function (event) {
-    //   formdata = new FormData();
-    //   formdata.append('file',event.target.files[0]);
-    //   formdata.append('action','test');
-    //   axios({
-    //     url:'test.php',
-    //     method:'post',
-    //     data:formdata,
-    //     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    //   }).then((res)=>{console.log(res)})
-    // },
     //职员信息
     staff(){
       this.$ajax.get(url + 'user/findUser',{params:{'page':this.pageNo,'pageSize':this.pageSize}}).then((res) => {
@@ -653,28 +857,36 @@ export default {
         
         // console.log(this.src)
     },
-        submit(){
-            var formData = new FormData()
-            // console.log(this.files)
-            formData.append('path', this.file)
-            formData.append('status', this.radio)
-            this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                if(res.data.status === 200) {
-                    this.$message({
-                        message: '成功',
-                        type: 'success'
-                    })
-                }else{
-                    this.$message({
-                        message: '失败',
-                        type: 'error'
-                    })
-                }
-            })
-        }
+    submit(){
+      var formData = new FormData()
+      // console.log(this.files)
+      formData.append('path', this.file)
+      formData.append('status', this.radio)
+      this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
+          if(res.data.status === 200) {
+              this.$message({
+                  message: '成功',
+                  type: 'success'
+              })
+          }else{
+              this.$message({
+                  message: '失败',
+                  type: 'error'
+              })
+          }
+      })
     }
-  }
-
+  },
+  filter: {}
+}
+function toDate (data) {
+  var date = new Date(data)
+  return date.getFullYear() + '-' + zero(date.getMonth() + 1) + '-' + zero(date.getDate())
+}
+function zero (data) {
+  if (data > 10) return data
+  if (data < 10) return '0' + data
+}
 </script>
 
 <style scoped>
@@ -695,7 +907,7 @@ body {
     background-color: #eeeeee;
     padding: 0
 }
-
+button{cursor: pointer;}
 
 .card ul{
     display: inline-block;

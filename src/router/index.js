@@ -26,6 +26,7 @@ import Test from '@/views/test'
 import AddCustomer from '@/views/addCustomer'
 import AddAdmin from '@/views/addAdmin'
 import Notice from '@/views/notice'
+import Page from '@/components/page'
 
 Vue.use(Router)
 
@@ -98,9 +99,16 @@ export default new Router({
     },
     // 基础管理
     {
-      path: '/department',
+      path: '/Department',
       name: 'Department',
-      component: Department
+      component: Department,
+      children: [
+        {
+          path: 'Page',
+          name: 'Page',
+          component: Page
+        }
+      ]
     },
     // 房产管理
     {
