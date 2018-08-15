@@ -1,7 +1,7 @@
 <template>
     <div class="server">
         <h3>服务派单</h3>
-        <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail" :rules="rules">
+        <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail" :rules="rules" :disabled="edit">
         <div class="tianjia">
             <div class="input">
                 
@@ -235,7 +235,8 @@ export default {
           phone: [
             { required: true, message: '请输入手机号', trigger: 'blur' },
           ]
-          }
+          },
+          edit:true
             // input: {
             //     name: '李文',
             //     sex: '男',
@@ -272,6 +273,14 @@ export default {
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.editChange(res.data.name,res.data.phone)
             })
+            this.edit = true
+        }else if(this.$route.query.msg == 7){
+            this.$ajax.get(url +'serviceAccept/findIdVO/'+this.id).then(res => {
+                this.detail = res.data;
+                this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.editChange(res.data.name,res.data.phone)
+            })
+            this.edit = false
         }else(
             this.datail = '',
             this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
@@ -384,40 +393,43 @@ export default {
             serviceAcceptVO.professional_list=this.detail.professional_list;    //专业分类
             serviceAcceptVO.problem=this.detail.problem;    //要求处理事项
             serviceAcceptVO.remarks=this.detail.remarks;    //备注
-            if(this.$route.query.msg == 8){
+            if(this.$route.query.msg == 7){
                  serviceAcceptVO.id = this.id;
                 this.$ajax.put(url+"serviceAccept/update",serviceAcceptVO).then((res) => {
                     this.form = res.data
                     console.log(this.form);
-                    if(res.data=="seccess"){
-                          this.$message({
+                    if(res.data.status === 200){
+                         this.$message({
                                 message: '修改数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
+                        }) 
                      }
                 })
+            }else if (this.$route.query.msg == 8){
+                this.goBack()
             }else{
                 this.$ajax.post(url+"serviceAccept/insert",serviceAcceptVO).then((res) => {
                     this.form = res.data
                     console.log(this.form);
-                    if(res.data=="seccess"){
-                          this.$message({
-                                message: '增加数据成功',
+                     if(res.data.status === 200){
+                         this.$message({
+                                 message: '增加数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
+                        }) 
                      }
+                   
                 })
             }
             

@@ -31,7 +31,7 @@ export default {
   name: 'NavHeader',
   data () {
     return {
-      name: '123123',
+      name: '请登录',
     }
   },
 	mounted(){

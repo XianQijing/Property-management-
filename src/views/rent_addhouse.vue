@@ -100,6 +100,10 @@ export default {
         this.addCustomer.reserve = res.data.data.reserve
       })
     }
+    this.$ajax.get(url + 'building/flndAllBuilding').then(res => {
+      console.log(res.data.data)
+      this.builds = res.data.data
+    })
   },
   methods: {
     submitUpload () {
@@ -124,9 +128,13 @@ export default {
         
       // housingResourceVO= this.addCustomer
       this.$ajax.post(url + 'housingResource/insertRoom', housingResourceVO).then(res => {
-        // console.log(res);
-        // alert('成功')
-        this.goBack()
+        if(res.data.status === 200){
+          this.$message({
+            message: '成功',
+            type: 'success'
+          })
+          this.$router.push('/rent')
+        }
       })
     },
     goBack () {

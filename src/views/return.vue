@@ -197,11 +197,19 @@ export default {
             this.$ajax.post(url+"serviceVisit/insert",serviceVisit).then((res) => {
                 this.form = res.data
                 console.log(this.form);
-                 if(res.data=="seccess"){
-                         alert("添加数据成功");
-                     }else{
-                            alert("失败");
-                     }
+                if(res.data.status === 200){
+                         this.$message({
+                                message: '新增数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'error'
+                            }) 
+                    }
+                 
             })
         
         },

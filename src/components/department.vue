@@ -11,7 +11,6 @@
             <el-tab-pane label="部门管理" name="first">
                 <manage-name></manage-name>
             </el-tab-pane>
-
             <!--职员信息-->
             <el-tab-pane label="职员信息" name="second">
               <div class="main">
@@ -41,17 +40,17 @@
 										</template>
 									</el-table-column>
 								</el-table>
-                <div class="fenye">
-									<el-pagination
-                      @size-change="handleSizeChange"
-                      @current-change="handleCurrentChange"
-                      :current-page="pageNo"
-                      :page-sizes="pageSizesList"
-                      :page-size="pageSize"
-                      layout="total, sizes, prev, pager, next, jumper"
-                      :total="totalDataNumber">
-                  </el-pagination>
-								</div>
+                        <div class="fenye">
+                            <el-pagination
+                                @size-change="handleSizeChange"
+                                @current-change="handleCurrentChange"
+                                :current-page="pageNo"
+                                :page-sizes="pageSizesList"
+                                :page-size="pageSize"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="totalDataNumber">
+                            </el-pagination>
+                        </div>
               </div>
             </el-tab-pane>
             <!--往来单位-->
@@ -96,6 +95,9 @@
 								</div>
               </div>
             </el-tab-pane>
+            <!-- <el-tab-pane label="权限管理" name="fourth">
+                <power/>
+            </el-tab-pane> -->
           </el-tabs>
         </div>   
       </div>
@@ -332,6 +334,7 @@ import departNav from './departNav'
 import manageName from './manage'
 import url from '../assets/Req.js'
 import qs from 'qs';
+import Power from '.././views/power.vue'
 
 
 
@@ -373,30 +376,8 @@ export default {
             modify:false,
             selectArr: [],
             data5: JSON.parse(JSON.stringify(datato)),
-            tableData: [
-                    {
-                        id: "rnejkgtrek",
-                        name: "杨帅",
-                        username: "ys",
-                        password: "06ba0ebc6f9efec42b0c43dd2e3ce1cf",
-                        phone: "13553552222",
-                        wechat: "123.0",
-                        remark: "3.0",
-                        rname: "admin",
-                        cname: "卢比克魔方"
-                    },
-
-                ],
-            tableData1:[{
-                id:'',
-                btypeName: "123456",
-                type: "",
-                linkman: "",
-                business: "",
-                address: "",
-                phone: "",
-                remark: ""
-            }],
+            tableData: [],
+            tableData1:[],
             addperson:{
                 name:'',
                 number:'',
@@ -460,6 +441,7 @@ export default {
         departNav,
         manageName,
         NavBar,
+        Power
     },
     directives: {
   focus: {

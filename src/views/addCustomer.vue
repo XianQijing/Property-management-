@@ -434,7 +434,7 @@ export default {
             var customerEventVO={};   //客户事件的数据
             customerEventVO.name=this.ruleForm.name;           //租户姓名
             customerEventVO.phone=this.ruleForm.phone;   //电话号码
-            console.log(this.ruleForm.house);
+            // console.log(this.ruleForm.house);
             var arr=this.ruleForm.house;
             customerEventVO.room=arr[arr.length-1];//关联房屋
             customerEventVO.event_type=this.ruleForm.event_type;   //事件类型
@@ -466,73 +466,74 @@ export default {
             feedbackMessageVO.remarks=this.ruleForm.remarks;   //备注
           
         if(this.$route.query.msg === 2){   //客户反馈信息查看
-           
+           this.goBack()
         }else if(this.$route.query.msg === 3){  //客户反馈信息修改
             feedbackMessageVO.id = this.id;
             this.$ajax.put(url+"feedbackMessage/update",feedbackMessageVO).then((res) => {
-                        if(res.data=="seccess"){
-                          this.$message({
+                        if(res.data.status === 200){
+                         this.$message({
                                 message: '修改数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
+                        }) 
                      }
+                       
             })
           
         }else if(this.$route.query.msg === 1){    //客户事件新增
             this.$ajax.post(url+"customerEvent/insert",customerEventVO).then((res) => {
-               if(res.data=="seccess"){
-                          this.$message({
-                                message: '添加数据成功',
+               if(res.data.status === 200){
+                         this.$message({
+                                 message: '增加数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
+                        }) 
                      }
             })
             
         }else if(this.$route.query.msg === 4){  //客户事件查看
-          
+          this.goBack()
           
         }else if(this.$route.query.msg === 5){   //客户事件回访
             customerEventVO.id = this.id;
            this.$ajax.put(url+"customerEvent/update",customerEventVO).then((res) => {
-                if(res.data=="seccess"){
-                          this.$message({
+                   if(res.data.status === 200){
+                         this.$message({
                                 message: '修改数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
+                        }) 
                      }
             })
          
         }else{                            //客户反馈信息新增
             this.$ajax.post(url+"feedbackMessage/insert",feedbackMessageVO).then((res) => {
-                    if(res.data=="seccess"){
-                          this.$message({
-                                message: '添加数据成功',
+                   if(res.data.status === 200){
+                         this.$message({
+                                 message: '添加数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
+                        }) 
                      }
             })
         }
@@ -555,6 +556,7 @@ export default {
     background: white;
     z-index: 2000;
     width: 100%;
+    height: 100%;
 }
 .tianjia{
     vertical-align: top;

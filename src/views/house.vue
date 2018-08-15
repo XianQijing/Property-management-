@@ -10,7 +10,8 @@
 						<el-tab-pane label="管理区" name="first">
 							<div class="main">
 								<div v-if="tabIndex === '0'"><router-view class="addAdmin"></router-view></div>
-								<button class="add" @click="addToAdmin('','','tianjia')">+ 添加</button><button class="delect">删除</button>
+								<button class="add" @click="addToAdmin('','','tianjia')">+ 添加</button>
+                <!-- <button class="delect">删除</button> -->
 								<el-table :data="admin" style="width: 100%">
 									<el-table-column prop="namec" label="小区名称" width="180"></el-table-column>
 									<el-table-column prop="region" label="所在地区"></el-table-column>
@@ -205,7 +206,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="房产验收" name="fifth">
+						<!-- <el-tab-pane label="房产验收" name="fifth">
 							<div class="main">
 								<div v-if="tabIndex === '4'">
 									<router-view class="test"></router-view>
@@ -247,7 +248,7 @@
 									</el-pagination>
 								</div>
 							</div>
-						</el-tab-pane>
+						</el-tab-pane> -->
 					</el-tabs>
 
 				</div>
@@ -338,44 +339,14 @@ export default {
       pageNoRoom: 1,
       pageSizeRoom: 10,
       pageSizesListRoom: [10, 20, 30, 40, 50],
-      room: [
-        {
-          precinct:{
-            namec: '',
-          },
-          building: '',
-          ste: '',
-          floor: '',
-          roomNumber: '',
-          denominatorVolume: '',
-          coveredArea: '',
-          useId:'',
-          roomType:'',
-          id:'',
-        },
-      ],
+      room: [],
       totalDataNumberRoom: 100,//数据的总数,
       
       //车辆管理
       pageNoCar: 1,
       pageSizeCar: 10,
       pageSizesListCar: [10, 20, 30, 40, 50],
-      car: [
-        {
-          parkingSpots: {
-            plateNumbers: '',
-          },
-          precincts:{
-            namec:'',
-          } ,
-          carSeatNumber: '',
-          parkingType: '',
-          parkingState: '',
-          parkingArea: '',
-          comment: '',
-          id:10,
-        },
-      ],
+      car: [],
       totalDataNumberCar: 100,//数据的总数,
       tabIndex: '0',
       // 楼宇id的集合
@@ -646,14 +617,14 @@ export default {
         this.totalDataNumberRoomStandard =  res.data.data.records
       })
     },
-    handleSizeChange(val) {
-      this.pageSizeRoomStandard=val
-      this.getRoomStandard()
-    },
-    handleCurrentChange(val) {
-      this.pageNoRoomStandard=val
-      this.getRoomStandard()
-    },
+    // handleSizeChange(val) {
+    //   this.pageSizeRoomStandard=val
+    //   this.getRoomStandard()
+    // },
+    // handleCurrentChange(val) {
+    //   this.pageNoRoomStandard=val
+    //   this.getRoomStandard()
+    // },
     //跳转编辑
     jumpRoom(index,rows){
       let that = this;
@@ -725,42 +696,42 @@ export default {
           });          
         });
     },
-    //跳转房产验收
-    jumpHouse(index,rows){
-      let that = this;
-      that.id = this.tableDataRoomStandard[index].id;
-      this.$router.push({name: 'Test',query:{id:that.id}})
-    },
+    // //跳转房产验收
+    // jumpHouse(index,rows){
+    //   let that = this;
+    //   that.id = this.tableDataRoomStandard[index].id;
+    //   this.$router.push({name: 'Test',query:{id:that.id}})
+    // },
     //删除房产
-    houseDelete(index,rows) {
-      let that = this;
-      that.id = this.tableDataRoomStandard[index].id;
-      this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-      this.$ajax.delete(url + 'roomStandard/deleteRoomStandard/' + that.id).then((res) => {
-        if (res.data.status === 200) {
-          this.getRoomStandard()
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-        }else{
-                this.$message({
-                  message: res.data.msg,
-                  type: 'error'
-                })
-              }
-        })
-      }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-    },
+    // houseDelete(index,rows) {
+    //   let that = this;
+    //   that.id = this.tableDataRoomStandard[index].id;
+    //   this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //       type: 'warning'
+    //     }).then(() => {
+    //   this.$ajax.delete(url + 'roomStandard/deleteRoomStandard/' + that.id).then((res) => {
+    //     if (res.data.status === 200) {
+    //       this.getRoomStandard()
+    //       this.$message({
+    //         message: '删除成功',
+    //         type: 'success'
+    //       })
+    //     }else{
+    //             this.$message({
+    //               message: res.data.msg,
+    //               type: 'error'
+    //             })
+    //           }
+    //     })
+    //   }).catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       });          
+    //     });
+    // },
     handleSelectionChange (val) {
       //val 为选中数据的集合
       this.multipleSelection = val

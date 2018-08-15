@@ -78,29 +78,21 @@
 					money: '',
 					remarks: ''
                 },
-                biaoge:[
-                    {
-					charge: 'fs',
-					start: 'f',
-					end: 'df',
-					money: 'df',
-					remarks: 'fd'
-                },
-                ],
+                biaoge:[],
 				rules: {
-          charge: [
-            { required: true, message: '请选择收费项目/收费标准', trigger: 'blur' },
-          ],
-          start: [
-            { required: true, message: '请选择起始时间', trigger: 'change' }
-          ],
-          end: [
-            { required: true, message: '请输', trigger: 'blur' }
-          ],
-          buildArea: [
-            { required: true, message: '请输入建筑面积', trigger: 'blur' }
-          ]
-        },
+					charge: [
+						{ required: true, message: '请选择收费项目/收费标准', trigger: 'blur' },
+					],
+					start: [
+						{ required: true, message: '请选择起始时间', trigger: 'change' }
+					],
+					end: [
+						{ required: true, message: '请输', trigger: 'blur' }
+					],
+					buildArea: [
+						{ required: true, message: '请输入建筑面积', trigger: 'blur' }
+					]
+				},
 			}
 		},
 

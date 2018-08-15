@@ -16,11 +16,11 @@
                                 <div class="fenye" style="display:inline-block" id="btn"><button @click="display(1)" class="active">全部数据</button><button @click="display(2)">只显示已租数据</button><button @click="display(3)">只显示未租数据</button></div>
 								<el-table :data="tableData" style="width: 100%">
 									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
-									<el-table-column prop="build" label="楼宇" width="180"></el-table-column>
+									<el-table-column prop="buildinges.namec" label="楼宇" width="180"></el-table-column>
 									<el-table-column prop="roomNumber" label="房号"></el-table-column>
 									<el-table-column prop="coveredArea" label="建筑面积(平方米)"></el-table-column>
 									<el-table-column prop="pricing" label="价格(元/月)"></el-table-column>
-									<el-table-column prop="room_status" label="租用状态"></el-table-column>
+									<el-table-column prop="renting" label="租用状态" :formatter="formatRole"></el-table-column>
 									<el-table-column prop="reserve" label="预定状态"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
@@ -138,6 +138,49 @@
 								</div>
 							</div>                 
                         </el-tab-pane>
+                        <el-tab-pane label="房产验收" name="fifth">
+							<div class="main">
+								<div v-if="indexTable === '4'">
+									<router-view class="test"></router-view>
+                                </div>
+								<router-link :to="{name: 'Test',query:{id:'add'}}"><button class="add">+ 添加</button></router-link>
+								<el-table :data="tableDataRoomStandard" style="width: 100%" >
+									<el-table-column type="selection" width="55"></el-table-column>
+									<el-table-column prop="room" label="关联房屋" width="180"></el-table-column>
+									<el-table-column prop="projectAcceptance" label="验收项目" width="180"></el-table-column>
+									<el-table-column prop="acceptanceStandard" label="验收标准" width="180"></el-table-column>
+									<el-table-column prop="acceptanceResult" label="验收结果"></el-table-column>
+									<el-table-column prop="acceptanceBy" label="验收人"></el-table-column>
+									<el-table-column prop="acceptanceState" label="验收说明"></el-table-column>
+									<el-table-column prop="acceptanceTime" label="验收日期"></el-table-column>
+									<el-table-column prop="remark" label="备注"></el-table-column>
+									<el-table-column>
+										<template slot-scope="scope">
+											<el-dropdown>
+												<span class="el-dropdown-link">
+                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
+                                                </span>
+												<el-dropdown-menu slot="dropdown">
+													<span @click="jumpHouse(scope.$index, tableDataRoomStandard)"><el-dropdown-item>查看 / 编辑</el-dropdown-item></span>
+													<span @click="houseDelete(scope.$index, tableDataRoomStandard)"><el-dropdown-item>删除</el-dropdown-item></span>
+												</el-dropdown-menu>
+											</el-dropdown>
+										</template>
+									</el-table-column>
+								</el-table>
+								<div class="fenye">
+									<el-pagination 
+									@size-change="handleSizeChange1" 
+									@current-change="handleCurrentChange1" 
+									:current-page="pageNoRoomStandard"  
+									:page-size="pageSizeRoomStandard" 
+									:page-sizes="pageSizesListRoomStandard" 
+									layout="total, sizes, prev, pager, next, jumper" 
+									:total="totalDataNumberRoomStandard">
+									</el-pagination>
+								</div>
+							</div>
+						</el-tab-pane>
                     </el-tabs>
                 </div>
             </div>
@@ -328,7 +371,25 @@ export default {
                 phone: [
                     { required: true, message: '请输入联系方式', trigger: 'blur' },
                 ],
-            }
+            },
+            //房产验收
+            pageNoRoomStandard: 1,
+            pageSizeRoomStandard: 10,
+            pageSizesListRoomStandard: [10, 20, 30, 40, 50],
+            tableDataRoomStandard: [
+                {
+                room:'',
+                projectAcceptance:'',
+                acceptanceStandard:'',
+                acceptanceResult:'',
+                acceptanceBy:'',
+                acceptanceState:'',
+                acceptanceTime:'',
+                remark:'',
+                id: ''
+                }
+            ],//返回的结果集合
+            totalDataNumberRoomStandard: 100,//数据的总数,
         }
     },
     
@@ -337,13 +398,16 @@ export default {
         this.flndAllBusiness(),
         this.flndAllContract(),
         this.nn()
+        this.getRoomStandard()
     },
     methods:{
+        formatRole: function(row, column) {
+            return row.authority == '0' ? "可租" : "已租";
+        },
+
         changePosition() {
-            // console.log(this.position)
 		},
 		handleClick(tab, event) {
-            // console.log(tab.index);
             this.indexTable = tab.index
             this.$router.push('/rent')
         },
@@ -352,15 +416,15 @@ export default {
         flndAllHousingResource(){
             this.$ajax.get(url + 'housingResource/flndAllHousingResource/'+this.pageNo+'/'+this.pageSize).then((res) => {
                 
+            if(res.data.status === 200){    
                 this.tableData=res.data.data.rows
                 this.totalDataNumber=res.data.data.records
+                }
             })
         },handleSizeChange(val) {
-            // console.log(`每页 ${val} 条`);
             this.pageSize=val;
             this.display(this.bb)
         },handleCurrentChange(val) {
-            // console.log(`当前页: ${val}`);
             this.pageNo=val;
             // this.flndAllHousingResource()
             this.display(this.bb)
@@ -370,16 +434,15 @@ export default {
         //商机管理
         flndAllBusiness(){
             this.$ajax.get(url + 'prospectiveCustomer/flndAll/'+this.pageNoBusiness+'/'+this.pageSizeBusiness).then((res) => {
-                // console.log(res)
-                this.tableDataBusiness=res.data.data.rows
-                this.totalDataNumberBusiness=res.data.data.records
+                if(res.data.status === 200){  
+                    this.tableDataBusiness=res.data.data.rows
+                    this.totalDataNumberBusiness=res.data.data.records
+                }
             })
         },handleSizeChangeBusiness(val) {
-            // console.log(`每页 ${val} 条`);
             this.pageSizeBusiness=val;
             this.flndAllBusiness()
         },handleCurrentChangeBusiness(val) {
-            // console.log(`当前页: ${val}`);
             this.pageNoBusiness=val;
 
             this.flndAllBusiness()
@@ -388,16 +451,17 @@ export default {
         //合同管理
         flndAllContract(){
             this.$ajax.get(url + 'contract/flndAll/'+this.pageNoContract+'/'+this.pageSizeContract).then((res) => {
-                // console.log(res)
+                if(res.data.status === 200){  
                 this.tableDataContract=res.data.data.rows
                 this.totalDataNumberContract=res.data.data.records
+                console.log(this.tableDataContract)
+                }
+                
             })
         },handleSizeChangeContract(val) {
-            // console.log(`每页 ${val} 条`);
             this.pageSizeContract=val;
             this.flndAllContract()
         },handleCurrentChangeContract(val) {
-            // console.log(`当前页: ${val}`);
             this.pageNoContract=val;
             this.flndAllContract()
         },
@@ -420,7 +484,6 @@ export default {
                 this.edit = true
                 this.tanchuang = "查看详情"
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
-                    console.log(res.data.data)
                     this.upload = res.data.data
                 })
             }else if(this.msg == "gengxin"){
@@ -428,10 +491,8 @@ export default {
                 this.edit = false
                 this.editOne = true
                 this.add = false
-                // console.log(this.id)
                 this.tanchuang = "更新商机"
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
-                    console.log(res.data.data)
                     this.upload = res.data.data
                 })
             }else{
@@ -453,23 +514,18 @@ export default {
         //显示房源
         display(precinct){
             this.bb = precinct
-            // console.log(this.bb)
             if (this.bb === 1){
                 this.flndAllHousingResource()
                 this.bb === 1;
-                // console.log(this.precinct)
             }else if(this.bb === 2){
                 this.bb === 2;
                 this.$ajax.get(url + 'housingResource/selectOccupancy'+this.pageNo+'/'+this.pageSize).then(res => {
-                    // console.log(res)
                     this.tableData=res.data.data.rows
                     this.totalDataNumber=res.data.data.records
                 })
             }else if(this.bb === 3){
                 this.bb === 3;
-                // console.log(this.bb)
                 this.$ajax.get(url + 'housingResource/selectUnleased'+this.pageNo+'/'+this.pageSize).then(res => {
-                    // console.log(res)
                     this.tableData=res.data.data.rows
                     this.totalDataNumber=res.data.data.records
                 })
@@ -564,7 +620,6 @@ export default {
             formData.append('file',this.file)
             formData.append('status',this.radio)
             this.$ajax.post(url + 'contract/excelImport',formData).then(res => {
-                // console.log(res)
                 if(res.data.status === 200){
                     this.$message({
                         message: '导入成功',
@@ -595,6 +650,64 @@ export default {
                 }
             })
         },
+        //房产验收
+        handleSizeChange1(val) {
+            this.pageSizeRoomStandard=val
+            this.getRoomStandard()
+        },
+        handleCurrentChange1(val) {
+            this.pageNoRoomStandard=val
+            this.getRoomStandard()
+        },
+        getRoomStandard() {
+            this.$ajax.get(url + 'roomStandard/flndAll/'+this.pageNoRoomStandard+'/'+this.pageSizeRoomStandard+'',{}).then(res => {
+                if(res.data.status === 200){  
+            this.tableDataRoomStandard = res.data.data.rows
+            res.data.data.rows.forEach((v, k) => {
+                if (v.room) {
+                if (v.room.indexOf(',') !== -1) {
+                    this.tableDataRoomStandard[k].room = v.room.split(',')[0]
+                }
+                }
+            })
+            this.totalDataNumberRoomStandard =  res.data.data.records
+                }
+            })
+        },
+        jumpHouse(index,rows){
+            let that = this;
+            that.id = this.tableDataRoomStandard[index].id;
+            this.$router.push({name: 'Test',query:{id:that.id}})
+        },
+        houseDelete(index,rows) {
+            let that = this;
+            that.id = this.tableDataRoomStandard[index].id;
+            this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+            this.$ajax.delete(url + 'roomStandard/deleteRoomStandard/' + that.id).then((res) => {
+                if (res.data.status === 200) {
+                this.getRoomStandard()
+                this.$message({
+                    message: '删除成功',
+                    type: 'success'
+                })
+                }else{
+                        this.$message({
+                        message: res.data.msg,
+                        type: 'error'
+                        })
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+                });
+        },
     //      download (data) {
     //     if (!data) {
     //         return
@@ -614,6 +727,10 @@ export default {
 			NavHeader,
 			NavBar
 		},
+}
+function rentHouse(data){
+    if(data === 0) return '可租'
+    if(data === 1) return '已租'
 }
 </script>
 <style scoped>

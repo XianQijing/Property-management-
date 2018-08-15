@@ -94,9 +94,10 @@ export default {
                 [20,50,30,54,80,33]
             ],
             meter: {
-                names:['水费','电费'],
+                names:['水费','电费',''],
                 data:[
                 [121,145,48,498,2310,565,165,1564,1020,589,1567,546],
+                [1564,497,416,445,487,408,486,897,485,1064,471,2000],
                 [1564,497,416,445,487,408,486,897,485,1064,471,2000]
                 ]
             }
@@ -549,6 +550,18 @@ export default {
                         },
                         symbolSize: 10,
                         data:this.meter.data[1]
+                    },
+                    {
+                        name:this.meter.names[2],
+                        type:'line',
+                        itemStyle:{
+                            color: '#1890ff',
+                        },
+                        lineStyle: {
+                            width:5
+                        },
+                        symbolSize: 10,
+                        data:this.meter.data[2]
                     }
                 ]
             })
@@ -557,6 +570,9 @@ export default {
                 this.meter=res.data.data;
                 var shuibiao = echarts.init(document.getElementById('shuibiao'))
                 shuibiao.setOption({
+                    legend: {
+                        data:this.meter.names
+                    },
                     series: [
                         {
                             name:this.meter.names[0],
@@ -565,6 +581,10 @@ export default {
                         {
                             name:this.meter.names[1],
                             data:this.meter.data[1]
+                        },
+                        {
+                            name:this.meter.names[2],
+                            data:this.meter.data[2]
                         }
                     ]
                 })

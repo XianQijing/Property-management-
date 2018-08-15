@@ -1,7 +1,7 @@
 <template>
     <div class="apply">
         <h3>装修申请</h3>
-        <el-form :model="detail" ref="detail" :rules="rules" label-width="130px" class="demo-detail">
+        <el-form :model="detail" ref="detail" :rules="rules" label-width="130px" class="demo-detail" :disabled="edit">
         <div class="tianjia">
             <div class="input">
                 
@@ -203,7 +203,8 @@ export default {
           principal_card:[
             { required: true, message: '请输入负责人身份证号', trigger: 'blur' },
           ]
-         }
+         },
+         edit:true
             
             // input: {
             //     name: '李文',
@@ -233,18 +234,25 @@ export default {
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.editChange(res.data.name,res.data.phone)
                 console.log(this.detail.house)
+                this.edit = true
+            })
+        }else if(this.$route.query.msg == 7){
+            this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
+                this.detail = res.data;
+                this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
+                this.editChange(res.data.name,res.data.phone)
+                console.log(this.detail.house)
+                this.edit = false
             })
         }else(
             this.datail = '',
+            this.edit = false,
             this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
                 this.options=res.data;
              })
         )
     },
     methods: {
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
        //编辑事件时弹出该客户已有的房间
     editChange(a,b){
             this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
@@ -348,39 +356,41 @@ export default {
             adornApplyvo.principal_man=this.detail.principal_man;    //施工负责人
             adornApplyvo.company=this.detail.company;    //装修公司名称
             adornApplyvo.remarks=this.detail.remarks;    //备注
-            if(this.$route.query.msg == 8){
+            if(this.$route.query.msg == 7){
                  adornApplyvo.id = this.id;
                 this.$ajax.put(url+"adornApply/update",adornApplyvo).then((res) => {
                     this.form = res.data
                     console.log(this.form);
-                     if(res.data=="seccess"){
-                          this.$message({
+                     if(res.data.status === 200){
+                         this.$message({
                                 message: '修改数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
+                        }) 
                      }
                 })
+            }else if(this.$route.query.msg == 8){
+                this.goBack()
             }else{
                 this.$ajax.post(url+"adornApply/insert",adornApplyvo).then((res) => {
                     this.form = res.data
                     console.log(this.form);
-                     if(res.data=="seccess"){
-                          this.$message({
+                     if(res.data.status === 200){
+                         this.$message({
                                 message: '新增数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
+                        }) 
                      }
                 })
             }
@@ -402,6 +412,7 @@ export default {
     background: white;
     z-index: 2000;
     width: 100%;
+    height: 100%;
 }
 .tianjia{
     display: inline-block;

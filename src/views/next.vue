@@ -5,7 +5,7 @@
     <div class="tianjia">
       <div class="input">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
-          <el-form-item label="活动区域" prop="building">
+          <el-form-item label="活动区域:" prop="building">
             <el-select v-model="ruleForm.building" placeholder="请选择活动区域" @change="buildingChange">
               <el-option v-for="(data, index) in buildingList" :key="index" :label="data.namec" :value="data.id"></el-option>
             </el-select>

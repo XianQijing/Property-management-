@@ -44,7 +44,7 @@
               <el-date-picker
                 v-model="addCustomer.birth"
                 type="date"
-                format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                format="yyyy-MM-dd"
                 placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
@@ -284,6 +284,18 @@ export default {
       this.$ajax.put(url+"owner/update",owner).then((res) => {
         this.form = res.data
         console.log(this.form);
+                  if(res.data.status === 200){
+                         this.$message({
+                                message: '修改数据成功',
+                                type: 'success'
+                            }),
+                            this.goBack()
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'error'
+                        }) 
+                 }
       })
     },
     goBack(){

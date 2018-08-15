@@ -9,7 +9,7 @@
               <el-date-picker
                 v-model="detail.day"
                 type="date"
-                format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                format="yyyy-MM-dd HH:mm:ss"
                 placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
@@ -101,18 +101,18 @@ export default {
             adornPatrol.patrolContent = this.detail.remark;
             
            this.$ajax.post(url+"adornPatrol/insert",adornPatrol).then((res) => {
-                    if(res.data=="seccess"){
-                          this.$message({
-                                message: '添加数据成功',
+                   if(res.data.status === 200){
+                         this.$message({
+                                message: '新增数据成功',
                                 type: 'success'
                             }),
                             this.goBack()
-                     }else{
-                         this.$message({
-                                message: '失败',
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
                                 type: 'error'
-                            }) 
-                     }
+                        }) 
+                 }
             })
         },
       goBack(){

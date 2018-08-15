@@ -6,6 +6,30 @@
             <div class="card row">
                 <div class="col-md-12">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
+                      <el-tab-pane label="应收费用" name="third">
+                          <div class="main">
+                              <div id="card"><button @click="feiyong3">临时费用</button><button @click="feiyong2">抄表费用</button><button class="active" @click="feiyong1">常规费用</button></div>
+                              <div id="main">
+                                <div>
+                                  <el-table :data="temporary" style="width: 100%">
+                                    <el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
+                                    <el-table-column prop="build" label="楼宇" width="180"></el-table-column>
+                                    <el-table-column prop="roomNum" label="房号"></el-table-column>
+                                    <el-table-column prop="clientName" label="租户名称" width="180"></el-table-column>
+                                    <el-table-column prop="itemName" label="收费项目" width="180"></el-table-column>
+                                    <el-table-column prop="meterName" label="仪表种类" width="180"></el-table-column>
+                                    <el-table-column prop="price" label="费用" width="180"></el-table-column>
+                                    <el-table-column prop="createTime" label="时间" width="180"></el-table-column>
+                                    <el-table-column prop="remarks" label="备注" width="180"></el-table-column>
+                                  </el-table>
+                                  <div class="fenye">
+                                    <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="currentPage2"  :page-size="pageSize2" :page-sizes="pageSizes2" layout="total, sizes, prev, pager, next, jumper" :total="totalData2">
+                                    </el-pagination>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>                 
+                        </el-tab-pane>
                         <el-tab-pane label="收费参数" name="first">
                             <div class="main">
 								<button class="add" @click="addNewProject">新增收费项目</button>
@@ -38,7 +62,7 @@
 							</div>
                         </el-tab-pane>
 
-                        <el-tab-pane label="仪表管理">
+                        <el-tab-pane label="抄表录入">
 
                              <div class="main">
 								<button class="add" @click="luru('','','add')">录入数据</button>
@@ -68,32 +92,7 @@
 							</div>                 
                         </el-tab-pane>
 
-                        <el-tab-pane label="应收费用">
-
-                            <div class="main">
-                                <div id="card"><button @click="feiyong3">临时费用</button><button @click="feiyong2">抄表费用</button><button class="active" @click="feiyong1">常规费用</button></div>
-                                <div id="main">
-			                    <div>
-								<el-table :data="temporary" style="width: 100%">
-									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
-									<el-table-column prop="build" label="楼宇" width="180"></el-table-column>
-									<el-table-column prop="roomNum" label="房号"></el-table-column>
-                                    <el-table-column prop="clientName" label="租户名称" width="180"></el-table-column>
-                                    <el-table-column prop="itemName" label="收费项目" width="180"></el-table-column>
-                                    <el-table-column prop="meterName" label="仪表种类" width="180"></el-table-column>
-                                    <el-table-column prop="price" label="费用" width="180"></el-table-column>
-                                    <el-table-column prop="createTime" label="时间" width="180"></el-table-column>
-                                    <el-table-column prop="remarks" label="备注" width="180"></el-table-column>
-								</el-table>
-                                <div class="fenye">
-                                    <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="currentPage2"  :page-size="pageSize2" :page-sizes="pageSizes2" layout="total, sizes, prev, pager, next, jumper" :total="totalData2">
-
-                                    </el-pagination>
-                                </div>
-                                </div>
-                            </div>
-							</div>                 
-                        </el-tab-pane>
+                        
                     </el-tabs>
                 </div>
             </div>
@@ -286,26 +285,14 @@ export default {
       changeOne: false,
       name: "新建",
       modify: false,
-      activeName: "first",
+      activeName: "third",
       //收费参数
       charge: [],
       ceshi: '2018-08-05 17:04:45',
       //仪表管理
       meter: [],
       //应收费用
-      temporary: [
-        {
-          houseType: "sb",
-          build: "15946907569",
-          roomNumber: "gdfg",
-          name: "门面",
-          chargeProject: "023",
-          meter: "125",
-          charge: "200",
-          time: "2018.7.14",
-          remarks: ""
-        }
-      ],
+      temporary: [],
       //收费参数-新增
       add: {
         name: "",
@@ -335,87 +322,8 @@ export default {
         remarks: "",
         time: ""
       },
-      options: [
-          {
-          value: 'bangongqu',
-          label: '办公区',
-          children: [{
-              value: 'Azuo',
-              label: 'A座',
-              children: [{
-                value: '101',
-                label: '101'
-              }, {
-                value: '102',
-                label: '102'
-              }, {
-                value: '103',
-                label: '103'
-              }, {
-                value: '104',
-                label: '104'
-              },
-              {
-                value: '105',
-                label: '105'
-              }]
-          }, 
-          {
-            value: 'Bzuo',
-            label: 'B座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          },{
-            value: 'Czuo',
-            label: 'C座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          }]
-        },{
-          value: 'yanjiedianpu',
-          label: '沿街店铺',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
-        }],
-        name:"录入",
+      options: [],
+      name:"录入",
       charges:[],
       //仪表管理-编辑
       changedata: {
@@ -440,7 +348,7 @@ export default {
     if(this.$route.query.tabPane){
       this.activeName = this.$route.query.tabPane
     }else{
-      this.activeName = 'first'
+      this.activeName = 'third'
     }
   },
 
