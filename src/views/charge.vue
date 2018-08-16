@@ -357,27 +357,19 @@ export default {
     changePosition() {
     },
     handleClick(tab, event) {
-      console.log(tab, event);
+      // console.log(tab, event);
     },
     
     handleSizeChange(val) {
       this.pageSize = val;
       this.getCharge();
     },
-    handleCurrentChange(val) {
-      this.currentPage = val;
-      this.getCharge();
-    },
-
+    handleCurrentChange(val) {},
     handleSizeChange1(val) {
       this.pageSize1 = val;
       this.getMeter();
     },
-    handleCurrentChange1(val) {
-      this.currentPage1 = val;
-      this.getMeter();
-    },
-
+    handleCurrentChange1(val) {},
     handleSizeChange2(val) {
       this.pageSize2 = val;
       this.Cost();

@@ -13,7 +13,11 @@
 								    <!-- <router-view class="rent_edit"></router-view> -->
 								</div>
 								<router-link :to="{name: 'Rent_addhouse',query:{msg:'tianjia'}}"><button class="add">添加房源</button></router-link>
-                                <div class="fenye" style="display:inline-block" id="btn"><button @click="display(1)" class="active">全部数据</button><button @click="display(2)">只显示已租数据</button><button @click="display(3)">只显示未租数据</button></div>
+                                <div class="fenye" style="display:inline-block" id="btn">
+                                    <button @click="display(1)" class="active">全部数据</button>
+                                    <button @click="display(2)">只显示已租数据</button>
+                                    <button @click="display(3)">只显示未租数据</button>
+                                </div>
 								<el-table :data="tableData" style="width: 100%">
 									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
 									<el-table-column prop="buildinges.namec" label="楼宇" width="180"></el-table-column>
@@ -724,9 +728,15 @@ export default {
         
     },
     components: {
-			NavHeader,
-			NavBar
-		},
+        NavHeader,
+        NavBar
+    },
+    filters: {
+    }
+}
+function status (data) {
+    if (data === 0) return '未预定'
+    if (data === 1) return '已预订'
 }
 function rentHouse(data){
     if(data === 0) return '可租'

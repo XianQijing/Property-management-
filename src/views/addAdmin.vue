@@ -138,7 +138,7 @@ export default {
       this.edit = true
       // GET /precinct/flndById/{id}/{page}/{pageSize
       this.$ajax.get(url+ 'precinct/flndById/' + this.$route.query.id).then(res => {
-        console.log(res.data.data)
+        // console.log(res.data.data)
         this.ruleForm = res.data.data
         
         this.ruleForm.region = res.data.data.region.split(',').map(Number)

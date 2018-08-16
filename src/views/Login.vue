@@ -50,7 +50,11 @@
 			sumbitLogin() {
 				var remember = document.getElementById('remember')
 				if(this.phone == "" || this.password == "") {
-					alert("请输入用户名或密码")
+					// alert("请输入用户名或密码")
+					this.$message({
+						message: '请输入用户名或密码',
+						type: 'error'
+					})
 				} else {
 					/*接口请求*/
 					this.$ajax.post(url + 'login/login_in', qs.stringify({

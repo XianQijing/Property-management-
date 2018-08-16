@@ -119,16 +119,16 @@ export default {
         },
     methods: {
         changePosition() {
-			console.log(this.position)
+			// console.log(this.position)
 		},
 		handleClick(tab, event) {
-			console.log(tab, event);
+			// console.log(tab, event);
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            // console.log(`每页 ${val} 条`);
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            // console.log(`当前页: ${val}`);
         },
         //上半年空置率
         initNullPrevEchats(){
@@ -169,7 +169,7 @@ export default {
             },]
             })
             this.$ajax.get(url + 'report/yearRentNull/0', '').then((res) => {
-				console.log(res)
+				// console.log(res)
                 this.chartxia=res.data.data;
                 var myChart1 = echarts.init(document.getElementById('chart1'));
                 myChart1.setOption({
@@ -226,7 +226,7 @@ export default {
             },]
             })
             this.$ajax.get(url + 'report/yearRentNull/1', '').then((res) => {
-						console.log(res)
+						// console.log(res)
                 var myChart = echarts.init(document.getElementById('chart2'));
                         this.chart=res.data.data;
                 myChart.setOption({
@@ -278,7 +278,7 @@ export default {
                 },]
             })
             this.$ajax.get(url + 'report/analysisOfLease').then((res) => {
-                console.log(res.data.data);
+                // console.log(res.data.data);
                 var rent = echarts.init(document.getElementById('rent'));
                 rent.setOption({
                     series: [
@@ -382,7 +382,7 @@ export default {
             ]
             })
             this.$ajax.get(url + 'report/incomeAnalysisYear/0', '').then((res) => {
-                console.log(res)
+                // console.log(res)
                 this.incomeData=res.data.data;
                 var shouru = echarts.init(document.getElementById('shouru'));
                 shouru.setOption({
@@ -481,7 +481,7 @@ export default {
             ]
             })
             this.$ajax.get(url + 'report/incomeAnalysisYear/1', '').then((res) => {
-                console.log(res)
+                // console.log(res)
                 this.incomeData=res.data.data;
                 var xc = echarts.init(document.getElementById('xc'));
                 xc.setOption({
@@ -566,7 +566,7 @@ export default {
                 ]
             })
             this.$ajax.get(url + 'report/meterReadingAnalysis', '').then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 this.meter=res.data.data;
                 var shuibiao = echarts.init(document.getElementById('shuibiao'))
                 shuibiao.setOption({

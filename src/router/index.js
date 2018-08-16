@@ -14,6 +14,7 @@ import RelationshipAdd from '@/views/relationshipAdd'
 import Rent from '@/views/rent'
 import RentAddhouse from '@/views/rent_addhouse'
 import RentContractChange from '@/views/rent_contract_change'
+import Supplement from '@/views/Supplement'
 import Charge from '@/views/charge'
 import Support from '@/views/support'
 import Apply from '@/views/apply'
@@ -25,6 +26,7 @@ import Test from '@/views/test'
 import AddCustomer from '@/views/addCustomer'
 import AddAdmin from '@/views/addAdmin'
 import Notice from '@/views/notice'
+import Page from '@/components/PermisionPage'
 
 Vue.use(Router)
 
@@ -97,9 +99,16 @@ export default new Router({
     },
     // 基础管理
     {
-      path: '/department',
+      path: '/Department',
       name: 'Department',
-      component: Department
+      component: Department,
+      children: [
+        {
+          path: 'Page',
+          name: 'Page',
+          component: Page
+        }
+      ]
     },
     // 房产管理
     {
@@ -158,6 +167,11 @@ export default new Router({
           path: 'Rent_contract_change',
           name: 'Rent_contract_change',
           component: RentContractChange
+        },
+        {
+          path: 'Supplement',
+          name: 'Supplement',
+          component: Supplement
         }
       ]
     },
