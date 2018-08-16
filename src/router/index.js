@@ -27,6 +27,7 @@ import AddCustomer from '@/views/addCustomer'
 import AddAdmin from '@/views/addAdmin'
 import Notice from '@/views/notice'
 import Page from '@/components/PermisionPage'
+import Parking from '@/views/parking/parking'
 
 Vue.use(Router)
 
@@ -47,6 +48,11 @@ export default new Router({
     //   meta: {
     //     requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
     // },
+    },
+    {
+      path: '/parking',
+      name: 'Parking',
+      component: Parking,
     },
     // 客户关系
     {

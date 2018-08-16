@@ -368,7 +368,7 @@ export default {
         },
         //快捷工作台
         countWorkMethod() {
-            this.$ajax.get(url + "/index/countWork").then(res => {
+            this.$ajax.get(url + "index/countWork").then(res => {
                 // console.log(res.data);
                 this.countWork = res.data;
             });

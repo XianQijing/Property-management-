@@ -156,16 +156,16 @@
 							</div>
             </el-tab-pane>
 
-						<el-tab-pane label="车辆管理" name="fourth">
+						<!-- <el-tab-pane label="车辆管理" name="fourth">
 							<div class="main">
 								<div v-if="tabIndex === '3'">
-									<router-view class="addCar"></router-view>
+									<router-view class="addCar"></router-view> -->
 									<!-- <router-view class="carCharge"></router-view> -->
-                </div>
-								<router-link :to="{name: 'AddCar',query:{id:'ww'}}"><button class="add">+ 添加</button></router-link>
+                <!-- </div> -->
+								<!-- <router-link :to="{name: 'AddCar',query:{id:'ww'}}"><button class="add">+ 添加</button></router-link> -->
                 <!-- <router-link :to="{name: 'Daoru'}"><button class="add">导入</button></router-link> -->
                 <!-- <button class="cash">+ 添加收费标准</button> -->
-                <button class="delect" id="carDelete" @click="allDeletelou('car')">删除</button>
+                <!-- <button class="delect" id="carDelete" @click="allDeletelou('car')">删除</button>
 								<el-table :data="car" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="parkingSpots.plateNumbers" label="车辆编号" width="180"></el-table-column>
@@ -173,19 +173,19 @@
 									<el-table-column prop="carSeatNumber" label="车位号" width="180"></el-table-column>
 									<el-table-column prop="parkingType" label="车位类型"></el-table-column>
 									<el-table-column prop="parkingState" label="车位状态"></el-table-column>
-									<el-table-column prop="parkingArea" label="车位面积"></el-table-column>
+									<el-table-column prop="parkingArea" label="车位面积"></el-table-column> -->
 								  <!-- <el-table-column prop="charge" label="收费标准个数"></el-table-column> -->
-									<el-table-column prop="comment" label="备注"></el-table-column>
+									<!-- <el-table-column prop="comment" label="备注"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
 												<span class="el-dropdown-link">
                           操作<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
-												<el-dropdown-menu slot="dropdown">
+												<el-dropdown-menu slot="dropdown"> -->
 													<!-- <el-dropdown-item>绑定住户</el-dropdown-item> -->
 													<!-- <el-dropdown-item><router-link :to="{name: 'CarCharge'}" style="color: #606266;">添加收费标准</router-link></el-dropdown-item> -->
-													<span @click="jumpCar(scope.$index, car)"><el-dropdown-item>编辑 / 详情</el-dropdown-item></span>
+													<!-- <span @click="jumpCar(scope.$index, car)"><el-dropdown-item>编辑 / 详情</el-dropdown-item></span>
 													<el-dropdown-item><button @click="carDelete(scope.$index, car)">删除</button></el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -204,7 +204,7 @@
 									</el-pagination>
 								</div>
 							</div>
-						</el-tab-pane>
+						</el-tab-pane> -->
 
 						<!-- <el-tab-pane label="房产验收" name="fifth">
 							<div class="main">
@@ -343,11 +343,11 @@ export default {
       totalDataNumberRoom: 100,//数据的总数,
       
       //车辆管理
-      pageNoCar: 1,
-      pageSizeCar: 10,
-      pageSizesListCar: [10, 20, 30, 40, 50],
-      car: [],
-      totalDataNumberCar: 100,//数据的总数,
+      // pageNoCar: 1,
+      // pageSizeCar: 10,
+      // pageSizesListCar: [10, 20, 30, 40, 50],
+      // car: [],
+      // totalDataNumberCar: 100,//数据的总数,
       tabIndex: '0',
       // 楼宇id的集合
       louIdArr: []
@@ -363,7 +363,7 @@ export default {
     this.getRoom()
     this.getRoomStandard()
     this.getBuild()
-    this.getCar()
+    // this.getCar()
     if(this.$route.query.tabPane){
       this.activeName = this.$route.query.tabPane
     }else{
@@ -412,22 +412,23 @@ export default {
                 })
               }
             })
-          } else if (judge === 'car') {
-            this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + this.louIdArr).then((res) => {
-              if (res.data.status === 200) {
-                this.getCar()
-                this.$message({
-                  message: '删除成功',
-                  type: 'success'
-                })
-              }else{
-                this.$message({
-                  message: res.data.msg,
-                  type: 'error'
-                })
-              }
-            })
           }
+          // } else if (judge === 'car') {
+          //   this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + this.louIdArr).then((res) => {
+          //     if (res.data.status === 200) {
+          //       this.getCar()
+          //       this.$message({
+          //         message: '删除成功',
+          //         type: 'success'
+          //       })
+          //     }else{
+          //       this.$message({
+          //         message: res.data.msg,
+          //         type: 'error'
+          //       })
+          //     }
+          //   })
+          // }
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -567,24 +568,24 @@ export default {
           });          
         });
     },
-    getCar(){
-      this.$ajax.get(url + 'cellparkingRelatinship/selectCellParkingRelationship/'+this.pageNoCar+'/'+this.pageSizeCar+'',{
-        params:{
-          'token': sessionStorage.getItem('userId'),
-        }
-      }).then((res) => {
-        this.car = res.data.data.rows
-        this.totalDataNumberCar =  res.data.data.records
-      })
-    },
-    carSizeChange(val) {
-      this.pageSizeCar=val
-      this.getCar()
-    },
-    carCurrentChange(val) {
-      this.pageNoCar=val
-      this.getCar()
-    },
+    // getCar(){
+    //   this.$ajax.get(url + 'cellparkingRelatinship/selectCellParkingRelationship/'+this.pageNoCar+'/'+this.pageSizeCar+'',{
+    //     params:{
+    //       'token': sessionStorage.getItem('userId'),
+    //     }
+    //   }).then((res) => {
+    //     this.car = res.data.data.rows
+    //     this.totalDataNumberCar =  res.data.data.records
+    //   })
+    // },
+    // carSizeChange(val) {
+    //   this.pageSizeCar=val
+    //   this.getCar()
+    // },
+    // carCurrentChange(val) {
+    //   this.pageNoCar=val
+    //   this.getCar()
+    // },
 
     //获取room
     getRoom() {
@@ -662,40 +663,40 @@ export default {
         });
     },
     //跳转车辆
-    jumpCar(index,rows){
-      let that = this;
-      that.id = this.car[index].id;
-      this.$router.push({name: 'AddCar',query:{id:that.id}})
-    },
-    carDelete (index,rows) {
-      let that = this;
-      that.id = this.car[index].id;
-       this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-      this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + that.id).then((res) => {
-        if (res.data.status === 200) {
-          this.getCar()
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-        }else{
-                this.$message({
-                  message: res.data.msg,
-                  type: 'error'
-                })
-              }
-      })
-       }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-    },
+    // jumpCar(index,rows){
+    //   let that = this;
+    //   that.id = this.car[index].id;
+    //   this.$router.push({name: 'AddCar',query:{id:that.id}})
+    // },
+    // carDelete (index,rows) {
+    //   let that = this;
+    //   that.id = this.car[index].id;
+    //    this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //       type: 'warning'
+    //     }).then(() => {
+    //   this.$ajax.delete(url + 'cellparkingRelatinship/deleteCarport/' + that.id).then((res) => {
+    //     if (res.data.status === 200) {
+    //       this.getCar()
+    //       this.$message({
+    //         message: '删除成功',
+    //         type: 'success'
+    //       })
+    //     }else{
+    //             this.$message({
+    //               message: res.data.msg,
+    //               type: 'error'
+    //             })
+    //           }
+    //   })
+    //    }).catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       });          
+    //     });
+    // },
     // //跳转房产验收
     // jumpHouse(index,rows){
     //   let that = this;
@@ -819,8 +820,8 @@ button {
 		background-color: rgb(245, 245, 245);
 		width: 63px;
 		height: 31px;
-        margin-right: 10px;
-        margin-top: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
 		margin-bottom: 20px;
 	}
 	
