@@ -25,7 +25,7 @@
 									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
 									<el-table-column prop="buildingName" label="状态" :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]" :filter-method="filterTag" filter-placement="bottom-end">
 										<template slot-scope="scope">
-											<el-tag :type="scope.row.tag === '家' ? 'primary' : 'success'" disable-transitions>{{scope.row.tag}}</el-tag>
+											<el-tag :type="scope.row.label === '家' ? 'primary' : 'success'" disable-transitions>{{scope.row.label}}</el-tag>
 										</template>
 									</el-table-column>
 									<!-- <el-table-column prop="remarks" label="备注"></el-table-column> -->
@@ -89,20 +89,13 @@
 								<button class="add"  @click="addDuanxin(1)">添加</button>
 								<button class="add"  @click="addDuanxin(2)">发送</button>
 								<el-table :data="template" style="width: 100%">
-									<el-table-column prop="titleName" label="标题" width="280"></el-table-column>
-									<el-table-column prop="content" label="内容" width="480"></el-table-column>
-									<el-table-column prop="signature" label="签名" width="280"></el-table-column>
+									<el-table-column prop="titleName" label="标题"></el-table-column>
+									<el-table-column prop="content" label="内容"></el-table-column>
+									<el-table-column prop="signature" label="签名"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
-												<el-dropdown-menu slot="dropdown">
-													<span @click="noteTemplateEdit(scope.$index,template)"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<span @click="noteTemplateDelete(scope.$index, template)"><el-dropdown-item>删除</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
+											<button class="operation" @click="noteTemplateEdit(scope.$index,template)">编辑</button>
+											<button class="operation" @click="noteTemplateDelete(scope.$index, template)">删除</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -751,11 +744,12 @@
 			},
 			//获取base
 			getbase() {
-				this.$ajax.get(url+'owner/condition/1/1/'+this.pageNo+'/'+this.pageSize).then((res) => {
+				this.$ajax.get(url+'owner/condition/'+this.pageNo+'/'+this.pageSize).then((res) => {
 					if(res.data.status === 200){
 					this.base = res.data.data.rows
 					this.totalDataNumber = res.data.data.records
 					console.log(res.data.data)
+
 					}
 				})
 			},
@@ -912,12 +906,13 @@
 			},
 		//编辑短信弹窗
 		noteTemplateEdit(index,rows){
-                let that = this;
+				let that = this;
+				this.msg = 1
 				that.id = this.template[index].id;
 				this.modify = true,
 				this.bianji = true,
 				this.tianjia = false
-                if(that.id !== ''){
+                if(that.id){
                     this.name = '编辑短信模板'
                     this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
 						this.addMessage.title = birthDay(res.data.title);
@@ -952,7 +947,6 @@
 			noteTemplateDelete(index,rows) {
 				let that = this;
 				that.id = this.template[index].id;
-				rows.splice(index, 1);
 				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -960,7 +954,7 @@
 					}).then(() => {
 				this.$ajax.delete(url+'noteTemplate/del/' + this.id).then((res) => {
 					if(res.status === 200){
-						this.getMoveOut()
+						this.gettemplate()
 						this.$message({
 									type: 'success',
 									message: '删除成功!'
@@ -1024,7 +1018,6 @@
 			getinandcome() {
 				this.$ajax.get(url+'visit/record/'+this.pageNoInandcome+'/'+this.pageSizeInandcome).then((res) => {
 					if(res.data.status === 200){
-						console.log(res.data.data)
 					this.inandcome = res.data.data.rows
 					this.totalDataNumberinandcome = res.data.data.records
 					}else{
@@ -1433,5 +1426,13 @@ a{
 }
 .footer {
 	float: right;
+}
+.operation{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #A1CEFF;
+	background: white;
+	color: #A1CEFF;
 }
 </style>
