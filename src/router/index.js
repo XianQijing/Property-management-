@@ -26,7 +26,7 @@ import Test from '@/views/test'
 import AddCustomer from '@/views/addCustomer'
 import AddAdmin from '@/views/addAdmin'
 import Notice from '@/views/notice'
-import Page from '@/components/page'
+import Page from '@/components/PermisionPage'
 
 Vue.use(Router)
 

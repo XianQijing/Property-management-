@@ -67,25 +67,25 @@
             <el-table-column label="名称" prop="name" width="550"></el-table-column>
             <el-table-column align="center">
               <template slot-scope="scope">
-                <el-checkbox v-if="scope.row.fp[0]" v-model="scope.row.fp[0].query[0].status"  @change="boxchecked($event)"></el-checkbox>
+                <el-checkbox v-if="scope.row.fp[0]" v-model="scope.row.fp[0].status"  @change="boxchecked($event)"></el-checkbox>
                 <el-checkbox v-if="!scope.row.fp[0]" disabled></el-checkbox>
               </template>
             </el-table-column>
             <el-table-column align="center">
               <template slot-scope="scope">
-                <el-checkbox v-if="scope.row.fp[1]" v-model="scope.row.fp[1].add[0].status"  @change="boxchecked($event)"></el-checkbox>
+                <el-checkbox v-if="scope.row.fp[1]" v-model="scope.row.fp[1].status"  @change="boxchecked($event)"></el-checkbox>
                 <el-checkbox v-if="!scope.row.fp[1]" disabled></el-checkbox>
               </template>
             </el-table-column>
             <el-table-column align="center">
               <template slot-scope="scope">
-                <el-checkbox v-if="scope.row.fp[2]" v-model="scope.row.fp[2].delete[0].status"  @change="boxchecked($event)"></el-checkbox>
+                <el-checkbox v-if="scope.row.fp[2]" v-model="scope.row.fp[2].status"  @change="boxchecked($event)"></el-checkbox>
                 <el-checkbox v-if="!scope.row.fp[2]" disabled></el-checkbox>
               </template>
             </el-table-column>
             <el-table-column align="center">
               <template slot-scope="scope">
-                <el-checkbox v-if="scope.row.fp[3]" v-model="scope.row.fp[3].update[0].status"  @change="boxchecked($event)"></el-checkbox>
+                <el-checkbox v-if="scope.row.fp[3]" v-model="scope.row.fp[3].status"  @change="boxchecked($event)"></el-checkbox>
                 <el-checkbox v-if="!scope.row.fp[3]" disabled></el-checkbox>
               </template>
             </el-table-column>
@@ -315,28 +315,28 @@ export default {
       if (which === 'all') {} else if (which === 'add') {
         if (event === true) {
           scope.row.object.forEach(v => {
-            if (v.fp[1]) {
-              v.fp[1].add[0].status = true
-            }
+            // if (v.fp[1]) {
+            //   v.fp[1].add[0].status = true
+            // }
           })
         } else {
           scope.row.object.forEach(v => {
-            if (v.fp[1]) {
-              v.fp[1].add[0].status = false
-            }
+            // if (v.fp[1]) {
+            //   v.fp[1].add[0].status = false
+            // }
           })
         }
       } else if (which === 'look') {
         if (event === true) {
           scope.row.object.forEach(v => {
             if (v.fp[0]) {
-              v.fp[0].query[0].status = true
+              // v.fp[0].query[0].status = true
             }
           })
         } else {
           scope.row.object.forEach(v => {
             if (v.fp[0]) {
-              v.fp[0].query[0].status = false
+              // v.fp[0].query[0].status = false
             }
           })
         }
@@ -344,13 +344,13 @@ export default {
         if (event === true) {
           scope.row.object.forEach(v => {
             if (v.fp[2]) {
-              v.fp[2].delete[0].status = true
+              // v.fp[2].delete[0].status = true
             }
           })
         } else {
           scope.row.object.forEach(v => {
             if (v.fp[2]) {
-              v.fp[2].delete[0].status = false
+              // v.fp[2].delete[0].status = false
             }
           })
         }
@@ -358,14 +358,22 @@ export default {
         if (event === true) {
           scope.row.object.forEach(v => {
             if (v.fp[3]) {
-              v.fp[3].update[0].status = true
+              // v.fp[3].update[0].status = true
             }
           })
         } else {
           scope.row.object.forEach(v => {
             if (v.fp[3]) {
-              v.fp[3].update[0].status = false
+              // v.fp[3].update[0].status = false
             }
+          })
+        }
+      } else if (which === 'all') {
+        if (event === true) {
+          scope.row.object.forEach(v => {
+          })
+        } else {
+          scope.row.object.forEach(v => {
           })
         }
       }
