@@ -7,7 +7,7 @@
         <div class="col-md-12">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="房产与客户" name="first">
-              <house-and-cust/>
+              <HouseAndCust/>
             </el-tab-pane>
 
             <el-tab-pane label="租赁分析">
@@ -26,9 +26,9 @@
 </template>
 
 <script>
-	import NavHeader from '@/components/NavHeader'
-  import NavBar from '@/components/NavBar'
-  import HouseAndCust from './houseAndCust.vue'
+import NavHeader from '@/components/NavHeader'
+import NavBar from '@/components/NavBar'
+import HouseAndCust from './houseAndCust.vue'
 export default {
   name:'support',
   data(){
@@ -40,19 +40,30 @@ export default {
     NavHeader,
     NavBar,
     HouseAndCust
-      },
-  methods: {
-      changePosition() {
-    console.log(this.position)
   },
-  handleClick(tab, event) {
-    console.log(tab, event);
-      },
+  methods: {
+    changePosition() {
+      console.log(this.position)
+    },
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
   }
 }
 
 </script>
+
 <style scoped>
+.support {
+  height: 100%;
+  overflow: hidden;
+}
+.support .navHeader {
+  height: 67px;
+}
+.support .card {
+  height: 100%;
+}
 .container {
 		width: 88%;
 		position: relative;
@@ -60,63 +71,22 @@ export default {
 		background-color: #eeeeee;
 		padding: 0;
     min-width: 1000px;
+    height: 100%;
 	}
+  .col-md-12 {
+    height: 100%;
+  }
 
 .support {
 	background: #eeeeee;
 	}
 
 .card {
-		margin: 0;
-		background-color: white;
-		width: 99%;
-		margin: 10px 10px 0 5px;
-	}
-
-/* .add {
-		color: white;
-		background-color: #32a8ee;
-		font-size: 14px;
-		font-family: "Microsoft YaHei";
-		border: 1px solid #32a8ee;
-		border-radius: 5px;
-		width: 100px;
-		height: 31px;
-        margin-right: 10px;
-        margin-top: 10px;
-		margin-bottom: 20px;
-    }
-
-    .fenye {
-		float: right;
-		padding: 20px 0;
-        display: block!important;
-	}
-
-    .main {
-		padding: 0 40px 0 50px;
-		width: 99%;
-		margin-left: 2px;
-	}
-.confirm {
-    background-color: #32a8ee;
-    border: #32a8ee;
-    color: white;
-    border-radius: 5px;
+  margin: 0;
+  background-color: white;
+  width: 99%;
+  margin: 10px 10px 0 5px;
 }
-
-.cancel {
-    background-color: white;
-    border: 1px solid rgb(217, 217, 217);
-    color: rgb(138, 138, 138);
-    border-radius: 5px;
-}
-
-.active {
-    background: white !important;
-} */
-
-
 
 .main1 {
     margin: 10vh 10vw;
