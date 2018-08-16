@@ -7,9 +7,9 @@
 			<li><router-link to="/house"><img src=".././assets/kehu.png">房产管理</router-link></li>
 			<li><router-link to="/relationship"><img src=".././assets/hetong.png">客户关系</router-link></li>
 			<li><router-link to="/rent"><img src=".././assets/zulin.png">租赁管理</router-link></li>
-			<li><router-link to="/charge"><img src=".././assets/renshi.png">收费管理</router-link></li>
 			<li><router-link to="/support"><img src=".././assets/xitong.png">决策支持</router-link></li>
-			<li><router-link to=""><img src=".././assets/tingche.png">停车管理</router-link></li>
+			<li><router-link to="/charge"><img src=".././assets/renshi.png">收费管理</router-link></li>
+			<li><router-link to="/parking"><img src=".././assets/tingche.png">停车管理</router-link></li>
 			<li><router-link to=""><img src=".././assets/gongzhonghao.png">微信公众号</router-link></li>
 		</ul>
 	</aside>

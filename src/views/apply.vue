@@ -14,7 +14,7 @@
                     <el-form-item label="负责人电话:" prop="principal_phone">
                         <el-input v-model="detail.principal_phone" clearable></el-input>
                     </el-form-item>
-                    <div class="zhuangxiu">
+
                     <el-form-item label="开始装修时间:">
                         <el-date-picker
 							v-model="detail.startTime"
@@ -23,17 +23,9 @@
 							placeholder="选择日期时间">
 						</el-date-picker>
                     </el-form-item>
-                    </div>
-                    <div class="zhuangxiu">
-                        <el-form-item label="预估结束时间:">
-                            <el-date-picker
-							v-model="detail.endTime"
-							type="datetime"
-                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
-							placeholder="选择日期时间">
-						</el-date-picker>
-                    </el-form-item>
-                    </div>
+
+                        
+
 
                     <el-form-item label="装修性质:">
                          <el-radio-group v-model="detail.natureName">
@@ -54,14 +46,19 @@
                    <el-form-item label="手机号：" prop="phone">
                         <el-input v-model="detail.phone" v-on:blur="transform" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="类型：">
-                        <el-input v-model="detail.leaseType" clearable></el-input>
-                    </el-form-item>
                     <el-form-item label="装修保证金：">
                         <el-input v-model="detail.cash_deposit" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="负责人身份证号:" prop="principal_card">
                         <el-input v-model="detail.principal_card" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="预估结束时间:">
+                            <el-date-picker
+							v-model="detail.endTime"
+							type="datetime"
+                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+							placeholder="选择日期时间">
+						</el-date-picker>
                     </el-form-item>
                     <el-form-item label="施工负责人:">
                         <el-input v-model="detail.principal_man" clearable></el-input>

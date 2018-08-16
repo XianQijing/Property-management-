@@ -172,7 +172,7 @@
                 width="30%" :model="entrydata">
                 <div class="tanchuang">
                     <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
-                    <el-form-item label="关联房屋：" prop="house">
+                    <el-form-item label="关联租户：" prop="house">
                     <el-cascader expand-trigger="hover" :options="options" v-model="entrydata.houseType"></el-cascader>
                     </el-form-item>
                         <el-form-item label="收费项目:">

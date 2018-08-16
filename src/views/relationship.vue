@@ -16,14 +16,19 @@
 								<!-- <button class="delect" id="delect">迁出</button> -->
 								<el-table :data="base" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="name" label="姓名" width="180"></el-table-column>
+									<el-table-column prop="name" label="姓名"></el-table-column>
 									<el-table-column prop="phone" label="手机号" width="180"></el-table-column>
 									<el-table-column prop="sexs" label="性别"></el-table-column>
-									<el-table-column prop="wechat" label="微信号"></el-table-column>
+									<!-- <el-table-column prop="wechat" label="微信号"></el-table-column> -->
 									<el-table-column prop="roomNumber" label="房间号"></el-table-column>
-									<el-table-column prop="leaseType" label="租用类型"></el-table-column>
+									<!-- <el-table-column prop="leaseType" label="租用类型"></el-table-column> -->
 									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
-									<el-table-column prop="remarks" label="备注"></el-table-column>
+									<el-table-column prop="buildingName" label="状态" :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]" :filter-method="filterTag" filter-placement="bottom-end">
+										<template slot-scope="scope">
+											<el-tag :type="scope.row.tag === '家' ? 'primary' : 'success'" disable-transitions>{{scope.row.tag}}</el-tag>
+										</template>
+									</el-table-column>
+									<!-- <el-table-column prop="remarks" label="备注"></el-table-column> -->
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -47,7 +52,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="已迁出" name="second">
+						<!-- <el-tab-pane label="已迁出" name="second">
                             <div class="main">
 								<div  v-if="tabIndex === '1'">
 								<router-view class="householdDetail"></router-view>
@@ -60,10 +65,10 @@
 									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
 									<el-table-column prop="roomNumber" label="房号" ></el-table-column>
 									<el-table-column prop="inTime" label="迁入时间"></el-table-column>
-									<el-table-column prop="outTime" label="迁出时间"></el-table-column>
+									<el-table-column prop="outTime" label="迁出时间"></el-table-column> -->
                                     <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column> -->
                                     <!-- <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
-									<el-table-column>
+									<!-- <el-table-column>
 										<template slot-scope="scope">
 												<span style="color:rgb(50, 168, 238)" @click="details(scope.$index, MoveOut)">
                                                     查看详情
@@ -76,7 +81,7 @@
 									</el-pagination>
 								</div>
 							</div>
-                        </el-tab-pane>
+                        </el-tab-pane> -->
 
 						<el-tab-pane label="添加短信模板" name="third">
 							<div class="main">
@@ -114,11 +119,11 @@
 								
 								<button style="visibility: hidden;">添加</button>
 								<el-table :data="sended" style="width: 100%">
-									<el-table-column prop="name" label="姓名" width="180"></el-table-column>
-									<el-table-column prop="phone" label="手机号" width="180"></el-table-column>
-									<el-table-column prop="titleName" label="短信标题" width="180"></el-table-column>
-									<el-table-column prop="content" label="短信内容" width="480"></el-table-column>
-									<el-table-column prop="sendTime" label="发送时间" width="200"  fixed="right"></el-table-column>
+									<el-table-column prop="name" label="姓名"></el-table-column>
+									<el-table-column prop="phone" label="手机号"></el-table-column>
+									<el-table-column prop="titleName" label="短信标题"></el-table-column>
+									<el-table-column prop="content" label="短信内容" ></el-table-column>
+									<el-table-column prop="sendTime" label="发送时间" fixed="right"></el-table-column>
 								</el-table>
 								<div class="fenye">
 									<el-pagination @size-change="handleSizeChangesended" @current-change="handleCurrentChangesended" :current-page="pageNoSended"  :page-size="pageSizeSended" :page-sizes="pageSizesListSended" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumbersended">
@@ -132,11 +137,13 @@
 								
 								<button class="add" @click="dialogVisible = true">添加</button>
 								<el-table :data="inandcome" style="width: 100%">
-									<el-table-column prop="name" label="姓名" ></el-table-column>
-									<el-table-column prop="phone" label="手机号"></el-table-column>
-									<el-table-column prop="reason" label="来访因由"></el-table-column>
+									<el-table-column prop="id" label="卡号" ></el-table-column>
+									<el-table-column prop="name" label="领取人" ></el-table-column>
+									<el-table-column prop="phone" label="联系方式"></el-table-column>
 									<el-table-column prop="remarks" label="备注"></el-table-column>
-									<el-table-column prop="times" label="来访时间"  fixed="right"></el-table-column>
+									<el-table-column prop="useTime" label="使用时间"></el-table-column>
+									<el-table-column prop="times" label="领取时间"></el-table-column>
+									
 								</el-table>
 								<div class="fenye">
 									<el-pagination @size-change="handleSizeChangeinandcome" @current-change="handleCurrentChangeinandcome" :current-page="pageNoInandcome"  :page-size="pageSizeInandcome" :page-sizes="pageSizesListInandcome" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumberinandcome">
@@ -148,7 +155,7 @@
 
 						<el-tab-pane label="装修管理" name="sixth">
 							<div class="main">
-								<div  v-if="tabIndex === '5'">
+								<div  v-if="tabIndex === '4'">
 									<router-view class="apply"></router-view>
 									<!-- <router-view class="check"></router-view> -->
 									<!-- <router-view class="patrol"></router-view> -->
@@ -157,7 +164,7 @@
 								<el-table :data="redecorated" style="width: 100%">
 									<el-table-column prop="name" label="姓名" ></el-table-column>
 									<el-table-column prop="phone" label="手机号"></el-table-column>
-									<el-table-column prop="leaseType" label="租用类型"></el-table-column>
+									<el-table-column prop="leaseType" label="装修状态"></el-table-column>
 									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
 									<el-table-column prop="roomNumber" label="房号"></el-table-column>
 									<el-table-column prop="cash_deposit" label="装修保证金"></el-table-column>
@@ -191,7 +198,7 @@
 
 						<el-tab-pane label="服务派工" name="seventh">
 							<div class="main">
-								<div  v-if="tabIndex === '6'">
+								<div  v-if="tabIndex === '5'">
 									<router-view class="server"></router-view>
 									<!-- <router-view class="return"></router-view> -->
 								</div>
@@ -233,7 +240,7 @@
 
                         <el-tab-pane label="客户事件" name="eighth">
 							<div class="main">
-								<div  v-if="tabIndex === '7'">
+								<div  v-if="tabIndex === '6'">
 									<router-view class="addCustomer"></router-view>
 									<!-- <router-view class="return"></router-view> -->
 								</div>
@@ -273,7 +280,7 @@
 
 						<el-tab-pane label="客户信息管理" name="ninth">
 							<div class="main">
-								<div  v-if="tabIndex === '8'">
+								<div  v-if="tabIndex === '7'">
 									<router-view class="AddCustomer"></router-view>
 									<!-- <router-view class="return"></router-view> -->
 									
@@ -411,17 +418,14 @@
                 :visible.sync="dialogVisible"
                 width="30%">
 
-                <el-form  ref="shuru" label-width="130px" class="demo-shuru" style="margin:0 10% 0 0">
-					 <el-form-item label="姓名:" prop="name">
+                <el-form  :model="upload" ref="shuru" label-width="130px" :rules="rules1" class="demo-shuru" style="margin:0 10% 0 0">
+					 <el-form-item label="领取人:" prop="name">
                     <el-input v-model="upload.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号:" prop="phone">
+                    <el-form-item label="联系方式:" prop="phone">
                     <el-input v-model="upload.phone"></el-input>
                     </el-form-item>
-                    <el-form-item label="来访因由:" prop="reason">
-                    <el-input v-model="upload.reason" ></el-input>
-                    </el-form-item>
-                    <el-form-item label="来访时间:" prop="time">
+                    <el-form-item label="领取时间:" prop="time">
 						<el-date-picker
 							v-model="upload.time"
 							type="datetime"
@@ -430,9 +434,18 @@
 							style="width:100%">
 						</el-date-picker>
                     </el-form-item>
+					<el-form-item label="使用时间:" prop="useTime">
+						<el-date-picker
+							v-model="upload.useTime"
+							type="datetime"
+                            format="yyyy-MM-dd HH:mm:ss"
+							placeholder="选择日期时间"
+							style="width:100%">
+						</el-date-picker>
+                    </el-form-item>
                     <el-form-item label="备注:" prop="remarks">
-                    <el-input v-model="upload.remarks">
-                    </el-input>
+						<el-input v-model="upload.remarks">
+						</el-input>
                     </el-form-item>
                 </el-form>
                 <span slot="footer" class="dialog-footer">
@@ -521,7 +534,7 @@
 					phone: '',
 					remarks:'',
 					time: '',
-					reason:''
+					useTime:''
 				},
 				//装修
 				redecorated:[
@@ -662,31 +675,32 @@
 				},],
 				rules: {
                     title: [
-                    { required: true, message: '请输入短信标题', trigger: 'blur' },
-				],
-				content: [
-                    { required: true, message: '请输入短信内容', trigger: 'blur' },
-                    { max: 246, message: '长度在246个字符以内', trigger: 'blur' }
-				],
-				sign:[
-					{ required: true, message:'请输入签名',trigger: 'blur'}
-				],
-		
-				name: [
-					{ required: true, message: '请输入姓名', trigger: 'blur' },
-				],
-				phone: [
-					{ required: true, message: '请输入手机号', trigger: 'blur' },
-				],
-				reason: [
-					{ required: true, message: '请输入来访因由', trigger: 'blur' },
-				],
-				time: [
-					{ required: true, message: '请输入时间', trigger: 'blur' },
-				],
-				remarks:[
-					{ required: true, message: '请输入备注', trigger: 'blur' },
-				]
+						{ required: true, message: '请输入短信标题', trigger: 'blur' },
+					],
+					content: [
+						{ required: true, message: '请输入短信内容', trigger: 'blur' },
+						{ max: 246, message: '长度在246个字符以内', trigger: 'blur' }
+					],
+					sign:[
+						{ required: true, message:'请输入签名',trigger: 'blur'}
+					]
+				},
+				rules1: {
+					name: [
+						{ required: true, message: '请输入姓名', trigger: 'blur' },
+					],
+					phone: [
+						{ required: true, message: '请输入手机号', trigger: 'blur' },
+					],
+					useTime: [
+						{ required: true, message: '请选择使用时间', trigger: 'blur' },
+					],
+					time: [
+						{ required: true, message: '请输入时间', trigger: 'blur' },
+					],
+					remarks:[
+						{ required: true, message: '请输入备注', trigger: 'blur' },
+					]
 				},
 				textMessage: {
 					templateId: '',
@@ -738,9 +752,11 @@
 			//获取base
 			getbase() {
 				this.$ajax.get(url+'owner/condition/1/1/'+this.pageNo+'/'+this.pageSize).then((res) => {
-					//alert(res.data.data.rows[0].leaseType);
+					if(res.data.status === 200){
 					this.base = res.data.data.rows
 					this.totalDataNumber = res.data.data.records
+					console.log(res.data.data)
+					}
 				})
 			},
 			baseDelete(index,rows) {
@@ -1007,19 +1023,24 @@
 			//获取inandcome 出入证记录
 			getinandcome() {
 				this.$ajax.get(url+'visit/record/'+this.pageNoInandcome+'/'+this.pageSizeInandcome).then((res) => {
+					if(res.data.status === 200){
+						console.log(res.data.data)
 					this.inandcome = res.data.data.rows
 					this.totalDataNumberinandcome = res.data.data.records
+					}else{
+						// alert(res.data.msg)
+					}
 				})
 			},
 			//增加出入证记录
 			addInandcome(){
 				if(this.upload.name){
-            var visit={};
-            visit.name=this.upload.name;
-            visit.phone=this.upload.phone;
-			visit.reason=this.upload.reason;
-			visit.time=this.upload.time;
-			visit.remarks=this.upload.remarks;
+				var visit={};
+				visit.name=this.upload.name;
+				visit.phone=this.upload.phone;
+				visit.useTime=this.upload.useTime;
+				visit.time=this.upload.time;
+				visit.remarks=this.upload.remarks;
             this.$ajax.post(url+"visit/insert",visit
             ).then((res) => {
 				if(res.status === 200){
@@ -1083,7 +1104,6 @@
 			getserver() {
 				this.$ajax.get(url+'serviceAccept/condition/1/'+this.pageNoServer+'/'+this.pageSizeServer).then((res) => {
 					this.server = res.data.data.rows
-					console.log(this.server)
 					this.totalDataNumberserver = res.data.data.records
 				})
 			},
@@ -1113,8 +1133,6 @@
 			getcustomer() {
 				this.$ajax.get(url+'customerEvent/condition/1/'+this.pageNoCustomer+'/'+this.pageSizeCustomer).then((res) => {
 					this.customer = res.data.data.rows
-					// console.log(res.data.data.rows)
-					// console.log(this.customer)
 					this.totalDataNumbercustomer = res.data.data.records
 				})
 			},
@@ -1150,10 +1168,19 @@
 			},
 			moreSelect(){
 				this.$ajax.get(url + 'room/flndByBuilding/aaa').then(res => {
-					console.log(res.data)
 					this.options = res.data
 				})
-			}
+			},
+	// 		formatter(row, column) {
+    //     return row.address;
+    //   },
+			filterTag(value, row) {
+				return row.tag === value;
+			},
+    //   filterHandler(value, row, column) {
+    //     const property = column['property'];
+    //     return row[property] === value;
+    //   }
 		},
 		components: {
 			NavHeader,
