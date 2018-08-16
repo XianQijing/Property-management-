@@ -387,7 +387,7 @@ export default {
       person: [],
       isShow:false,
       add:false,
-      activeName: 'second',
+      activeName: 'first',
       contact:false,
       modify:false,
       selectArr: [],
@@ -494,7 +494,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$ajax.post(url + 'role/delete', {id: idArr}).then(res => {
+          this.$ajax.post(url + 'role/deleteAll ', 'id=' + idArr).then(res => {
             if (res.data.status === 200) {
               this.getRoleData()
               this.$message({
@@ -543,7 +543,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$ajax.post(url + 'role/delete', {id: this.data.row.id}).then(res => {
+        this.$ajax.post(url + 'role/delete', {id: data.row.id}).then(res => {
+          // console.log(res.data)
           if (res.data.status === 200) {
             this.getRoleData()
             this.$message({
