@@ -5,20 +5,31 @@
       <nav-header/>
       <div class="card row">
         <div class="col-md-12">
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="房产与客户" name="first">
-              <HouseAndCust/>
-            </el-tab-pane>
-
-            <el-tab-pane label="租赁分析">
-            </el-tab-pane>
-
-            <el-tab-pane label="收入分析">             
-            </el-tab-pane>
-
-            <el-tab-pane label="水电报表">
-            </el-tab-pane>
-          </el-tabs>
+          <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect"
+            text-color="#666"
+            active-text-color="#FF9494">
+            <el-menu-item index="1">房产与客户</el-menu-item>
+            <el-menu-item index="2">服务报表</el-menu-item>
+            <el-menu-item index="3">收入分析</el-menu-item>
+            <el-menu-item index="4">水电报表</el-menu-item>
+            <el-menu-item index="5">车位报表</el-menu-item>
+          </el-menu>
+          <!-- 房产与客户 -->
+          <HouseAndCust v-if="tabNum === '1'"/>
+          <!-- 服务报表 -->
+          <ServiceReport v-if="tabNum === '2'"/>
+          <!-- 租赁分析 -->
+          <!-- <AnalysisOfLease v-if="tabNum === '2'"/> -->
+          <!-- 收入分析 -->
+          <LncomAnalysis v-if="tabNum === '3'"/>
+          <!-- 水电报表 -->
+          <HydropowerStatements v-if="tabNum === '4'"/>
+          <!-- 车位报表 -->
+          <CarReport v-if="tabNum === '5'"/>
         </div>
       </div>
     </div>
@@ -29,24 +40,39 @@
 import NavHeader from '@/components/NavHeader'
 import NavBar from '@/components/NavBar'
 import HouseAndCust from './houseAndCust.vue'
+import ServiceReport from './ServiceReport'
+import AnalysisOfLease from './AnalysisOfLease'
+import CarReport from './CarReport'
+import HydropowerStatements from './HydropowerStatements'
+import LncomAnalysis from './LncomAnalysis'
 export default {
   name:'support',
   data(){
     return{
-      activeName: 'first'
+      activeIndex: '1',
+      tabNum: '1'
     }
   },
   components: {
     NavHeader,
     NavBar,
-    HouseAndCust
+    HouseAndCust,
+    AnalysisOfLease,
+    CarReport,
+    HydropowerStatements,
+    LncomAnalysis,
+    ServiceReport
   },
   methods: {
+    handleSelect(key, keyPath) {
+      // console.log(key)
+      this.tabNum = key
+    },
     changePosition() {
-      console.log(this.position)
+      // console.log(this.position)
     },
     handleClick(tab, event) {
-      console.log(tab, event);
+      // console.log(tab, event);
     },
   }
 }
@@ -58,11 +84,24 @@ export default {
   height: 100%;
   overflow: hidden;
 }
+.el-menu {
+  margin-bottom: 10px;
+}
+.el-tabs {
+  background: #fff;
+}
 .support .navHeader {
   height: 67px;
 }
 .support .card {
   height: 100%;
+  background: #F0F0F0;
+}
+.el-menu--horizontal>.el-menu-item {
+  height: 50px;
+  line-height: 50px;
+  border-right: 1px solid #eee;
+  border-bottom: 6px solid rgba(255,148,148,1);
 }
 .container {
 		width: 88%;
@@ -75,6 +114,7 @@ export default {
 	}
   .col-md-12 {
     height: 100%;
+    padding: 0;
   }
 
 .support {
@@ -85,7 +125,8 @@ export default {
   margin: 0;
   background-color: white;
   width: 99%;
-  margin: 10px 10px 0 5px;
+  margin: 10px 10px 0 10px;
+  border: 0;
 }
 
 .main1 {
