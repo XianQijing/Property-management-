@@ -26,9 +26,17 @@
         </div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="ownername" label="姓名" width="120"></el-table-column>
-          <el-table-column prop="phone" label="手机号"></el-table-column>
-          <el-table-column prop="total" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].ownername" prop="ownername" label="姓名"></el-table-column>
+          <el-table-column v-if="tableData[0].phone" prop="phone" label="手机号"></el-table-column>
+          <el-table-column v-if="tableData[0].payprice" prop="payprice" label="金额"></el-table-column>
+          <el-table-column v-if="tableData[0].total" prop="total" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].nul" prop="nul" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].rent" prop="rent" label="租金"></el-table-column>
+          <el-table-column v-if="tableData[0].namec" prop="namec" label="姓名"></el-table-column>
+          <el-table-column v-if="tableData[0].count" prop="count" label="数值"></el-table-column>
+          <el-table-column v-if="tableData[0].addRent" prop="addRent" label="数值"></el-table-column>
+          <el-table-column v-if="tableData[0].exitRent" prop="exitRent" label="数值"></el-table-column>
+          <el-table-column v-if="tableData[0].nowRent" prop="nowRent" label="数值"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -84,32 +92,20 @@ export default {
   methods: {
     getDate (data) {
       this.howDate = data
-      this.tableTab(this.num2)
+      // console.log(this.howDate)
+      this.tableTab(this.num2, '更改日期')
     },
     getTime (data) {
       this.howTime = data
       this.tableTab(this.num2)
     },
-    // contractValue 签约金额排行榜 合约额度
-    // payRanking 历史缴费排行榜
-    // contractStatus 合约状态排行榜
-    // rentOrNull   空置率--房屋状态
-
-
-    // rentOrNull 空置率出租率分析
-    // contractValueTable  签约金额排行榜table
-    // agingRanking 欠款账龄排行榜
     sizeChange (val) {
       this.house.pageSize = val
-      if (this.num2 === 0) {
-        this.getData('contractValueTable')
-      }
+      this.tableTab(this.num2, '更改日期')
     },
     currentChange (val) {
       this.house.currentPage = val
-      if (this.num2 === 0) {
-        this.getData('contractValueTable')
-      }
+      this.tableTab(this.num2, '更改日期')
     },
     handleSelectionChange () {},
     // 调用接口
@@ -136,40 +132,57 @@ export default {
           if (data === 'rentOrNull') {
             this.chartsTwo()
           } else {
-            this.charts()
+            // this.charts()
+            this.chartsThree()
           }
         } else {
           this.tableData = res.data.dataTable
           this.house.total = res.data.total
+          res.data.dataTable.forEach((v, k) => {
+            if (v.owner_name) {
+              this.tableData[k].ownername = v.owner_name
+            }
+          })
           // this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
         }
       })
     },
-    tableTab (index) {
+    tableTab (index, changetab) {
       this.num2 = index
-      this.howDate = ''
+      if (!changetab) {
+        this.howDate = ''
+      }
       if (this.isChartShow === false) {
         if (this.num2 === 0) {
+          this.isArea = false
           this.getData('contractValueTable')
+        }
+        if (this.num2 === 1) {
+          this.isArea = true
+          this.getData('payRankingTable')
+        }
+        if (this.num2 === 2) {
+          this.isArea = true
+          this.getData('contractStatusTable')
+        }
+        if (this.num2 === 3) {
+          this.isArea = true
+          this.getData('rentOrNullTable')
         }
       } else {
         if (this.num2 === 0) {
-          this.color = ['#F9A400']
           this.isArea = false
           this.getData('contractValue')
         }
         if (this.num2 === 1) {
-          this.color = ['#FF9494']
           this.isArea = true
           this.getData('payRanking')
         }
         if (this.num2 === 2) {
-          this.color = ['#DE76CA']
           this.isArea = true
           this.getData('contractStatus')
         }
         if (this.num2 === 3) {
-          this.color = ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA']
           this.isArea = true
           this.getData('rentOrNull')
         }
@@ -180,24 +193,10 @@ export default {
       this.num = index
       if (index === 0) {
         this.isChartShow = false
+        this.tableTab(this.num2, '切换图表')
       } else {
         this.isChartShow = true
-        if (this.num2 === 0) {
-          this.color = ['#F9A400']
-          this.getData('contractValue')
-        }
-        if (this.num2 === 1) {
-          this.color = ['#FF9494']
-          this.getData('payRanking')
-        }
-        if (this.num2 === 2) {
-          this.color = ['#DE76CA']
-          this.getData('contractStatus')
-        }
-        if (this.num2 === 3) {
-          this.color = ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
-          this.getData('rentOrNull')
-        }
+        this.tableTab(this.num2, '切换图表')
       }
     },
     // 空置率
@@ -405,8 +404,14 @@ export default {
               show: true,
               // position: 'insideTop'
             },
-            itemStyle: {
-              color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
+            itemStyle: { 
+              normal: { 
+                color: function(params) { 
+                　//首先定义一个数组 
+                  var colorList = ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA']
+                  return colorList[params.dataIndex] 
+                }
+              }
             }
           }
         ]

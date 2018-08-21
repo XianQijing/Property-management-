@@ -14,22 +14,17 @@
             active-text-color="#FF9494">
             <el-menu-item index="1">房产与客户</el-menu-item>
             <el-menu-item index="2">服务报表</el-menu-item>
-            <el-menu-item index="3">收入分析</el-menu-item>
-            <el-menu-item index="4">水电报表</el-menu-item>
-            <el-menu-item index="5">车位报表</el-menu-item>
+            <el-menu-item index="3">收入报表</el-menu-item>
+            <el-menu-item index="4">广告位</el-menu-item>
           </el-menu>
           <!-- 房产与客户 -->
           <HouseAndCust v-if="tabNum === '1'"/>
           <!-- 服务报表 -->
           <ServiceReport v-if="tabNum === '2'"/>
-          <!-- 租赁分析 -->
-          <!-- <AnalysisOfLease v-if="tabNum === '2'"/> -->
-          <!-- 收入分析 -->
+          <!-- 收入报表 -->
           <LncomAnalysis v-if="tabNum === '3'"/>
-          <!-- 水电报表 -->
-          <HydropowerStatements v-if="tabNum === '4'"/>
-          <!-- 车位报表 -->
-          <CarReport v-if="tabNum === '5'"/>
+          <!-- 广告位 -->
+          <AdvertisePosition v-if="tabNum === '4'"/>
         </div>
       </div>
     </div>
@@ -39,11 +34,9 @@
 <script>
 import NavHeader from '@/components/NavHeader'
 import NavBar from '@/components/NavBar'
-import HouseAndCust from './houseAndCust.vue'
+import HouseAndCust from './houseAndCust'
 import ServiceReport from './ServiceReport'
-import AnalysisOfLease from './AnalysisOfLease'
-import CarReport from './CarReport'
-import HydropowerStatements from './HydropowerStatements'
+import AdvertisePosition from './AdvertisePosition'
 import LncomAnalysis from './LncomAnalysis'
 export default {
   name:'support',
@@ -57,9 +50,7 @@ export default {
     NavHeader,
     NavBar,
     HouseAndCust,
-    AnalysisOfLease,
-    CarReport,
-    HydropowerStatements,
+    AdvertisePosition,
     LncomAnalysis,
     ServiceReport
   },

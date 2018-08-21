@@ -1,7 +1,7 @@
 <template>
   <!-- 空置率 -->
   <div class="service_report container">
-    <DecisionCommonHeader/>
+    <DecisionCommonHeader :isArea="isArea" @time="getTime" @dateTime="getDate"/>
     <div class="charts">
       <div class="title">
         <div class="tableTab">
@@ -26,9 +26,13 @@
         </div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="ownername" label="姓名" width="120"></el-table-column>
-          <el-table-column prop="phone" label="手机号"></el-table-column>
-          <el-table-column prop="total" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].name" prop="name" label="姓名"></el-table-column>
+          <el-table-column v-if="tableData[0].process_cacsi" prop="process_cacsi" label="手机号"></el-table-column>
+          <el-table-column v-if="tableData[0].visit_cacsi" prop="visit_cacsi" label="金额"></el-table-column>
+          <el-table-column v-if="tableData[0].count" prop="count" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].CACSI" prop="CACSI" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].eventType" prop="eventType" label="租金"></el-table-column>
+          <el-table-column v-if="tableData[0].event_date" prop="event_date" label="时间"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -52,6 +56,7 @@ import url from '../../assets/Req.js'
 var echarts = require('echarts/lib/echarts');
 // 引入柱状图
 require('echarts/lib/chart/bar');
+require('echarts/lib/chart/pie');
 // 引入提示框和标题组件
 require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
@@ -72,24 +77,34 @@ export default {
         pageArr: [1, 2, 3, 4, 5],
         pageSize: 5,
         total: 3,
-      }
+      },
+      isArea: false,
+      howTime: 0,
+      howDate: ''
     }
   },
   mounted () {
-    this.getData('contractValueTable')
+    // 反馈满意度 okRanking
+    // 服务派工 repairRanking
+    // 事件统计 GET /report/emergency
+    this.getData('okRankingTable')
   },
   methods: {
+    getDate (data) {
+      this.howDate = data
+      this.tableTab(this.num2, '更改日期')
+    },
+    getTime (data) {
+      this.howTime = data
+      this.tableTab(this.num2)
+    },
     sizeChange (val) {
       this.house.pageSize = val
-      if (this.num2 === 0) {
-        this.getData('contractValueTable')
-      }
+      this.tableTab(this.num2)
     },
     currentChange (val) {
       this.house.currentPage = val
-      if (this.num2 === 0) {
-        this.getData('contractValueTable')
-      }
+      this.tableTab(this.num2)
     },
     handleSelectionChange () {},
     // 调用接口
@@ -97,15 +112,13 @@ export default {
       var params = {}
       if (this.isChartShow === true) {
         params = {
-          howTime: '0',
-          time: '',
+          howTime: this.howTime,
+          time: this.howDate,
           building: ''
         }
       } else {
         params = {
-          howTime: '0',
-          // time: '',
-          // building: '',
+          howTime: this.howTime,
           pageNo: this.house.currentPage,
           pageSize: this.house.pageSize
         }
@@ -115,7 +128,7 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          if (data === 'rentOrNull') {
+          if (data === 'emergency') {
             this.chartsTwo()
           } else {
             this.charts()
@@ -123,28 +136,40 @@ export default {
         } else {
           this.tableData = res.data.dataTable
           this.house.total = res.data.total
-          // this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
+          this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
         }
       })
     },
-    tableTab (index) {
+    tableTab (index, changetab) {
       this.num2 = index
+      if (!changetab) {
+        this.howDate = ''
+      }
       if (this.isChartShow === false) {
         if (this.num2 === 0) {
-          this.getData('contractValueTable')
+          // this.isArea = false
+          this.getData('okRankingTable')
+        }
+        if (this.num2 === 1) {
+          // this.isArea = true
+          this.getData('repairRankingTable')
+        }
+        if (this.num2 === 2) {
+          // this.isArea = true
+          this.getData('emergencyTable')
         }
       } else {
         if (this.num2 === 0) {
-          this.color = ['#F9A400']
-          this.getData('contractValue')
+          // this.isArea = false
+          this.getData('okRanking')
         }
         if (this.num2 === 1) {
-          this.color = ['#FF9494']
-          this.getData('payRanking')
+          // this.isArea = true
+          this.getData('repairRanking')
         }
         if (this.num2 === 2) {
-          this.color = ['#DE76CA']
-          this.getData('contractStatus')
+          // this.isArea = true
+          this.getData('emergency')
         }
       }
     },
@@ -156,37 +181,42 @@ export default {
       } else {
         this.isChartShow = true
         if (this.num2 === 0) {
-          this.color = ['#F9A400']
+          // this.color = ['#F9A400']
           this.getData('contractValue')
         }
         if (this.num2 === 1) {
-          this.color = ['#FF9494']
+          // this.color = ['#FF9494']
           this.getData('payRanking')
-        }
-        if (this.num2 === 2) {
-          this.color = ['#DE76CA']
-          this.getData('contractStatus')
         }
       }
     },
-    // 空置率
-    charts () {
-      // report/contractValue
+    // 事件统计
+    chartsTwo () {
+      let arr = []
+      this.Data.forEach(v => {
+        // v.name = v.event
+        // v.value = v.count
+        arr.push(v.name)
+      })
       var myChart = echarts.init(document.getElementById('main1'));
       myChart.setOption({
-        color: this.color,
-        legend: {
-          type: 'plain',
-          right: '10%',
-          bottom: '30%',
-          orient: 'vertical',
+        color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
+        title : {
+          text: '某站点用户访问来源',
+          subtext: '纯属虚构',
+          x:'center'
         },
         tooltip : {
-          show: false,
-          trigger: 'axis',
-          axisPointer : {
-            type : 'shadow'
-          }
+          trigger: 'item',
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          type: 'plain',
+          right: '20%',
+          bottom: '30%',
+          orient: 'vertical',
+          data: arr,
+          formatter: '{name}'
         },
         grid: {
           top: '20%',
@@ -195,50 +225,32 @@ export default {
           width: '64%',
           containLabel: true
         },
-        xAxis : [
-          {
-            type : 'category',
-            data : this.Data.x,
-            axisTick: {
-              alignWithLabel: true,
-              show: false,
-              interval: 0,
-            },
-            axisLabel: {
-              interval: 0,
-            }
-          }
-        ],
-        yAxis : [
-          {
-            type : 'value',
-            name: '空置率(%)',
-            nameGap: 30,
-            splitLine: {
-              lineStyle: {
-                type: 'dotted'
-              }
-            }
-          }
-        ],
         series : [
           {
-            name:'空置房屋',
-            type:'bar',
-            barWidth: '51px',
-            data: this.Data.y,
+            name: '访问来源',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data: this.Data,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            },
             label: {
-              show: true,
+              position: 'inside',
+              formatter: '{d}%'
             }
           }
         ]
       }, true)
     },
-    chartsTwo () {
+    // 服务派工
+    charts () {
       var myChart2 = echarts.init(document.getElementById('main1'));
       myChart2.setOption({
-        // color: ['#F9A400'],
-        color: this.color,
         legend: {
           type: 'plain',
           right: '10%',
@@ -291,22 +303,19 @@ export default {
             type:'bar',
             stack: '总量',
             barWidth: '20px',
-            // data: this.Data.y,
-            data: this.Data.yNull,
+            data: this.Data.y,
             label: {
               show: true,
-              position: 'insideTop'
-            }
-          },
-          {
-            name:'空置',
-            type:'bar',
-            stack: '总量',
-            barWidth: '20px',
-            data: this.Data.yRent,
-            label: {
-              show: true,
-              position: 'insideTop'
+              // position: 'insideTop'
+            },
+            itemStyle: { 
+              normal: { 
+                color: function(params) { 
+                　//首先定义一个数组 
+                  var colorList = ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA']
+                  return colorList[params.dataIndex] 
+                }
+              }
             }
           }
         ]
