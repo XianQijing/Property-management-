@@ -6,7 +6,7 @@
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
 
-						<el-tab-pane label="客户基本资料" name="first" v-if="this.role[18] === 'rubik:customerInformation:list'">
+						<el-tab-pane label="客户基本资料" name="first" v-if="this.role.indexOf('rubik:customerInformation:list')!==-1">
 							<div class="main">
 								<div  v-if="tabIndex === '0'">
 									<router-view class="relationshipAdd"></router-view>
@@ -51,7 +51,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="已发送短信" name="third" v-if="this.role[19] === 'rubik:textMessageSent:list'">
+						<el-tab-pane label="已发送短信" name="third" v-if="this.role.indexOf('rubik:textMessageSent:list')!==-1">
 							<div class="main">
 								
 								<button style="visibility: hidden;">添加</button>
@@ -69,7 +69,7 @@
 								</div>
 							</div>
 						</el-tab-pane>
-						<el-tab-pane label="出入证管理" name="fourth" v-if="this.role[20] === 'rubik:certificateManagement:list'">
+						<el-tab-pane label="出入证管理" name="fourth" v-if="this.role.indexOf('rubik:certificateManagement:list')!==-1">
 							<div class="main">
 								
 								<button class="add" @click="dialogVisible = true">添加</button>
@@ -90,7 +90,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="装修管理" name="fifth" v-if="this.role[21] === 'rubik:decorateManagement:list'">
+						<el-tab-pane label="装修管理" name="fifth" v-if="this.role.indexOf('rubik:decorateManagement:list')!==-1">
 							<div class="main">
 								<div  v-if="tabIndex === '3'">
 									<router-view class="apply"></router-view>
@@ -133,7 +133,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="服务派工" name="sixth" v-if="this.role[22] === 'rubik:serviceDispatching:list'">
+						<el-tab-pane label="服务派工" name="sixth" v-if="this.role.indexOf('rubik:serviceDispatching:list')!==-1">
 							<div class="main">
 								<div  v-if="tabIndex === '4'">
 									<router-view class="server"></router-view>
@@ -175,7 +175,7 @@
 							</div>
 						</el-tab-pane>
 
-                        <el-tab-pane label="客户事件" name="seventh" v-if="this.role[23] === 'rubik:theCustomerEvent:list'">
+                        <el-tab-pane label="客户事件" name="seventh" v-if="this.role.indexOf('rubik:theCustomerEvent:list')!==-1">
 							<div class="main">
 								<div  v-if="tabIndex === '5'">
 									<router-view class="addCustomer"></router-view>
@@ -215,7 +215,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="客户信息管理" name="eight" v-if="this.role[24] === 'rubik:ECIF:list'">
+						<el-tab-pane label="客户信息管理" name="eight" v-if="this.role.indexOf('rubik:ECIF:list')!==-1">
 							<div class="main">
 								<div  v-if="tabIndex === '6'">
 									<router-view class="AddCustomer"></router-view>
@@ -717,6 +717,11 @@
 									type: 'success',
 									message: '迁出成功!'
 								})
+							}else if(res.data.status===403){
+								this.$message({
+									message: '权限不足',
+									type: 'error'
+								})
 							}else{
 								message({
 									type: 'error',
@@ -727,7 +732,7 @@
 					}).catch(() => {
 						this.$message({
 							type: 'info',
-							message: '已取消删除'
+							message: '已取消迁出'
 						});          
 					});                                                                                                                  
 			},
@@ -773,14 +778,14 @@
 				})
 			},
 			//删除所选行
-			templateDelete(index,rows) {
-				let that = this;
-				that.id = this.MoveOut[index].id;
-				rows.splice(index, 1);
-				this.$ajax.post(url+'moveOut/del/' + this.id).then((res) => {
-					this.getMoveOut()
-				})
-			},
+			// templateDelete(index,rows) {
+			// 	let that = this;
+			// 	that.id = this.MoveOut[index].id;
+			// 	rows.splice(index, 1);
+			// 	this.$ajax.post(url+'moveOut/del/' + this.id).then((res) => {
+			// 		this.getMoveOut()
+			// 	})
+			// },
 			handleSizeChangetemplate(val) {
 				this.pageSizeTemplate = val;
 				this.gettemplate()
@@ -993,6 +998,11 @@
 					});
 				this.dialogVisible = false
 				this.getinandcome()
+				}else if(res.status===403){
+                    this.$message({
+                        message: '权限不足',
+                        type: 'error'
+					})
 				}
 			})}
 			else{

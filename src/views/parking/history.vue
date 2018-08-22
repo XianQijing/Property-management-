@@ -1,6 +1,15 @@
 <template>
   <div class="history">
     <button class="delect" id="more2" @click="out">批量导出</button>
+    <el-date-picker
+      v-model="time"
+      type="datetimerange"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      value-format="yyyy-MM-dd HH:mm:ss"
+      @change="selectTime">
+    </el-date-picker>
     <el-table :data="historyData" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="carNo" label="车牌号"></el-table-column>
@@ -39,13 +48,39 @@ export default {
       currentPage:1,
       pageSize:10,
       total:30,
-      more3Id:''
+      more3Id:'',
+      time:[]
     }
   },
   mounted(){
     this.gethistory()
   },
   methods: {
+    //选择时间
+    selectTime(){
+      if(this.time){
+        this.$ajax.get(url + 'pack/findPackRecordLastByDate',{
+          params:{
+            "begTime": this.time[0],
+            "endTime": this.time[1],
+            "page":this.currentPage,
+            "pageSize":this.pageSize
+          }
+        }).then(res => {
+          if(res.data.status === 200){
+            this.historyData = res.data.data.rows
+            this.total = res.data.data.records
+          }else{
+            this.$message({
+              message: '没有数据',
+              type: 'error'
+            })
+          }
+        })
+      }else{
+        this.gethistory()
+      }
+    },
     //多选变色
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -101,11 +136,19 @@ export default {
     //分页
     handleSizeChange(val) {
       this.pageSize = val
-      this.gethistory()
+      if(this.time){
+        this.selectTime()
+      }else{
+        this.gethistory()
+      }
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.gethistory()
+      if(this.time){
+        this.selectTime()
+      }else{
+        this.gethistory()
+      }
     }
   }
 }

@@ -4,14 +4,14 @@
         <div class="nav"><img src="@/assets/logo@3x.png"></div>
         <ul class="asideList">
           <li><router-link :to="{path:'/helloWorld'}"><img src=".././assets/shouye.png">个人首页</router-link></li>
-          <li id="base" v-if="this.role[0] === 'rubik:baseInfo:list'"><router-link :to="{path:'/Department'}"><img src=".././assets/jichu.png">基础信息</router-link></li>
-          <li id="house" v-if="this.role[1] === 'rubik:house:list'"><router-link :to="{path:'/house'}"><img src=".././assets/kehu.png">房产管理</router-link></li>
-          <li id="customer" v-if="this.role[2] === 'rubik:relationship:list'"><router-link :to="{path:'/relationship'}"><img src=".././assets/hetong.png">客户关系</router-link></li>
-          <li id="rent" v-if="this.role[3] === 'rubik:rent:list'"><router-link :to="{path:'/rent'}"><img src=".././assets/zulin.png">租赁管理</router-link></li>
-          <li id="support" v-if="this.role[4] === 'rubik:report:list'"><router-link :to="{path:'/support'}"><img src=".././assets/xitong.png">决策支持</router-link></li>
-          <li id="charge" v-if="this.role[5] === 'rubik:income:list'"><router-link :to="{path:'/charge'}"><img src=".././assets/renshi.png">收费管理</router-link></li>
-          <li id="parking" v-if="this.role[6] === 'rubik:park:list'"><router-link :to="{path:'/parking'}"><img src=".././assets/tingche.png">停车管理</router-link></li>
-          <li id="system" v-if="this.role[7] === 'rubik:system:list'"><router-link :to="{path:'/system'}"><img src=".././assets/system.png">系统管理</router-link></li>
+          <li id="base" v-if="this.role.indexOf('rubik:baseInfo:list')!==-1"><router-link :to="{path:'/Department'}"><img src=".././assets/jichu.png">基础信息</router-link></li>
+          <li id="house" v-if="this.role.indexOf('rubik:house:list')!==-1"><router-link :to="{path:'/house'}"><img src=".././assets/kehu.png">房产管理</router-link></li>
+          <li id="customer" v-if="this.role.indexOf('rubik:relationship:list')!==-1"><router-link :to="{path:'/relationship'}"><img src=".././assets/hetong.png">客户关系</router-link></li>
+          <li id="rent" v-if="this.role.indexOf('rubik:rent:list')!==-1"><router-link :to="{path:'/rent'}"><img src=".././assets/zulin.png">租赁管理</router-link></li>
+          <li id="support" v-if="this.role.indexOf('rubik:report:list')!==-1"><router-link :to="{path:'/support'}"><img src=".././assets/xitong.png">决策支持</router-link></li>
+          <li id="charge" v-if="this.role.indexOf('rubik:income:list')!==-1"><router-link :to="{path:'/charge'}"><img src=".././assets/renshi.png">收费管理</router-link></li>
+          <li id="parking" v-if="this.role.indexOf('rubik:park:list')!==-1"><router-link :to="{path:'/parking'}"><img src=".././assets/tingche.png">停车管理</router-link></li>
+          <li id="system" v-if="this.role.indexOf('rubik:system:list')!==-1"><router-link :to="{path:'/system'}"><img src=".././assets/system.png">系统管理</router-link></li>
           <li><router-link to=""><img src=".././assets/gongzhonghao.png">微信公众号</router-link></li>
         </ul>
       </aside>
@@ -31,7 +31,6 @@ export default {
       this.$ajax.get(url + 'role/findPermission').then(res => {
 				res.data.data.forEach(v => {
 					this.role.push(v.permission)
-					console.log(res.data.data)
 				})
 			})
     },

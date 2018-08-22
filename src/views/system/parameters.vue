@@ -186,9 +186,16 @@ export default {
       if(that.id){
         this.name = '编辑短信模板'
         this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
+          if(res.data.status === 200){
           this.addMessage.title = birthDay(res.data.title);
           this.addMessage.content = res.data.content;
           this.addMessage.sign = res.data.signature;
+          }else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
+          }
         })
       }
     },
@@ -206,6 +213,11 @@ export default {
             this.$message({
               type: 'success',
               message: '删除成功!'
+            })
+          }else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
             })
           }else{
             this.$message(
@@ -234,10 +246,17 @@ export default {
     },
     gettemplate() {
       this.$ajax.get(url+'noteTemplate/findCondition/'+this.pageNoTemplate+'/'+this.pageSizeTemplate).then((res) => {
-        if(res.data.status){
+        if(res.status===200){
           this.template = res.data.data.rows
           this.totalDataNumbertemplate = res.data.data.records
-        }
+        }else if(res.status===403){
+                this.$alert('您的权限不足', '权限不足', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+                    this.news = false
+                  }
+                });
+              }
       })
     },
     addOne(){
@@ -248,17 +267,22 @@ export default {
         noteTemplate.signature=this.addMessage.sign;
         this.$ajax.post(url+"noteTemplate/insert",noteTemplate
         ).then((res) => {
-          if(res.status===200){
+          if(res.data.status===200){
           this.form = res.data
           this.$message({
-            message: '成功',
+            message: '添加成功',
             type: 'success'
         });
           this.modify = false
           this.gettemplate()
+          }else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
           }else{
             this.$message({
-            message: '失败',
+            message: '添加失败',
             type: 'error'
           });
           }
@@ -278,7 +302,12 @@ export default {
                   type: 'success'
               });
               this.modify = false
-            }else{
+            }else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
+          }else{
               this.$message({
                   message: res.data.msg,
                   type: 'error'
@@ -304,7 +333,12 @@ export default {
           });
           this.modify = false
           this.gettemplate()
-				}else{
+				}else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
+          }else{
 					this.$message({
             message: '失败',
             type: 'error'

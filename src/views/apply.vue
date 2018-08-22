@@ -147,17 +147,35 @@ export default {
          this.id = this.$route.query.id
         if(this.$route.query.msg == 8){
             this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
+                if(res.status === 200){
                 this.detail = res.data;
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.editChange(res.data.name,res.data.phone)
                 this.edit = true
+                }else if(res.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        this.goBack()
+                    }
+                    });
+                }
             })
         }else if(this.$route.query.msg == 7){
             this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
+                if(res.status === 200){
                 this.detail = res.data;
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.editChange(res.data.name,res.data.phone)
                 this.edit = false
+                }else if(res.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        this.goBack()
+                    }
+                    });
+        }
             })
         }else(
             this.datail = '',
@@ -276,6 +294,11 @@ export default {
                                 type: 'success'
                             }),
                             this.goBack()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message: '权限不足',
+                                type: 'error'
+                            })
                         }else{
                             this.$message({
                                 message: res.data.msg,
@@ -294,6 +317,11 @@ export default {
                                 type: 'success'
                             }),
                             this.goBack()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message: '权限不足',
+                                type: 'error'
+                            })
                         }else{
                             this.$message({
                                 message: res.data.msg,

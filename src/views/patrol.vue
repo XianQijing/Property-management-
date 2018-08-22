@@ -124,6 +124,11 @@ export default {
                                 type: 'success'
                             }),
                             this.goBack()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
                         }else{
                             this.$message({
                                 message: res.data.msg,
@@ -134,8 +139,16 @@ export default {
         },
         getPatrol(){
             this.$ajax.get(url+'adornPatrol/condition/'+this.id).then(res=>{
+                if(res.status === 200){
                 this.tableData3 = res.data.data
-                console.log(this.tableData3)
+                }else if(res.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
             })
         },
       goBack(){

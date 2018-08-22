@@ -57,7 +57,8 @@ export default {
   },
 	methods: {
     signOut () {
-      // console.log(12)
+      this.$ajax.post(url+'login/logout').then(res =>{
+      })
       sessionStorage.clear()
       removeCookie('phone', '/login')
       this.$router.push('/login')

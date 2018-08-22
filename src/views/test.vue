@@ -78,7 +78,7 @@ export default {
       this.name = "编辑"
       // GET /roomStandard/flndById/{id}
       this.$ajax.get(url + 'roomStandard/flndById/' + this.id).then(res => {
-        // console.log(res.data.data)
+        if(res.data.status === 200){
         this.carForm.region = res.data.data.room.split(',')
         this.carForm.project = res.data.data.projectAcceptance
         this.carForm.standard = res.data.data.acceptanceStandard
@@ -87,6 +87,14 @@ export default {
         this.carForm.Explain = res.data.data.acceptanceState
         this.carForm.time = res.data.data.acceptanceTime
         this.carForm.remarks = res.data.data.remark
+        }else if(res.data.status===403){
+          this.$alert('您的权限不足', '权限不足', {
+            confirmButtonText: '确定',
+            callback: action => {
+                this.goBack()
+            }
+          });
+        }
       })
     } else if(this.$route.query.id === "add") {
       this.id = this.$route.query.id
@@ -137,13 +145,22 @@ export default {
       if (this.$route.query.id == "edit") {
         roomStandard.id = this.$route.query.id
         this.$ajax.put(url + 'roomStandard/updateRoomStandard', roomStandardVO).then(res => {
-          console.log(res.data)
           if (res.data.status === 200) {
             this.$message({
             message: '修改成功',
             type: 'success'
         })
             window.history.go(-1)
+          }else if(res.data.status===403){
+              this.$message({
+                  message:'权限不足',
+                  type: 'error'
+              })
+          }else{
+            this.$message({
+              message: '修改失败',
+              type: 'error'
+            })
           }
         })
       } else if(this.$route.query.id === "add") {
@@ -155,6 +172,16 @@ export default {
           type: 'success'
         })
             window.history.go(-1)
+          }else if(res.data.status===403){
+              this.$message({
+                  message:'权限不足',
+                  type: 'error'
+              })
+          }else{
+            this.$message({
+              message: '修改失败',
+              type: 'error'
+            })
           }
         })
       }else{
@@ -166,6 +193,16 @@ export default {
             type: 'success'
         })
             window.history.go(-1)
+          }else if(res.data.status===403){
+              this.$message({
+                  message:'权限不足',
+                  type: 'error'
+              })
+          }else{
+            this.$message({
+              message: '修改失败',
+              type: 'error'
+            })
           }
         })
       }

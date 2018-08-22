@@ -66,7 +66,14 @@
                 </el-form-item>
                 
                 <el-form-item label="处理满意度：" prop="process_cacsi" >
-                <el-input v-model="ruleForm.process_cacsi" placeholder="请输入处理满意度"></el-input>
+                    <el-select v-model="ruleForm.process_cacsi" placeholder="请选择">
+                            <el-option label="非常满意" value="非常满意"></el-option>
+                            <el-option label="满意" value="满意"></el-option>
+                            <el-option label="一般" value="一般"></el-option>
+                            <el-option label="不满意" value="不满意"></el-option>
+                            <el-option label="非常不满意" value="非常不满意"></el-option>
+                        </el-select>
+                <!-- <el-input v-model="ruleForm.process_cacsi" placeholder="请输入处理满意度"></el-input> -->
                 </el-form-item>
                 <el-form-item label="回访情况：" prop="visit_condition" v-show="show">
                 <el-input v-model="ruleForm.visit_condition" placeholder="请输入回访情况"></el-input>
@@ -111,86 +118,7 @@ export default {
             ways:[
 
             ],
-            options: [
-          {
-          value: 'bangongqu',
-          label: '办公区',
-          children: [{
-              value: 'Azuo',
-              label: 'A座',
-              children: [{
-                value: '101',
-                label: '101'
-              }, {
-                value: '102',
-                label: '102'
-              }, {
-                value: '103',
-                label: '103'
-              }, {
-                value: '104',
-                label: '104'
-              },
-              {
-                value: '105',
-                label: '105'
-              }]
-          }, 
-          {
-            value: 'Bzuo',
-            label: 'B座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          },{
-            value: 'Czuo',
-            label: 'C座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          }]
-        },{
-          value: 'yanjiedianpu',
-          label: '沿街店铺',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
-        }],
+            options: [],
         rules: {
           name: [
             { required: true, message: '请输入客户姓名', trigger: 'blur' },
@@ -259,15 +187,23 @@ export default {
                 this.ways=res.data;
             })
              this.$ajax.get(url +'feedbackMessage/findIdVO/'+this.id).then(res => {
-                this.ruleForm = res.data;
-                this.ruleForm.event_type = res.data.category;
-                this.ruleForm.visitDate = res.data.visitTime;
-                this.ruleForm.event_depict = res.data.content;
-                this.ruleForm.agent = res.data.handler;
-                this.ruleForm.eventDate = res.data.occurrenceTime;
-                this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
-                this.editChange(res.data.name,res.data.phone)
-                 console.log(this.id)       
+                 if(res.status===200){
+                    this.ruleForm = res.data;
+                    this.ruleForm.event_type = res.data.category;
+                    this.ruleForm.visitDate = res.data.visitTime;
+                    this.ruleForm.event_depict = res.data.content;
+                    this.ruleForm.agent = res.data.handler;
+                    this.ruleForm.eventDate = res.data.occurrenceTime;
+                    this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                    this.editChange(res.data.name,res.data.phone)
+                }else if(res.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
                  
             })
         }else if(this.$route.query.msg === 3){    //客户反馈信息修改
@@ -280,15 +216,24 @@ export default {
                 this.ways=res.data;
             })
              this.$ajax.get(url +'feedbackMessage/findIdVO/'+this.id).then(res => {
-                this.ruleForm = res.data;
-                this.ruleForm.event_type = res.data.category;
-                this.ruleForm.visitDate = res.data.visitTime;
-                this.ruleForm.event_depict = res.data.content;
-                this.ruleForm.agent = res.data.handler;
-               this.ruleForm.eventDate = res.data.occurrenceTime;
-               this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
-               this.editChange(res.data.name,res.data.phone)
-                 console.log(this.id)   
+                if(res.status === 200){
+                    this.ruleForm = res.data;
+                    this.ruleForm.event_type = res.data.category;
+                    this.ruleForm.visitDate = res.data.visitTime;
+                    this.ruleForm.event_depict = res.data.content;
+                    this.ruleForm.agent = res.data.handler;
+                    this.ruleForm.eventDate = res.data.occurrenceTime;
+                    this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                    this.editChange(res.data.name,res.data.phone)
+                        console.log(this.id)   
+                }else if(res.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
             })
         }else if(this.$route.query.msg === 1){    //客户事件新增
             this.name = '新增',
@@ -312,10 +257,19 @@ export default {
                 this.ways=res.data;
             })
             this.$ajax.get(url +'customerEvent/findIdVO/'+this.id).then(res => {
-                this.ruleForm = res.data;
-                this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
-                this.ruleForm.process_cacsi = res.data.cacsi;
-                this.editChange(res.data.name,res.data.phone)
+                if(res.status === 200){
+                    this.ruleForm = res.data;
+                    this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
+                    this.ruleForm.process_cacsi = res.data.cacsi;
+                    this.editChange(res.data.name,res.data.phone)
+                }else if(res.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
             })
         }else if(this.$route.query.msg === 5){   //客户事件回访
             this.name = '回访',
@@ -326,10 +280,19 @@ export default {
                 this.ways=res.data;
             })
            this.$ajax.get(url +'customerEvent/findIdVO/'+this.id).then(res => {
+               if(res.status === 200){
                 this.ruleForm = res.data;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.ruleForm.process_cacsi = res.data.cacsi;
                 this.editChange(res.data.name,res.data.phone)
+               }else if(res.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
             })     
         }else{                              //客户反馈信息新增
             this.name = '新增'
@@ -476,6 +439,11 @@ export default {
                                 type: 'success'
                             }),
                             this.goBack()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
                         }else{
                             this.$message({
                                 message: res.data.msg,
@@ -493,6 +461,11 @@ export default {
                                 type: 'success'
                             }),
                             this.goBack()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
                         }else{
                             this.$message({
                                 message: res.data.msg,
@@ -513,6 +486,11 @@ export default {
                                 type: 'success'
                             }),
                             this.goBack()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
                         }else{
                             this.$message({
                                 message: res.data.msg,
@@ -529,6 +507,11 @@ export default {
                                 type: 'success'
                             }),
                             this.goBack()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
                         }else{
                             this.$message({
                                 message: res.data.msg,

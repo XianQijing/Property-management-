@@ -5,13 +5,13 @@
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="收费参数" name="first">
+            <el-tab-pane label="收费参数" name="first" v-if="this.role.indexOf('rubik:charge:list')!==-1">
               <message/>
             </el-tab-pane>
-            <el-tab-pane label="短信模板" name="second">
+            <el-tab-pane label="短信模板" name="second" v-if="this.role.indexOf('rubik:addMessageTemplate:list')!==-1">
               <parameters/>
             </el-tab-pane>
-            <el-tab-pane label="权限管理" name="third">
+            <el-tab-pane label="权限管理" name="third" v-if="this.role.indexOf('rubik:permission:list')!==-1">
               <role/>
             </el-tab-pane>
 					</el-tabs>
@@ -27,12 +27,21 @@ import NavBar from '@/components/NavBar'
 import Message from './message'
 import Parameters from './parameters'
 import Role from './role'
+import url from '../../assets/Req.js'
 export default {
   name: 'system',
   data(){
     return{
-      activeName: 'first'
+      activeName: 'first',
+      role: []
     }
+  },
+  mounted(){
+    this.$ajax.get(url + 'role/findPermission').then(res => {
+      res.data.data.forEach(v => {
+        this.role.push(v.permission)
+      })
+    })
   },
   methods: {
     handleClick(tab, event) {

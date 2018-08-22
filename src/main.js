@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
+import "babel-polyfill"
 
 axios.interceptors.request.use(
   config => {

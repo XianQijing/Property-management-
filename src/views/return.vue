@@ -6,22 +6,50 @@
             <div style="width:92.5%;margin-bottom:20px;">
             <div class="pp">
                     <el-form-item label="满意程度:">
-                        <el-input v-model="input.cacsi" ></el-input>
+                        <el-select v-model="input.cacsi" placeholder="请选择">
+                            <el-option label="非常满意" value="非常满意"></el-option>
+                            <el-option label="满意" value="满意"></el-option>
+                            <el-option label="一般" value="一般"></el-option>
+                            <el-option label="不满意" value="不满意"></el-option>
+                            <el-option label="非常不满意" value="非常不满意"></el-option>
+                        </el-select>
+                        <!-- <el-input v-model="input.cacsi" ></el-input> -->
                     </el-form-item>
                 </div>
                 <div class="pp">
                     <el-form-item label="验收情况:">
+                        <!-- <el-select v-model="input.checkCondition" placeholder="请选择">
+                            <el-option label="非常满意" value="非常满意"></el-option>
+                            <el-option label="满意" value="满意"></el-option>
+                            <el-option label="一般" value="一般"></el-option>
+                            <el-option label="不满意" value="不满意"></el-option>
+                            <el-option label="非常不满意" value="非常不满意"></el-option>
+                        </el-select> -->
                         <el-input v-model="input.checkCondition"></el-input>
                     </el-form-item>
                 </div>
                 <div class="pp">
                     <el-form-item label="回访情况:">
+                        <!-- <el-select v-model="input.visitExplain" placeholder="请选择">
+                            <el-option label="非常满意" value="非常满意"></el-option>
+                            <el-option label="满意" value="满意"></el-option>
+                            <el-option label="一般" value="一般"></el-option>
+                            <el-option label="不满意" value="不满意"></el-option>
+                            <el-option label="非常不满意" value="非常不满意"></el-option>
+                        </el-select> -->
                         <el-input v-model="input.visitExplain"></el-input>
                     </el-form-item>
                 </div>
                 <div class="pp">
                     <el-form-item label="服务及时率:">
-                        <el-input v-model="input.serviceTimeliness"></el-input>
+                        <!-- <el-select v-model="input.visitExplain" placeholder="请选择">
+                            <el-option label="非常满意" value="非常满意"></el-option>
+                            <el-option label="满意" value="满意"></el-option>
+                            <el-option label="一般" value="一般"></el-option>
+                            <el-option label="不满意" value="不满意"></el-option>
+                            <el-option label="非常不满意" value="非常不满意"></el-option>
+                        </el-select> -->
+                        <el-input v-model="input.visitExplain"></el-input>
                     </el-form-item>
                 </div>
                 
@@ -175,9 +203,17 @@ export default {
         console.log(this.$route.query.id)
          this.id = this.$route.query.id
          this.$ajax.get(url +'serviceAccept/findIdVO/'+this.id).then(res => {
-                console.log(res.data)
+             if(res.status === 200){
                 this.detail = res.data;
                 this.detail.house =  res.data.buildingName+"-"+res.data.roomNumber;
+             }else if(res.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
          })
     },
     methods: {
@@ -203,9 +239,14 @@ export default {
                                 type: 'success'
                             }),
                             this.goBack()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
                         }else{
                             this.$message({
-                                message: res.data.msg,
+                                message: '失败',
                                 type: 'error'
                             }) 
                     }

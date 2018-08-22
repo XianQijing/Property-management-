@@ -100,6 +100,11 @@ export default {
             })
             this.dialogFormVisible = false
             this.getRoleData()
+          }else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
           } else {
             this.$message({
               message: res.data.msg,
@@ -116,10 +121,19 @@ export default {
           id: data.row.id
         }
       }).then(res => {
+        if(res.data.status === 200){
         this.dialogFormVisible = true
         this.rolename = res.data.data.name
         this.roleid = res.data.data.id
         this.addOrEdit = '编辑角色'
+        }else if(res.data.status===403){
+                this.$alert('您的权限不足', '权限不足', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+                    this.news = false
+                  }
+                });
+              }
       })
     },
     getRoleData () {
@@ -160,7 +174,12 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               })
-            } else {
+            }else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
+          } else {
               this.$message({
                 type: 'error',
                 message: res.data.msg
@@ -208,7 +227,12 @@ export default {
               type: 'success',
               message: '删除成功!'
             })
-          } else {
+          } else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
+          }else {
             this.$message({
               type: 'error',
               message: res.data.msg
