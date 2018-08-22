@@ -5,9 +5,9 @@
             <div class="card row">
                 <div class="col-md-12">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
-                      <el-tab-pane label="应收费用" name="third" v-if="this.role[28] === 'rubik:acceptance:list'">
+                      <el-tab-pane label="应收费用" name="third" v-if="this.role.indexOf('rubik:receivable:list')!==-1">
                           <div class="main">
-                              <div id="card"><button @click="feiyong3">临时费用</button><button @click="feiyong2">抄表费用</button><button class="active" @click="feiyong1">常规费用</button></div>
+                              <div id="card"><button @click="feiyong3" id="linshi">临时费用</button><button @click="feiyong2" id="chaobiao">抄表费用</button><button class="active" @click="feiyong1" id="changgui">常规费用</button></div>
                               <div id="main">
                                 <div>
                                   <el-table :data="temporary" style="width: 100%">
@@ -29,7 +29,7 @@
                               </div>
                           </div>                 
                         </el-tab-pane>
-                        <el-tab-pane label="抄表录入" v-if="this.role[28] === 'rubik:acceptance:list'">
+                        <el-tab-pane label="抄表录入" v-if="this.role.indexOf('rubik:meterReading:list')!==-1">
                           <div class="main">
                             <button class="add" @click="luru('','','add')">录入数据</button>
                             <el-table :data="meter" style="width: 100%">
@@ -203,13 +203,15 @@ export default {
     this.$ajax.get(url + 'role/findPermission').then(res => {
 				res.data.data.forEach(v => {
               this.role.push(v.permission)
-              console.log(res.data.data)
 				})
 			})
-    this.nn(), this.getMeter(), this.Cost(),
+    
+    this.getMeter(), 
+    this.Cost(),
     this.getType(),
     this.getCharges(),
     this.getOptions()
+    // this.nn()
     if(this.$route.query.tabPane){
       this.activeName = this.$route.query.tabPane
     }else{
@@ -282,14 +284,11 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-      this.$ajax
-        .delete(url + "pay/deletePayItemMeter", {
+      this.$ajax.delete(url + "pay/deletePayItemMeter", {
           params: {
             payItemMeterId: this.id
           }
-        })
-
-        .then(res => {
+        }).then(res => {
           if(res.data.status === 200){
           this.$message({
             message: '删除成功',
@@ -297,6 +296,11 @@ export default {
           })
           this.currentPage = 1
           this.getCharge()
+          }else if(res.data.status===403){
+              this.$message({
+                  message:'权限不足',
+                  type: 'error'
+              })
           }else{
             this.$message({
             message: '删除失败',
@@ -367,8 +371,17 @@ export default {
               }
             })
       .then(res =>{
-        this.entrydata = res.data.data;
-        this.entrydata.houseType=res.data.data.arrList;
+        if(res.data.status === 200){
+          this.entrydata = res.data.data;
+          this.entrydata.houseType=res.data.data.arrList;
+        }else if(res.status===403){
+          this.$alert('您的权限不足', '权限不足', {
+              confirmButtonText: '确定',
+              callback: action => {
+                  this.entry = false;
+              }
+          });
+        }
         //this.entrydata.time = res.data.data.paymentDay
       })
     },
@@ -389,14 +402,12 @@ export default {
     },
     //仪表管理
     getMeter() {
-      this.$ajax
-        .get(url + "pay/queryMeterManagementAll", {
+      this.$ajax.get(url + "pay/queryMeterManagementAll", {
           params: {
             page: this.currentPage1,
             pageSize: this.pageSize1
           }
-        })
-        .then(res => {
+        }).then(res => {
           this.meter = res.data.data.rows;
           this.totalData1 = res.data.data.records;
         });
@@ -411,6 +422,9 @@ export default {
     //
     //常规
     feiyong1() {
+      document.getElementById('linshi').className=''
+      document.getElementById('chaobiao').className=''
+      document.getElementById('changgui').className='active'
       this.shouldId = "180723BR7M3G986W";
       this.$ajax
         .get(url + "pay/queryReceivable", {
@@ -427,6 +441,9 @@ export default {
     },
     //抄表
     feiyong2() {
+      document.getElementById('linshi').className=''
+      document.getElementById('chaobiao').className='active'
+      document.getElementById('changgui').className=''
       this.shouldId = "180723BR8PBFT354";
       this.$ajax
         .get(url + "pay/queryReceivable", {
@@ -443,6 +460,9 @@ export default {
     },
     //临时
     feiyong3() {
+      document.getElementById('linshi').className='active'
+      document.getElementById('chaobiao').className=''
+      document.getElementById('changgui').className=''
       this.shouldId = "180723BRAS3GHR68";
       this.$ajax
         .get(url + "pay/queryReceivable", {
@@ -477,12 +497,17 @@ export default {
           });
           this.entry = false
           this.getMeter()
-        }else{
+        }else if(res.data.status===403){
           this.$message({
-            message: this.data.msg,
-            type: 'error'
-          });
-        }
+              message:'权限不足',
+              type: 'error'
+          })
+        }else{
+        this.$message({
+          message: '录入失败',
+          type: 'error'
+        });
+      }
       })}else {
       var arr=this.entrydata.houseType;
       var payMeter = {
@@ -503,23 +528,33 @@ export default {
           });
           this.entry = false
           this.getMeter()
+        }else if(res.data.status===403){
+          this.$message({
+              message:'权限不足',
+              type: 'error'
+          })
+        }else{
+          this.$message({
+            meter:'修改失败',
+            type:'error'
+          })
         }
       })}
     },
-    nn() {
-      var card = document.getElementById("card");
-      var cardlist = card.children;
+    // nn() {
+    //   var card = document.getElementById("card");
+    //   var cardlist = card.children;
 
-      for (var i = 0; i < cardlist.length; i++) {
-        cardlist[i].index = i;
-        cardlist[i].onclick = function() {
-          for (var m = 0; m < cardlist.length; m++) {
-            cardlist[m].className = "";
-          }
-          this.className = "active";
-        };
-      }
-    }
+    //   for (var i = 0; i < cardlist.length; i++) {
+    //     cardlist[i].index = i;
+    //     cardlist[i].onclick = function() {
+    //       for (var m = 0; m < cardlist.length; m++) {
+    //         cardlist[m].className = "";
+    //       }
+    //       this.className = "active";
+    //     };
+    //   }
+    // }
   },
   components: {
     NavHeader,

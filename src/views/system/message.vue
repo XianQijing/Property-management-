@@ -18,34 +18,35 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"  :page-size="pageSize" :page-sizes="pageSizes" layout="total, sizes, prev, pager, next, jumper" :total="totalData">
       </el-pagination>
     </div>
-    <el-dialog :title="this.name" :visible.sync="news" width="30%">
+    <!-- 弹窗 -->
+    <el-dialog :title="this.name" :visible.sync="news" width="500px">
       <div class="tanchuang">
-          <el-form ref="shuru" label-width="130px" class="demo-shuru" size="mini" :model="add">
-              <el-form-item label="名称:">
-              <el-input v-model="add.name" placeholder="请输入名称"></el-input>
-              </el-form-item>
-              <el-form-item label="费用项目类型:">
-                  <el-select v-model="add.payItemId" placeholder="请选择费用项目类型">
-                      <el-option v-for="item in payItems" :label="item.name" :value="item.id" :key="item.id"></el-option>
-                  </el-select>
-              </el-form-item>
-              <el-form-item label="仪表种类:">
-                  <el-select v-model="add.meterId" placeholder="请选择费用项目类型">
-                      <el-option v-for="item in types" :label="item.name" :value="item.id" :key="item.id"></el-option>
-                  </el-select>
-              </el-form-item>
-              <el-form-item label="备注:">
-                  <el-input v-model="add.remarks" type="textarea" :rows="4"></el-input>
-              </el-form-item>
-          </el-form>
+        <el-form ref="shuru" label-width="130px" class="demo-shuru" size="mini" :model="add">
+          <el-form-item label="名称:">
+          <el-input v-model="add.name" placeholder="请输入名称"></el-input>
+          </el-form-item>
+          <el-form-item label="费用项目类型:">
+            <el-select v-model="add.payItemId" placeholder="请选择费用项目类型">
+              <el-option v-for="item in payItems" :label="item.name" :value="item.id" :key="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="仪表种类:">
+            <el-select v-model="add.meterId" placeholder="请选择费用项目类型">
+              <el-option v-for="item in types" :label="item.name" :value="item.id" :key="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="add.remarks" type="textarea" :rows="4"></el-input>
+          </el-form-item>
+        </el-form>
       </div>
       <!-- <span slot="footer" class="dialog-footer" v-show="addNewOne">
           <el-button @click="news= false">取 消</el-button>
           <el-button type="primary" @click="submit">确 定</el-button>
       </span> -->
       <span slot="footer" class="dialog-footer">
-          <el-button @click="news= false">取 消</el-button>
-          <el-button type="primary" @click="createPayItem">确 定</el-button>
+        <el-button @click="news= false">取 消</el-button>
+        <el-button type="primary" @click="createPayItem">确 定</el-button>
       </span>
 
   </el-dialog>
@@ -112,14 +113,19 @@ export default {
       }else{
         this.$ajax.post(url + 'pay/createPayItemMeter',payItemVO).then(res => {
           if(res.data.status === 200){
-          this.$message({
-            message: '新建成功',
-            type: 'success'
-          });
-        this.add == {};
-        this.news = false;
-        this.getCharge()
-        }else{
+            this.$message({
+              message: '新建成功',
+              type: 'success'
+            });
+            this.add == {};
+            this.news = false;
+            this.getCharge()
+          }else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
+          }else{
           this.$message({
             message: '新建失败',
             type: 'error'
@@ -154,11 +160,20 @@ export default {
                 payItemMeterId: this.id
               }
             }).then(res => {
-              var temp = res.data.data;
-              this.add = temp;
-              this.add.payItemId = temp.payItemId;
-              this.add.remarks = temp.remark;
-              this.add.name = temp.name;
+              if(res.data.status === 200){
+                var temp = res.data.data;
+                this.add = temp;
+                this.add.payItemId = temp.payItemId;
+                this.add.remarks = temp.remark;
+                this.add.name = temp.name;
+              }else if(res.data.status===403){
+                this.$alert('您的权限不足', '权限不足', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+                    this.news = false
+                  }
+                });
+              }
             });
           }
         }else{
@@ -186,6 +201,11 @@ export default {
             })
             this.currentPage = 1
             this.getCharge()
+          }else if(res.data.status===403){
+            this.$message({
+              message:'权限不足',
+              type: 'error'
+            })
           }else{
             this.$message({
             message: '删除失败',
@@ -260,6 +280,9 @@ export default {
 	border: 1px solid #A1CEFF;
 	background: white;
 	color: #A1CEFF;
+}
+.tanchuang{
+  margin: 0 60px 0 0;
 }
 </style>
 

@@ -6,7 +6,7 @@
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
 						<!-- 管理区 -->
-						<el-tab-pane label="管理区" name="first" v-if="this.role[15] === 'rubik:precinct:list'">
+						<el-tab-pane label="管理区" name="first" v-if="this.role.indexOf('rubik:precinct:list')!==-1">
 							<div class="main">
 								<div v-if="tabIndex === '0'"><router-view class="addAdmin"></router-view></div>
 								<button class="add" @click="addToAdmin('','','tianjia')">+ 添加</button>
@@ -54,7 +54,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="楼宇" name="second" v-if="this.role[16] === 'rubik:building:list'">
+						<el-tab-pane label="楼宇" name="second" v-if="this.role.indexOf('rubik:building:list')!==-1">
 							<div class="main">
 								<div v-if="tabIndex === '1'"><router-view></router-view></div>
 								<router-link :to="{path: '/house/addBuild'}"><button class="add">+ 添加</button></router-link>
@@ -111,15 +111,15 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="房间" name="third" v-if="this.role[17] === 'rubik:room:llist'">
+						<el-tab-pane label="房间" name="third" v-if="this.role.indexOf('rubik:room:llist')!==-1">
               <div class="main">
 								<div v-if="tabIndex === '2'">
                   <router-view class="Next"></router-view>
                   <!-- <router-view class="daoru"></router-view> -->
                 </div>
 								<router-link :to="{name: 'Next',query:{id:'qq'}}"><button class="add">+ 添加</button></router-link>
-                <!-- <router-link :to="{name: 'Daoru'}"><button class="import">分配楼宇</button></router-link>
-                <button class="cash">+ 添加收费标准</button> -->
+                <!-- <router-link :to="{name: 'Daoru'}"><button class="import">分配楼宇</button></router-link> -->
+                <button class="add" @click="isShow = true">导入</button>
                 <button class="delect" id="roomDelete" @click="allDeletelou('room')">删除</button>
 								<el-table :data="room" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
@@ -257,7 +257,32 @@
 							</div>
 						</el-tab-pane> -->
 					</el-tabs>
-
+          <!--导入弹窗-->
+      <el-dialog
+        title="导入"
+        :visible.sync="isShow"
+        width="500px">
+        <div class="put">
+          <p>导入设置:</p>
+          <form>
+            <ul class="shuju">
+              <li>
+                <el-radio v-model="radio" label="0">重复数据不导入</el-radio>
+              </li> 
+              <li>
+                <el-radio v-model="radio" label="1">重复数据覆盖</el-radio>
+              </li>
+            </ul>
+          </form>
+          <div class="upload">
+            <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
+          </div>
+          <div>{{this.fileName}}</div>
+        </div>
+        <div class="footer1">
+          <button class="confirm" @click="submit">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
+        </div>
+      </el-dialog>
 				</div>
 			</div>
 		</div>
@@ -271,6 +296,9 @@ import url from '../assets/Req.js'
 export default {
   data() {
     return {
+      file:'',
+      fileName: '',
+      isShow:false,
       activeName: 'first',
       multipleSelection: [],
       pp:1,
@@ -360,7 +388,8 @@ export default {
       louIdArr: [],
       precinct: '',
       selectBuild:[],
-      role:[]
+      role:[],
+      radio:''
     }
   },
   mounted() {
@@ -389,6 +418,36 @@ export default {
     })
   },
   methods: {
+    //上传的方法
+    getPath(e){
+      this.fileName = e.currentTarget.files[0].name
+      this.file = e.currentTarget.files[0]//百度是没有name的
+    },
+    submit(){
+            var formData = new FormData()
+            // console.log(this.files)
+            formData.append('file', this.file)
+            // formData.append('status', this.radio)
+            this.$ajax.post(url+ 'room/excelImport',formData).then(res => {
+                if(res.data.status === 200) {
+                    this.$message({
+                        message: '成功',
+                        type: 'success'
+                    })
+                    this.isShow = false
+                }else if(res.data.status===403){
+                  this.$message({
+                    message:'权限不足',
+                    type: 'error'
+                  })
+                }else{
+                    this.$message({
+                        message: '失败',
+                        type: 'error'
+                    })
+                }
+            })
+        },
     selectbuild(e){
       this.selectABuild()
     },
@@ -418,6 +477,11 @@ export default {
                   message: '删除成功',
                   type: 'success'
                 })
+              }else if(res.data.status===403){
+                this.$message({
+                  message: '权限不足',
+                  type: 'error'
+                })
               }else{
                 this.$message({
                   message: res.data.msg,
@@ -432,6 +496,11 @@ export default {
                 this.$message({
                   message: '删除成功',
                   type: 'success'
+                })
+              }else if(res.data.status===403){
+                this.$message({
+                  message: '权限不足',
+                  type: 'error'
                 })
               }else{
                 this.$message({
@@ -507,7 +576,12 @@ export default {
                     message: '删除成功',
                     type: 'success'
                   })
-            }else{
+            }else if(res.data.status===403){
+                this.$message({
+                  message: '权限不足',
+                  type: 'error'
+                })
+              }else{
                   this.$message({
                     message: res.data.msg,
                     type: 'error'
@@ -596,7 +670,12 @@ export default {
               message: '删除成功',
               type: 'success'
             })
-          }else{
+          }else if(res.data.status===403){
+                this.$message({
+                  message: '权限不足',
+                  type: 'error'
+                })
+              }else{
                 this.$message({
                   message: res.data.msg,
                   type: 'error'
@@ -689,6 +768,11 @@ export default {
           this.$message({
             message: '删除成功',
             type: 'success'
+          })
+        }else if(res.data.status===403){
+          this.$message({
+            message: '权限不足',
+            type: 'error'
           })
         }else{
                 this.$message({
@@ -1029,7 +1113,78 @@ a{
 		background-color: rgb(245, 245, 245);
 		width: 63px;
 		height: 31px;
-	}
-
-
+  }
+.put {
+  margin:0 0px 60px 29%!important;
+}
+.put ul {
+    padding: 0
+}
+.put p{
+    display: inline-block;
+    vertical-align: top;
+}
+.put form {
+    display: inline-block;
+}
+.upload {
+    margin: 24px 0 0 0!important
+}
+.liebiao {
+    font-size: 6px;
+    line-height: 20px;
+}
+.how{
+    color: #32a8ee;
+}
+.footer1{
+    height: 30px;
+    margin: 0 !important;
+}
+.footer1 {
+    border-top: 1px solid #eeeeee;
+    width: 100%;
+}
+.footer1 button {
+    margin: 10px 10px 10px 0 ;
+    float: right;
+    width: 50px;
+    padding: 5px 0;
+}
+.confirm {
+    background-color: #32a8ee;
+    border: #32a8ee;
+    color: white;
+    border-radius: 5px;
+}
+.file {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #eeeeee;
+    border-radius: 4px;
+    padding: 4px 12px;
+    color: #999999;
+    text-decoration: none;
+    text-indent: 0;
+    line-height: 20px;
+    margin: 0!important;
+}
+.file input {
+    position: absolute;
+    opacity: 0;
+    width: 40px;
+}
+.file:hover{
+    border: 1px solid #777777;
+    color: #777777;
+}
+li{
+  list-style: none;
+}
+.cancel {
+    background-color: white;
+    border: 1px solid rgb(217, 217, 217);
+    color: rgb(138, 138, 138);
+    border-radius: 5px;
+}
 </style>

@@ -90,7 +90,7 @@ export default {
       this.name = '编辑'
       this.id = this.$route.query.id
       this.$ajax.get(url + 'housingResource/flndHById/' + this.id).then(res => {
-        // console.log(res.data.data)
+        if(res.data.status===200){
         this.addCustomer.roomType = res.data.data.roomType
         this.addCustomer.buildings = res.data.data.buildinges.id
         this.addCustomer.roomNumber = res.data.data.roomNumber
@@ -98,10 +98,17 @@ export default {
         this.addCustomer.pricing = res.data.data.pricing
         this.addCustomer.renting = res.data.data.renting
         this.addCustomer.reserve = res.data.data.reserve
+        }else if(res.data.status===403){
+          this.$alert('您的权限不足', '权限不足', {
+              confirmButtonText: '确定',
+              callback: action => {
+                  this.goBack()
+              }
+          });
+        }
       })
     }
     this.$ajax.get(url + 'building/flndAllBuilding').then(res => {
-      console.log(res.data.data)
       this.builds = res.data.data
     })
   },
@@ -134,6 +141,11 @@ export default {
             type: 'success'
           })
           this.$router.push('/rent')
+        }else if(res.data.status===403){
+          this.$message({
+              message:'权限不足',
+              type: 'error'
+          })
         }
       })
     },

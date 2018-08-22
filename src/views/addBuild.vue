@@ -98,7 +98,7 @@ export default {
         // console.log(this.$route.query.id)
         this.id = this.$route.query.id
         this.$ajax.get(url + 'building/flndById/' + this.id).then(res => {
-          // console.log(res.data.data)
+          if(res.data.status === 200){
           this.ruleForm = {
             'precinct': res.data.data.precinct,
             'namec': res.data.data.namec,
@@ -109,6 +109,14 @@ export default {
             'buildingTowards': res.data.data.buildingTowards,
             'comment': res.data.data.comment,
           }
+          }else if(res.data.status===403){
+            this.$alert('您的权限不足', '权限不足', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.goBack()
+            }
+          });
+        }
         })
       }
     },
@@ -177,16 +185,42 @@ export default {
           this.$ajax.put(url + 'building/updateBuilding/', data2).then(res => {
             // console.log(res.data)
             if (res.data.status === 200) {
-              this.fullscreenLoading = false
-              window.history.go(-1)
+              this.$message({
+                message:'修改成功',
+                type:'success'
+              })
+              this.$router.push('/house')
+            }else if(res.data.status===403){
+              this.$message({
+                  message: '权限不足',
+                  type: 'error'
+              })
+            }else{
+              this.$message({
+                message: '修改失败',
+                type: 'error'
+              })
             }
           })
         } else {
           this.$ajax.post(url + 'building/addBuilding', data).then(res => {
             // console.log(res.data)
             if (res.data.status === 200) {
-              this.fullscreenLoading = false
-              window.history.go(-1)
+              this.$message({
+                message:'添加成功',
+                type:'success'
+              })
+              this.$router.push('/house')
+            }else if(res.data.status===403){
+              this.$message({
+                  message: '权限不足',
+                  type: 'error'
+              })
+            }else{
+              this.$message({
+                message:'添加失败',
+                type:'error'
+              })
             }
           })
         }

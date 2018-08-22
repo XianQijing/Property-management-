@@ -5,7 +5,7 @@
             <div class="card row">
                 <div class="col-md-12">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
-                        <el-tab-pane label="房源管理" name="first" v-if="this.role[25] === 'rubik:roomManager:list'">
+                        <el-tab-pane label="房源管理" name="first" v-if="this.role.indexOf('rubik:roomManager:list')!==-1">
                             <div class="main">
 								<div v-if="this.indexTable === '0'">
 									<router-view class="rent_addhouse"></router-view>
@@ -13,9 +13,9 @@
 								</div>
 								<router-link :to="{name: 'Rent_addhouse',query:{msg:'tianjia'}}"><button class="add">添加房源</button></router-link>
                                 <div class="fenye" style="display:inline-block" id="btn">
-                                    <button @click="display(1)" class="active">全部数据</button>
-                                    <button @click="display(2)">只显示已租数据</button>
-                                    <button @click="display(3)">只显示未租数据</button>
+                                    <button @click="display(1)" class="active" id="all">全部数据</button>
+                                    <button @click="display(2)" id="rented">只显示已租数据</button>
+                                    <button @click="display(3)" id="renting">只显示未租数据</button>
                                 </div>
 								<el-table :data="tableData" style="width: 100%">
 									<el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
@@ -46,7 +46,7 @@
 							</div>
                         </el-tab-pane>
 
-                        <el-tab-pane label="商机管理" v-if="this.role[26] === 'rubik:businessManager:list'">
+                        <el-tab-pane label="商机管理" v-if="this.role.indexOf('rubik:businessManager:list')!==-1">
                              <div class="main">
 								<!-- <div>
 									<router-view class="relationshipAdd"></router-view>
@@ -90,7 +90,7 @@
 							</div>
                         </el-tab-pane>
 
-                        <el-tab-pane label="合同管理" v-if="this.role[27] === 'rubik:contractManager:list'">
+                        <el-tab-pane label="合同管理" v-if="this.role.indexOf('rubik:contractManager:list')!==-1">
 
                             <div class="main">
 								<div  v-if="this.indexTable === '2'">
@@ -141,7 +141,7 @@
 								</div>
 							</div>                 
                         </el-tab-pane>
-                        <el-tab-pane label="房产验收" name="fifth" v-if="this.role[28] === 'rubik:acceptance:list'">
+                        <el-tab-pane label="房产验收" name="fifth" v-if="this.role.indexOf('rubik:acceptance:list')!==-1">
 							<div class="main">
 								<div v-if="indexTable === '4'">
 									<router-view class="test"></router-view>
@@ -237,11 +237,11 @@
                 </el-form>
                 <span slot="footer" class="dialog-footer" v-show="add">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="addChange('tianjia')">确 定1</el-button>
+                    <el-button type="primary" @click="addChange('tianjia')">确 定</el-button>
                 </span>
                 <span slot="footer" class="dialog-footer" v-show="editOne">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="addChange('gengxin')">确 定2</el-button>
+                    <el-button type="primary" @click="addChange('gengxin')">确 定</el-button>
                 </span>
 
             </el-dialog>
@@ -401,13 +401,12 @@ export default {
          this.$ajax.get(url + 'role/findPermission').then(res => {
             res.data.data.forEach(v => {
                 this.role.push(v.permission)
-                // console.log(this.role)
                 })
             })
         this.flndAllHousingResource(),
         this.flndAllBusiness(),
         this.flndAllContract(),
-        this.nn()
+        // this.nn()
         this.getRoomStandard()
        
     },
@@ -495,7 +494,16 @@ export default {
                 this.edit = true
                 this.tanchuang = "查看详情"
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
-                    this.upload = res.data.data
+                    if(res.data.status===200){
+                        this.upload = res.data.data
+                    }else if(res.data.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.dialogVisible = false;
+                        }
+                    });
+                }
                 })
             }else if(this.msg == "gengxin"){
                 this.id = this.tableDataBusiness[index].id;
@@ -504,7 +512,16 @@ export default {
                 this.add = false
                 this.tanchuang = "更新商机"
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
-                    this.upload = res.data.data
+                    if(res.data.status===200){
+                        this.upload = res.data.data
+                    }else if(res.data.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.dialogVisible = false;
+                        }
+                    });
+                }
                 })
             }else{
                 this.edit = false,
@@ -519,15 +536,24 @@ export default {
         display(precinct){
             this.bb = precinct
             if (this.bb === 1){
+                document.getElementById('all').className = 'active'
+                document.getElementById('rented').className = ''
+                document.getElementById('renting').className = ''
                 this.flndAllHousingResource()
                 this.bb === 1;
             }else if(this.bb === 2){
+                document.getElementById('all').className = ''
+                document.getElementById('rented').className = 'active'
+                document.getElementById('renting').className = ''
                 this.bb === 2;
                 this.$ajax.get(url + 'housingResource/selectOccupancy'+this.pageNo+'/'+this.pageSize).then(res => {
                     this.tableData=res.data.data.rows
                     this.totalDataNumber=res.data.data.records
                 })
             }else if(this.bb === 3){
+                document.getElementById('all').className = ''
+                document.getElementById('rented').className = ''
+                document.getElementById('renting').className = 'active'
                 this.bb === 3;
                 this.$ajax.get(url + 'housingResource/selectUnleased'+this.pageNo+'/'+this.pageSize).then(res => {
                     this.tableData=res.data.data.rows
@@ -548,14 +574,24 @@ export default {
             prospectiveCustomer.visitingWay=this.upload.visitingWay
             prospectiveCustomer.comment=this.upload.comment
             if(this.msg === "tianjia"){
-                this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',
-                    prospectiveCustomer
-                ).then(res => {
+                this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',prospectiveCustomer).then(res => {
+                    if(res.data.status === 200){
                     this.$message({
                         message: '添加成功',
                         type: 'success'
                     });
                     this.dialogVisible = false
+                    }else if(res.data.status===403){
+                        this.$message({
+                            message:'权限不足',
+                            type: 'error'
+                        })
+                    }else{
+                        this.$message({
+                            message:'添加失败',
+                            type: 'error'
+                        })
+                    }
                 })
             }else if(this.msg === "gengxin"){
                 this.$ajax.put(url+'prospectiveCustomer/updateProspectiveCustomer',
@@ -570,11 +606,23 @@ export default {
                         "comment":this.upload.comment
                     }
                 ).then(res => {
+                    if(res.data.status === 200){
                     this.$message({
-                        message: '修改成功',
+                        message: '更新成功',
                         type: 'success'
                     });
                     this.dialogVisible = false
+                    }else if(res.data.status===403){
+                        this.$message({
+                            message:'权限不足',
+                            type: 'error'
+                        })
+                    }else{
+                        this.$message({
+                            message:'更新失败',
+                            type: 'error'
+                        })
+                    }
                 })
             }else{
                 this.dialogVisible = false
@@ -601,20 +649,20 @@ export default {
                 this.$router.push({name: 'Rent_contract_change',query:{id:this.tableDataContract[index].id,msg:msg}})
             }
         },
-        nn(){
-            var card = document.getElementById("btn");
-            var cardlist = card.children;
+        // nn(){
+        //     var card = document.getElementById("btn");
+        //     var cardlist = card.children;
 
-            for (var i = 0; i < cardlist.length; i++){
-                cardlist[i].index = i;
-                cardlist[i].onclick = function() {
-                    for (var m = 0; m <cardlist.length; m++){
-                        cardlist[m].className = "";
-                    }
-                    this.className = "active"
-                }
-            }
-        },
+        //     for (var i = 0; i < cardlist.length; i++){
+        //         cardlist[i].index = i;
+        //         cardlist[i].onclick = function() {
+        //             for (var m = 0; m <cardlist.length; m++){
+        //                 cardlist[m].className = "";
+        //             }
+        //             this.className = "active"
+        //         }
+        //     }
+        // },
         //导入合同
         getPath(e) {
             this.file = e.currentTarget.files[0]
@@ -631,6 +679,13 @@ export default {
                     });
                     this.isShow = false
                     this.flndAllContract()
+                }else if(res.data.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.isShow = false
+                        }
+                    });
                 }
             })
         },

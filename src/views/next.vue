@@ -5,10 +5,16 @@
     <div class="tianjia">
       <div class="input">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
-          <el-form-item label="活动区域:" prop="building">
-            <el-select v-model="ruleForm.building" placeholder="请选择活动区域" @change="buildingChange">
-              <el-option v-for="(data, index) in buildingList" :key="index" :label="data.namec" :value="data.id"></el-option>
-            </el-select>
+          <el-form-item label="活动区域:" prop="buildings">
+            <!-- <el-select v-model="ruleForm.buildings" placeholder="请选择活动区域" @change="buildingChange"> -->
+              <el-cascader
+                expand-trigger="hover"
+                :options="options"
+                v-model="ruleForm.buildings"
+                @change="buildingChange">
+              </el-cascader>
+              <!-- <el-option v-for="(data, index) in buildingList" :key="index" :label="data.namec" :value="data.id"></el-option> -->
+            <!-- </el-select> -->
           </el-form-item>
           <el-form-item label="所在楼层:" prop="floor">
             <el-select v-model="ruleForm.floor" placeholder="请输入所在楼层">
@@ -51,7 +57,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="备注:" prop="comment">
-            <el-input v-model="ruleForm.comment" placeholder="请输入房屋类型"></el-input>
+            <el-input v-model="ruleForm.comment"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -110,7 +116,8 @@ export default {
       show2:false,
       name:'',
       ruleForm: {
-        building: '',
+        buildings: [],
+        building:'',
         floor: '',
         roomNumber: '',
         coveredArea: '',
@@ -128,7 +135,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       rules: {
-        building: [
+        buildings: [
           { required: true, message: '请选择活动区域', trigger: 'change' },
         ],
         floor: [
@@ -141,15 +148,14 @@ export default {
           { required: true, message: '请输入建筑面积', trigger: 'blur' }
         ]
       },
-      buildingList: [],
+      options: [],
       buildingListlist: [],
     }
   },
   mounted(){
     // GET /building/flndAll/{page}/{pageSize}
-    this.$ajax.get(url + 'building/flndAll/1/10').then(res => {
-      // console.log(res.data.data.rows)
-      this.buildingList = res.data.data.rows
+    this.$ajax.get(url + 'room/flndByBuilding/aaa').then(res => {
+      this.options = res.data
     })
     if (this.$route.query.id !== "qq") {
       this.name = "编辑"
@@ -157,22 +163,30 @@ export default {
       this.name = "编辑"
       // GET /room/flndById/{id}
       this.$ajax.get(url + 'room/flndById/' + this.id).then(res => {
-        console.log(res.data.data)
-        this.ruleForm = {
-          'building': res.data.data.buildings,
-          'floor': res.data.data.floor,
-          'roomNumber': res.data.data.roomNumber,
-          'coveredArea': res.data.data.coveredArea,
-          'usableArea': res.data.data.usableArea,
-          'gardenArea': res.data.data.gardenArea,
-          'useId': res.data.data.useId,
-          'codes': res.data.data.codes,
-          'roomType': {
-            'shi': toLowerCase(res.data.data.roomType.split('室')[0]),
-            'ting': toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[0]),
-            'wei': toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[1].split('卫')[0])
-          },
-          'comment': res.data.data.comment
+        if(res.data.status === 200){
+          this.ruleForm = {
+            'buildings': [res.data.data.precinct,res.data.data.buildings],
+            'floor': res.data.data.floor,
+            'roomNumber': res.data.data.roomNumber,
+            'coveredArea': res.data.data.coveredArea,
+            'usableArea': res.data.data.usableArea,
+            'gardenArea': res.data.data.gardenArea,
+            'useId': res.data.data.useId,
+            'codes': res.data.data.codes,
+            'roomType': {
+              'shi': toLowerCase(res.data.data.roomType.split('室')[0]),
+              'ting': toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[0]),
+              'wei': toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[1].split('卫')[0])
+            },
+            'comment': res.data.data.comment
+          }
+        }else if(res.data.status===403){
+          this.$alert('您的权限不足', '权限不足', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.goBack()
+          }
+        });
         }
       })
     } else if(this.$route.query.id === "qq"){
@@ -181,10 +195,8 @@ export default {
   },
   methods:{
     buildingChange () {
-      // console.log(this.ruleForm.building)
-      // GET /building/selectByBuilding/{building
+      this.ruleForm.building = this.ruleForm.buildings[1]
       this.$ajax.get(url + 'building/selectByBuilding/' + this.ruleForm.building).then(res => {
-        console.log(res.data.data)
         this.buildingListlist = res.data.data
       })
     },
@@ -211,7 +223,7 @@ export default {
       // 房屋类型 useId
       // 房屋标签 codes
       // 房屋户型 roomType
-      if (this.ruleForm.building === '') {
+      if (this.ruleForm.buildings === '') {
         this.$message({
           message: '活动区域不能为空',
           type: 'error'
@@ -233,7 +245,7 @@ export default {
         })
       } else {
         let data = {
-          'building': this.ruleForm.building,
+          'buildings': this.ruleForm.building,
           'floor': this.ruleForm.floor,
           'roomNumber': this.ruleForm.roomNumber,
           'coveredArea': this.ruleForm.coveredArea,
@@ -244,27 +256,46 @@ export default {
           'roomType': toUpperCase(this.ruleForm.roomType.shi) + '室' + toUpperCase(this.ruleForm.roomType.ting) + '厅' + toUpperCase(this.ruleForm.roomType.wei) + '卫',
           'comment': this.ruleForm.comment
         }
-        // console.log(data)
         if (this.$route.query.id !== "qq") {
           // PUT /room/update/{id
           data.id = this.$route.query.id
-          // console.log(data)
           this.$ajax.put(url + 'room/update/' + this.$route.query.id, data).then(res => {
-            // console.log(res.data)
             if (res.data.status === 200) {
               this.$message({
                   message: '修改成功',
                   type: 'success'
                 })
-              window.history.go(-1)
+              this.$router.push('/house')
+            }else if(res.data.status===403){
+              this.$message({
+                message:'权限不足',
+                type: 'error'
+              })
+            }else{
+              this.$message({
+                message:'修改失败',
+                type:'error'
+              })
             }
           })
         } else {
           this.$ajax.post(url + 'room/addRoom', data).then(res => {
-            // console.log(res.data)
             if (res.data.status === 200) {
-              // this.fullscreenLoading = false
-              window.history.go(-1)
+              this.$message({
+                message:'添加成功',
+                type:'success'
+              })
+              this.$router.push('/house')
+            }else if(res.data.status===403){
+              this.$message({
+                message:'权限不足',
+                type: 'error'
+              })
+            }else{
+              this.$message({
+                message:'添加失败',
+                type:'error'
+              })
             }
           })
         }
@@ -278,7 +309,6 @@ export default {
       this.dialogVisible = true;
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
     }
   }
 }

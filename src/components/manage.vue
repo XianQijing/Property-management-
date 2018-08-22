@@ -115,6 +115,11 @@ export default {
                     type: 'success'
                 })
                 // this.getbumen()
+                }else if(res.data.status===403){
+                    this.$message({
+                        message: '权限不足',
+                        type: 'error'
+                    })
                 }else{
                     this.$message({
                         message: '添加失败',
@@ -162,6 +167,11 @@ export default {
                                 type: 'success'
                             })
                             this.getbumen()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message: '权限不足',
+                                type: 'error'
+                            })
                         }else {
                             this.$message({
                                 message: '删除失败',
@@ -243,6 +253,11 @@ export default {
                                 type: 'success'
                             })
                             this.getcustomerMsg()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message: '权限不足',
+                                type: 'error'
+                            })
                         }else {
                             this.$message({
                                 message: '停用失败',

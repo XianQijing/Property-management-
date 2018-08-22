@@ -1,6 +1,15 @@
 <template>
   <div class="month">
     <button class="delect" id="more1" @click="out">批量导出</button>
+    <el-date-picker
+      v-model="time"
+      type="datetimerange"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      value-format="yyyy-MM-dd HH:mm:ss"
+      @change="selectTime">
+    </el-date-picker>
     <el-table :data="monthData" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="carPlate" label="车牌号"></el-table-column>
@@ -28,6 +37,7 @@ export default {
   name: 'month',
   data(){
     return{
+      time:[],
       monthData:[{
         name:'1234648'
       }],
@@ -44,6 +54,25 @@ export default {
     this.getmonth()
   },
   methods: {
+    selectTime(){
+      if(this.time){
+        this.$ajax.get(url + 'pack/findCmCardAllByDate',{
+          params:{
+            "begTime": this.time[0],
+            "endTime": this.time[1],
+            "page":this.currentPage,
+            "pageSize":this.pageSize
+          }
+        }).then(res => {
+          if(res.data.status === 200){
+            this.monthData = res.data.data.rows
+            this.total = res.data.data.records
+          }
+        })
+      }else{
+        this.getmonth()
+      }
+    },
     //多选变色
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -61,7 +90,6 @@ export default {
           "pageSize":this.pageSize
         }
       }).then(res => {
-        console.log(res)
         if(res.data.status === 200){
           this.monthData = res.data.data.rows
           this.total = res.data.data.records
@@ -100,11 +128,19 @@ export default {
     //分页
     handleSizeChange(val) {
       this.pageSize = val
-      this.getmonth()
+      if(this.time){
+        this.selectTime()
+      }else{
+        this.getmonth()
+      }
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.getmonth()
+      if(this.time){
+        this.selectTime()
+      }else{
+        this.getmonth()
+      }
     }
   }
 }

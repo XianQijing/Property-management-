@@ -7,10 +7,10 @@
         <div class="col-md-12">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <!--部门管理-->
-            <el-tab-pane label="部门管理" name="first" v-if="this.role1[8] === 'rubik:divisional:list'">
+            <el-tab-pane label="部门管理" name="first" v-if="this.role1.indexOf('rubik:divisional:list')!==-1">
                 <manage-name></manage-name>
             </el-tab-pane>
-            <el-tab-pane label="权限管理" name="second" v-if="this.role1[13] === 'rubik:role:list'">
+            <!-- <el-tab-pane label="权限管理" name="second" v-if="this.role1[13] === 'rubik:role:list'">
               <div class="main">
                 <router-view></router-view>
                 <button @click="AddRole">+ 添加角色</button>
@@ -44,9 +44,9 @@
                   </el-pagination>
                 </div>
               </div>
-            </el-tab-pane>
+            </el-tab-pane> -->
             <!--职员信息-->
-            <el-tab-pane label="职员信息" name="third" v-if="this.role1[9] === 'rubik:employee:list'">
+            <el-tab-pane label="职员信息" name="third" v-if="this.role1.indexOf('rubik:employee:list')!==-1">
               <div class="main">
                 <button @click="add = !add">+ 添加新员工</button>
                 <button @click="isShow = !isShow">导入</button>
@@ -88,7 +88,7 @@
               </div>
             </el-tab-pane>
             <!--往来单位-->
-            <el-tab-pane label="往来单位" name="fourth" v-if="this.role1[10] === 'rubik:btype:list'">
+            <el-tab-pane label="往来单位" name="fourth" v-if="this.role1.indexOf('rubik:btype:list')!==-1">
               <div class="main">
                 <button @click="contact = !contact">+ 添加联系人</button>
                 <!-- <button @click="isShow = !isShow">导入</button> -->
@@ -338,7 +338,7 @@
                 </span>
             </el-dialog>
 
-            <el-dialog :title="addOrEdit" :visible.sync="dialogFormVisible" width="30%">
+            <!-- <el-dialog :title="addOrEdit" :visible.sync="dialogFormVisible" width="30%">
               <el-form>
                 <el-form-item label="角色名称：" label-width="120px">
                   <el-input v-model="rolename" placeholder="请输入角色名称" auto-complete="off"></el-input>
@@ -348,7 +348,7 @@
                 <el-button type="primary" @click="addrole">确 定</el-button>
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
               </div>
-            </el-dialog>
+            </el-dialog> -->
 
       <!--修改-->
       <div class="xiugai" v-show="modify">
@@ -578,7 +578,12 @@ methods:{
                 type: 'success',
                 message: '删除成功!'
               })
-            } else {
+            }else if(res.data.status===403){
+              this.$message({
+                message:'权限不足',
+                type: 'error'
+              })
+            }else {
               this.$message({
                 type: 'error',
                 message: res.data.msg
@@ -628,7 +633,12 @@ methods:{
               type: 'success',
               message: '删除成功!'
             })
-          } else {
+          }else if(res.data.status===403){
+              this.$message({
+                message:'权限不足',
+                type: 'error'
+              })
+            }else {
             this.$message({
               type: 'error',
               message: res.data.msg
@@ -838,6 +848,11 @@ methods:{
                                 type: 'success'
                             })
                             this.staff()
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
                         }else {
                             this.$message({
                                 message: '删除失败',
@@ -869,6 +884,11 @@ methods:{
                                 type: 'success'
                             })
                             this.Btype()
+                        }else if(res.data.status===403){
+                        this.$message({
+                            message:'权限不足',
+                            type: 'error'
+                        })
                         }else {
                             this.$message({
                                 message: '删除失败',
@@ -988,6 +1008,16 @@ methods:{
                 //   window.history.go(0)
                 this.add = false
                 this.staff()
+                }else if(res.data.status===403){
+                    this.$message({
+                        message: '权限不足',
+                        type: 'error'
+                    })
+                }else{
+                    this.$message({
+                        message:'失败',
+                        type:'errpr'
+                    })
                 }
                 // console.log('this.form')
             })
@@ -1011,9 +1041,19 @@ methods:{
         users.remark=this.addpersonEdit.beizhu;
         users.roleId=this.addpersonEdit.position;
         this.$ajax.post(url+"user/update",users).then((res) => {
-            this.form = res.data
-            // console.log('this.form')
-            this.zhiyuan = false;
+            if(res.data.status === 200){
+                this.form = res.data
+                this.$message({
+                    message:'编辑成功',
+                    type:'success'
+                })
+                this.zhiyuan = false;
+            }else if(res.data.status===403){
+                    this.$message({
+                        message: '权限不足',
+                        type: 'error'
+                    })
+                }
         })
     },
     test(){
@@ -1039,6 +1079,16 @@ methods:{
                     this.form = res.data
                     this.Btype()
                     this.contact = false
+                }else if(res.data.status===403){
+                    this.$message({
+                        message: '权限不足',
+                        type: 'error'
+                    })
+                }else{
+                    this.$message({
+                        message: '添加失败',
+                        type: 'error'
+                    })
                 }
             })
         }
@@ -1065,6 +1115,11 @@ methods:{
                     this.form = res.data
                     this.Btype()
                     this.wanglai = false;
+                }else if(res.data.status===403){
+                    this.$message({
+                        message: '权限不足',
+                        type: 'error'
+                    })
                 }else{
                     this.$message({
                         message: res.data.msg,
@@ -1111,6 +1166,11 @@ methods:{
                             type: 'success'
                         })
                         this.staff()
+                    }else if(res.data.status===403){
+                        this.$message({
+                            message:'权限不足',
+                            type: 'error'
+                        })
                     }else {
                             this.$message({
                                 message: '删除失败',
@@ -1147,6 +1207,11 @@ methods:{
                         })
                         this.Btype()
                     
+                        }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
                         }else {
                             this.$message({
                                 message: '删除失败',
@@ -1183,6 +1248,11 @@ methods:{
                     this.$message({
                         message: '成功',
                         type: 'success'
+                    })
+                }else if(res.data.status===403){
+                    this.$message({
+                        message: '权限不足',
+                        type: 'error'
                     })
                 }else{
                     this.$message({

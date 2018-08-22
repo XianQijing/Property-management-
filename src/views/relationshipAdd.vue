@@ -161,23 +161,32 @@ export default {
           
       })
       this.$ajax.get(url + 'owner/get/'+this.id+'/'+this.roomid+'/'+this.contractId).then(res => {
-        this.addCustomer.name=res.data.name;
-        this.addCustomer.selectRoom=[res.data.precinct, res.data.buildings, res.data.roomid];
-        console.log(this.addCustomer.selectRoom)
-        this.addCustomer.radio=res.data.sexs;
-        this.addCustomer.nationality=res.data.nationality;
-        this.addCustomer.nation=res.data.nation;
-        this.addCustomer.place=res.data.nativeAddress;
-        this.addCustomer.political=res.data.politicsStatus;
-        this.addCustomer.card=res.data.idCard;
-        this.addCustomer.birth=res.data.birthday;
-        this.addCustomer.phone=res.data.phone;
-        this.addCustomer.mail=res.data.email;
-        this.addCustomer.post=res.data.postcode;
-        this.addCustomer.contact=res.data.linkman;
-        this.addCustomer.contactPhone=res.data.linkphone;
-        this.addCustomer.address=res.data.address;
-        this.addCustomer.fax=res.data.fax;
+        if(res.status===200){
+          this.addCustomer.name=res.data.name;
+          this.addCustomer.selectRoom=[res.data.precinct, res.data.buildings, res.data.roomid];
+          console.log(this.addCustomer.selectRoom)
+          this.addCustomer.radio=res.data.sexs;
+          this.addCustomer.nationality=res.data.nationality;
+          this.addCustomer.nation=res.data.nation;
+          this.addCustomer.place=res.data.nativeAddress;
+          this.addCustomer.political=res.data.politicsStatus;
+          this.addCustomer.card=res.data.idCard;
+          this.addCustomer.birth=res.data.birthday;
+          this.addCustomer.phone=res.data.phone;
+          this.addCustomer.mail=res.data.email;
+          this.addCustomer.post=res.data.postcode;
+          this.addCustomer.contact=res.data.linkman;
+          this.addCustomer.contactPhone=res.data.linkphone;
+          this.addCustomer.address=res.data.address;
+          this.addCustomer.fax=res.data.fax;
+        }else if(res.status===403){
+          this.$alert('您的权限不足', '权限不足', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.goBack()
+          }
+        });
+        }
       })
       if(this.$route.query.bian==="qq"){
         this.name = "编辑",

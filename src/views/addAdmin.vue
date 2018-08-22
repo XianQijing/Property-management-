@@ -138,12 +138,20 @@ export default {
       this.edit = true
       // GET /precinct/flndById/{id}/{page}/{pageSize
       this.$ajax.get(url+ 'precinct/flndById/' + this.$route.query.id).then(res => {
-        // console.log(res.data.data)
-        this.ruleForm = res.data.data
-        
-        this.ruleForm.region = res.data.data.region.split(',').map(Number)
-        this.ruleForm.garage=res.data.data.cellParkingRelationship.garage;
-        this.ruleForm.stall=res.data.data.cellParkingRelationship.stall;
+        if(res.data.status === 200){
+          this.ruleForm = res.data.data
+          
+          this.ruleForm.region = res.data.data.region.split(',').map(Number)
+          this.ruleForm.garage=res.data.data.cellParkingRelationship.garage;
+          this.ruleForm.stall=res.data.data.cellParkingRelationship.stall;
+        }else if(res.data.status===403){
+          this.$alert('您的权限不足', '权限不足', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.goBack()
+          }
+        });
+        }
       })
     }
   },
@@ -192,8 +200,12 @@ export default {
           if (res.data.status === 200) {
             this.open2()
             window.history.go(-1)
+          }else if(res.data.status===403){
+            this.$message({
+                message: '权限不足',
+                type: 'error'
+            })
           }else{
-            console.log(res)
             this.$message.error(res.data.msg);
           }
         })
@@ -206,8 +218,13 @@ export default {
             // this.fullscreenLoading = false
             this.open2()
             window.history.go(-1)
+          }else if(res.data.status===403){
+            this.$message({
+                message: '权限不足',
+                type: 'error'
+            })
           }else{
-            this.$message.error('错了哦，这是一条错误消息');
+            this.$message.error('编辑失败');
           }
         })
       }

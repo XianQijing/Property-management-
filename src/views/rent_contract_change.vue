@@ -468,10 +468,19 @@ export default {
             this.watchOne = true
             this.edit = true,
             this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
+                if(res.data.status === 200){
                 this.detail = res.data.data
                 this.form = res.data.data
                 this.thisRoom = this.detail.rooms.roomNumbers.split(',')
                 this.close = false
+                }else if(res.data.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
             })
         }else if(this.$route.query.msg === "add"){
             this.addOne=true,
@@ -484,10 +493,19 @@ export default {
             this.watchOne=false
             this.edit = false
             this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
-                this.detail = res.data.data
-                this.form = res.data.data
-                this.thisRoom = this.detail.rooms.roomNumbers.split(',')
-                this.close = false
+                if(res.data.status === 200){
+                    this.detail = res.data.data
+                    this.form = res.data.data
+                    this.thisRoom = this.detail.rooms.roomNumbers.split(',')
+                    this.close = false
+                }else if(res.data.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
             })
         }
     },
@@ -557,7 +575,17 @@ export default {
                             type: 'success'
                             })
                         this.$router.push('/rent')
-                    }
+                    }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'error'
+                        }) 
+                     }
                 })
             }
 
@@ -659,7 +687,12 @@ export default {
                         type: 'success'
                     });
                     this.$router.push('/rent')
-                } else {
+                }else if(res.data.status===403){
+                            this.$message({
+                                message:'权限不足',
+                                type: 'error'
+                            })
+                        } else {
                     this.$message({
                         message: res.data.msg,
                         type: 'error'
