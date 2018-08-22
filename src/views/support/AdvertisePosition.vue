@@ -26,9 +26,15 @@
         </div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="ownername" label="姓名" width="120"></el-table-column>
-          <el-table-column prop="phone" label="手机号"></el-table-column>
-          <el-table-column prop="total" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].owner_name" prop="owner_name" label="姓名"></el-table-column>
+          <el-table-column v-if="tableData[0].pay_item_name" prop="pay_item_name" label="手机号"></el-table-column>
+          <el-table-column v-if="tableData[0].pay_price" prop="pay_price" label="金额"></el-table-column>
+          <el-table-column v-if="tableData[0].pay_time" prop="pay_time" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].should_price" prop="should_price" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].should_time" prop="should_time" label="租金"></el-table-column>
+          <el-table-column v-if="tableData[0].total" prop="total" label="总计"></el-table-column>
+          
+          <el-table-column v-if="tableData[0].pay_item_type_name" prop="pay_item_type_name" label="时间"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -52,8 +58,8 @@ import url from '../../assets/Req.js'
 var echarts = require('echarts/lib/echarts');
 // 引入柱状图
 require('echarts/lib/chart/bar');
-require('echarts/lib/chart/line');
 require('echarts/lib/chart/pie');
+require('echarts/lib/chart/line');
 // 引入提示框和标题组件
 require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
@@ -68,7 +74,11 @@ export default {
       color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
       Data: {},
       tableList: ['停车收费', '车辆次数'],
-      tableData: [],
+      tableData: [
+        {
+          owner_name: ''
+        }
+      ],
       house: {
         currentPage: 1,
         pageArr: [1, 2, 3, 4, 5],
@@ -81,13 +91,14 @@ export default {
     }
   },
   mounted () {
-    this.getData('contractValueTable')
-    // this.chartsTwo()
+    // GET /report/incomeAnalysis  收入分析
+    // GET /report/utilities  水电分析
+    // GET /report/receivable  应收费情况表
+    this.getData('incomeAnalysisTable')
   },
   methods: {
     getDate (data) {
       this.howDate = data
-      // console.log(this.howDate)
       this.tableTab(this.num2, '更改日期')
     },
     getTime (data) {
@@ -96,15 +107,11 @@ export default {
     },
     sizeChange (val) {
       this.house.pageSize = val
-      if (this.num2 === 0) {
-        // this.getData('contractValueTable')
-      }
+      this.tableTab(this.num2)
     },
     currentChange (val) {
       this.house.currentPage = val
-      if (this.num2 === 0) {
-        // this.getData('contractValueTable')
-      }
+      this.tableTab(this.num2)
     },
     handleSelectionChange () {},
     // 调用接口
@@ -128,11 +135,11 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          // if (data === 'rentOrNull') {
-          //   this.chartsTwo()
-          // } else {
+          if (data === 'utilities') {
             this.chartsTwo()
-          // }
+          } else {
+            this.charts()
+          }
         } else {
           this.tableData = res.data.dataTable
           this.house.total = res.data.total
@@ -147,20 +154,19 @@ export default {
       }
       if (this.isChartShow === false) {
         if (this.num2 === 0) {
-          // this.getData('contractValueTable')
+          this.getData('incomeAnalysisTable')
+        }
+        if (this.num2 === 1) {
+          this.getData('utilitiesTable')
         }
       } else {
         if (this.num2 === 0) {
-          // this.color = ['#F9A400']
-          // this.isArea = false
-          // this.getData('contractValue')
-          this.chartsTwo()
+          this.isArea = false
+          this.getData('incomeAnalysis')
         }
         if (this.num2 === 1) {
-          // this.color = ['#FF9494']
-          // this.isArea = true
-          // this.getData('payRanking')
-          this.chartsTwo()
+          this.isArea = true
+          this.getData('utilities')
         }
       }
     },
@@ -171,25 +177,100 @@ export default {
         this.isChartShow = false
       } else {
         this.isChartShow = true
-        if (this.num2 === 0) {
-          // this.color = ['#F9A400']
-          // this.getData('contractValue')
-        }
-        if (this.num2 === 1) {
-          // this.color = ['#FF9494']
-          // this.getData('payRanking')
-        }
       }
+      this.tableTab(this.num2, '更改日期')
     },
+    // 收入分析
+    charts () {
+      let arr = []
+      this.Data.forEach(v => {
+        if (v.total) {
+          v.name = v.pay_item_name
+          v.value = v.total
+        }
+        arr.push(v.name)
+      })
+      var myChart = echarts.init(document.getElementById('main1'));
+      myChart.setOption({
+        color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
+        title : {
+          text: '收入分析',
+          // subtext: '纯属虚构',
+          x:'center'
+        },
+        tooltip : {
+          trigger: 'item',
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          type: 'plain',
+          left: '35%',
+          bottom: '15%',
+          // orient: 'vertical',
+          data: arr,
+          formatter: '{name}'
+        },
+        grid: {
+          top: '20%',
+          left: '18%',
+          height: '60%',
+          width: '64%',
+          containLabel: true
+        },
+        series : [
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '40%'],
+            data: this.Data,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            },
+            label: {
+              position: 'inside',
+              formatter: '{d}%'
+            }
+          }
+        ]
+      }, true)
+    },
+    // 水电分析
     chartsTwo () {
-      var myChart2 = echarts.init(document.getElementById('main1'));
+      var myChart2 = echarts.init(document.getElementById('main1'))
+      var seriesArr = []
+      this.Data.series.forEach(v => {
+        var oneOfSeries = {
+          name: v.name,
+          type: 'line',
+          stack: '总量',
+          symbol: 'circle',
+          symbolSize: '20',
+          itemStyle: {
+            borderWidth: 2,
+            borderColor: '#fff',
+            shadowColor: 'rgba(0, 0, 0, 0.3)',
+            shadowBlur: 6
+          },
+          lineStyle: {
+            width: 6
+          },
+          data: v.data
+        }
+        seriesArr.push(oneOfSeries)
+      })
       myChart2.setOption({
         color: ['#32D2C9', '#F8A20F', '#72A0FF'],
         tooltip: {
-          trigger: 'axis'
+          trigger: this.Data.tooltip.trigger
         },
         legend: {
-          data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+          type: 'plain',
+          data: this.Data.legend.data
         },
         grid: {
           top: '20%',
@@ -209,7 +290,7 @@ export default {
           splitLine: {
             show: true
           },
-          data: ['周一','周二','周三','周四','周五','周六','周日'],
+          data: this.Data.xAxis.data,
           axisLine: {
             show: false
           },
@@ -229,42 +310,7 @@ export default {
             show: false
           }
         },
-        series: [
-          {
-            name:'邮件营销',
-            type:'line',
-            stack: '总量',
-            symbol: 'circle',
-            symbolSize: '20',
-            itemStyle: {
-              borderWidth: 2,
-              borderColor: '#fff',
-              shadowColor: 'rgba(0, 0, 0, 0.3)',
-              shadowBlur: 6
-            },
-            lineStyle: {
-              width: 6
-            },
-            data:[120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name:'联盟广告',
-            type:'line',
-            stack: '总量',
-            symbol: 'circle',
-            symbolSize: '20',
-            itemStyle: {
-              borderWidth: 2,
-              borderColor: '#fff',
-              shadowColor: 'rgba(0, 0, 0, 0.3)',
-              shadowBlur: 6
-            },
-            lineStyle: {
-              width: 6
-            },
-            data:[220, 182, 191, 234, 290, 330, 310]
-          }
-        ]
+        series: seriesArr
       }, true)
     },
   },
@@ -371,5 +417,6 @@ img {
 }
 .title .tab .active {
   background:#FF9494;
+  border-color:#FF9494;
 }
 </style>

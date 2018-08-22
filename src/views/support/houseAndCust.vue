@@ -26,17 +26,20 @@
         </div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column v-if="tableData[0].ownername" prop="ownername" label="姓名"></el-table-column>
-          <el-table-column v-if="tableData[0].phone" prop="phone" label="手机号"></el-table-column>
-          <el-table-column v-if="tableData[0].payprice" prop="payprice" label="金额"></el-table-column>
-          <el-table-column v-if="tableData[0].total" prop="total" label="合计"></el-table-column>
-          <el-table-column v-if="tableData[0].nul" prop="nul" label="合计"></el-table-column>
-          <el-table-column v-if="tableData[0].rent" prop="rent" label="租金"></el-table-column>
-          <el-table-column v-if="tableData[0].namec" prop="namec" label="姓名"></el-table-column>
-          <el-table-column v-if="tableData[0].count" prop="count" label="数值"></el-table-column>
-          <el-table-column v-if="tableData[0].addRent" prop="addRent" label="数值"></el-table-column>
-          <el-table-column v-if="tableData[0].exitRent" prop="exitRent" label="数值"></el-table-column>
-          <el-table-column v-if="tableData[0].nowRent" prop="nowRent" label="数值"></el-table-column>
+          <el-table-column v-if="tableData[0].ownername !== undefined" prop="ownername" label="姓名"></el-table-column>
+          <el-table-column v-if="tableData[0].owner_name !== undefined" prop="owner_name" label="姓名"></el-table-column>
+          <el-table-column v-if="tableData[0].phone !== undefined" prop="phone" label="手机号"></el-table-column>
+          <el-table-column v-if="tableData[0].payprice !== undefined" prop="payprice" label="金额"></el-table-column>
+          <el-table-column v-if="tableData[0].total !== undefined" prop="total" label="合计"></el-table-column>
+
+          <el-table-column v-if="tableData[0].namec !== undefined" prop="namec" label="姓名"></el-table-column>
+          <el-table-column v-if="tableData[0].count !== undefined" prop="count" label="数值"></el-table-column>
+          <el-table-column v-if="tableData[0].nul !== undefined" prop="nul" label="合计"></el-table-column>
+          <el-table-column v-if="tableData[0].rent !== undefined" prop="rent" label="租金"></el-table-column>
+
+          <el-table-column v-if="tableData[0].addRent !== undefined" prop="addRent" label="数值"></el-table-column>
+          <el-table-column v-if="tableData[0].exitRent !== undefined" prop="exitRent" label="数值"></el-table-column>
+          <el-table-column v-if="tableData[0].nowRent !== undefined" prop="nowRent" label="数值"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -74,7 +77,11 @@ export default {
       color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
       Data: {},
       tableList: ['合同签约额度表', '历史缴费表', '合约状态表', '房屋状态表'],
-      tableData: [],
+      tableData: [
+        {
+          ownername: ''
+        }
+      ],
       house: {
         currentPage: 1,
         pageArr: [1, 2, 3, 4, 5],
@@ -92,7 +99,6 @@ export default {
   methods: {
     getDate (data) {
       this.howDate = data
-      // console.log(this.howDate)
       this.tableTab(this.num2, '更改日期')
     },
     getTime (data) {
@@ -125,25 +131,19 @@ export default {
         }
       }
       this.$ajax.get(url + 'report/' + data, { params: params }).then(res => {
-        // console.log(res.data)
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
           if (data === 'rentOrNull') {
             this.chartsTwo()
-          } else {
-            // this.charts()
+          } else if (data === 'contractStatus') {
             this.chartsThree()
+          } else {
+            this.charts()
           }
         } else {
           this.tableData = res.data.dataTable
           this.house.total = res.data.total
-          res.data.dataTable.forEach((v, k) => {
-            if (v.owner_name) {
-              this.tableData[k].ownername = v.owner_name
-            }
-          })
-          // this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
         }
       })
     },
@@ -172,10 +172,12 @@ export default {
       } else {
         if (this.num2 === 0) {
           this.isArea = false
+          this.color = ['#F9A400']
           this.getData('contractValue')
         }
         if (this.num2 === 1) {
           this.isArea = true
+          this.color = ['#FF9494']
           this.getData('payRanking')
         }
         if (this.num2 === 2) {
@@ -183,6 +185,7 @@ export default {
           this.getData('contractStatus')
         }
         if (this.num2 === 3) {
+          this.color = ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA']
           this.isArea = true
           this.getData('rentOrNull')
         }
@@ -201,7 +204,6 @@ export default {
     },
     // 空置率
     charts () {
-      // report/contractValue
       var myChart = echarts.init(document.getElementById('main1'));
       myChart.setOption({
         color: this.color,
@@ -521,5 +523,6 @@ img {
 }
 .title .tab .active {
   background:#FF9494;
+  border-color:#FF9494;
 }
 </style>

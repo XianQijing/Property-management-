@@ -26,13 +26,15 @@
         </div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column v-if="tableData[0].name" prop="name" label="姓名"></el-table-column>
-          <el-table-column v-if="tableData[0].process_cacsi" prop="process_cacsi" label="手机号"></el-table-column>
-          <el-table-column v-if="tableData[0].visit_cacsi" prop="visit_cacsi" label="金额"></el-table-column>
-          <el-table-column v-if="tableData[0].count" prop="count" label="合计"></el-table-column>
-          <el-table-column v-if="tableData[0].CACSI" prop="CACSI" label="合计"></el-table-column>
-          <el-table-column v-if="tableData[0].eventType" prop="eventType" label="租金"></el-table-column>
-          <el-table-column v-if="tableData[0].event_date" prop="event_date" label="时间"></el-table-column>
+          <el-table-column v-if="tableData[0].name !== undefined" prop="name" label="姓名"></el-table-column>
+          <el-table-column v-if="tableData[0].process_cacsi !== undefined" prop="process_cacsi" label="满意度"></el-table-column>
+          <el-table-column v-if="tableData[0].visit_cacsi !== undefined" prop="visit_cacsi" label="满意度"></el-table-column>
+
+          <el-table-column v-if="tableData[0].count !== undefined" prop="count" label="次数"></el-table-column>
+          
+          <el-table-column v-if="tableData[0].eventType !== undefined" prop="eventType" label="事件"></el-table-column>
+          <el-table-column v-if="tableData[0].CACSI !== undefined" prop="CACSI" label="备注"></el-table-column>
+          <el-table-column v-if="tableData[0].event_date !== undefined" prop="event_date" label="时间"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -71,7 +73,9 @@ export default {
       color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
       Data: {},
       tableList: ['反馈满意度', '服务派工', '事件统计'],
-      tableData: [],
+      tableData: [{
+        name: ''
+      }],
       house: {
         currentPage: 1,
         pageArr: [1, 2, 3, 4, 5],
@@ -130,13 +134,15 @@ export default {
           this.Data = res.data
           if (data === 'emergency') {
             this.chartsTwo()
+          } else if (data === 'repairRanking') {
+            this.charts('次数')
           } else {
-            this.charts()
+            this.charts('满意度（100%）')
           }
         } else {
           this.tableData = res.data.dataTable
           this.house.total = res.data.total
-          this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
+          // this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
         }
       })
     },
@@ -180,30 +186,21 @@ export default {
         this.isChartShow = false
       } else {
         this.isChartShow = true
-        if (this.num2 === 0) {
-          // this.color = ['#F9A400']
-          this.getData('contractValue')
-        }
-        if (this.num2 === 1) {
-          // this.color = ['#FF9494']
-          this.getData('payRanking')
-        }
       }
+      this.tableTab(this.num2, '更改日期')
     },
     // 事件统计
     chartsTwo () {
       let arr = []
       this.Data.forEach(v => {
-        // v.name = v.event
-        // v.value = v.count
         arr.push(v.name)
       })
       var myChart = echarts.init(document.getElementById('main1'));
       myChart.setOption({
         color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
         title : {
-          text: '某站点用户访问来源',
-          subtext: '纯属虚构',
+          text: '事件统计',
+          // subtext: '纯属虚构',
           x:'center'
         },
         tooltip : {
@@ -212,9 +209,9 @@ export default {
         },
         legend: {
           type: 'plain',
-          right: '20%',
-          bottom: '30%',
-          orient: 'vertical',
+          left: '40%',
+          bottom: '15%',
+          // orient: 'vertical',
           data: arr,
           formatter: '{name}'
         },
@@ -230,7 +227,7 @@ export default {
             name: '访问来源',
             type: 'pie',
             radius : '55%',
-            center: ['50%', '60%'],
+            center: ['50%', '40%'],
             data: this.Data,
             itemStyle: {
               emphasis: {
@@ -248,14 +245,15 @@ export default {
       }, true)
     },
     // 服务派工
-    charts () {
+    charts (str) {
       var myChart2 = echarts.init(document.getElementById('main1'));
       myChart2.setOption({
         legend: {
-          type: 'plain',
-          right: '10%',
-          bottom: '30%',
-          orient: 'vertical',
+          show: false,
+          // type: 'plain',
+          // right: '10%',
+          // bottom: '30%',
+          // orient: 'vertical',
         },
         tooltip : {
           show: false,
@@ -288,7 +286,7 @@ export default {
         yAxis : [
           {
             type : 'value',
-            name: '空置率(%)',
+            name: str,
             nameGap: 30,
             splitLine: {
               lineStyle: {
@@ -308,7 +306,7 @@ export default {
               show: true,
               // position: 'insideTop'
             },
-            itemStyle: { 
+            itemStyle: {
               normal: { 
                 color: function(params) { 
                 　//首先定义一个数组 
@@ -425,5 +423,6 @@ img {
 }
 .title .tab .active {
   background:#FF9494;
+  border-color:#FF9494;
 }
 </style>
