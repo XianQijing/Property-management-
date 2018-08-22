@@ -483,6 +483,7 @@ button {
 .charts {
   /* height: 100%;
   overflow: auto; */
+  overflow: hidden;
 }
 .title {
   overflow: hidden;
