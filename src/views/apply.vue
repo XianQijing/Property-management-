@@ -91,7 +91,7 @@ export default {
             detail: {
                 name: '',
                 area: '',
-                house: ["bangongqu","Azuo","105"],
+                house: [],
                 startTime: '',
                 endTime: '',
                 fitUp:'客户自行装修',
@@ -104,86 +104,7 @@ export default {
                 company:'',
                 textarea:'',
             },
-            options: [
-          {
-          value: 'bangongqu',
-          label: '办公区',
-          children: [{
-              value: 'Azuo',
-              label: 'A座',
-              children: [{
-                value: '101',
-                label: '101'
-              }, {
-                value: '102',
-                label: '102'
-              }, {
-                value: '103',
-                label: '103'
-              }, {
-                value: '104',
-                label: '104'
-              },
-              {
-                value: '105',
-                label: '105'
-              }]
-          }, 
-          {
-            value: 'Bzuo',
-            label: 'B座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          },{
-            value: 'Czuo',
-            label: 'C座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          }]
-        },{
-          value: 'yanjiedianpu',
-          label: '沿街店铺',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
-        }],
+            options: [],
          rules: {
           name: [
             { required: true, message: '请输入租户姓名', trigger: 'blur' },
@@ -223,14 +144,12 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$route.query.id)
          this.id = this.$route.query.id
         if(this.$route.query.msg == 8){
             this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
                 this.detail = res.data;
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.editChange(res.data.name,res.data.phone)
-                console.log(this.detail.house)
                 this.edit = true
             })
         }else if(this.$route.query.msg == 7){
@@ -238,7 +157,6 @@ export default {
                 this.detail = res.data;
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.editChange(res.data.name,res.data.phone)
-                console.log(this.detail.house)
                 this.edit = false
             })
         }else(
@@ -283,7 +201,6 @@ export default {
                           
                          this.detail.name = null;
                        }
-                       console.log(res.data)
                    })
                  }else{
                       this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
@@ -291,7 +208,6 @@ export default {
                              
                             this.detail.phone = null;
                         }
-                        console.log(res.data)
                     })
                  }
               }
@@ -326,7 +242,6 @@ export default {
                  this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
                      this.options=res.data;
                  })
-                console.log(res.data)
             })
           }
       },
@@ -338,12 +253,10 @@ export default {
             var adornApplyvo={};
             adornApplyvo.name=this.detail.name;           //租户姓名
             adornApplyvo.principal_phone=this.detail.principal_phone;   //负责人电话号码
-            console.log(this.detail.house);
             var arr=this.detail.house;
             adornApplyvo.roomNumber=arr[arr.length-1];//关联房屋
             adornApplyvo.startTime=this.detail.startTime;    //开始装修时间
             adornApplyvo.endTime=this.detail.endTime;    //预估结束时间
-            console.log(this.detail.natureName)
             adornApplyvo.natureName=this.detail.natureName;    //装修性质
             adornApplyvo.project=this.detail.project;    //装修项目
             adornApplyvo.phone=this.detail.phone;    //手机号
@@ -357,7 +270,6 @@ export default {
                  adornApplyvo.id = this.id;
                 this.$ajax.put(url+"adornApply/update",adornApplyvo).then((res) => {
                     this.form = res.data
-                    console.log(this.form);
                      if(res.data.status === 200){
                          this.$message({
                                 message: '修改数据成功',
@@ -376,7 +288,6 @@ export default {
             }else{
                 this.$ajax.post(url+"adornApply/insert",adornApplyvo).then((res) => {
                     this.form = res.data
-                    console.log(this.form);
                      if(res.data.status === 200){
                          this.$message({
                                 message: '新增数据成功',
@@ -397,7 +308,6 @@ export default {
           window.history.back()
       },
       handleChange(value) {
-        //console.log(value);
       }
     }
 }

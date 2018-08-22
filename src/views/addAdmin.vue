@@ -60,7 +60,7 @@
               </el-input>
             </el-form-item>
             <el-form-item label="车位数：">
-              <el-input v-model="ruleForm.carSeatNumber" :disabled="edit">
+              <el-input v-model="ruleForm.stall" :disabled="edit">
                   <template slot="append">个</template>
               </el-input>
             </el-form-item>
@@ -97,7 +97,7 @@ export default {
         greenArea:'',
         parkingArea:'',
         garage:'',
-        carSeatNumber:'',
+        stall:'',
 
       },
       rules: {
@@ -143,7 +143,7 @@ export default {
         
         this.ruleForm.region = res.data.data.region.split(',').map(Number)
         this.ruleForm.garage=res.data.data.cellParkingRelationship.garage;
-        this.ruleForm.carSeatNumber=res.data.data.cellParkingRelationship.carSeatNumber;
+        this.ruleForm.stall=res.data.data.cellParkingRelationship.stall;
       })
     }
   },
@@ -184,7 +184,7 @@ export default {
         'greenArea':this.ruleForm.greenArea, 
         'parkingArea':this.ruleForm.parkingArea, 
         'garage':this.ruleForm.garage, 
-        'carSeatNumber':this.ruleForm.carSeatNumber, 
+        'stall':this.ruleForm.stall, 
       }
       // console.log(precinctVO)
       if (this.$route.query.msg === "tianjia") {
@@ -194,7 +194,7 @@ export default {
             window.history.go(-1)
           }else{
             console.log(res)
-            this.$message.error('错了哦，这是一条错误消息');
+            this.$message.error(res.data.msg);
           }
         })
       } else if (this.$route.query.msg === "bianji") {

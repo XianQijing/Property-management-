@@ -1,4 +1,4 @@
-<template>
+// <template>
 <!--车位管理-房产验收-->
   <div class="test">
     <h3>{{this.name}}房产</h3>
@@ -67,11 +67,14 @@ export default {
         remarks: ''
       },
       options: [],
+      roomId:'',
+      id:'',
+      applyId: ''
     }
   },
   mounted(){
-    if (this.$route.query.id !== "add") {
-      this.id = this.$route.query.id
+    if (this.$route.query.id == "edit") {
+      this.id = this.$route.query.roomId
       this.name = "编辑"
       // GET /roomStandard/flndById/{id}
       this.$ajax.get(url + 'roomStandard/flndById/' + this.id).then(res => {
@@ -86,7 +89,16 @@ export default {
         this.carForm.remarks = res.data.data.remark
       })
     } else if(this.$route.query.id === "add") {
+      this.id = this.$route.query.id
       this.name = "添加"
+    }else{
+      this.name = "添加"
+      this.id = this.$route.query.id
+      this.roomId = this.$route.params.id
+      this.applyId = this.$route.params.zhuangxiu
+      this.$ajax.get(url + 'room/selectById/' + this.roomId).then(res => {
+        this.carForm.region = [res.data.data.buildinges.precinct,res.data.data.buildings,this.roomId]
+      })
     }
     this.getRoomList()
   },
@@ -96,45 +108,62 @@ export default {
       window.history.back()
     },
     handleChange (value) {
-      // console.log(value);
     },
     getRoomList () {
       this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
-        // console.log(res)
         this.options = res.data;
       })
     },
     save () {
-      var roomStandard = {}
-      roomStandard.room = this.carForm.region[0] + ',' + this.carForm.region[1] + ',' +this.carForm.region[2]
-      roomStandard.projectAcceptance = this.carForm.project
-      roomStandard.acceptanceStandard = this.carForm.standard
-      roomStandard.acceptanceResult = status2(this.carForm.Result)
-      roomStandard.acceptanceBy = this.carForm.person
-      roomStandard.acceptanceState = this.carForm.Explain
-      roomStandard.acceptanceTime = this.carForm.time
-      roomStandard.remark = this.carForm.remarks
-      if (this.$route.query.id !== "add") {
+      var roomStandardVO = {
+        'room': this.carForm.region[0] + ',' + this.carForm.region[1] + ',' +this.carForm.region[2],
+        'projectAcceptance': this.carForm.project,
+        'acceptanceStandard': this.carForm.standard,
+        'acceptanceResult': status2(this.carForm.Result),
+        'acceptanceBy': this.carForm.person,
+        'acceptanceState': this.carForm.Explain,
+        'acceptanceTime': this.carForm.time,
+        'remark': this.carForm.remarks,
+        'applyId': this.applyId
+      }
+      // roomStandard.room = this.carForm.region[0] + ',' + this.carForm.region[1] + ',' +this.carForm.region[2]
+      // roomStandard.projectAcceptance = this.carForm.project
+      // roomStandard.acceptanceStandard = this.carForm.standard
+      // roomStandard.acceptanceResult = status2(this.carForm.Result)
+      // roomStandard.acceptanceBy = this.carForm.person
+      // roomStandard.acceptanceState = this.carForm.Explain
+      // roomStandard.acceptanceTime = this.carForm.time
+      // roomStandard.remark = this.carForm.remarks
+      if (this.$route.query.id == "edit") {
         roomStandard.id = this.$route.query.id
-        // console.log(roomStandard)
-        this.$ajax.put(url + 'roomStandard/updateRoomStandard', roomStandard).then(res => {
+        this.$ajax.put(url + 'roomStandard/updateRoomStandard', roomStandardVO).then(res => {
           console.log(res.data)
           if (res.data.status === 200) {
-            // this.fullscreenLoading = false
             this.$message({
-          message: '成功',
-          type: 'success'
+            message: '修改成功',
+            type: 'success'
         })
             window.history.go(-1)
           }
         })
       } else if(this.$route.query.id === "add") {
-        this.$ajax.post(url + 'roomStandard/addRoomStandard', roomStandard).then(res => {
+        this.$ajax.post(url + 'roomStandard/addRoomStandard', roomStandardVO).then(res => {
           if (res.data.status === 200) {
             // this.fullscreenLoading = false
             this.$message({
-          message: '成功',
+          message: '添加成功',
           type: 'success'
+        })
+            window.history.go(-1)
+          }
+        })
+      }else{
+        this.$ajax.post(url + 'adornApply/insertCheck',roomStandardVO).then(res => {
+          if (res.data.status === 200) {
+            // this.fullscreenLoading = false
+            this.$message({
+            message: '添加成功',
+            type: 'success'
         })
             window.history.go(-1)
           }

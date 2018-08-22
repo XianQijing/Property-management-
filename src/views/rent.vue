@@ -1,12 +1,11 @@
 <template>
     <div class="rent">
-        <nav-bar/>
         <div class="container">
             <nav-header/>
             <div class="card row">
                 <div class="col-md-12">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
-                        <el-tab-pane label="房源管理" name="first">
+                        <el-tab-pane label="房源管理" name="first" v-if="this.role[25] === 'rubik:roomManager:list'">
                             <div class="main">
 								<div v-if="this.indexTable === '0'">
 									<router-view class="rent_addhouse"></router-view>
@@ -47,7 +46,7 @@
 							</div>
                         </el-tab-pane>
 
-                        <el-tab-pane label="商机管理">
+                        <el-tab-pane label="商机管理" v-if="this.role[26] === 'rubik:businessManager:list'">
                              <div class="main">
 								<!-- <div>
 									<router-view class="relationshipAdd"></router-view>
@@ -91,7 +90,7 @@
 							</div>
                         </el-tab-pane>
 
-                        <el-tab-pane label="合同管理">
+                        <el-tab-pane label="合同管理" v-if="this.role[27] === 'rubik:contractManager:list'">
 
                             <div class="main">
 								<div  v-if="this.indexTable === '2'">
@@ -105,14 +104,14 @@
                                      <button><img src=".././assets/down.png" style="width:16px;">模板</button>
                                  </div>
 								<el-table :data="tableDataContract" style="width: 100%">
-									<el-table-column prop="owner.name" label="客户姓名" width="180"></el-table-column>
-									<el-table-column prop="owner.phone" label="联系方式" width="180"></el-table-column>
-									<el-table-column prop="rooms.roomType" label="租用类型"></el-table-column>
-                                    <el-table-column prop="buildings.namec" label="楼宇" width="180"></el-table-column>
+									<el-table-column prop="tenantry" label="客户姓名" width="180"></el-table-column>
+									<el-table-column prop="phone" label="联系方式" width="180"></el-table-column>
+									<el-table-column prop="rooms.useId" label="租用类型"></el-table-column>
+                                    <el-table-column prop="namec" label="楼宇" width="180"></el-table-column>
                                     <el-table-column prop="rooms.roomNumber" label="房号"></el-table-column>
                                     <el-table-column prop="rooms.coveredArea" label="建筑面积(平方米)"></el-table-column>
 									<el-table-column prop="rooms.useId" label="用途"></el-table-column>
-									<el-table-column prop="paymentTime" label="交付时间"></el-table-column>
+									<el-table-column prop="deliveryTime" label="交付时间"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -142,7 +141,7 @@
 								</div>
 							</div>                 
                         </el-tab-pane>
-                        <el-tab-pane label="房产验收" name="fifth">
+                        <el-tab-pane label="房产验收" name="fifth" v-if="this.role[28] === 'rubik:acceptance:list'">
 							<div class="main">
 								<div v-if="indexTable === '4'">
 									<router-view class="test"></router-view>
@@ -309,6 +308,7 @@ export default {
     name:'rent',
     data(){
         return{
+            role:[],
             isShow: false,
             radio: '0',
             file: '',
@@ -398,11 +398,18 @@ export default {
     },
     
     mounted(){
+         this.$ajax.get(url + 'role/findPermission').then(res => {
+            res.data.data.forEach(v => {
+                this.role.push(v.permission)
+                // console.log(this.role)
+                })
+            })
         this.flndAllHousingResource(),
         this.flndAllBusiness(),
         this.flndAllContract(),
         this.nn()
         this.getRoomStandard()
+       
     },
     methods:{
         formatRole: function(row, column) {
@@ -509,13 +516,6 @@ export default {
                 }
             }
         },
-        // addShangji(){
-        //         this.upload = {},
-        //         this.tanchuang = "添加商机"
-        //         this.edit = false,
-        //         this.dialogVisible = true;
-        // },
-        //显示房源
         display(precinct){
             this.bb = precinct
             if (this.bb === 1){
@@ -638,7 +638,8 @@ export default {
         //导出-个人
         out(index,rows) {
             let id = this.tableDataContract[index].id
-            
+            console.log(this.tableDataContract[index])
+            // let roomId = this.tableDataContract[index]
             this.$ajax.get(url + 'contract/turnDown/'+id,{
                 
             }).then(res => {
@@ -681,7 +682,7 @@ export default {
         jumpHouse(index,rows){
             let that = this;
             that.id = this.tableDataRoomStandard[index].id;
-            this.$router.push({name: 'Test',query:{id:that.id}})
+            this.$router.push({name: 'Test',query:{id:'edit',roomId:that.id}})
         },
         houseDelete(index,rows) {
             let that = this;
@@ -712,19 +713,6 @@ export default {
                 });          
                 });
         },
-    //      download (data) {
-    //     if (!data) {
-    //         return
-    //     }
-    //     let url = window.URL.createObjectURL(new Blob([data]))
-    //     let link = document.createElement('a')
-    //     link.style.display = 'none'
-    //     link.href = url
-    //     // link.setAttribute('download', 'excel.doc')
-
-    //     document.body.appendChild(link)
-    //     link.click()
-    // }
         
     },
     components: {

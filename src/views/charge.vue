@@ -1,12 +1,11 @@
 <template>
     <div class="charge">
-        <nav-bar/>
         <div class="container">
             <nav-header/>
             <div class="card row">
                 <div class="col-md-12">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
-                      <el-tab-pane label="应收费用" name="third">
+                      <el-tab-pane label="应收费用" name="third" v-if="this.role[28] === 'rubik:acceptance:list'">
                           <div class="main">
                               <div id="card"><button @click="feiyong3">临时费用</button><button @click="feiyong2">抄表费用</button><button class="active" @click="feiyong1">常规费用</button></div>
                               <div id="main">
@@ -30,142 +29,41 @@
                               </div>
                           </div>                 
                         </el-tab-pane>
-                        <el-tab-pane label="收费参数" name="first">
-                            <div class="main">
-								<button class="add" @click="addNewProject">新增收费项目</button>
-								<el-table :data="charge" style="width: 100%">
-									<el-table-column prop="name" label="名称" width="280"></el-table-column>
-									<el-table-column prop="charge" label="收费项目" width="280"></el-table-column>
-									<el-table-column prop="meter" label="仪表种类"></el-table-column>
-                    <el-table-column prop="remark" label="备注" width="280"></el-table-column>
-									<el-table-column>
-										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                              操作<i class="el-icon-arrow-down el-icon--right"></i>
-                          </span>
-												<el-dropdown-menu slot="dropdown">
-													
-											        <span @click="tanchaung(scope.$index, charge,2)"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<span @click="chargeDelete(scope.$index, charge)"><el-dropdown-item>删除</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
-										</template>
-										
-									</el-table-column>
-								</el-table>
-                                <div class="fenye">
-								<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"  :page-size="pageSize" :page-sizes="pageSizes" layout="total, sizes, prev, pager, next, jumper" :total="totalData">
-
-                                </el-pagination>
-                                </div>
-							</div>
+                        <el-tab-pane label="抄表录入" v-if="this.role[28] === 'rubik:acceptance:list'">
+                          <div class="main">
+                            <button class="add" @click="luru('','','add')">录入数据</button>
+                            <el-table :data="meter" style="width: 100%">
+                              <el-table-column prop="roomType" label="房屋类型"></el-table-column>
+                              <el-table-column prop="build" label="楼宇"></el-table-column>
+                              <el-table-column prop="roomNum" label="房号"></el-table-column>
+                              <el-table-column prop="payItemName" label="收费项目"></el-table-column>
+                              <el-table-column prop="payMonth" label="收款日期"></el-table-column>
+                              <el-table-column prop="univalence" label="单价"></el-table-column>
+                              <el-table-column prop="lastRead" label="起度"></el-table-column>
+                              <el-table-column prop="currentRead" label="止度"></el-table-column>
+                              <el-table-column prop="use" label="用量"></el-table-column>
+                              <el-table-column prop="orderPrice" label="费用"></el-table-column>
+                              <el-table-column prop="remark" label="备注"></el-table-column>
+                              <el-table-column>
+                                <template slot-scope="scope">
+                                  <span ><button @click="editThis(scope.$index,meter)">编辑</button></span>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                            <div class="fenye">
+                              <el-pagination 
+                              @size-change="handleSizeChange1" 
+                              @current-change="handleCurrentChange1" 
+                              :current-page="currentPage1"  :page-size="pageSize1" 
+                              :page-sizes="pageSizes1" layout="total, sizes, prev, pager, next, jumper" 
+                              :total="totalData1">
+                              </el-pagination>
+                            </div>
+                          </div>                 
                         </el-tab-pane>
-
-                        <el-tab-pane label="抄表录入">
-
-                             <div class="main">
-								<button class="add" @click="luru('','','add')">录入数据</button>
-								<el-table :data="meter" style="width: 100%">
-									<el-table-column prop="roomType" label="房屋类型"></el-table-column>
-									<el-table-column prop="build" label="楼宇"></el-table-column>
-									<el-table-column prop="roomNum" label="房号"></el-table-column>
-									<el-table-column prop="payItemName" label="收费项目"></el-table-column>
-									<el-table-column prop="payMonth" label="收款日期"></el-table-column>
-									<el-table-column prop="univalence" label="单价"></el-table-column>
-									<el-table-column prop="lastRead" label="起度"></el-table-column>
-                                    <el-table-column prop="currentRead" label="止度"></el-table-column>
-                                    <el-table-column prop="use" label="用量"></el-table-column>
-                                    <el-table-column prop="orderPrice" label="费用"></el-table-column>
-                                    <el-table-column prop="remark" label="备注"></el-table-column>
-									<el-table-column>
-										<template slot-scope="scope">
-											<span ><button @click="editThis(scope.$index,meter)">编辑</button></span>
-										</template>
-									</el-table-column>
-								</el-table>
-                                <div class="fenye">
-								<el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page="currentPage1"  :page-size="pageSize1" :page-sizes="pageSizes1" layout="total, sizes, prev, pager, next, jumper" :total="totalData1">
-
-                                </el-pagination>
-                                </div>
-							</div>                 
-                        </el-tab-pane>
-
-                        
                     </el-tabs>
                 </div>
             </div>
-
-             <!-- 收费参数-新建弹窗 -->
-            <el-dialog :title="this.name" :visible.sync="news" width="30%">
-                <div class="tanchuang">
-                    <el-form ref="shuru" label-width="130px" class="demo-shuru" size="mini" :model="add" :value="too">
-                        <el-form-item label="名称:">
-                        <el-input v-model="add.name" placeholder="请输入名称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="费用项目类型:">
-                            <el-select v-model="add.payItemId" placeholder="请选择费用项目类型">
-                                <el-option v-for="item in payItems" :label="item.name" :value="item.id" :key="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="仪表种类:">
-                            <el-select v-model="add.meterId" placeholder="请选择费用项目类型">
-                                <el-option v-for="item in types" :label="item.name" :value="item.id" :key="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="备注:">
-                            <el-input v-model="add.remarks" type="textarea" :rows="4" :value="too.remarks"></el-input>
-                        </el-form-item>
-                    </el-form>
-                </div>
-                <span slot="footer" class="dialog-footer" v-show="addNewOne">
-                    <el-button @click="news= false">取 消</el-button>
-                    <el-button type="primary" @click="submit">确 定</el-button>
-                </span>
-                <span slot="footer" class="dialog-footer" v-show="changeOne">
-                    <el-button @click="news= false">取 消</el-button>
-                    <el-button type="primary" @click="createPayItem">确 定</el-button>
-                </span>
-
-            </el-dialog>
-
-            <!-- 收费参数-编辑弹窗 -->
-            <!-- <el-dialog
-                title="编辑收费项目"
-                :visible.sync="dialogVisible"
-                width="30%" :model="upload">
-                <div class="tanchuang">
-                    <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
-                    
-                        <el-form-item label="名称:">
-                        <el-input v-model="upload.name" placeholder="请输入名称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="费用项目类型:">
-                            <el-select v-model="upload.chargeType" placeholder="请选择项目类型">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="仪表种类:">
-                            <el-select v-model="upload.type" placeholder="请选择仪表种类">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="备注:">
-                            <el-input v-model="upload.remarks" type="textarea" :rows="4"></el-input>
-                        </el-form-item>
-                    </el-form>
-                </div>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-                </span>
-
-            </el-dialog> -->
-
-            <!-- 仪表管理-录入 -->
             <el-dialog
             :title="this.name"
                 :visible.sync="entry"
@@ -208,43 +106,6 @@
                 </span>
 
             </el-dialog>
-
-            <!-- 仪表管理-编辑 -->
-            <!-- <el-dialog
-                title="编辑"
-                :visible.sync="entryChange"
-                width="30%" :model="changedata">
-                <div class="tanchuang">
-                    <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
-                        <el-form-item label="关联房屋:">
-                            <el-select v-model="changedata.houseType">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="收费项目:">
-                            <el-select v-model="changedata.charge">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="起度:">
-                            <el-input v-model="changedata.start"></el-input>
-                        </el-form-item>
-                        <el-form-item label="止度:">
-                            <el-input v-model="changedata.end"></el-input>
-                        </el-form-item>
-                        <el-form-item label="备注:">
-                            <el-input v-model="changedata.remarks"></el-input>
-                        </el-form-item>
-                    </el-form>
-                </div>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="entryChange = false">取 消</el-button>
-                    <el-button type="primary" @click="entryChange = false">确 定</el-button>
-                </span>
-
-            </el-dialog> -->
         </div>
     </div>
 </template>
@@ -267,10 +128,10 @@ export default {
       edit: true,
       dialogVisible: false,
       //分页数据
-      currentPage: 1,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 40, 50],
-      totalData: 400, //customerMsg数据的总数,
+      // currentPage: 1,
+      // pageSize: 10,
+      // pageSizes: [10, 20, 30, 40, 50],
+      // totalData: 400, //customerMsg数据的总数,
       //仪表管理
       currentPage1: 1,
       pageSize1: 10,
@@ -300,9 +161,7 @@ export default {
         type: "",
         remarks: ""
       },
-      payItems:[
-
-      ],
+      payItems:[],
       types:[],
       //收费参数-编辑
       upload: {
@@ -336,12 +195,18 @@ export default {
       //返回的数据
       too: {
         remarks: ""
-      }
+      },
+      role:[]
     };
   },
   mounted() {
-    this.nn(), this.getCharge(), this.getMeter(), this.Cost(),
-    this.getPayItems(),
+    this.$ajax.get(url + 'role/findPermission').then(res => {
+				res.data.data.forEach(v => {
+              this.role.push(v.permission)
+              console.log(res.data.data)
+				})
+			})
+    this.nn(), this.getMeter(), this.Cost(),
     this.getType(),
     this.getCharges(),
     this.getOptions()
@@ -360,16 +225,19 @@ export default {
       // console.log(tab, event);
     },
     
-    handleSizeChange(val) {
-      this.pageSize = val;
-      this.getCharge();
-    },
-    handleCurrentChange(val) {},
+    // handleSizeChange(val) {
+    //   this.pageSize = val;
+    //   this.getCharge();
+    // },
+    // handleCurrentChange(val) {},
     handleSizeChange1(val) {
       this.pageSize1 = val;
       this.getMeter();
     },
-    handleCurrentChange1(val) {},
+    handleCurrentChange1(val) {
+      this.currentPage1 = val
+      this.getMeter()
+    },
     handleSizeChange2(val) {
       this.pageSize2 = val;
       this.Cost();
@@ -380,31 +248,27 @@ export default {
     },
 
     //收费参数
-    getCharge() {
-      this.$ajax
-        .get(url + "pay/queryPayItemMeterAll", {
-          params: {
-            page: this.currentPage,
-            pageSize: this.pageSize
-          }
-          // 前端将每页显示多少条放入 pageSize,第几页放入page
-        })
-        .then(res => {
-          this.charge = res.data.data.rows;
-          this.totalData = res.data.data.records;
-        });
-    },
-    getPayItems(){
-      this.$ajax.get(url+"pay/queryPayItemAll")
-      
-      .then(res =>{
-        this.payItems=res.data.data
-      })
-    },
+    // getCharge() {
+    //   this.$ajax
+    //     .get(url + "pay/queryPayItemMeterAll", {
+    //       params: {
+    //         page: this.currentPage,
+    //         pageSize: this.pageSize
+    //       }
+    //       // 前端将每页显示多少条放入 pageSize,第几页放入page
+    //     })
+    //     .then(res => {
+    //       this.charge = res.data.data.rows;
+    //       this.totalData = res.data.data.records;
+    //     });
+    // },
+    // getPayItems(){
+    //   this.$ajax.get(url+"pay/queryPayItemAll").then(res =>{
+    //     this.payItems=res.data.data
+    //   })
+    // },
     getType(){
-      this.$ajax.get(url+"pay/queryMeterAll")
-      
-      .then(res =>{
+      this.$ajax.get(url+"pay/queryMeterAll").then(res =>{
         this.types=res.data.data
       })
     },
@@ -455,37 +319,37 @@ export default {
       })
     },
     //弹窗
-    tanchaung(index, rows, msg) {
-      if (msg === 2) {
-        let that = this;
-        (this.addNewOne = false),
-          (this.changeOne = true),
-          (that.id = this.charge[index].id);
-        this.news = true;
-        if (that.id !== "") {
-          this.name = "编辑";
-          this.$ajax
-            .get(url + "pay/queryPayItemMeter", {
-              params: {
-                payItemMeterId: this.id
-              }
-            })
-            .then(res => {
-              var temp = res.data.data;
-              this.add = temp;
-              this.add.payItemId = temp.payItemId;
-              this.add.remarks = temp.remark;
-              this.add.name = temp.name;
-            });
-        }
-      }
-    },
-    addNewProject() {
-      (this.add = {}),
-      (this.addNewOne = false),
-      (this.changeOne = true),
-      (this.news = true);
-    },
+    // tanchaung(index, rows, msg) {
+    //   if (msg === 2) {
+    //     let that = this;
+    //     (this.addNewOne = false),
+    //       (this.changeOne = true),
+    //       (that.id = this.charge[index].id);
+    //     this.news = true;
+    //     if (that.id !== "") {
+    //       this.name = "编辑";
+    //       this.$ajax
+    //         .get(url + "pay/queryPayItemMeter", {
+    //           params: {
+    //             payItemMeterId: this.id
+    //           }
+    //         })
+    //         .then(res => {
+    //           var temp = res.data.data;
+    //           this.add = temp;
+    //           this.add.payItemId = temp.payItemId;
+    //           this.add.remarks = temp.remark;
+    //           this.add.name = temp.name;
+    //         });
+    //     }
+    //   }
+    // },
+    // addNewProject() {
+    //   (this.add = {}),
+    //   (this.addNewOne = false),
+    //   (this.changeOne = true),
+    //   (this.news = true);
+    // },
     luru() {
       this.entrydata = {};
       this.entry = true;
@@ -507,38 +371,6 @@ export default {
         this.entrydata.houseType=res.data.data.arrList;
         //this.entrydata.time = res.data.data.paymentDay
       })
-    },
-    createPayItem() {
-      var payItemVO = {};
-      payItemVO.payItemMeterId = this.id;
-      payItemVO.payItemId = this.add.payItemId;
-      payItemVO.meterId = this.add.meterId;
-      payItemVO.payItemMeterName = this.add.name;
-      payItemVO.remake = this.add.remarks;
-      this.$ajax.post(url + "pay/createPayItemMeter", payItemVO).then(res => {
-        if(res.data.status === 200){
-          this.$message({
-            message: '编辑成功',
-            type: 'success'
-          });
-        this.add == {};
-        this.news = false;
-        this.getCharge()
-        }
-      });
-    },
-    //新增收费参数
-    submit() {
-      var payItemVO = {};
-      payItemVO.payItemMeterId = this.id;
-      payItemVO.payItemId = this.add.payItemId;
-      payItemVO.meterId = this.add.meterId;
-      payItemVO.payItemMeterName = this.add.name;
-      payItemVO.remake = this.add.remarks;
-      this.$ajax.post(url + "", payItemVO);
-    },
-    createInstrument(){
-      
     },
     //应收费用
     Cost() {
@@ -584,8 +416,8 @@ export default {
         .get(url + "pay/queryReceivable", {
           params: {
             payItem: "180723BR7M3G986W",
-            page: "1",
-            pageSize: "2"
+            page: this.currentPage2,
+            pageSize: this.pageSize2
           }
         })
         .then(res => {
@@ -600,8 +432,8 @@ export default {
         .get(url + "pay/queryReceivable", {
           params: {
             payItem: "180723BR8PBFT354",
-            page: "1",
-            pageSize: "2"
+            page: this.currentPage2,
+            pageSize: this.pageSize2
           }
         })
         .then(res => {
@@ -616,8 +448,8 @@ export default {
         .get(url + "pay/queryReceivable", {
           params: {
             payItem: "180723BRAS3GHR68",
-            page: "1",
-            pageSize: "2"
+            page: this.currentPage2,
+            pageSize: this.pageSize2
           }
         })
         .then(res => {

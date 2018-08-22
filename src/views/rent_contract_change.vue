@@ -12,10 +12,17 @@
                     <el-form-item label="联系地址:" prop="site">
                         <el-input v-model="detail.site" placeholder="请输入联系地址"></el-input>
                     </el-form-item>
-                    <el-form-item label="关联房屋:" prop="rooms">
-                        <el-cascader expand-trigger="hover" :options="options" v-model="detail.rooms" @change="relation"></el-cascader>
+                    <el-form-item label="关联房屋:" prop="room">
+                        <!-- <el-cascader expand-trigger="hover" :options="options" v-model="detail.rooms" @change="relation" v-if="this.message==='add'"></el-cascader> -->
+                        <el-cascader
+                            expand-trigger="hover"
+                            :options="options"
+                            v-model="selectedOptions2"
+                            @change="relation"
+                             v-if="this.message==='add'">
+                        </el-cascader>
                         <!-- <el-tag type="info" v-for="room in thisRoom" :key="room.id" >{{room}}</el-tag> -->
-                        <!-- <el-tag v-for="room in thisRoom" :key="room.id" closable @close="handleClose(room)">{{room}}</el-tag> -->
+                        <el-tag v-for="room in thisRoom" :key="room.id" :closable="close" @close="handleClose(room)">{{room}}</el-tag>
 
                     </el-form-item>
                     <el-form-item label="租赁时间:">
@@ -29,54 +36,33 @@
                         <!-- <el-date-picker v-model="detail.startTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:100%" format="yyyy-MM-dd" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker> -->
                     </el-form-item>
                     <el-row>
-                    <el-col :span="12">
-                    <el-form-item label="三年后租金增幅：">
-                        <el-input v-model="detail.amplification" placeholder="请输入增幅">
-                            <template slot="append">%/月</template>
-                        </el-input>
-                    </el-form-item>
-                    </el-col>
-                    
-                    <el-col :span="12">
-                        <el-form-item label="每月租金为：">
-                        <el-input v-model="detail.afterTheRent" placeholder="请输入租金">
-                            <template slot="append">元</template>
-                        </el-input>
-                    </el-form-item>
-                    </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="三年后租金增幅：">
+                                <el-input v-model="detail.amplification" placeholder="请输入增幅">
+                                    <template slot="append">%/月</template>
+                                </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="三年后租金：">
+                                <el-input v-model="detail.fixedGrowth" placeholder="请输入租金">
+                                    <template slot="append">元</template>
+                                </el-input>
+                            </el-form-item>
+                        </el-col>
                     </el-row>
-                    <el-row>
-                    <el-col :span="12">
                         <el-form-item label="租金:">
                             <el-input v-model="detail.dailyRent" placeholder="请输入租金">
                                 <template slot="append">元/天/平方米</template>
                             </el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="合计:">
-                            <el-input v-model="form.monthlyRent">
-                                <template slot="append">月/元</template>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                    </el-row>
-                    <el-row>
-                    <el-col :span="12">
+                        
                         <el-form-item label="物业管理费:">
                             <el-input v-model="detail.dailyManagementFee" placeholder="请输入物业管理费">
                                 <template slot="append">元/天/平方米</template>
                             </el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="合计:">
-                            <el-input v-model="form.monthlyManagementFee">
-                                <template slot="append">月/元</template>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                    </el-row>
+                        
                     <el-form-item label="租金和物业费合计:">
                             <el-input v-model="form.total">
                                 <template slot="append">月/元</template>
@@ -109,7 +95,7 @@
                     <el-row>
                     <!-- <el-col :span="12">
                         <el-form-item label="建筑面积：">
-                            <el-input v-model="detail.room.coveredArea" placeholder="请输入建筑面积"></el-input>
+                            <el-input v-model="detail.room.rooms.coveredAreas" placeholder="请输入建筑面积"></el-input>
                         </el-form-item>
                     </el-col> -->
                     <el-col :span="12">
@@ -121,13 +107,13 @@
                     <el-row>
                     <el-col :span="12">
                         <el-form-item label="建筑面积：">
-                            <el-input v-model="detail.coveredArea" placeholder="建筑面积"></el-input>
+                            <el-input v-model="detail.rooms.coveredAreas" :disabled="yes" placeholder="建筑面积"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="交付时间：">
                             <el-date-picker
-                                v-model="detail.paymentTime"
+                                v-model="detail.deliveryTime"
                                 type="date"
                                 format="yyyy-MM-dd" value-format="yyyy-MM-dd"
                                 placeholder="选择日期"
@@ -144,14 +130,20 @@
                         </el-input>
                     </el-form-item>
                     
-                        <el-form-item label="大写：">
-                            <el-input v-model="detail.big" ></el-input>
+                        <el-form-item label="每月租金为：">
+                            <el-input v-model="detail.afterTheRent" placeholder="请输入租金">
+                                <template slot="append">元</template>
+                            </el-input>
                         </el-form-item>
-                        <el-form-item label="大写：">
-                            <el-input v-model="detail.big1"></el-input>
+                        <el-form-item label="合计:">
+                            <el-input v-model="form.monthlyRent">
+                                <template slot="append">月/元</template>
+                            </el-input>
                         </el-form-item>
-                        <el-form-item label="大写：">
-                            <el-input v-model="detail.big2"></el-input>
+                        <el-form-item label="合计:">
+                            <el-input v-model="form.monthlyManagementFee">
+                                <template slot="append">月/元</template>
+                            </el-input>
                         </el-form-item>
                         <el-form-item label="大写：">
                             <el-input v-model="detail.big3"></el-input>
@@ -214,7 +206,7 @@
                 <el-form ref="form" :model="form" label-width="160px" size="small" :disabled="edit">
                     <el-col :span="12">
                     <el-form-item label="交付日：">
-                    <el-date-picker v-model="form.paymentTime" type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" style="width:100%"></el-date-picker>
+                    <el-date-picker v-model="detail.deliveryTime" type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" style="width:100%"></el-date-picker>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -270,7 +262,7 @@
                 <el-form ref="form" :model="form" label-width="160px" size="small" :disabled="edit">
                     <el-col :span="12">
                     <el-form-item label="租赁保证金：">
-                    <el-input placeholder="请输入内容" v-model="form.leaseCommencementDate">
+                    <el-input placeholder="请输入内容" v-model="form.premiumForLease">
                         <template slot="append">元</template>
                     </el-input>
                     </el-form-item>
@@ -283,7 +275,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
-                    <el-form-item label="物业管理费：">{{form.manageStartTime}}
+                    <el-form-item label="物业管理费：">
                         <el-col :span="6">
                         <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.manageStartTime" style="width: 100%;"></el-date-picker>
                         </el-col>
@@ -360,6 +352,7 @@ export default {
     name:'Rent_contract_change',
     data(){
         return{
+            yes:true,
             ww:true,
             tt:false,
             id:'',
@@ -383,10 +376,12 @@ export default {
                 budget: '',
                 phone: '',
                 fax: '',
-                rooms: [],
+                room: [],
                 purpose: '',
-                coveredArea: '',
-                paymentTime: '',
+                rooms: {
+                    coveredAreas:''
+                },
+                deliveryTime: '',
                 taxes: '',
                 budgeStartTime: '',
                 budgeEndTime: '',
@@ -403,17 +398,18 @@ export default {
                 room: '',
                 buildingId: '',
                 roomNumber: '',
-                endTime: ''
+                endTime: '',
+                fixedGrowth:''
             },
             form: {
-                paymentTime: '',
+                deliveryTime: '',
                 terminationTime: '',
                 startTime: '',
                 endTime: '',
                 monthlyRent: '',
                 monthlyManagementFee: '',
                 total: '',
-                leaseCommencementDate: '',
+                premiumForLease: 0,
                 cashPledge: '',
                 manageStartTime: '',
                 manageEndTime: '',
@@ -441,7 +437,7 @@ export default {
                         { required: true, message: '请输入联系电话', trigger: 'blur' },
                     ]
                 },
-                rooms:[
+                room:[
                     { required: true, message: '请选择关联房屋', trigger: 'change' }
                 ]
             },
@@ -453,7 +449,9 @@ export default {
             watchOne:false,
             thisRoom: [],
             building: [],
-            builds:[]
+            rooms:[],
+            close:true,
+            selectedOptions2: []
         }
     },
     mounted(){
@@ -462,6 +460,7 @@ export default {
 
         this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
                 this.options=res.data;
+                // console.log(res)
             })
         if (this.$route.query.msg === "watch"){
             this.addOne = false,
@@ -470,12 +469,9 @@ export default {
             this.edit = true,
             this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
                 this.detail = res.data.data
-                this.detail.tenantry = res.data.data.owner.name
-                this.detail.site = res.data.data.site
-                this.detail.rooms =[]
-                // this.detail.rooms = [res.data.data.buildinges.precinct,res.data.data.buildings,res.data.data.room]
-                // console.log(res.detail.startTime)
                 this.form = res.data.data
+                this.thisRoom = this.detail.rooms.roomNumbers.split(',')
+                this.close = false
             })
         }else if(this.$route.query.msg === "add"){
             this.addOne=true,
@@ -489,12 +485,9 @@ export default {
             this.edit = false
             this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
                 this.detail = res.data.data
-                this.detail.tenantry = res.data.data.owner.name
-                this.detail.site = res.data.data.site
-                this.detail.rooms =[]
-                // this.detail.rooms = [res.data.data.buildinges.precinct,res.data.data.buildings,res.data.data.room]
-                // console.log(res.detail.startTime)
                 this.form = res.data.data
+                this.thisRoom = this.detail.rooms.roomNumbers.split(',')
+                this.close = false
             })
         }
     },
@@ -527,18 +520,18 @@ export default {
                     "amplification":this.detail.amplification,
                     "cashDeposit":this.detail.cashDeposit,
                     "tenantry":this.detail.tenantry,
-                    "room":this.detail.room,
+                    "ContractualRelation.roomId":this.detail.room,
                     "phone":this.detail.phone,
                     "purpose": this.detail.purpose,
                     "comment":this.detail.comment,
-                    "paymentTime": this.form.paymentTime,
+                    "deliveryTime": this.form.deliveryTime,
                     "terminationTime": this.form.terminationTime,
                     "startTime": this.detail.startTime,
                     "endTime": this.detail.endTime,
                     "monthlyRent": this.form.monthlyRent,
                     "monthlyManagementFee": this.form.monthlyManagementFee,
                     "total": this.form.total,
-                    "leaseCommencementDate": this.form.leaseCommencementDate,
+                    "premiumForLease": this.form.premiumForLease,
                     "cashPledge": this.form.cashPledge,
                     "manageStartTime": this.form.manageStartTime,
                     "manageEndTime": this.form.manageEndTime,
@@ -550,13 +543,13 @@ export default {
                     "managementCostEndTime": this.form.managementCostEndTime,
                     "managementCost": this.form.managementCost,
                     "aggregate": this.form.aggregate,
-                    "room":this.detail.room,
-                    "buildingId":this.detail.buildingId,
                     "roomNumber":this.detail.roomNumber,
                     "budgeEndTime":this.form.budgeEndTime,
-                    "budgeStartTime":this.form.budgeStartTime
+                    "budgeStartTime":this.form.budgeStartTime,
+                    "id":this.id,
+                    "fixedGrowth":this.detail.fixedGrowth
                         }
-                this.$ajax.put(url + 'contract/updateContract/'+this.id,data2
+                this.$ajax.put(url + 'contract/updateContract',data2
                 ).then(res => {
                     if(res.data.status === 200){
                         this.$message({
@@ -590,24 +583,59 @@ export default {
             // 合同中的第二次管理费结束时间 managementCostEndTime
             // 合同中的第二次管理费 managementCost
             // 合计 aggregate
-            var contractVO = {
-                 "site":this.detail.site,
+            // var contractVO = {
+            //      "site":this.detail.site,
+            //         "afterTheRent":this.detail.afterTheRent,
+            //         "amplification":this.detail.amplification,
+            //         "cashDeposit":this.detail.cashDeposit,
+            //         "tenantry":this.detail.tenantry,
+            //         "ContractualRelation.roomId":this.detail.room,
+            //         "phone":this.detail.phone,
+            //         "purpose": this.detail.purpose,
+            //         "comment":this.detail.comment,
+            //         "deliveryTime": this.form.deliveryTime,
+            //         "terminationTime": this.form.terminationTime,
+            //         "startTime": this.detail.startTime,
+            //         "endTime": this.detail.endTime,
+            //         "monthlyRent": this.form.monthlyRent,
+            //         "monthlyManagementFee": this.form.monthlyManagementFee,
+            //         "total": this.form.total,
+            //         "leaseCommencementDate": this.form.leaseCommencementDate,
+            //         "cashPledge": this.form.cashPledge,
+            //         "manageStartTime": this.form.manageStartTime,
+            //         "manageEndTime": this.form.manageEndTime,
+            //         "administrativeFee": this.form.administrativeFee,
+            //         "rentalStartTime": this.form.rentalStartTime,
+            //         "rentalEndTime": this.form.rentalEndTime,
+            //         "rental": this.form.rental,
+            //         "managementCostStartTime": this.form.managementCostStartTime,
+            //         "managementCostEndTime": this.form.managementCostEndTime,
+            //         "managementCost": this.form.managementCost,
+            //         "aggregate": this.form.aggregate,
+            //         "roomNumber":this.detail.roomNumber,
+            //         "budgeEndTime":this.form.budgeEndTime,
+            //         "budgeStartTime":this.form.budgeStartTime
+            // }
+            
+            this.$ajax.post(url + 'contract/addContract', {
+                
+                    "site":this.detail.site,
                     "afterTheRent":this.detail.afterTheRent,
                     "amplification":this.detail.amplification,
                     "cashDeposit":this.detail.cashDeposit,
                     "tenantry":this.detail.tenantry,
-                    "room":this.detail.room,
+                    "ContractualRelation.roomId":this.detail.room,
                     "phone":this.detail.phone,
                     "purpose": this.detail.purpose,
                     "comment":this.detail.comment,
-                    "paymentTime": this.form.paymentTime,
+                    "deliveryTime": this.form.deliveryTime,
                     "terminationTime": this.form.terminationTime,
                     "startTime": this.detail.startTime,
                     "endTime": this.detail.endTime,
                     "monthlyRent": this.form.monthlyRent,
                     "monthlyManagementFee": this.form.monthlyManagementFee,
                     "total": this.form.total,
-                    "leaseCommencementDate": this.form.leaseCommencementDate,
+                    "premiumForLease": this.form.premiumForLease,
                     "cashPledge": this.form.cashPledge,
                     "manageStartTime": this.form.manageStartTime,
                     "manageEndTime": this.form.manageEndTime,
@@ -619,21 +647,18 @@ export default {
                     "managementCostEndTime": this.form.managementCostEndTime,
                     "managementCost": this.form.managementCost,
                     "aggregate": this.form.aggregate,
-                    "room":this.detail.room,
-                    "buildingId":this.detail.buildingId,
                     "roomNumber":this.detail.roomNumber,
                     "budgeEndTime":this.form.budgeEndTime,
-                    "budgeStartTime":this.form.budgeStartTime
-            }
-            
-            this.$ajax.post(url + 'contract/addContract', contractVO).then(res => {
-                // console.log(res.data)
+                    "budgeStartTime":this.form.budgeStartTime,
+                    "fixedGrowth":this.detail.fixedGrowth
+                
+            }).then(res => {
                 if(res.data.status === 200){
                     this.$message({
-                        message: '成功',
+                        message: '添加成功',
                         type: 'success'
                     });
-                    this.goBack()
+                    this.$router.push('/rent')
                 } else {
                     this.$message({
                         message: res.data.msg,
@@ -648,21 +673,17 @@ export default {
         relation(e){
             
             this.$ajax.get(url + 'room/flndById/'+e[2]).then(res => {
-                console.log(res.data.data)
-                this.detail.room = res.data.data.id
-                this.detail.buildingId = res.data.data.buildings
-                this.detail.roomNumber = res.data.data.roomNumber
-                // this.thisRoom.unshift(res.data.data.roomNumber.toString())
-                // this.builds = [res.data.data.building,res.data.data.roomNumber.toString()]
-                // this.building.push(this.builds)
-                // console.log(this.building)
+                this.rooms.unshift(res.data.data.id)
+                this.thisRoom.unshift(res.data.data.roomNumber.toString())
+                this.detail.room = this.rooms.join()
+                console.log(this.detail.room)
             }
             )
         },
-    //     handleClose(tag) {
-    //     this.thisRoom.splice(this.thisRoom.indexOf(tag), 1);
-    //     this.building.splice(this.building.indexOf(tag), 1);
-    //   },
+        handleClose(tag) {
+        this.thisRoom.splice(this.thisRoom.indexOf(tag), 1);
+        this.rooms.splice(this.rooms.indexOf(tag), 1);
+      },
     }
 }
 </script>

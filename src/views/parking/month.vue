@@ -3,12 +3,10 @@
     <button class="delect" id="more1" @click="out">批量导出</button>
     <el-table :data="monthData" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="name" label="车牌号"></el-table-column>
-      <el-table-column prop="name" label="入库时间"></el-table-column>
-      <el-table-column prop="name" label="出库时间"></el-table-column>
-      <el-table-column prop="name" label="应收费用"></el-table-column>
-      <el-table-column prop="name" label="实收费用"></el-table-column>
-      <el-table-column prop="name" label="是否包月"></el-table-column>
+      <el-table-column prop="carPlate" label="车牌号"></el-table-column>
+      <el-table-column prop="owner" label="车主"></el-table-column>
+      <el-table-column prop="startDate" label="入库时间"></el-table-column>
+      <el-table-column prop="endDate" label="出库时间"></el-table-column>
     </el-table>
     <div class="fenye">
       <el-pagination
@@ -38,7 +36,8 @@ export default {
       //分页数据
       currentPage:1,
       pageSize:10,
-      total:30
+      total:30,
+      more2Id:''
     }
   },
   mounted(){
@@ -56,9 +55,16 @@ export default {
     },
     //今日停车数据
     getmonth(){
-      this.$ajax.get(url + '').then(res => {
+      this.$ajax.get(url + 'pack/findCmCardAll',{
+        params:{
+          "page":this.currentPage,
+          "pageSize":this.pageSize
+        }
+      }).then(res => {
+        console.log(res)
         if(res.data.status === 200){
-          this.monthData = res.data
+          this.monthData = res.data.data.rows
+          this.total = res.data.data.records
         }
       })
     },
@@ -67,20 +73,23 @@ export default {
       if(this.multipleSelection.length > 0){
         this.multipleSelection.forEach(v => {
           this.more1Id.push(v.id)
+          this.more2Id = this.more1Id.join(',')
         })
-        this.$ajax.post(url + '').then(res => {
-          if(res.data.status === 200){
-            this.$message({
-              message: '导出成功',
-              type: 'success'
-            })
-          }else{
-            this.$message({
-              message: '导出失败',
-              type: 'error'
-            })
-          }
-        })
+        // this.$ajax.get(url + 'pack/exportCmCard',{
+        //   params:{
+        //     'ids':this.more2Id
+        //   },
+        // }).then(res => {
+        //   if (res.data.status === 500){
+        //       this.$message({
+        //           message: res.data.msg,
+        //           type: 'error'
+        //       });
+        //   }else{
+              window.location.href = url + 'pack/exportCmCard?ids='+this.more2Id
+              this.more1Id = []
+        //   }
+        // })
       }else{
         this.$message({
           message: '请至少选择一条信息',
@@ -107,7 +116,6 @@ export default {
   width: 100%;
   margin: 0;
   position: static;
-  min-width: 1270px;
   padding: 0 40px 0 50px;
   width: 99%;
   margin-left: 2px;

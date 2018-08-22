@@ -1,6 +1,5 @@
 <template>
   <div class="department">
-    <nav-bar/>
     <div class="container">
             
       <nav-header></nav-header>
@@ -8,24 +7,24 @@
         <div class="col-md-12">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <!--部门管理-->
-            <el-tab-pane label="部门管理" name="first">
+            <el-tab-pane label="部门管理" name="first" v-if="this.role1[8] === 'rubik:divisional:list'">
                 <manage-name></manage-name>
             </el-tab-pane>
-            <el-tab-pane label="权限管理" name="second">
+            <el-tab-pane label="权限管理" name="second" v-if="this.role1[13] === 'rubik:role:list'">
               <div class="main">
                 <router-view></router-view>
                 <button @click="AddRole">+ 添加角色</button>
                 <button class="shanchu" id="roll_all_del" @click="deleteRoleAll">删除</button>
                 <el-table :data="jurisdictionData" style="width: 100%" @selection-change="handleSelectionChange">
-									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="name" label="角色" width="180"></el-table-column>
-									<el-table-column prop="createDate" label="创建时间" width="180"></el-table-column>
-									<el-table-column label="权限管理">
+                    <el-table-column type="selection" width="55"></el-table-column>
+                    <el-table-column prop="name" label="角色" width="180"></el-table-column>
+                    <el-table-column prop="createDate" label="创建时间" width="180"></el-table-column>
+                    <el-table-column label="权限管理">
                     <template slot-scope="scope">
                       <router-link style="color: #6AC8FF; cursor: pointer;" :to="{name: 'Page', query: {id: scope.row.id}}">权限设置</router-link>
                     </template>
                   </el-table-column>
-									<el-table-column label="操作">
+                        <el-table-column label="操作">
                     <template slot-scope="scope">
                       <span style="cursor: pointer;" @click="edit(scope)">编辑</span>
                       &nbsp;&nbsp;
@@ -47,7 +46,7 @@
               </div>
             </el-tab-pane>
             <!--职员信息-->
-            <el-tab-pane label="职员信息" name="third">
+            <el-tab-pane label="职员信息" name="third" v-if="this.role1[9] === 'rubik:employee:list'">
               <div class="main">
                 <button @click="add = !add">+ 添加新员工</button>
                 <button @click="isShow = !isShow">导入</button>
@@ -89,7 +88,7 @@
               </div>
             </el-tab-pane>
             <!--往来单位-->
-            <el-tab-pane label="往来单位" name="fourth">
+            <el-tab-pane label="往来单位" name="fourth" v-if="this.role1[10] === 'rubik:btype:list'">
               <div class="main">
                 <button @click="contact = !contact">+ 添加联系人</button>
                 <!-- <button @click="isShow = !isShow">导入</button> -->
@@ -164,7 +163,7 @@
                   <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
                 </el-select>
             </el-form-item>
-              <el-form-item label="岗位:">
+              <el-form-item label="园区:">
                 <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input>{{addpersonEdit.gangwei}} -->
                 <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
             </el-form-item>
@@ -253,7 +252,7 @@
                   <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="岗位:" prop="gangwei">{{addperson.gangwei}}
+            <el-form-item label="园区:" prop="gangwei">
                 <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
                 <el-cascader id="gangwei" expand-trigger="hover" :options="options" v-model="addperson.gangwei" @change="handleChange"></el-cascader>
             </el-form-item>
@@ -388,6 +387,7 @@ export default {
             children: []
         }];
         return{
+            role:[],
           rolePage: {
               currentPage: 1,
               total: 7,
@@ -428,19 +428,7 @@ export default {
             modify:false,
             selectArr: [],
             data5: JSON.parse(JSON.stringify(datato)),
-            tableData: [
-                    {
-                        id: "rnejkgtrek",
-                        name: "杨帅",
-                        username: "ys",
-                        password: "06ba0ebc6f9efec42b0c43dd2e3ce1cf",
-                        phone: "13553552222",
-                        wechat: "123.0",
-                        remark: "3.0",
-                        rname: "admin",
-                        cname: "卢比克魔方"
-                    },
-                ],
+            tableData: [],
             tableData1:[{
                 id:'',
                 btypeName: "123456",
@@ -528,7 +516,12 @@ export default {
                 gangwei: [
                     { required: true, message: '请选择岗位', trigger: 'change' }
                 ]
-            }
+            },
+            role1:[],
+            first: true,
+            second: true,
+            third: true,
+            fourth: true
         }
     },
     components:{
@@ -547,20 +540,24 @@ export default {
   }
 },
 mounted(){
+    this.$ajax.get(url + 'role/findPermission').then(res => {
+        res.data.data.forEach(v => {
+            this.role1.push(v.permission)
+        })
+      })
     // /company/findAll
     this.$ajax.get(url + 'company/findAll').then((res) => {
         // console.log(res.data.data)
         this.Data = res.data.data
         this.options = this.transTreeData(this.Data)
-        console.log(this.options)
     })
     this.$ajax.get(url + 'role/findRole').then(res=> {
         
         this.role = res.data.data
     })
-    this.staff(),
-    this.Btype(),
-    this.getRoleData()
+    // this.staff(),
+    // this.Btype()
+    // this.getRoleData()
 },
 methods:{
   deleteRoleAll () {
@@ -746,7 +743,13 @@ methods:{
 			// console.log(this.position)
 		},
 		handleClick(tab, event) {
-			// console.log(tab, event);
+			if(tab.name==='second'){
+                this.getRoleData()
+            }else if(tab.name === 'third'){
+                this.staff()
+            }else if(tab.name === 'fourth'){
+                this.Btype()
+            }
         },
         //职员信息
         handleSizeChange(val) {

@@ -43,12 +43,12 @@ export default {
       if(res.data.status === 200){
         this.name = res.data.data.username
       }else{
-        this.$router.push('/')
+        this.$router.push('/login')
       }
     })
     if(!sessionStorage.getItem("userId")){
     console.log(sessionStorage.getItem("userId"))
-    this.$router.push('/')
+    this.$router.push('/login')
     }else{
 
     }
@@ -59,8 +59,8 @@ export default {
     signOut () {
       // console.log(12)
       sessionStorage.clear()
-      removeCookie('phone', '/')
-      this.$router.push('/')
+      removeCookie('phone', '/login')
+      this.$router.push('/login')
       window.history.go(0)
     }
 	}

@@ -282,6 +282,7 @@ export default {
             })
             this.edit = false
         }else(
+            this.edit = false,
             this.datail = '',
             this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
                 this.options=res.data;

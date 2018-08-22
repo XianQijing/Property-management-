@@ -1,13 +1,12 @@
 <template>
 	<div class="house">
-		<nav-bar/>
 		<div class="container">
 			<nav-header/>
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
 						<!-- 管理区 -->
-						<el-tab-pane label="管理区" name="first">
+						<el-tab-pane label="管理区" name="first" v-if="this.role[15] === 'rubik:precinct:list'">
 							<div class="main">
 								<div v-if="tabIndex === '0'"><router-view class="addAdmin"></router-view></div>
 								<button class="add" @click="addToAdmin('','','tianjia')">+ 添加</button>
@@ -16,10 +15,10 @@
 									<el-table-column prop="namec" label="小区名称" width="180"></el-table-column>
 									<el-table-column prop="region" label="所在地区"></el-table-column>
 									<el-table-column prop="overallFloorage" label="建筑面积(平方)"></el-table-column>
-									<el-table-column prop="cellParkingRelationship.garage" label="车库(座)"></el-table-column>
-									<el-table-column prop="cellParkingRelationship.carSeatNumber" label="车位(个)"></el-table-column>
+									<el-table-column prop="garage" label="车库(座)"></el-table-column>
+									<el-table-column prop="stall " label="车位(个)"></el-table-column>
 									<el-table-column prop="building" label="楼宇(栋)"></el-table-column>
-									<el-table-column prop="totalUsableArea" label="使用面积(平方)"></el-table-column>
+									<el-table-column prop="overallFloorage" label="建筑面积(平方)"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -55,11 +54,19 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="楼宇" name="second">
+						<el-tab-pane label="楼宇" name="second" v-if="this.role[16] === 'rubik:building:list'">
 							<div class="main">
 								<div v-if="tabIndex === '1'"><router-view></router-view></div>
 								<router-link :to="{path: '/house/addBuild'}"><button class="add">+ 添加</button></router-link>
                 <button class="delect" id="delect" @click="allDeletelou('building')">删除</button>
+                <el-select v-model="precinct" placeholder="请选择" @change="selectbuild">
+                  <el-option
+                    v-for="item in selectBuild"
+                    :key="item.id"
+                    :label="item.namec"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
 								<el-table :data="build" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="precinctName" label="所属小区" width="180"></el-table-column>
@@ -104,7 +111,7 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="房间" name="third">
+						<el-tab-pane label="房间" name="third" v-if="this.role[17] === 'rubik:room:llist'">
               <div class="main">
 								<div v-if="tabIndex === '2'">
                   <router-view class="Next"></router-view>
@@ -350,10 +357,18 @@ export default {
       // totalDataNumberCar: 100,//数据的总数,
       tabIndex: '0',
       // 楼宇id的集合
-      louIdArr: []
+      louIdArr: [],
+      precinct: '',
+      selectBuild:[],
+      role:[]
     }
   },
   mounted() {
+    this.$ajax.get(url + 'role/findPermission').then(res => {
+        res.data.data.forEach(v => {
+            this.role.push(v.permission)
+        })
+      })
     if(this.$route.query.tabPane){
       this.activeName = this.$route.query.tabPane
       }else{
@@ -369,8 +384,21 @@ export default {
     }else{
       this.activeName = 'first'
     }
+    this.$ajax.get(url + 'precinct/flndAll').then(res=>{
+      this.selectBuild=res.data.data
+    })
   },
   methods: {
+    selectbuild(e){
+      this.selectABuild()
+    },
+    //选择楼宇
+    selectABuild(){
+      this.$ajax.get(url + 'building/selectByPrecinct/'+this.precinct+'/'+this.pageNoBuilding+'/'+this.pageSizeBuilding).then(res=>{
+        this.build = res.data.data.rows
+        this.totalDataNumberBuilding =  res.data.data.records
+      })
+    },
     // 批量删除
     allDeletelou (judge) {
       if (this.multipleSelection.length > 0) {
@@ -522,15 +550,29 @@ export default {
       }).then((res) => {
         this.build = res.data.data.rows
         this.totalDataNumberBuilding =  res.data.data.records
+        // for(var i=0;i<this.build.length;i++){
+        //   var o = {}
+        //   if(this.buildArr.indexOf(this.build[i].precinctName) == -1){
+        //     this.buildArr.push(this.build[i].precinctName)
+        //   }
+        // }
       })
     },
     buildingSizeChange(val) {
       this.pageSizeBuilding=val
+      if(this.precinct){
+        this.selectABuild()
+      }else{
       this.getBuild()
+      }
     },
     buildingCurrentChange(val) {
       this.pageNoBuilding=val
+      if(this.precinct){
+        this.selectABuild()
+      }else{
       this.getBuild()
+      }
     },
     //编辑build
     jumpBuild(index,rows){
