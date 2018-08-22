@@ -9,7 +9,7 @@
               <el-date-picker
                 v-model="detail.day"
                 type="date"
-                format="yyyy-MM-dd HH:mm:ss"
+                format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
                 placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
@@ -51,6 +51,18 @@
     <div class="nn">
         <button class="nextStep" @click="addOne">保存</button><button class="cancel" @click="goBack">返回</button>
     </div>
+    <div class="tables">
+        <div style="width:73%">
+    <el-table :data="tableData3" height="250" border style="width: 100%;">
+        <el-table-column prop="roomNumber" label="房间号" width="180"></el-table-column>
+        <el-table-column prop="name" label="客户姓名" width="180"></el-table-column>
+        <el-table-column prop="patrol_man" label="巡检人" width="180"></el-table-column>
+        <el-table-column prop="patrol_number" label="巡检次数" width="180"></el-table-column>
+        <el-table-column prop="isIllegal"  label="是否违规"></el-table-column>
+        <el-table-column prop="isAchieve"  label="是否完工"></el-table-column>
+  </el-table>
+  </div>
+    </div>
   </div>
 </template>
 
@@ -69,15 +81,20 @@ export default {
                 radio:'是',
                 textarea:'',
             },
-            
+            tableData3: []
+
         }
     },
      mounted(){
         console.log(this.$route.query.id)
          this.id = this.$route.query.id
+         this.getPatrol()
        
     },
     methods: {
+        formatRole: function(row, column) {
+            return row.authority == '0' ? "是" : "否";
+        },
         //增加巡查记录
         addOne(){
             var adornPatrol={};
@@ -100,7 +117,7 @@ export default {
             console.log(adornPatrol.isIllegal)
             adornPatrol.patrolContent = this.detail.remark;
             
-           this.$ajax.post(url+"adornPatrol/insert",adornPatrol).then((res) => {
+           this.$ajax.post(url+"adornPatrol/insert/",adornPatrol).then((res) => {
                    if(res.data.status === 200){
                          this.$message({
                                 message: '新增数据成功',
@@ -113,6 +130,12 @@ export default {
                                 type: 'error'
                         }) 
                  }
+            })
+        },
+        getPatrol(){
+            this.$ajax.get(url+'adornPatrol/condition/'+this.id).then(res=>{
+                this.tableData3 = res.data.data
+                console.log(this.tableData3)
             })
         },
       goBack(){
@@ -128,6 +151,7 @@ export default {
     background: white;
     z-index: 2000;
     width: 100%;
+    height: 100%
 }
 .tianjia{
     display: inline-block;
@@ -167,7 +191,7 @@ export default {
 }
 .nn {
     width: 20%;
-    margin: 4% 0 0 40%;
+    margin: 2% 0 0 40%;
     display: flex;
     justify-content: space-between;
 }
@@ -188,7 +212,11 @@ form {
     vertical-align: top;
 }
 .shou{
-    padding: 2vh 12vw 0 6vw
+    padding: 0vh 12vw 0 6vw
 }
-
+.tables {
+    padding-top: 20px;
+    display: flex;
+    justify-content:center;
+}
 </style>

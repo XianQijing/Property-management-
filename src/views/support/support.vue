@@ -1,6 +1,5 @@
 <template>
   <div class="support">
-    <nav-bar/>
     <div class="container">
       <nav-header/>
       <div class="card row">

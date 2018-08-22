@@ -90,7 +90,6 @@ export default {
     this.fullscreenLoading = true
     // token   1808089Z3Y66CFNC.4E01QMztbXGDAAVY5VXeRQ==
     this.$ajax.get(url + 'role/Uajax?roleId=' + this.$route.query.id).then(res => {
-      // console.log(res.data)
       this.fullscreenLoading = false
       this.Data = res.data
     })

@@ -1,13 +1,12 @@
 <template>
 	<div class="name">
-		<nav-bar/>
 		<div class="container">
 			<nav-header/>
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
 
-						<el-tab-pane label="客户基本资料" name="first">
+						<el-tab-pane label="客户基本资料" name="first" v-if="this.role[18] === 'rubik:customerInformation:list'">
 							<div class="main">
 								<div  v-if="tabIndex === '0'">
 									<router-view class="relationshipAdd"></router-view>
@@ -23,12 +22,12 @@
 									<el-table-column prop="roomNumber" label="房间号"></el-table-column>
 									<!-- <el-table-column prop="leaseType" label="租用类型"></el-table-column> -->
 									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
-									<el-table-column prop="buildingName" label="状态" :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]" :filter-method="filterTag" filter-placement="bottom-end">
+									<el-table-column prop="buildingName" label="状态" :filters="[{ text: '在租', value: '在租' }, { text: '已迁出', value: '已迁出' }]" :filter-method="filterTag" filter-placement="bottom-end">
 										<template slot-scope="scope">
-											<el-tag :type="scope.row.label === '家' ? 'primary' : 'success'" disable-transitions>{{scope.row.label}}</el-tag>
+											<el-tag :type="scope.row.label === '在租' ? 'primary' : 'success'" disable-transitions>{{scope.row.label}}</el-tag>
 										</template>
 									</el-table-column>
-									<!-- <el-table-column prop="remarks" label="备注"></el-table-column> -->
+									<el-table-column prop="decorateSituation" label="装修状态"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -37,8 +36,8 @@
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
 													<span @click="detail(scope.$index, base)"><el-dropdown-item>详情</el-dropdown-item></span>
-													<span @click="customerEdit(scope.$index, base)"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<span @click="baseDelete(scope.$index, base)"><el-dropdown-item>迁出</el-dropdown-item></span>
+													<span @click="customerEdit(scope.$index, base)" v-if="scope.row.label == '在租'"><el-dropdown-item>编辑</el-dropdown-item></span>
+													<span @click="baseDelete(scope.$index, base)"  v-if="scope.row.label == '在租'"><el-dropdown-item>迁出</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
@@ -52,62 +51,7 @@
 							</div>
 						</el-tab-pane>
 
-						<!-- <el-tab-pane label="已迁出" name="second">
-                            <div class="main">
-								<div  v-if="tabIndex === '1'">
-								<router-view class="householdDetail"></router-view>
-								</div>
-								<el-table :data="MoveOut" style="width: 100%">
-									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="name" label="姓名"></el-table-column>
-									<el-table-column prop="phone" label="手机号"></el-table-column>
-									<el-table-column prop="leaseType" label="租用类型"></el-table-column>
-									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
-									<el-table-column prop="roomNumber" label="房号" ></el-table-column>
-									<el-table-column prop="inTime" label="迁入时间"></el-table-column>
-									<el-table-column prop="outTime" label="迁出时间"></el-table-column> -->
-                                    <!-- <el-table-column prop="out_electricity_meter" label="电表读数" width="140"></el-table-column> -->
-                                    <!-- <el-table-column prop="out_water_meter" label="水表读数" width="140"></el-table-column> -->
-									<!-- <el-table-column>
-										<template slot-scope="scope">
-												<span style="color:rgb(50, 168, 238)" @click="details(scope.$index, MoveOut)">
-                                                    查看详情
-                                                </span>
-										</template>
-									</el-table-column>
-								</el-table>
-								<div class="fenye">
-									<el-pagination @size-change="handleSizeChangeMoveOut" @current-change="handleCurrentChangeMoveOut" :current-page="pageNoMoveOut"  :page-size="pageSizeMoveOut" :page-sizes="pageSizesListMoveOut" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumberMoveOut">
-									</el-pagination>
-								</div>
-							</div>
-                        </el-tab-pane> -->
-
-						<el-tab-pane label="添加短信模板" name="third">
-							<div class="main">
-								
-								<button class="add"  @click="addDuanxin(1)">添加</button>
-								<button class="add"  @click="addDuanxin(2)">发送</button>
-								<el-table :data="template" style="width: 100%">
-									<el-table-column prop="titleName" label="标题"></el-table-column>
-									<el-table-column prop="content" label="内容"></el-table-column>
-									<el-table-column prop="signature" label="签名"></el-table-column>
-									<el-table-column>
-										<template slot-scope="scope">
-											<button class="operation" @click="noteTemplateEdit(scope.$index,template)">编辑</button>
-											<button class="operation" @click="noteTemplateDelete(scope.$index, template)">删除</button>
-										</template>
-									</el-table-column>
-								</el-table>
-								<div class="fenye">
-									<el-pagination @size-change="handleSizeChangetemplate" @current-change="handleCurrentChangetemplate" :current-page="pageNoTemplate"  :page-size="pageSizeTemplate" :page-sizes="pageSizesListTemplate" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumbertemplate">
-
-									</el-pagination>
-								</div>
-							</div>
-						</el-tab-pane>
-
-						<el-tab-pane label="已发送短信" name="fourth">
+						<el-tab-pane label="已发送短信" name="third" v-if="this.role[19] === 'rubik:textMessageSent:list'">
 							<div class="main">
 								
 								<button style="visibility: hidden;">添加</button>
@@ -125,7 +69,7 @@
 								</div>
 							</div>
 						</el-tab-pane>
-						<el-tab-pane label="出入证管理" name="fifth">
+						<el-tab-pane label="出入证管理" name="fourth" v-if="this.role[20] === 'rubik:certificateManagement:list'">
 							<div class="main">
 								
 								<button class="add" @click="dialogVisible = true">添加</button>
@@ -146,9 +90,9 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="装修管理" name="sixth">
+						<el-tab-pane label="装修管理" name="fifth" v-if="this.role[21] === 'rubik:decorateManagement:list'">
 							<div class="main">
-								<div  v-if="tabIndex === '4'">
+								<div  v-if="tabIndex === '3'">
 									<router-view class="apply"></router-view>
 									<!-- <router-view class="check"></router-view> -->
 									<!-- <router-view class="patrol"></router-view> -->
@@ -157,7 +101,7 @@
 								<el-table :data="redecorated" style="width: 100%">
 									<el-table-column prop="name" label="姓名" ></el-table-column>
 									<el-table-column prop="phone" label="手机号"></el-table-column>
-									<el-table-column prop="leaseType" label="装修状态"></el-table-column>
+									<el-table-column prop="decorate_situation" label="装修状态"></el-table-column>
 									<el-table-column prop="buildingName" label="楼宇"></el-table-column>
 									<el-table-column prop="roomNumber" label="房号"></el-table-column>
 									<el-table-column prop="cash_deposit" label="装修保证金"></el-table-column>
@@ -174,7 +118,7 @@
 												<el-dropdown-menu slot="dropdown">
 													<span @click="toApply(scope.$index,redecorated,8,'chakan')"><el-dropdown-item>查看</el-dropdown-item></span>
 													<span @click="toApply(scope.$index,redecorated,7,'xiugai')" v-if="scope.row.odelFlag == 1"><el-dropdown-item>修改</el-dropdown-item></span>
-													<span @click="toApply(scope.$index,redecorated,8,'yanshou')" v-if="scope.row.odelFlag == 1"><el-dropdown-item>验收</el-dropdown-item></span>
+													<span @click="toApply(scope.$index,redecorated,8,'yanshou')" v-if="scope.row.odelFlag == 1,scope.row.decorate_situation!='装修合格'"><el-dropdown-item>验收</el-dropdown-item></span>
 													<span @click="toApply(scope.$index,redecorated,8,'xunjian')" v-if="scope.row.odelFlag == 1"><el-dropdown-item>巡检</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -189,9 +133,9 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="服务派工" name="seventh">
+						<el-tab-pane label="服务派工" name="sixth" v-if="this.role[22] === 'rubik:serviceDispatching:list'">
 							<div class="main">
-								<div  v-if="tabIndex === '5'">
+								<div  v-if="tabIndex === '4'">
 									<router-view class="server"></router-view>
 									<!-- <router-view class="return"></router-view> -->
 								</div>
@@ -231,9 +175,9 @@
 							</div>
 						</el-tab-pane>
 
-                        <el-tab-pane label="客户事件" name="eighth">
+                        <el-tab-pane label="客户事件" name="seventh" v-if="this.role[23] === 'rubik:theCustomerEvent:list'">
 							<div class="main">
-								<div  v-if="tabIndex === '6'">
+								<div  v-if="tabIndex === '5'">
 									<router-view class="addCustomer"></router-view>
 									<!-- <router-view class="return"></router-view> -->
 								</div>
@@ -271,9 +215,9 @@
 							</div>
 						</el-tab-pane>
 
-						<el-tab-pane label="客户信息管理" name="ninth">
+						<el-tab-pane label="客户信息管理" name="eight" v-if="this.role[24] === 'rubik:ECIF:list'">
 							<div class="main">
-								<div  v-if="tabIndex === '7'">
+								<div  v-if="tabIndex === '6'">
 									<router-view class="AddCustomer"></router-view>
 									<!-- <router-view class="return"></router-view> -->
 									
@@ -319,13 +263,13 @@
 				</div>
 			</div>
 			<!-- 添加短信弹窗 -->
-			<el-dialog
+			<!-- <el-dialog
 					:title="this.name"
 					:visible.sync="modify"
 					width="30%"
-					>
+					> -->
 					
-                        <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage" v-if="msg === 1">
+                        <!-- <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage" v-if="msg === 1">
 							<el-form-item label="短信标题:" prop="title">
 								<el-select v-model="addMessage.title" placeholder="请输入短信标题">
 									<el-option
@@ -349,9 +293,9 @@
 							<el-form-item label="签名:" prop="sign">
                                 <el-input v-model="addMessage.sign"></el-input>
                             </el-form-item>
-						</el-form>
+						</el-form> -->
 						<!-- 群发短信 -->
-						<el-form :model="textMessage" ref="textMessage" label-width="100px" class="demo-textMessage" v-if="msg === 2">
+						<!-- <el-form :model="textMessage" ref="textMessage" label-width="100px" class="demo-textMessage" v-if="msg === 2">
 							<el-form-item label="短信模板:">
 								<el-select v-model="textMessage.templateId" placeholder="请选择短信模板">
 									<el-tooltip placement="right" v-for="items in template" :key="items.id" effect="light">
@@ -374,12 +318,12 @@
 										v-model="textMessage.more"
 										@change="changeOne">
 									</el-cascader>
-							</el-form-item>
+							</el-form-item> -->
 							<!-- <el-form-item label="住户状态:" v-if="textMessage.change === '1'">
 								<el-radio v-model="textMessage.status" label="1">已迁入</el-radio>
 								<el-radio v-model="textMessage.status" label="2">已迁出</el-radio>
 							</el-form-item> -->
-							<el-form-item label="发送对象:" v-if="textMessage.change === '2'">
+							<!-- <el-form-item label="发送对象:" v-if="textMessage.change === '2'">
 								<el-input
 									type="textarea"
 									:rows="4"
@@ -395,14 +339,14 @@
 						<span slot="footer" class="dialog-footer" v-show="bianji">
 							<el-button @click="modify = false">取 消</el-button>
 							<el-button type="primary" @click="noteTemplateUpdate">确 定</el-button>
-						</span>
+						</span> -->
                     <!-- <div class="footer" v-show="tianjia">
                         <button class="add" @click="addOne()">确定</button><button class="delect" @click="modify = !modify">取消</button>
                     </div>
 					<div class="footer" v-show="bianji">
                         <button class="add" @click="noteTemplateUpdate">编辑</button><button class="delect" @click="modify = !modify">取消</button>
                     </div> -->
-			</el-dialog>
+			<!-- </el-dialog> -->
 			
 
 			<!-- 出入证添加 -->
@@ -505,10 +449,10 @@
                 pageSizeCustomerMsg: 10,
                 pageSizesListCustomerMsg: [10,20, 30, 40, 50],
 				
-				tianjia:false,
-				bianji:true,
+				// tianjia:false,
+				// bianji:true,
 				dialogVisible:false,
-				modify:false,
+				// modify:false,
 				activeName: 'first',
 				//出入证管理
 				inandcome: [
@@ -643,11 +587,11 @@
 						sign: '魔方物业'
 					},
 				],
-				addMessage: {
-					content:'b',
-					title: 32,
-					sign: 'a'
-				},
+				// addMessage: {
+				// 	content:'b',
+				// 	title: 32,
+				// 	sign: 'a'
+				// },
 				//短信模板下拉框
 				messageTitle:[
 					{label: "节日祝福",value: 32},
@@ -666,18 +610,18 @@
 					title: 'sdf',
 					time: '2018.07.25'
 				},],
-				rules: {
-                    title: [
-						{ required: true, message: '请输入短信标题', trigger: 'blur' },
-					],
-					content: [
-						{ required: true, message: '请输入短信内容', trigger: 'blur' },
-						{ max: 246, message: '长度在246个字符以内', trigger: 'blur' }
-					],
-					sign:[
-						{ required: true, message:'请输入签名',trigger: 'blur'}
-					]
-				},
+				// rules: {
+                //     title: [
+				// 		{ required: true, message: '请输入短信标题', trigger: 'blur' },
+				// 	],
+				// 	content: [
+				// 		{ required: true, message: '请输入短信内容', trigger: 'blur' },
+				// 		{ max: 246, message: '长度在246个字符以内', trigger: 'blur' }
+				// 	],
+				// 	sign:[
+				// 		{ required: true, message:'请输入签名',trigger: 'blur'}
+				// 	]
+				// },
 				rules1: {
 					name: [
 						{ required: true, message: '请输入姓名', trigger: 'blur' },
@@ -695,28 +639,32 @@
 						{ required: true, message: '请输入备注', trigger: 'blur' },
 					]
 				},
-				textMessage: {
-					templateId: '',
-					change: '',
-					who: '',
-					status: '',
-					textarea: '',
-					more:[]
-				},
-				options:[]
+				// textMessage: {
+				// 	templateId: '',
+				// 	change: '',
+				// 	who: '',
+				// 	status: '',
+				// 	textarea: '',
+				// 	more:[]
+				// },
+				options:[],
+				role:[]
 			}
 		},
 		mounted() {
-			 this.getbase(),
+			this.$ajax.get(url + 'role/findPermission').then(res => {
+				res.data.data.forEach(v => {
+					this.role.push(v.permission)
+				})
+			})
+			this.getbase(),
 			this.getMoveOut(),
-			this.gettemplate(),
 			this.getsended(),
 			this.getinandcome(),
 			this.getredecorated(),
 			this.getserver(),
 			this.getcustomer(),
-			this.getcustomerMsg(),
-			this.moreSelect()
+			this.getcustomerMsg()
 			if(this.$route.query.tabPane){
 				this.activeName = this.$route.query.tabPane
 			}else{
@@ -748,7 +696,6 @@
 					if(res.data.status === 200){
 					this.base = res.data.data.rows
 					this.totalDataNumber = res.data.data.records
-					console.log(res.data.data)
 
 					}
 				})
@@ -757,13 +704,13 @@
 				let that = this;
 				that.id = this.base[index].id;
 				that.roomid = this.base[index].roomid;
-				// rows.splice(index, 1);
+				that.contractId = this.base[index].contractId;
 				this.$confirm('此操作将永久迁出, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 					}).then(() => {
-						this.$ajax.post(url+'owner/del/' + this.id+'/'+ this.roomid).then((res) => {
+						this.$ajax.post(url+'owner/del/' + this.id+'/'+ this.roomid+'/'+that.contractId).then((res) => {
 							if(res.status === 200){
 								this.getbase()
 								this.$message({
@@ -789,24 +736,26 @@
 				let that = this;
 				that.id = this.base[index].id;
 				that.roomid = this.base[index].roomid;
+				that.contractId = this.base[index].contractId;
 				if(!this.roomid){
 					this.roomid = '0';
 				}
-				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
+				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no',contractId:that.contractId}})
 			},
-			details(index,rows){
-				let that = this;
-				that.id = this.MoveOut[index].customer;
-				that.roomid = this.MoveOut[index].room;
-				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
-			},
+			// details(index,rows){
+			// 	let that = this;
+			// 	that.id = this.MoveOut[index].customer;
+			// 	that.roomid = this.MoveOut[index].room;
+			// 	this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'no'}})
+			// },
 			//客户基本资料-编辑
 			customerEdit(index,rows){
 				let that = this;
 				that.id = this.base[index].id;
+				that.contractId = this.base[index].contractId;
 				//alert(this.base[index].roomid);
 				that.roomid = this.base[index].roomid;
-				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'qq'}})
+				this.$router.push({name: 'RelationshipAdd',query:{id:that.id,roomid:that.roomid,bian:'qq',contractId:that.contractId}})
 			},
 			handleSizeChangeMoveOut(val) {
 				this.pageSizeMoveOut = val;
@@ -848,133 +797,133 @@
 				})
 			},
 			//增加短信模板
-			addOne(){
-				if(this.msg === 1){
-					var noteTemplate={};
-					noteTemplate.title=this.addMessage.title;
-					noteTemplate.content=this.addMessage.content;
-					noteTemplate.signature=this.addMessage.sign;
-					this.$ajax.post(url+"noteTemplate/insert",noteTemplate
-					).then((res) => {
-						if(res.status){
-						this.form = res.data
-						this.$message({
-							message: '成功',
-							type: 'success'
-					});
-						this.modify = false
-						this.gettemplate()
-						}else{
-							this.$message.error('添加失败');
-						}
-					})
-				}else{
-					if (!this.textMessage.templateId){
-						this.$message.error('请选择标题');
-					}else if(!this.textMessage.change){
-						this.$message.error('请选择发送类型');
-					}else if(!this.textMessage.who){
-						this.$message.error('请选择发送对象');
-					}else{
-					 this.$ajax.post(url + 'note/insert/'+this.textMessage.templateId+'/'+this.textMessage.change+'/'+this.textMessage.who).then(res => {
-						 if(res.data.status === 200){
-							 this.$message.success('成功');
-						 }else{
-							 this.$message.success(res.data.msg);
-						 }
-					 })
-					}
-				}
-		},
+		// 	addOne(){
+		// 		if(this.msg === 1){
+		// 			var noteTemplate={};
+		// 			noteTemplate.title=this.addMessage.title;
+		// 			noteTemplate.content=this.addMessage.content;
+		// 			noteTemplate.signature=this.addMessage.sign;
+		// 			this.$ajax.post(url+"noteTemplate/insert",noteTemplate
+		// 			).then((res) => {
+		// 				if(res.status){
+		// 				this.form = res.data
+		// 				this.$message({
+		// 					message: '成功',
+		// 					type: 'success'
+		// 			});
+		// 				this.modify = false
+		// 				this.gettemplate()
+		// 				}else{
+		// 					this.$message.error('添加失败');
+		// 				}
+		// 			})
+		// 		}else{
+		// 			if (!this.textMessage.templateId){
+		// 				this.$message.error('请选择标题');
+		// 			}else if(!this.textMessage.change){
+		// 				this.$message.error('请选择发送类型');
+		// 			}else if(!this.textMessage.who){
+		// 				this.$message.error('请选择发送对象');
+		// 			}else{
+		// 			 this.$ajax.post(url + 'note/insert/'+this.textMessage.templateId+'/'+this.textMessage.change+'/'+this.textMessage.who).then(res => {
+		// 				 if(res.data.status === 200){
+		// 					 this.$message.success('成功');
+		// 				 }else{
+		// 					 this.$message.success(res.data.msg);
+		// 				 }
+		// 			 })
+		// 			}
+		// 		}
+		// },
 		//添加短信弹窗
-			addDuanxin(msg){
-				this.msg = msg
-				this.modify = true
-				this.tianjia = true,
-				this.bianji = false
-				if(msg === 1){
-					this.addMessage = {},
-					this.name = '添加短信模板',
-					this.tianjia = true,
-					this.bianji = false
-				}else{
-					this.textMessage.title = '',
-					this.textMessage.textarea = ''
-					this.name = '短信群发'
-					this.textMessage.radio = '1'
-				}
-			},
+			// addDuanxin(msg){
+			// 	this.msg = msg
+			// 	this.modify = true
+			// 	this.tianjia = true,
+			// 	this.bianji = false
+			// 	if(msg === 1){
+			// 		this.addMessage = {},
+			// 		this.name = '添加短信模板',
+			// 		this.tianjia = true,
+			// 		this.bianji = false
+			// 	}else{
+			// 		this.textMessage.title = '',
+			// 		this.textMessage.textarea = ''
+			// 		this.name = '短信群发'
+			// 		this.textMessage.radio = '1'
+			// 	}
+			// },
 		//编辑短信弹窗
-		noteTemplateEdit(index,rows){
-				let that = this;
-				this.msg = 1
-				that.id = this.template[index].id;
-				this.modify = true,
-				this.bianji = true,
-				this.tianjia = false
-                if(that.id){
-                    this.name = '编辑短信模板'
-                    this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
-						this.addMessage.title = birthDay(res.data.title);
-						this.addMessage.content = res.data.content;
-						this.addMessage.sign = res.data.signature;
-					})
-                }
-		},
+		// noteTemplateEdit(index,rows){
+		// 		let that = this;
+		// 		this.msg = 1
+		// 		that.id = this.template[index].id;
+		// 		this.modify = true,
+		// 		this.bianji = true,
+		// 		this.tianjia = false
+        //         if(that.id){
+        //             this.name = '编辑短信模板'
+        //             this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
+		// 				this.addMessage.title = birthDay(res.data.title);
+		// 				this.addMessage.content = res.data.content;
+		// 				this.addMessage.sign = res.data.signature;
+		// 			})
+        //         }
+		// },
 		//提交短信编辑
-		noteTemplateUpdate(){
-			this.bianji == true,
-			this.tianjia == false
-			var noteTemplate={};
-			noteTemplate.id=this.id;
-            noteTemplate.title=birthDay1(this.addMessage.title);
-           	noteTemplate.content=this.addMessage.content;
-            noteTemplate.signature=this.addMessage.sign;
-			this.$ajax.put(url+'noteTemplate/update',noteTemplate).then(res => {
-				if(res.status === 200){
-					this.$message({
-					message: '成功',
-					type: 'success'
-			});
-				this.modify = false
-				this.gettemplate()
-				}else{
-					this.$message.error('修改失败');
-				}
-			})
-		},
+		// noteTemplateUpdate(){
+		// 	this.bianji == true,
+		// 	this.tianjia == false
+		// 	var noteTemplate={};
+		// 	noteTemplate.id=this.id;
+        //     noteTemplate.title=birthDay1(this.addMessage.title);
+        //    	noteTemplate.content=this.addMessage.content;
+        //     noteTemplate.signature=this.addMessage.sign;
+		// 	this.$ajax.put(url+'noteTemplate/update',noteTemplate).then(res => {
+		// 		if(res.status === 200){
+		// 			this.$message({
+		// 			message: '成功',
+		// 			type: 'success'
+		// 	});
+		// 		this.modify = false
+		// 		this.gettemplate()
+		// 		}else{
+		// 			this.$message.error('修改失败');
+		// 		}
+		// 	})
+		// },
 			//删除所选行短信模板
-			noteTemplateDelete(index,rows) {
-				let that = this;
-				that.id = this.template[index].id;
-				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-					}).then(() => {
-				this.$ajax.delete(url+'noteTemplate/del/' + this.id).then((res) => {
-					if(res.status === 200){
-						this.gettemplate()
-						this.$message({
-									type: 'success',
-									message: '删除成功!'
-								})
-					}else{
-						this.$message(
-							{
-								type: 'error',
-								message: this.msg
-							}
-								)
-					}
-				})
-				}).catch(() => {
-						this.$message({
-							type: 'info',
-							message: '已取消删除'
-						});          
-					}); 
-			},
+			// noteTemplateDelete(index,rows) {
+			// 	let that = this;
+			// 	that.id = this.template[index].id;
+			// 	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+			// 		confirmButtonText: '确定',
+			// 		cancelButtonText: '取消',
+			// 		type: 'warning'
+			// 		}).then(() => {
+			// 	this.$ajax.delete(url+'noteTemplate/del/' + this.id).then((res) => {
+			// 		if(res.status === 200){
+			// 			this.gettemplate()
+			// 			this.$message({
+			// 						type: 'success',
+			// 						message: '删除成功!'
+			// 					})
+			// 		}else{
+			// 			this.$message(
+			// 				{
+			// 					type: 'error',
+			// 					message: this.msg
+			// 				}
+			// 					)
+			// 		}
+			// 	})
+			// 	}).catch(() => {
+			// 			this.$message({
+			// 				type: 'info',
+			// 				message: '已取消删除'
+			// 			});          
+			// 		}); 
+			// },
 			handleSelectionChange (val) {
       //val 为选中数据的集合
       this.multipleSelection = val
@@ -1075,10 +1024,11 @@
 				let that = this;
 				that.id = this.redecorated[index].id;
 				this.msg = msg
+				this.roomid = this.redecorated[index].room;
 				if(this.toWhere == "chakan"){
 					this.$router.push({name:'Apply',query:{id:that.id,msg:this.msg}})
 				}else if(this.toWhere == "yanshou"){
-					this.$router.push({name:'Check',query:{id:that.id}})
+					this.$router.push({name:'Test',params:{id:this.roomid,zhuangxiu:that.id},query:{id:"addNews"}})
 				}else if(this.toWhere == "xunjian"){
 					this.$router.push({name:'Patrol',query:{id:that.id}})
 				}else{
@@ -1159,16 +1109,16 @@
 				this.msg = msg
 				this.$router.push({name:'AddCustomer',query:{id:that.id,msg:this.msg}})
 			},
-			moreSelect(){
-				this.$ajax.get(url + 'room/flndByBuilding/aaa').then(res => {
-					this.options = res.data
-				})
-			},
+			// moreSelect(){
+			// 	this.$ajax.get(url + 'room/flndByBuilding/aaa').then(res => {
+			// 		this.options = res.data
+			// 	})
+			// },
 	// 		formatter(row, column) {
     //     return row.address;
     //   },
 			filterTag(value, row) {
-				return row.tag === value;
+				return row.label === value;
 			},
     //   filterHandler(value, row, column) {
     //     const property = column['property'];

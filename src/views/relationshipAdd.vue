@@ -131,78 +131,13 @@ export default {
           { required: true, message: '请输入建筑面积', trigger: 'blur' }
         ]
       },
-      options: [
-        {
-          value: 'bangongqu',
-          label: '办公区',
-          children: [{
-            value: 'Azuo',
-            label: 'A座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-        }, 
-        {
-          value: 'Bzuo',
-          label: 'B座',
-          children: [{
-            value: '101',
-            label: '101'
-          }, {
-            value: '102',
-            label: '102'
-          }, {
-            value: '103',
-            label: '103'
-          }, {
-            value: '104',
-            label: '104'
-          },
-          {
-            value: '105',
-            label: '105'
-          }]
-        },{
-          value: 'Czuo',
-          label: 'C座',
-          children: [{
-            value: '101',
-            label: '101'
-          }, {
-            value: '102',
-            label: '102'
-          }, {
-            value: '103',
-            label: '103'
-          }, {
-            value: '104',
-            label: '104'
-          },
-          {
-            value: '105',
-            label: '105'
-          }]
-        }]
-      }],
+      options: [],
+      contractId: ''
     }
   },
   mounted(){
     this.id = this.$route.query.id
-    // console.log("id"+this.$route)
+    this.contractId=this.$route.query.contractId
     this.roomid = this.$route.query.roomid
     this.sa()
   },
@@ -218,13 +153,14 @@ export default {
     },
     sa(){
       // console.log(this.roomid)
-      this.$ajax.get(url + 'room/flndByClientId/aaa'+'').then(res => {
+      this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
           // console.log(res.data)
           // console.log(res)
           this.options=res.data;
+          console.log(this.options)
           
       })
-      this.$ajax.get(url + 'owner/get/'+this.id+'/'+this.roomid+'').then(res => {
+      this.$ajax.get(url + 'owner/get/'+this.id+'/'+this.roomid+'/'+this.contractId).then(res => {
         this.addCustomer.name=res.data.name;
         this.addCustomer.selectRoom=[res.data.precinct, res.data.buildings, res.data.roomid];
         console.log(this.addCustomer.selectRoom)

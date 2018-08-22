@@ -1,18 +1,18 @@
 <template>
-  <div class="parking">
+  <div class="system">
 		<div class="container">
 			<nav-header/>
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="今日停车" name="first">
-              <today/>
+            <el-tab-pane label="收费参数" name="first">
+              <message/>
             </el-tab-pane>
-            <el-tab-pane label="历史停车" name="second">
-              <history/>
+            <el-tab-pane label="短信模板" name="second">
+              <parameters/>
             </el-tab-pane>
-            <el-tab-pane label="包月" name="third">
-              <month/>
+            <el-tab-pane label="权限管理" name="third">
+              <role/>
             </el-tab-pane>
 					</el-tabs>
 				</div>
@@ -24,11 +24,11 @@
 <script>
 import NavHeader from '@/components/NavHeader'
 import NavBar from '@/components/NavBar'
-import Today from './today'
-import History from './history'
-import Month from './month'
+import Message from './message'
+import Parameters from './parameters'
+import Role from './role'
 export default {
-  name: 'parking',
+  name: 'system',
   data(){
     return{
       activeName: 'first'
@@ -36,15 +36,15 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
-      this.$router.push('/parking')
+      this.$router.push('/system')
     },
   },
   components: {
     NavHeader,
     NavBar,
-    Today,
-    History,
-    Month
+    Message,
+    Parameters,
+    Role
   }
 }
 </script>
@@ -56,7 +56,7 @@ export default {
   background-color: #eeeeee;
   padding: 0;
 }
-.parking {
+.system {
   background: #eeeeee;
 }
 	
@@ -67,4 +67,3 @@ export default {
   margin: 10px 10px 0 5px;
 }
 </style>
-

@@ -1,6 +1,6 @@
 <template>
 	<aside>
-		<div class="nav"></div>
+		<div class="nav"><img src="@/assets/logo@3x.png"></div>
 		<ul class="asideList">
 			<li><router-link to="/helloWorld"><img src=".././assets/shouye.png">个人首页</router-link></li>
 			<li><router-link to="/Department"><img src=".././assets/jichu.png">基础信息</router-link></li>
@@ -10,6 +10,7 @@
 			<li><router-link to="/support"><img src=".././assets/xitong.png">决策支持</router-link></li>
 			<li><router-link to="/charge"><img src=".././assets/renshi.png">收费管理</router-link></li>
 			<li><router-link to="/parking"><img src=".././assets/tingche.png">停车管理</router-link></li>
+			<li><router-link to="/system"><img src=".././assets/system.png">系统管理</router-link></li>
 			<li><router-link to=""><img src=".././assets/gongzhonghao.png">微信公众号</router-link></li>
 		</ul>
 	</aside>
@@ -35,6 +36,7 @@ aside {
 		left: 0;
 		width: 11.7%;
 		z-index: 1;
+		min-width: 100px;
 	}
 
 		aside li {
@@ -47,9 +49,12 @@ aside {
 
 	.nav {
 		height: 11%;
+		display:flex;
+		align-items:center;
+		justify-content: center;
 	}
 
-	img {
+	.asideList img {
 		margin-right: 16px;
 	}
 
@@ -78,5 +83,11 @@ aside {
 
 ul{
 	padding: 0;
+}
+.nav img{
+	display: inline-block;
+	vertical-align: middle;
+	width: 100%;
+	max-width: 143px;
 }
 </style>

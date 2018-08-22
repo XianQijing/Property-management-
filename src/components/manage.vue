@@ -4,6 +4,7 @@
             <el-aside width="200px">
                 <div class="departNav">
         <h1>部门</h1>
+        <el-button type="text" @click="qq" v-if="this.data5.length == 0">添加部门</el-button>
        <el-tree :data="data5"  node-key="id" default-expand-all  @node-click="back">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -39,7 +40,7 @@
                         <el-table-column prop="username" label="用户名"></el-table-column>
                         <el-table-column prop="name" label="姓名"></el-table-column>
                         <el-table-column prop="cname" label="所属部门"></el-table-column>
-                        <el-table-column prop="rname" label="岗位"></el-table-column>
+                        <el-table-column prop="rname" label="角色"></el-table-column>
                         <!-- <el-table-column prop="file" label="个人文档"></el-table-column> -->
                         <el-table-column label="停用">
                             <template  slot-scope="scope">
@@ -98,7 +99,6 @@ export default {
         if (this.name !=='') {
         data.children.push(newChild);
         this.dialogVisible = false;
-        // console.log(data.id)
         }else{
             
         }
@@ -128,7 +128,6 @@ export default {
             this.id = e.id
             this.$ajax.post(url + 'company/findCompanyById',"id="+e.id).then(res =>{
                 var child = res.data.data;
-                // console.log(child)
                 if (!e.children) {
                     this.$set(e, 'children', []);
                     }
@@ -141,7 +140,6 @@ export default {
                         "pageSize":this.pageSizeCustomerMsg
                     }
                 }).then((res) => {
-                    // console.log(res.data.data)
 					this.tableData2 = res.data.data.rows
 					this.totalDataNumbercustomerMsg = res.data.data.records
 				})
@@ -163,7 +161,7 @@ export default {
                                 message: '删除成功',
                                 type: 'success'
                             })
-                            // this.getbumen()
+                            this.getbumen()
                         }else {
                             this.$message({
                                 message: '删除失败',
@@ -180,7 +178,6 @@ export default {
       },
 
       qq (node, data) {
-      // console.log(data)
       if (node.level !== 3) {
         this.dialogVisible = true;
         this.pp = data;
@@ -194,9 +191,8 @@ export default {
       getbumen(){
           this.$ajax.get(url + 'company/findCompany').then(res => {
               var data = res.data.data
-            //   console.log(res.data.data)
               this.data5= res.data.data
-            //   console.log(res.data.data)
+            // console.log(this.data5)
           }),
           this.$ajax.get(url + 'company/findUser',{
               params:{
@@ -205,19 +201,19 @@ export default {
                         "pageSize":this.pageSizeCustomerMsg
                     }
           }).then(res => {
-            //   console.log(res.data.data.rows)
-              this.tableData2= res.data.data.rows
-              this.totalDataNumbercustomerMsg = res.data.data.records
-            //   console.log(res.data.data)
+              if(res.data.status === 200){
+                this.tableData2= res.data.data.rows
+                this.totalDataNumbercustomerMsg = res.data.data.records
+              }else if(res.data.status === 403){
+                  
+              }
           })
       },
       handleSizeChange(val) {
-        // console.log(`每页 ${val} 条`);
         this.pageSizeCustomerMsg = val;
         this.getcustomerMsg()
       },
       handleCurrentChange(val) {
-        // console.log(`当前页: ${val}`);
         this.pageNoCustomerMsg = val;
         this.getcustomerMsg()
       },
@@ -229,7 +225,6 @@ export default {
                         "pageSize":this.pageSizeCustomerMsg
                     }
                 }).then((res) => {
-                    // console.log(res.data.data)
 					this.tableData2 = res.data.data.rows
 					this.totalDataNumbercustomerMsg = res.data.data.records
 				})
