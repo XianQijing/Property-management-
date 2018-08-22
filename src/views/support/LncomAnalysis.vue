@@ -32,7 +32,7 @@
           <el-table-column v-if="tableData[0].pay_time" prop="pay_time" label="合计"></el-table-column>
           <el-table-column v-if="tableData[0].should_price" prop="should_price" label="合计"></el-table-column>
           <el-table-column v-if="tableData[0].should_time" prop="should_time" label="租金"></el-table-column>
-          <el-table-column v-if="tableData[0].total" prop="total" label="时间"></el-table-column>
+          <el-table-column v-if="tableData[0].total" prop="total" label="总计"></el-table-column>
           
           <el-table-column v-if="tableData[0].pay_item_type_name" prop="pay_item_type_name" label="时间"></el-table-column>
         </el-table>
@@ -74,7 +74,11 @@ export default {
       color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
       Data: {},
       tableList: ['收入分析', '水电分析', '应收费情况表'],
-      tableData: [],
+      tableData: [
+        {
+          owner_name: ''
+        }
+      ],
       house: {
         currentPage: 1,
         pageArr: [1, 2, 3, 4, 5],
@@ -103,9 +107,11 @@ export default {
     },
     sizeChange (val) {
       this.house.pageSize = val
+      this.tableTab(this.num2)
     },
     currentChange (val) {
       this.house.currentPage = val
+      this.tableTab(this.num2)
     },
     handleSelectionChange () {},
     // 调用接口
@@ -129,10 +135,10 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          if (data === 'incomeAnalysis') {
-            this.charts()
-          } else {
+          if (data === 'utilities') {
             this.chartsTwo()
+          } else {
+            this.charts()
           }
         } else {
           this.tableData = res.data.dataTable
@@ -178,30 +184,17 @@ export default {
         this.isChartShow = false
       } else {
         this.isChartShow = true
-        if (this.num2 === 0) {
-          // this.color = ['#F9A400']
-          // this.getData('contractValue')
-        }
-        if (this.num2 === 1) {
-          // this.color = ['#FF9494']
-          // this.getData('payRanking')
-        }
-        if (this.num2 === 2) {
-          // this.color = ['#DE76CA']
-          // this.getData('contractStatus')
-        }
-        if (this.num2 === 3) {
-          // this.color = ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
-          // this.getData('rentOrNull')
-        }
       }
+      this.tableTab(this.num2, '更改日期')
     },
     // 收入分析
     charts () {
       let arr = []
       this.Data.forEach(v => {
-        v.name = v.pay_item_name
-        v.value = v.total
+        if (v.total) {
+          v.name = v.pay_item_name
+          v.value = v.total
+        }
         arr.push(v.name)
       })
       var myChart = echarts.init(document.getElementById('main1'));
@@ -209,7 +202,7 @@ export default {
         color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
         title : {
           text: '收入分析',
-          subtext: '纯属虚构',
+          // subtext: '纯属虚构',
           x:'center'
         },
         tooltip : {
@@ -218,9 +211,9 @@ export default {
         },
         legend: {
           type: 'plain',
-          right: '20%',
-          bottom: '30%',
-          orient: 'vertical',
+          left: '35%',
+          bottom: '15%',
+          // orient: 'vertical',
           data: arr,
           formatter: '{name}'
         },
@@ -236,7 +229,7 @@ export default {
             name: '访问来源',
             type: 'pie',
             radius : '55%',
-            center: ['50%', '60%'],
+            center: ['50%', '40%'],
             data: this.Data,
             itemStyle: {
               emphasis: {
@@ -255,14 +248,36 @@ export default {
     },
     // 水电分析
     chartsTwo () {
-      var myChart2 = echarts.init(document.getElementById('main1'));
+      var myChart2 = echarts.init(document.getElementById('main1'))
+      var seriesArr = []
+      this.Data.series.forEach(v => {
+        var oneOfSeries = {
+          name: v.name,
+          type: 'line',
+          stack: '总量',
+          symbol: 'circle',
+          symbolSize: '20',
+          itemStyle: {
+            borderWidth: 2,
+            borderColor: '#fff',
+            shadowColor: 'rgba(0, 0, 0, 0.3)',
+            shadowBlur: 6
+          },
+          lineStyle: {
+            width: 6
+          },
+          data: v.data
+        }
+        seriesArr.push(oneOfSeries)
+      })
       myChart2.setOption({
         color: ['#32D2C9', '#F8A20F', '#72A0FF'],
         tooltip: {
-          trigger: 'axis'
+          trigger: this.Data.tooltip.trigger
         },
         legend: {
-          data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+          type: 'plain',
+          data: this.Data.legend.data
         },
         grid: {
           top: '20%',
@@ -282,7 +297,7 @@ export default {
           splitLine: {
             show: true
           },
-          data: ['周一','周二','周三','周四','周五','周六','周日'],
+          data: this.Data.xAxis.data,
           axisLine: {
             show: false
           },
@@ -302,42 +317,7 @@ export default {
             show: false
           }
         },
-        series: [
-          {
-            name:'邮件营销',
-            type:'line',
-            stack: '总量',
-            symbol: 'circle',
-            symbolSize: '20',
-            itemStyle: {
-              borderWidth: 2,
-              borderColor: '#fff',
-              shadowColor: 'rgba(0, 0, 0, 0.3)',
-              shadowBlur: 6
-            },
-            lineStyle: {
-              width: 6
-            },
-            data:[120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name:'联盟广告',
-            type:'line',
-            stack: '总量',
-            symbol: 'circle',
-            symbolSize: '20',
-            itemStyle: {
-              borderWidth: 2,
-              borderColor: '#fff',
-              shadowColor: 'rgba(0, 0, 0, 0.3)',
-              shadowBlur: 6
-            },
-            lineStyle: {
-              width: 6
-            },
-            data:[220, 182, 191, 234, 290, 330, 310]
-          }
-        ]
+        series: seriesArr
       }, true)
     },
   },
@@ -444,5 +424,6 @@ img {
 }
 .title .tab .active {
   background:#FF9494;
+  border-color:#FF9494;
 }
 </style>

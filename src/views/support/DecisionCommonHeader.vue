@@ -40,7 +40,8 @@ export default {
         }
       ],
       value: '',
-      dateList: ['年', '月'],
+      // dateList: ['年', '月'],
+      dateList: ['年', '月', '日', '周', '季'],
       num2: 0,
       // isArea: true
     }
