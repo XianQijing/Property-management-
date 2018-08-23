@@ -31,7 +31,7 @@ export default {
       this.$ajax.get(url + 'role/findPermission').then(res => {
 				res.data.data.forEach(v => {
 					this.role.push(v.permission)
-					console.log(res.data.data)
+					// console.log(res.data.data)
 				})
 			})
     },
