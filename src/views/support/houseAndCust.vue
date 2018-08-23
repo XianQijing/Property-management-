@@ -28,8 +28,8 @@
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="ownername" label="姓名"></el-table-column>
           <el-table-column prop="phone" label="手机号"></el-table-column>
-          <el-table-column prop="payprice" label="签约额度"></el-table-column>
-          <el-table-column prop="total" label="合计"></el-table-column>
+          <!-- <el-table-column prop="payprice" label="签约额度"></el-table-column> -->
+          <el-table-column prop="total" label="签约额度"></el-table-column>
         </el-table>
 
         <el-table v-if="num2 === 1" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
@@ -37,8 +37,15 @@
           <el-table-column prop="owner_name" label="名字"></el-table-column>
           <el-table-column prop="payprice" label="签约额度"></el-table-column>
         </el-table>
-
+        
         <el-table v-if="num2 === 2" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="addRent" label="续租人数"></el-table-column>
+          <el-table-column prop="exitRent" label="退租人数"></el-table-column>
+          <el-table-column prop="nowRent" label="在租人数"></el-table-column>
+        </el-table>
+
+        <el-table v-if="num2 === 3" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="namec" label="楼宇名"></el-table-column>
           <el-table-column prop="count" label="小计"></el-table-column>
@@ -46,12 +53,6 @@
           <el-table-column prop="rent" label="出租数量"></el-table-column>
         </el-table>
 
-        <el-table v-if="num2 === 3" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="addRent" label="续租人数"></el-table-column>
-          <el-table-column prop="exitRent" label="退租人数"></el-table-column>
-          <el-table-column prop="nowRent" label="在租人数"></el-table-column>
-        </el-table>
         <div class="fenye">
           <el-pagination
             @size-change="sizeChange"

@@ -196,13 +196,14 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          if (data === 'emergency') {
+          // if (data === 'emergency') {
             this.chartsTwo()
-          } else if (data === 'repairRanking') {
-            this.charts('次数')
-          } else {
-            this.charts('满意度（100%）')
-          }
+          // } else if (data === 'repairRanking') {
+          //   this.charts('次数')
+          // } else {
+          //   // this.charts('满意度（100%）')
+          //   this.chartsTwo()
+          // }
         } else {
           if (val === 'exportExcelAll') {
             this.tableExportData = res.data.dataTable
