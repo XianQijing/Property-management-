@@ -236,7 +236,7 @@
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
             </el-form-item>
             <el-form-item label="手机号:" prop="number">
-                <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
+                <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number" @change="findPhone"></el-input>
             </el-form-item>
             <el-form-item label="密码:" prop="mima">
                 <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
@@ -555,11 +555,22 @@ mounted(){
         
         this.role = res.data.data
     })
-    // this.staff(),
-    // this.Btype()
-    // this.getRoleData()
+    this.staff(),
+    this.Btype()
+    this.getRoleData()
 },
 methods:{
+    findPhone(){
+        var phone = this.addperson.number
+        this.$ajax.post(url + 'user/findPhone?phone='+phone).then(res => {
+            if(res.data.data){
+                this.$message({
+                    message:'已有手机号',
+                    type:'error'
+                })
+            }
+        })
+    },
   deleteRoleAll () {
       if (this.multipleSelection.length > 0) {
         var idArr = []
@@ -932,7 +943,7 @@ methods:{
             }else{
                 this.$message({
                     type: 'error',
-                    message: res.data.msg
+                    message: res.data
                 });
             }
         })

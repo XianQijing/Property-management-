@@ -78,7 +78,7 @@ export default {
         pageSizesListCustomerMsg: [10,20, 50, 100],
         totalDataNumbercustomerMsg: 400,//customerMsg数据的总数,
         name:'',
-        id:'',
+        id:'1',
         isThird: true,
         rules: {
           name: [
@@ -202,11 +202,11 @@ export default {
           this.$ajax.get(url + 'company/findCompany').then(res => {
               var data = res.data.data
               this.data5= res.data.data
-            // console.log(this.data5)
+              this.id = this.data5[0].id
           }),
           this.$ajax.get(url + 'company/findUser',{
               params:{
-                        "id":1,
+                        "id":this.id,
                         "page":this.pageNoCustomerMsg,
                         "pageSize":this.pageSizeCustomerMsg
                     }

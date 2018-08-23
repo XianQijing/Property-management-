@@ -865,7 +865,15 @@ export default {
   components: {
     NavHeader,
     NavBar
-  }
+  },
+  watch:{
+			'$route'(){
+				this.getAdmin()
+        this.getRoom()
+        this.getRoomStandard()
+        this.getBuild()
+			}
+		}
 }
 </script>
 

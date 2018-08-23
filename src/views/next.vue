@@ -126,7 +126,7 @@ export default {
         useId: '',
         codes: '',
         roomType: '',
-        comment:''
+        // comment:''
       },
       dialogImageUrl: '',
       dialogVisible: false,
@@ -172,7 +172,7 @@ export default {
             this.ruleForm.roomType=res.data.data.roomType
             // this.ruleForm.roomTypeting=toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[0]),
             // this.ruleForm.roomTypewei=toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[1].split('卫')[0])
-            this.ruleForm.comment= res.data.data.comment
+            // this.ruleForm.comment= res.data.data.comment
         }else if(res.data.status===403){
           this.$alert('您的权限不足', '权限不足', {
           confirmButtonText: '确定',
@@ -249,7 +249,7 @@ export default {
           'useId': this.ruleForm.useId,
           'codes': this.ruleForm.codes,
           'roomType': this.ruleForm.roomType,
-          'comment': this.ruleForm.comment
+          // 'comment': this.ruleForm.comment
         }
         if (this.$route.query.id !== "qq") {
           // PUT /room/update/{id

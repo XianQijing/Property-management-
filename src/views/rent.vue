@@ -101,7 +101,7 @@
                                 <button class="add" @click="isShow = true">导入合同</button>
                                 <!-- <button class="add">导出合同</button> -->
                                  <div class="fenye" style="display:inline-block">
-                                     <button><img src=".././assets/down.png" style="width:16px;">模板</button>
+                                     <!-- <button><img src=".././assets/down.png" style="width:16px;">模板</button> -->
                                  </div>
 								<el-table :data="tableDataContract" style="width: 100%">
 									<el-table-column prop="tenantry" label="客户姓名" width="180"></el-table-column>
@@ -774,8 +774,13 @@ export default {
         NavHeader,
         NavBar
     },
-    filters: {
-    }
+    watch:{
+        '$route'(){
+            this.flndAllHousingResource(),
+            this.flndAllContract(),
+            this.getRoomStandard()
+        }
+		}
 }
 function status (data) {
     if (data === 0) return '未预定'

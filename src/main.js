@@ -30,6 +30,25 @@ axios.interceptors.request.use(
   }
 )
 
+axios.interceptors.response.use(data=> {
+  if (data.status && data.status == 200 && data.data.status == 'error') {
+    Message.error({message: data.data.msg});
+    return;
+  }
+  return data;
+}, err=> {
+  if (err.response.status == 504||err.response.status == 404) {
+    Message.error({message: '服务器被吃了⊙﹏⊙∥'});
+  } else if (err.response.status == 200) {
+    Message.error({message: '权限不足,请联系管理员!'});
+  }else if(err.response.data == '该账户在另一设备登录'){
+    Message.error({message: '权限不足,请联系管理员!'})
+  }else {
+    Message.error({message: '未知错误!'});
+  }
+  return Promise.resolve(err);
+}),
+
 axios.defaults.withCredentials = true
 Vue.prototype.$ajax = axios
 

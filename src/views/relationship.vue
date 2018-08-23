@@ -1138,6 +1138,18 @@
 		components: {
 			NavHeader,
 			NavBar
+		},
+		watch:{
+			'$route'(){
+				this.getbase(),
+				this.getMoveOut(),
+				this.getsended(),
+				this.getinandcome(),
+				this.getredecorated(),
+				this.getserver(),
+				this.getcustomer(),
+				this.getcustomerMsg()
+			}
 		}
 	}
 function birthDay (data) {
