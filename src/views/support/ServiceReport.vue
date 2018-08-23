@@ -21,20 +21,27 @@
       <div v-show="isChartShow" id="main1" style="width: 100%;height:500px;background: #fff;margin: 0 auto;"></div>
       <div v-show="!isChartShow" class="changeTable">
         <div class="daochu">
-          <el-button size="small" type="info" disabled>批量导出</el-button>
-          <el-button size="small" type="info" disabled>全部导出</el-button>
+          <button id="batchExport" @click="exportExcel" disabled>批量导出</button>
+          <button id="allExport" @click="exportExcelAll">全部导出</button>
         </div>
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+        <el-table v-if="num2 === 0" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column v-if="tableData[0].name !== undefined" prop="name" label="姓名"></el-table-column>
-          <el-table-column v-if="tableData[0].process_cacsi !== undefined" prop="process_cacsi" label="满意度"></el-table-column>
-          <el-table-column v-if="tableData[0].visit_cacsi !== undefined" prop="visit_cacsi" label="满意度"></el-table-column>
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column prop="process_cacsi" label="满意度"></el-table-column>
+          <el-table-column prop="visit_cacsi" label="满意度"></el-table-column>
+        </el-table>
 
-          <el-table-column v-if="tableData[0].count !== undefined" prop="count" label="次数"></el-table-column>
-          
-          <el-table-column v-if="tableData[0].eventType !== undefined" prop="eventType" label="事件"></el-table-column>
-          <el-table-column v-if="tableData[0].CACSI !== undefined" prop="CACSI" label="备注"></el-table-column>
-          <el-table-column v-if="tableData[0].event_date !== undefined" prop="event_date" label="时间"></el-table-column>
+        <el-table v-if="num2 === 1" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column prop="count" label="次数"></el-table-column>
+        </el-table>
+
+        <el-table v-if="num2 === 2" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="eventType" label="事件"></el-table-column>
+          <el-table-column prop="CACSI" label="备注"></el-table-column>
+          <el-table-column prop="event_date" label="时间"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -84,7 +91,8 @@ export default {
       },
       isArea: false,
       howTime: 0,
-      howDate: ''
+      howDate: '',
+      tableExportData: []
     }
   },
   mounted () {
@@ -94,6 +102,51 @@ export default {
     this.getData('okRankingTable')
   },
   methods: {
+    exportExcelAll () {
+      this.house.currentPage = 1
+      this.house.pageSize = 999
+      this.tableTab(this.num2, 'exportExcelAll')
+    },
+    // 批量导出
+    exportExcel () {
+      //要导出的json数据
+      // console.log(this.tableExportData)
+      //列标题
+      if (this.num2 === 0) {
+        var str = '<tr><td>处理满意度</td><td>回访满意度</td><td>客户名</td></tr>'
+      }
+      if (this.num2 === 1) {
+        var str = '<tr><td>客户名</td><td>保修次数</td></tr>'
+      }
+      if (this.num2 === 2) {
+        var str = '<tr><td>处理满意度</td><td>发生时间</td><td>事件类型</td></tr>'
+      }
+      //循环遍历，每行加入tr标签，每个单元格加td标签
+      for(let i = 0 ; i < this.tableExportData.length; i++ ){
+        str += '<tr>'
+        for(let item in this.tableExportData[i]){
+          //增加\t为了不让表格显示科学计数法或者其他格式
+          // console.log(this.tableExportData[i][item])
+          str += `<td>${ this.tableExportData[i][item] + '\t'}</td>`;    
+        }
+        str += '</tr>'
+      }
+      // Worksheet名
+      var worksheet = 'Sheet1'
+      var uri = 'data:application/vnd.ms-excel;base64,'
+
+      // 下载的表格模板数据
+      var template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+      xmlns:x="urn:schemas-microsoft-com:office:excel" 
+      xmlns="http://www.w3.org/TR/REC-html40">
+      <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+        <x:Name>${ worksheet }</x:Name>
+        <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+        </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+        </head><body><table>${ str }</table></body></html>`
+      // 下载模板
+      window.location.href = uri + base64(template)
+    },
     getDate (data) {
       this.howDate = data
       this.tableTab(this.num2, '更改日期')
@@ -110,9 +163,19 @@ export default {
       this.house.currentPage = val
       this.tableTab(this.num2)
     },
-    handleSelectionChange () {},
+    handleSelectionChange (val) {
+      if (val.length > 0) {
+        document.getElementById('batchExport').style.background = '#409EFF'
+        document.getElementById('batchExport').disabled = false
+        // console.log(document.getElementById('batchExport'))
+      } else {
+        document.getElementById('batchExport').style.background = '#D9D9D9'
+        document.getElementById('batchExport').disabled = true
+      }
+      this.tableExportData = val
+    },
     // 调用接口
-    getData (data) {
+    getData (data, val) {
       var params = {}
       if (this.isChartShow === true) {
         params = {
@@ -123,6 +186,7 @@ export default {
       } else {
         params = {
           howTime: this.howTime,
+          time: this.howDate,
           pageNo: this.house.currentPage,
           pageSize: this.house.pageSize
         }
@@ -132,49 +196,62 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          if (data === 'emergency') {
+          // if (data === 'emergency') {
             this.chartsTwo()
-          } else if (data === 'repairRanking') {
-            this.charts('次数')
-          } else {
-            this.charts('满意度（100%）')
-          }
+          // } else if (data === 'repairRanking') {
+          //   this.charts('次数')
+          // } else {
+          //   // this.charts('满意度（100%）')
+          //   this.chartsTwo()
+          // }
         } else {
-          this.tableData = res.data.dataTable
-          this.house.total = res.data.total
+          if (val === 'exportExcelAll') {
+            this.tableExportData = res.data.dataTable
+            this.exportExcel()
+          } else {
+            this.tableData = res.data.dataTable
+            this.house.total = res.data.total
+          }
           // this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
         }
       })
     },
     tableTab (index, changetab) {
       this.num2 = index
+      this.house.currentPage = 1
       if (!changetab) {
         this.howDate = ''
       }
       if (this.isChartShow === false) {
-        if (this.num2 === 0) {
-          // this.isArea = false
-          this.getData('okRankingTable')
-        }
-        if (this.num2 === 1) {
-          // this.isArea = true
-          this.getData('repairRankingTable')
-        }
-        if (this.num2 === 2) {
-          // this.isArea = true
-          this.getData('emergencyTable')
+        if (changetab === 'exportExcelAll') {
+          if (this.num2 === 0) {
+            this.getData('okRankingTable', 'exportExcelAll')
+          }
+          if (this.num2 === 1) {
+            this.getData('repairRankingTable', 'exportExcelAll')
+          }
+          if (this.num2 === 2) {
+            this.getData('emergencyTable', 'exportExcelAll')
+          }
+        } else {
+          if (this.num2 === 0) {
+            this.getData('okRankingTable')
+          }
+          if (this.num2 === 1) {
+            this.getData('repairRankingTable')
+          }
+          if (this.num2 === 2) {
+            this.getData('emergencyTable')
+          }
         }
       } else {
         if (this.num2 === 0) {
-          // this.isArea = false
           this.getData('okRanking')
         }
         if (this.num2 === 1) {
-          // this.isArea = true
           this.getData('repairRanking')
         }
         if (this.num2 === 2) {
-          // this.isArea = true
           this.getData('emergency')
         }
       }
@@ -197,10 +274,9 @@ export default {
       })
       var myChart = echarts.init(document.getElementById('main1'));
       myChart.setOption({
-        color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
+        color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
         title : {
           text: '事件统计',
-          // subtext: '纯属虚构',
           x:'center'
         },
         tooltip : {
@@ -310,7 +386,7 @@ export default {
               normal: { 
                 color: function(params) { 
                 　//首先定义一个数组 
-                  var colorList = ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA']
+                  var colorList = ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7']
                   return colorList[params.dataIndex] 
                 }
               }
@@ -324,6 +400,8 @@ export default {
     DecisionCommonHeader
   }
 }
+// 输出base64编码
+function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
 </script>
 
 <style scoped>
@@ -334,6 +412,22 @@ export default {
   position: static;
   min-width: 1270px;
   height: 100%;
+}
+.daochu button {
+  color: #fff;
+  font-size: 12px;
+  border-radius: 3px;
+  border: 0;
+  padding: 9px 15px;
+  line-height: 1;
+  background-color: #409EFF;
+  border-color: #409EFF;
+  cursor: pointer;
+}
+.daochu button:disabled {
+  background-color: #D9D9D9;
+  border-color: #D9D9D9;
+  cursor: not-allowed;
 }
 .changeTable {
   width: 95%;

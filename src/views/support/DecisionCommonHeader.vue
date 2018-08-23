@@ -17,12 +17,12 @@
         format="yyyy-MM-dd">
       </el-date-picker>
     </div>
-    <div class="area" v-show="isArea">
+    <!-- <div class="area" v-show="isArea">
       <span>选择区域：</span>
       <el-select v-model="value" placeholder="请选择" size="small">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -71,7 +71,8 @@ export default {
 
 <style lang="less" scoped>
 .DecisionCommonHeader {
-  height: 185px;
+  // height: 185px;
+  height: 100px;
   width: 100%;
   border-bottom: 20px solid rgba(240,240,240,1);
   .time {
