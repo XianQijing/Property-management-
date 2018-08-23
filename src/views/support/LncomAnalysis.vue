@@ -26,15 +26,15 @@
         </div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column v-if="tableData[0].owner_name" prop="owner_name" label="客户名"></el-table-column>
-          <el-table-column v-if="tableData[0].pay_item_name" prop="pay_item_name" label="收费名"></el-table-column>
-          <el-table-column v-if="tableData[0].pay_price" prop="pay_price" label="实收款金额"></el-table-column>
-          <el-table-column v-if="tableData[0].pay_time" prop="pay_time" label="实收款时间"></el-table-column>
-          <el-table-column v-if="tableData[0].should_price" prop="should_price" label="应收款金额"></el-table-column>
-          <el-table-column v-if="tableData[0].should_time" prop="should_time" label="应收款时间"></el-table-column>
-          <el-table-column v-if="tableData[0].total" prop="total" label="小计"></el-table-column>
+          <el-table-column prop="owner_name" label="客户名"></el-table-column>
+          <el-table-column prop="pay_item_name" label="收费名"></el-table-column>
+          <el-table-column prop="pay_price" label="实收款金额"></el-table-column>
+          <el-table-column prop="pay_time" label="实收款时间"></el-table-column>
+          <el-table-column prop="should_price" label="应收款金额"></el-table-column>
+          <el-table-column prop="should_time" label="应收款时间"></el-table-column>
+          <el-table-column prop="total" label="小计"></el-table-column>
           
-          <el-table-column v-if="tableData[0].pay_item_type_name" prop="pay_item_type_name" label="收费费用名"></el-table-column>
+          <!-- <el-table-column v-if="tableData[0].pay_item_type_name" prop="pay_item_type_name" label="收费费用名"></el-table-column> -->
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -206,6 +206,7 @@ export default {
       } else {
         params = {
           howTime: this.howTime,
+          time: this.howDate,
           pageNo: this.house.currentPage,
           pageSize: this.house.pageSize
         }

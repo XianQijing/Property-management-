@@ -24,17 +24,24 @@
           <button id="batchExport" @click="exportExcel" disabled>批量导出</button>
           <button id="allExport" @click="exportExcelAll">全部导出</button>
         </div>
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+        <el-table v-if="num2 === 0" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column v-if="tableData[0].name !== undefined" prop="name" label="姓名"></el-table-column>
-          <el-table-column v-if="tableData[0].process_cacsi !== undefined" prop="process_cacsi" label="满意度"></el-table-column>
-          <el-table-column v-if="tableData[0].visit_cacsi !== undefined" prop="visit_cacsi" label="满意度"></el-table-column>
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column prop="process_cacsi" label="满意度"></el-table-column>
+          <el-table-column prop="visit_cacsi" label="满意度"></el-table-column>
+        </el-table>
 
-          <el-table-column v-if="tableData[0].count !== undefined" prop="count" label="次数"></el-table-column>
-          
-          <el-table-column v-if="tableData[0].eventType !== undefined" prop="eventType" label="事件"></el-table-column>
-          <el-table-column v-if="tableData[0].CACSI !== undefined" prop="CACSI" label="备注"></el-table-column>
-          <el-table-column v-if="tableData[0].event_date !== undefined" prop="event_date" label="时间"></el-table-column>
+        <el-table v-if="num2 === 1" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column prop="count" label="次数"></el-table-column>
+        </el-table>
+
+        <el-table v-if="num2 === 2" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="eventType" label="事件"></el-table-column>
+          <el-table-column prop="CACSI" label="备注"></el-table-column>
+          <el-table-column prop="event_date" label="时间"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -179,6 +186,7 @@ export default {
       } else {
         params = {
           howTime: this.howTime,
+          time: this.howDate,
           pageNo: this.house.currentPage,
           pageSize: this.house.pageSize
         }
