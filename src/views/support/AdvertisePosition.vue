@@ -21,20 +21,16 @@
       <div v-show="isChartShow" id="main1" style="width: 100%;height:500px;background: #fff;margin: 0 auto;"></div>
       <div v-show="!isChartShow" class="changeTable">
         <div class="daochu">
-          <el-button size="small" type="info" disabled>批量导出</el-button>
-          <el-button size="small" type="info" disabled>全部导出</el-button>
+          <button id="batchExport" @click="exportExcel" disabled>批量导出</button>
+          <button id="allExport" @click="exportExcelAll">全部导出</button>
         </div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column v-if="tableData[0].owner_name" prop="owner_name" label="姓名"></el-table-column>
-          <el-table-column v-if="tableData[0].pay_item_name" prop="pay_item_name" label="手机号"></el-table-column>
-          <el-table-column v-if="tableData[0].pay_price" prop="pay_price" label="金额"></el-table-column>
-          <el-table-column v-if="tableData[0].pay_time" prop="pay_time" label="合计"></el-table-column>
-          <el-table-column v-if="tableData[0].should_price" prop="should_price" label="合计"></el-table-column>
-          <el-table-column v-if="tableData[0].should_time" prop="should_time" label="租金"></el-table-column>
-          <el-table-column v-if="tableData[0].total" prop="total" label="总计"></el-table-column>
-          
-          <el-table-column v-if="tableData[0].pay_item_type_name" prop="pay_item_type_name" label="时间"></el-table-column>
+          <el-table-column v-if="tableData[0].car_no !== undefined" prop="car_no" label="车牌"></el-table-column>
+          <el-table-column v-if="tableData[0].input_time !== undefined" prop="input_time" label="入场时间"></el-table-column>
+          <el-table-column v-if="tableData[0].out_time !== undefined" prop="out_time" label="出场时间"></el-table-column>
+          <el-table-column v-if="tableData[0].reality !== undefined" prop="reality" label="实收"></el-table-column>
+          <el-table-column v-if="tableData[0].receivable !== undefined" prop="receivable" label="应收"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -73,7 +69,7 @@ export default {
       isChartShow: false,
       color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
       Data: {},
-      tableList: ['停车收费', '车辆次数'],
+      tableList: ['车辆次数'],
       tableData: [
         {
           owner_name: ''
@@ -87,16 +83,60 @@ export default {
       },
       isArea: false,
       howTime: 0,
-      howDate: ''
+      howDate: '',
+      tableExportData: []
     }
   },
   mounted () {
-    // GET /report/incomeAnalysis  收入分析
-    // GET /report/utilities  水电分析
-    // GET /report/receivable  应收费情况表
-    this.getData('incomeAnalysisTable')
+    // GET /report/carPass 折线
+    this.getData('carPassTable')
   },
   methods: {
+    exportExcelAll () {
+      this.house.currentPage = 1
+      this.house.pageSize = 999
+      this.tableTab(this.num2, 'exportExcelAll')
+    },
+    // 批量导出
+    exportExcel () {
+      //要导出的json数据
+      // console.log(this.tableExportData)
+      //列标题
+      if (this.num2 === 0) {
+        var str = `<tr>
+          <td>出场时间</td>
+          <td>入场时间</td>
+          <td>车牌</td>
+          <td>实收</td>
+          <td>应收</td>
+        </tr>`
+      }
+      //循环遍历，每行加入tr标签，每个单元格加td标签
+      for(let i = 0 ; i < this.tableExportData.length; i++ ){
+        str += '<tr>'
+        for(let item in this.tableExportData[i]){
+          //增加\t为了不让表格显示科学计数法或者其他格式
+          // console.log(this.tableExportData[i][item])
+          str += `<td>${ this.tableExportData[i][item] + '\t'}</td>`;    
+        }
+        str += '</tr>'
+      }
+      // Worksheet名
+      var worksheet = 'Sheet1'
+      var uri = 'data:application/vnd.ms-excel;base64,'
+
+      // 下载的表格模板数据
+      var template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+      xmlns:x="urn:schemas-microsoft-com:office:excel" 
+      xmlns="http://www.w3.org/TR/REC-html40">
+      <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+        <x:Name>${ worksheet }</x:Name>
+        <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+        </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+        </head><body><table>${ str }</table></body></html>`
+      // 下载模板
+      window.location.href = uri + base64(template)
+    },
     getDate (data) {
       this.howDate = data
       this.tableTab(this.num2, '更改日期')
@@ -113,9 +153,19 @@ export default {
       this.house.currentPage = val
       this.tableTab(this.num2)
     },
-    handleSelectionChange () {},
+    handleSelectionChange (val) {
+      if (val.length > 0) {
+        document.getElementById('batchExport').style.background = '#409EFF'
+        document.getElementById('batchExport').disabled = false
+        // console.log(document.getElementById('batchExport'))
+      } else {
+        document.getElementById('batchExport').style.background = '#D9D9D9'
+        document.getElementById('batchExport').disabled = true
+      }
+      this.tableExportData = val
+    },
     // 调用接口
-    getData (data) {
+    getData (data, val) {
       var params = {}
       if (this.isChartShow === true) {
         params = {
@@ -135,38 +185,39 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          if (data === 'utilities') {
-            this.chartsTwo()
-          } else {
-            this.charts()
-          }
+          this.chartsTwo()
         } else {
-          this.tableData = res.data.dataTable
-          this.house.total = res.data.total
+           if (val === 'exportExcelAll') {
+            this.tableExportData = res.data.dataTable
+            this.exportExcel()
+          } else {
+            this.tableData = res.data.dataTable
+            this.house.total = res.data.total
+          }
           // this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
         }
       })
     },
     tableTab (index, changetab) {
       this.num2 = index
+      this.house.currentPage = 1
       if (!changetab) {
         this.howDate = ''
       }
       if (this.isChartShow === false) {
-        if (this.num2 === 0) {
-          this.getData('incomeAnalysisTable')
-        }
-        if (this.num2 === 1) {
-          this.getData('utilitiesTable')
+         if (changetab === 'exportExcelAll') {
+          if (this.num2 === 0) {
+            this.getData('carPassTable', 'exportExcelAll')
+          }
+        } else {
+          if (this.num2 === 0) {
+            this.getData('carPassTable')
+          }
         }
       } else {
         if (this.num2 === 0) {
           this.isArea = false
-          this.getData('incomeAnalysis')
-        }
-        if (this.num2 === 1) {
-          this.isArea = true
-          this.getData('utilities')
+          this.getData('carPass')
         }
       }
     },
@@ -180,66 +231,7 @@ export default {
       }
       this.tableTab(this.num2, '更改日期')
     },
-    // 收入分析
-    charts () {
-      let arr = []
-      this.Data.forEach(v => {
-        if (v.total) {
-          v.name = v.pay_item_name
-          v.value = v.total
-        }
-        arr.push(v.name)
-      })
-      var myChart = echarts.init(document.getElementById('main1'));
-      myChart.setOption({
-        color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
-        title : {
-          text: '收入分析',
-          // subtext: '纯属虚构',
-          x:'center'
-        },
-        tooltip : {
-          trigger: 'item',
-          formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        legend: {
-          type: 'plain',
-          left: '35%',
-          bottom: '15%',
-          // orient: 'vertical',
-          data: arr,
-          formatter: '{name}'
-        },
-        grid: {
-          top: '20%',
-          left: '18%',
-          height: '60%',
-          width: '64%',
-          containLabel: true
-        },
-        series : [
-          {
-            name: '访问来源',
-            type: 'pie',
-            radius : '55%',
-            center: ['50%', '40%'],
-            data: this.Data,
-            itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            },
-            label: {
-              position: 'inside',
-              formatter: '{d}%'
-            }
-          }
-        ]
-      }, true)
-    },
-    // 水电分析
+    // 车辆次数
     chartsTwo () {
       var myChart2 = echarts.init(document.getElementById('main1'))
       var seriesArr = []
@@ -249,22 +241,23 @@ export default {
           type: 'line',
           stack: '总量',
           symbol: 'circle',
-          symbolSize: '20',
+          symbolSize: '16',
           itemStyle: {
             borderWidth: 2,
             borderColor: '#fff',
             shadowColor: 'rgba(0, 0, 0, 0.3)',
-            shadowBlur: 6
+            shadowBlur: 4
           },
           lineStyle: {
-            width: 6
+            width: 4
           },
           data: v.data
         }
         seriesArr.push(oneOfSeries)
       })
+      // console.log(seriesArr)
       myChart2.setOption({
-        color: ['#32D2C9', '#F8A20F', '#72A0FF'],
+        color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
         tooltip: {
           trigger: this.Data.tooltip.trigger
         },
@@ -318,6 +311,8 @@ export default {
     DecisionCommonHeader
   }
 }
+// 输出base64编码
+function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
 </script>
 
 <style scoped>
@@ -328,6 +323,22 @@ export default {
   position: static;
   min-width: 1270px;
   height: 100%;
+}
+.daochu button {
+  color: #fff;
+  font-size: 12px;
+  border-radius: 3px;
+  border: 0;
+  padding: 9px 15px;
+  line-height: 1;
+  background-color: #409EFF;
+  border-color: #409EFF;
+  cursor: pointer;
+}
+.daochu button:disabled {
+  background-color: #D9D9D9;
+  border-color: #D9D9D9;
+  cursor: not-allowed;
 }
 .changeTable {
   width: 95%;
