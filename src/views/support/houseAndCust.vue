@@ -24,22 +24,33 @@
           <button id="batchExport" @click="exportExcel" disabled>批量导出</button>
           <button id="allExport" @click="exportExcelAll">全部导出</button>
         </div>
-        <el-table ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+        <el-table v-if="num2 === 0" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column v-if="tableData[0].ownername !== undefined" prop="ownername" label="姓名"></el-table-column>
-          <el-table-column v-if="tableData[0].owner_name !== undefined" prop="owner_name" label="名字"></el-table-column>
-          <el-table-column v-if="tableData[0].phone !== undefined" prop="phone" label="手机号"></el-table-column>
-          <el-table-column v-if="tableData[0].payprice !== undefined" prop="payprice" label="签约额度"></el-table-column>
-          <el-table-column v-if="tableData[0].total !== undefined" prop="total" label="合计"></el-table-column>
+          <el-table-column prop="ownername" label="姓名"></el-table-column>
+          <el-table-column prop="phone" label="手机号"></el-table-column>
+          <el-table-column prop="payprice" label="签约额度"></el-table-column>
+          <el-table-column prop="total" label="合计"></el-table-column>
+        </el-table>
 
-          <el-table-column v-if="tableData[0].namec !== undefined" prop="namec" label="楼宇名"></el-table-column>
-          <el-table-column v-if="tableData[0].count !== undefined" prop="count" label="小计"></el-table-column>
-          <el-table-column v-if="tableData[0].nul !== undefined" prop="nul" label="空置数量"></el-table-column>
-          <el-table-column v-if="tableData[0].rent !== undefined" prop="rent" label="出租数量"></el-table-column>
+        <el-table v-if="num2 === 1" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="owner_name" label="名字"></el-table-column>
+          <el-table-column prop="payprice" label="签约额度"></el-table-column>
+        </el-table>
 
-          <el-table-column v-if="tableData[0].addRent !== undefined" prop="addRent" label="续租人数"></el-table-column>
-          <el-table-column v-if="tableData[0].exitRent !== undefined" prop="exitRent" label="退租人数"></el-table-column>
-          <el-table-column v-if="tableData[0].nowRent !== undefined" prop="nowRent" label="在租人数"></el-table-column>
+        <el-table v-if="num2 === 2" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="namec" label="楼宇名"></el-table-column>
+          <el-table-column prop="count" label="小计"></el-table-column>
+          <el-table-column prop="nul" label="空置数量"></el-table-column>
+          <el-table-column prop="rent" label="出租数量"></el-table-column>
+        </el-table>
+
+        <el-table v-if="num2 === 3" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="addRent" label="续租人数"></el-table-column>
+          <el-table-column prop="exitRent" label="退租人数"></el-table-column>
+          <el-table-column prop="nowRent" label="在租人数"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -187,6 +198,7 @@ export default {
       } else {
         params = {
           howTime: this.howTime,
+          time: this.howDate,
           pageNo: this.house.currentPage,
           pageSize: this.house.pageSize
         }

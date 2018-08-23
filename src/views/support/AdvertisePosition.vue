@@ -26,11 +26,11 @@
         </div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column v-if="tableData[0].car_no !== undefined" prop="car_no" label="车牌"></el-table-column>
-          <el-table-column v-if="tableData[0].input_time !== undefined" prop="input_time" label="入场时间"></el-table-column>
-          <el-table-column v-if="tableData[0].out_time !== undefined" prop="out_time" label="出场时间"></el-table-column>
-          <el-table-column v-if="tableData[0].reality !== undefined" prop="reality" label="实收"></el-table-column>
-          <el-table-column v-if="tableData[0].receivable !== undefined" prop="receivable" label="应收"></el-table-column>
+          <el-table-column prop="car_no" label="车牌"></el-table-column>
+          <el-table-column prop="input_time" label="入场时间"></el-table-column>
+          <el-table-column prop="out_time" label="出场时间"></el-table-column>
+          <el-table-column prop="reality" label="实收"></el-table-column>
+          <el-table-column prop="receivable" label="应收"></el-table-column>
         </el-table>
         <div class="fenye">
           <el-pagination
@@ -176,6 +176,7 @@ export default {
       } else {
         params = {
           howTime: this.howTime,
+          time: this.howDate,
           pageNo: this.house.currentPage,
           pageSize: this.house.pageSize
         }
