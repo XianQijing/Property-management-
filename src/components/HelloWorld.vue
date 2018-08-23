@@ -6,20 +6,23 @@
 					<nav-header :name="username"></nav-header>
 				</div>
 			</div>
-			<div class="row" v-if="DetailShow">
+			<div class="row">
 				<div class="personal col-md-12">
 					<p>个人首页</p>
 				</div>
 			</div>
-			<div class="row" v-if="DetailShow">
+			<div class="row">
 				<div class="col-md-4">
 					<div class="title1">
-						<p class="tongzhi">通知</p>
+						<p class="richeng">通知</p>
 						<div class="bodymain">
-							<div v-for="ok in inform" :key="ok.id" class="notic-body" @click="toDetail">
-								<p :class="ok.class">{{ok.title}}</p>
-								<span>{{ok.main}}</span>
-								<span class="time">{{ok.time}}</span>
+							<div v-for="(ok,index) in inform" :key="index" class="notic-body" >
+								<p :class="ok.titlep">{{ok.title}}</p>
+								<span @click="detail(index)">{{ok.header}}</span>
+                                <el-tag type="danger" size="mini">{{ok.status}}</el-tag>
+                                <span class="time" @click="del(index)">删除</span>
+								<!-- <span class="time">{{ok.createTime}}</span> -->
+                                <p>{{ok.createTime}}</p>
 							</div>
 						</div>
 					</div>
@@ -121,7 +124,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row" v-if="DetailShow">
+			<div class="row">
 				<div class="col-md-4">
 					<div class="title1">
 						<p class="tongzhi">待办任务</p>
@@ -143,93 +146,16 @@
 					</div>
 				</div>
 			</div>
-			<!--添加新员工弹窗-->
-				<el-dialog title="添加新员工" :visible.sync="add" width="30%">
-					<el-form :model="addperson" ref="addperson" label-width="80px" size="small" class="chuang">
-						<el-form-item label="姓名:">
-							<el-input placeholder="请输入姓名" v-model="addperson.name"></el-input>
-						</el-form-item>
-						<el-form-item label="昵称:">
-							<el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
-						</el-form-item>
-						<el-form-item label="手机号:">
-							<el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
-						</el-form-item>
-						<el-form-item label="密码:">
-							<el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
-						</el-form-item>
-						<el-form-item label="微信号:">
-							<el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
-						</el-form-item>
-						<el-form-item label="邮箱:">
-							<el-input id="email" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
-						</el-form-item>
-						<el-form-item label="角色:">
-							<el-select id="position" placeholder="请输入职位" v-model="addperson.position">
-								<el-option label="总经理" value=180717116472055595008>总经理</el-option>
-								<el-option label="adaf" value=180717124465488855040>adaf</el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="岗位:">
-							<el-input id="gangwei" placeholder="请输入岗位" v-model="addperson.gangwei"></el-input>
-						</el-form-item>
-						<el-form-item label="备注:">
-							<el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
-						</el-form-item>
-					</el-form>
-					<div class="footer">
-						<button class="confirm" @click="addOne">确定</button>
-						<button class="cancel" @click="add = !add">取消</button>
-					</div>
-				</el-dialog>
-
-				<!--导入弹窗-->
             <el-dialog
-                    title="导入"
-                    :visible.sync="isShow"
-                    width="30%">
-                    <div class="put">
-                        <p>导入设置:</p>
-                        <form>
-                            <ul class="shuju">
-                                <li>
-                                    <el-radio v-model="radio" label="0">重复数据不导入</el-radio>
-                                    </li>
-                                <li>
-                            <el-radio v-model="radio" label="1">重复数据覆盖</el-radio>
-                             </li>
-                            </ul>
-                        </form>
-                        <div class="upload">
-                            <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
-                             </div>
-                        <div>{{this.file}}</div>
-                        </div>
-                        
-                        <div>
-                            <p>如何导入通讯录</p>
-                                <ul class="liebiao">
-                                 <li class="how">数据导入采用Excel表格导入</li>
-                                 <li>1、不支持Excel公式导入，尽量去除所有文字和表格样式</li>
-                                 <li>2、只支持工作表1导入</li>
-                                 <li>3、请点击下载微小区实例</li>
-                                 <li>4、如需导入时间，时间格式必须为YYYY-MM-DD(例如：2016-01-01)</li>
-                                 <li class="how">必须项目(必须项目不能为空且不能重复)</li>
-                                 <li>姓名</li>
-                                 <li>手机号（必须是手机格式且不能重复）</li>
-                                 <li>部门（必须与组织架构对应）</li>
-                                 <li>选填项目（选填项目可以为空）</li>
-                                 <li>微信（填写员工微信号）</li>
-                                 <li>昵称（填写员工昵称）</li>
-                                 <li>职位（填写员工职位）</li>
-                                 <li>备注</li>
-                            </ul>
-                        </div>
-                        <div class="footer1">
-                            <button class="confirm" @click="submit">确定</button><button class="cancel" @click="isShow = !isShow">取消</button>
-                             </div>
-                </el-dialog>
-			<DetailsNotification v-if="!DetailShow" />
+                :title="this.title"
+                :visible.sync="dialogVisible"
+                width="500px">
+                <div class="content">{{this.content}}</div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                </span>
+            </el-dialog>
 		</div>
 	</div>
 </template>
@@ -245,6 +171,8 @@ export default {
     name: "HelloWorld",
     data() {
         return {
+            content: '',
+            dialogVisible: false,
             username: "",
             //快捷工作台
             countWork: [
@@ -255,62 +183,8 @@ export default {
                 { count: 0 },
                 { count: 0 }
             ],
-            //添加员工
-            add: false,
-            addperson: {
-                name: "",
-                number: "",
-                wechat: "",
-                nickname: "",
-                post: "",
-                position: "",
-                beizhu: "",
-                gangwei: "",
-                mima: ""
-            },
-            form: {},
-						//导入员工
-            isShow:false,
-            radio:'0',
-            file:'',
 
-            inform: [
-                {
-                    class: "new",
-                    title: "0",
-                    main: "昨日发送节日祝福",
-                    time: "",
-                    id: 10
-                },
-                {
-                    class: "new",
-                    title: "0",
-                    main: "昨日发送生日祝福",
-                    time: "",
-                    id: 11
-                },
-                {
-                    class: "new",
-                    title: "0",
-                    main: "昨日发送活动通知",
-                    time: "",
-                    id: 12
-                },
-                {
-                    class: "new",
-                    title: "0",
-                    main: "昨日发送欠费通知",
-                    time: "",
-                    id: 13
-                },
-                {
-                    class: "new",
-                    title: "0",
-                    main: "昨日发送费用通知",
-                    time: "",
-                    id: 14
-                }
-            ],
+            inform: [],
             task1: [
                 {
                     class: "huiyi",
@@ -335,85 +209,49 @@ export default {
                 }
             ],
             tuling: "",
-            DetailShow: true
+            index: 0,
+            title:''
         };
     },
 
     mounted() {
-				// this.countWorkMethod();
-				// this.countNoteMethod()
-        
+        this.getDetail()
     },
 
     methods: {
-        toDetail() {
-            //this.DetailShow = false;
-            this.$router.push({name: 'Relationship',query:{tabPane:'3'}})
-        },
-        //快捷工作台
-        countWorkMethod() {
-            this.$ajax.get(url + "index/countWork").then(res => {
-                // console.log(res.data);
-                this.countWork = res.data;
-            });
-        },
-        //添加员工
-        addOne() {
-            var users = {};
-            users.name = this.addperson.name;
-            users.username = this.addperson.nickname;
-            users.phone = this.addperson.number;
-            users.password = this.addperson.mima;
-            users.wechat = this.addperson.wechat;
-            users.email = this.addperson.email;
-            users.orgId = this.addperson.gangwei;
-            users.remark = this.addperson.beizhu;
-            users.roleId = this.addperson.position;
-            this.$ajax.post(url + "user/insert", users).then(res => {
-                this.form = res.data;
-                // console.log(res.data);
-            });
-        },
-				//导入员工
-        //上传的方法
-         getPath(e){
-            // console.log(e.target.value)
-            
-            // this.path = e.target.value;
-            this.file = e.currentTarget.files[0].name//百度是没有name的
-            
-            // console.log(this.src)
-        },
-        submit(){
-            var formData = new FormData()
-            // console.log(this.files)
-            formData.append('path', this.file)
-            formData.append('status', this.radio)
-            this.$ajax.post(url+ 'user/excelImport',formData).then(res => {
-                // console.log(res)
-            })
-				},
-				//通知
-				countNoteMethod(){
-            this.$ajax.get(url+ 'index/countNote').then(res => {
-                                //this.inform
-                for(var i=0;i<5;i++){
-                    this.inform[i].title=res.data[i].count
+        del(index){
+            var id = this.inform[index].id
+            this.$ajax.post(url + 'notification/del/'+id).then(res => {
+                if(res.data.status === 200){
+                    this.$message({
+                        message:'删除成功',
+                        type: 'success'
+                    })
+                    this.getDetail()
+                }else if(res.status){
+                    this.$message({
+                        message:'sfesf',
+                        type: 'error'
+                    })
                 }
-								
             })
-				},
-        quit() {
-            /*删除cookie*/
-            delCookie("username");
         },
-        task() {
-            this.$ajax.get("/").then(res => {
-                this.task1 = res.data;
-            });
+        detail(index){
+            this.inform[index].status = '已读'
+            this.content = this.inform[index].content
+            this.index = index
+            this.dialogVisible = true
+            var id = this.inform[index].id
+            this.title = this.inform[index].header
+            this.$ajax.post(url + 'notification/updateStatusById/'+id)
         },
-        detail() {
-            // console.log(index);
+        getDetail(){
+            this.$ajax.post(url + 'notification/findCondition').then(res => {
+                this.inform = res.data.data
+                for(var i in this.inform){
+                    this.inform[i].status = judge(this.inform[i].status)
+                }
+            })
         }
     },
     components: {
@@ -422,6 +260,10 @@ export default {
         DetailsNotification
     }
 };
+function judge(data){
+if(data === 1)return '未读'
+if(data === 2)return '已读'
+}
 </script>
 
 <style scoped>
@@ -501,6 +343,7 @@ html {
     position: relative;
     height: 43.4vh;
     border-right: 5px solid #eeeeee;
+    overflow: auto;
 }
 .col-md-8 {
     position: relative;
@@ -577,6 +420,7 @@ html {
 }
 .time {
     float: right;
+    color: #48a3f0;
 }
 
 .mainbody {
@@ -625,5 +469,9 @@ html {
 }
 .card:hover {
     padding-left: 1px;
+}
+.content{
+    width: 90%;
+    overflow: auto;
 }
 </style>

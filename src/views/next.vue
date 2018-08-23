@@ -18,7 +18,7 @@
           </el-form-item>
           <el-form-item label="所在楼层:" prop="floor">
             <el-select v-model="ruleForm.floor" placeholder="请输入所在楼层">
-              <el-option v-for="(data, index) in buildingListlist" :key="index" :label="data.floor.floorNumber" :value="data.floor.floorNumber"></el-option>
+              <el-option v-for="(data, index) in buildingListlist" :key="index" :label="data.floorNumber" :value="data.floorNumber"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="房号:" prop="roomNumber">
@@ -46,10 +46,10 @@
             <el-input v-model="ruleForm.codes" placeholder="请输入房屋标签"></el-input>
           </el-form-item>
           <el-form-item label="房屋户型:" prop="roomType">
-            <el-input v-model="ruleForm.roomType.shi" style="width:32%">
-              <template slot="append">室</template>
+            <el-input v-model="ruleForm.roomType">
+              <!-- <template slot="append">室</template> -->
             </el-input>
-            <el-input v-model="ruleForm.roomType.ting" style="width:32%">
+            <!-- <el-input v-model="ruleForm.roomType.ting" style="width:32%">
               <template slot="append">厅</template>
             </el-input>
             <el-input v-model="ruleForm.roomType.wei" style="width:32%">
@@ -57,7 +57,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="备注:" prop="comment">
-            <el-input v-model="ruleForm.comment"></el-input>
+            <el-input v-model="ruleForm.comment"></el-input> -->
           </el-form-item>
         </el-form>
       </div>
@@ -125,11 +125,7 @@ export default {
         gardenArea: '',
         useId: '',
         codes: '',
-        roomType: {
-          shi: '',
-          ting: '',
-          wei: ''
-        },
+        roomType: '',
         comment:''
       },
       dialogImageUrl: '',
@@ -153,7 +149,7 @@ export default {
     }
   },
   mounted(){
-    // GET /building/flndAll/{page}/{pageSize}
+    
     this.$ajax.get(url + 'room/flndByBuilding/aaa').then(res => {
       this.options = res.data
     })
@@ -164,22 +160,19 @@ export default {
       // GET /room/flndById/{id}
       this.$ajax.get(url + 'room/flndById/' + this.id).then(res => {
         if(res.data.status === 200){
-          this.ruleForm = {
-            'buildings': [res.data.data.precinct,res.data.data.buildings],
-            'floor': res.data.data.floor,
-            'roomNumber': res.data.data.roomNumber,
-            'coveredArea': res.data.data.coveredArea,
-            'usableArea': res.data.data.usableArea,
-            'gardenArea': res.data.data.gardenArea,
-            'useId': res.data.data.useId,
-            'codes': res.data.data.codes,
-            'roomType': {
-              'shi': toLowerCase(res.data.data.roomType.split('室')[0]),
-              'ting': toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[0]),
-              'wei': toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[1].split('卫')[0])
-            },
-            'comment': res.data.data.comment
-          }
+            this.ruleForm.buildings= [res.data.data.precinct,res.data.data.buildings],
+            this.buildingChange()
+            this.ruleForm.floor= res.data.data.floor,
+            this.ruleForm.roomNumber= res.data.data.roomNumber,
+            this.ruleForm.coveredArea= res.data.data.coveredArea,
+            this.ruleForm.usableArea= res.data.data.usableArea,
+            this.ruleForm.gardenArea= res.data.data.gardenArea,
+            this.ruleForm.useId= res.data.data.useId,
+            this.ruleForm.codes= res.data.data.codes,
+            this.ruleForm.roomType=res.data.data.roomType
+            // this.ruleForm.roomTypeting=toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[0]),
+            // this.ruleForm.roomTypewei=toLowerCase(res.data.data.roomType.split('室')[1].split('厅')[1].split('卫')[0])
+            this.ruleForm.comment= res.data.data.comment
         }else if(res.data.status===403){
           this.$alert('您的权限不足', '权限不足', {
           confirmButtonText: '确定',
@@ -192,12 +185,14 @@ export default {
     } else if(this.$route.query.id === "qq"){
       this.name = "添加"
     }
+    
   },
   methods:{
     buildingChange () {
-      this.ruleForm.building = this.ruleForm.buildings[1]
-      this.$ajax.get(url + 'building/selectByBuilding/' + this.ruleForm.building).then(res => {
+      var building = this.ruleForm.buildings[1]
+      this.$ajax.get(url + 'building/selectByBuilding/' + building).then(res => {
         this.buildingListlist = res.data.data
+        this.ruleForm.building = this.ruleForm.buildings.join(',')
       })
     },
     // 判断输入是否为数字
@@ -253,7 +248,7 @@ export default {
           'gardenArea': this.ruleForm.gardenArea,
           'useId': this.ruleForm.useId,
           'codes': this.ruleForm.codes,
-          'roomType': toUpperCase(this.ruleForm.roomType.shi) + '室' + toUpperCase(this.ruleForm.roomType.ting) + '厅' + toUpperCase(this.ruleForm.roomType.wei) + '卫',
+          'roomType': this.ruleForm.roomType,
           'comment': this.ruleForm.comment
         }
         if (this.$route.query.id !== "qq") {

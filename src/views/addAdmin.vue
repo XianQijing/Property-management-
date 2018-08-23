@@ -55,12 +55,12 @@
               </el-input>
             </el-form-item>
             <el-form-item label="车库数：" >
-              <el-input v-model="ruleForm.garage" :disabled="edit">
+              <el-input v-model="ruleForm.garage">
                 <template slot="append">个</template>
               </el-input>
             </el-form-item>
             <el-form-item label="车位数：">
-              <el-input v-model="ruleForm.stall" :disabled="edit">
+              <el-input v-model="ruleForm.stall">
                   <template slot="append">个</template>
               </el-input>
             </el-form-item>
@@ -139,11 +139,11 @@ export default {
       // GET /precinct/flndById/{id}/{page}/{pageSize
       this.$ajax.get(url+ 'precinct/flndById/' + this.$route.query.id).then(res => {
         if(res.data.status === 200){
+          console.log(res.data.data)
           this.ruleForm = res.data.data
-          
           this.ruleForm.region = res.data.data.region.split(',').map(Number)
-          this.ruleForm.garage=res.data.data.cellParkingRelationship.garage;
-          this.ruleForm.stall=res.data.data.cellParkingRelationship.stall;
+          this.ruleForm.garage=res.data.data.garage;
+          this.ruleForm.stall=res.data.data.stall;
         }else if(res.data.status===403){
           this.$alert('您的权限不足', '权限不足', {
           confirmButtonText: '确定',

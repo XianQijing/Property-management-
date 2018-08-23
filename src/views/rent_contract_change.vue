@@ -359,9 +359,6 @@ export default {
             nextUp:true,
             nextDown: false,
             detail: {
-                owner: {
-                    address: ''
-                },
                 id: "",
                 startTime: '',
                 tenantry: '',
@@ -426,17 +423,15 @@ export default {
             },
             date: '',
             rules: {
-                owner: {
-                    namec: [
-                        { required: true, message: '请输入承租方', trigger: 'blur' },
-                    ],
-                    address: [
-                        { required: true, message: '请输入联系地址', trigger: 'blur' },
-                    ],
-                    phone:[
-                        { required: true, message: '请输入联系电话', trigger: 'blur' },
-                    ]
-                },
+                tenantry: [
+                    { required: true, message: '请输入承租方', trigger: 'blur' },
+                ],
+                site: [
+                    { required: true, message: '请输入联系地址', trigger: 'blur' },
+                ],
+                phone:[
+                    { required: true, message: '请输入联系电话', trigger: 'blur' },
+                ],
                 room:[
                     { required: true, message: '请选择关联房屋', trigger: 'change' }
                 ]
@@ -516,17 +511,17 @@ export default {
                     message: '请选择关联房屋',
                     type: 'warning'
                 });
-            }else if(this.detail.owner.namec === ''){
+            }else if(this.detail.tenantry === ''){
                 this.$message({
                     message: '请输入承租方',
                     type: 'warning'
                 });
-            }else if(this.detail.owner.address === ''){
+            }else if(this.detail.address === ''){
                 this.$message({
                     message: '请输入联系地址',
                     type: 'warning'
                 });
-            }else if(this.detail.owner.phone === ''){
+            }else if(this.detail.phone === ''){
                 this.$message({
                     message: '请输入联系电话',
                     type: 'warning'
@@ -538,7 +533,7 @@ export default {
                     "amplification":this.detail.amplification,
                     "cashDeposit":this.detail.cashDeposit,
                     "tenantry":this.detail.tenantry,
-                    "ContractualRelation.roomId":this.detail.room,
+                    "room":this.detail.room,
                     "phone":this.detail.phone,
                     "purpose": this.detail.purpose,
                     "comment":this.detail.comment,
@@ -652,7 +647,7 @@ export default {
                     "amplification":this.detail.amplification,
                     "cashDeposit":this.detail.cashDeposit,
                     "tenantry":this.detail.tenantry,
-                    "ContractualRelation.roomId":this.detail.room,
+                    "room":this.detail.room,
                     "phone":this.detail.phone,
                     "purpose": this.detail.purpose,
                     "comment":this.detail.comment,
@@ -709,7 +704,6 @@ export default {
                 this.rooms.unshift(res.data.data.id)
                 this.thisRoom.unshift(res.data.data.roomNumber.toString())
                 this.detail.room = this.rooms.join()
-                console.log(this.detail.room)
             }
             )
         },

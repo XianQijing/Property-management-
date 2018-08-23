@@ -16,9 +16,9 @@
 									<el-table-column prop="region" label="所在地区"></el-table-column>
 									<el-table-column prop="overallFloorage" label="建筑面积(平方)"></el-table-column>
 									<el-table-column prop="garage" label="车库(座)"></el-table-column>
-									<el-table-column prop="stall " label="车位(个)"></el-table-column>
+									<el-table-column prop="stall" label="车位(个)"></el-table-column>
 									<el-table-column prop="building" label="楼宇(栋)"></el-table-column>
-									<el-table-column prop="overallFloorage" label="建筑面积(平方)"></el-table-column>
+									<el-table-column prop="principal" label="负责人"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<el-dropdown>
@@ -59,7 +59,7 @@
 								<div v-if="tabIndex === '1'"><router-view></router-view></div>
 								<router-link :to="{path: '/house/addBuild'}"><button class="add">+ 添加</button></router-link>
                 <button class="delect" id="delect" @click="allDeletelou('building')">删除</button>
-                <el-select v-model="precinct" placeholder="请选择" @change="selectbuild">
+                <el-select v-model="precinct" clearable placeholder="请选择" @change="selectbuild">
                   <el-option
                     v-for="item in selectBuild"
                     :key="item.id"
@@ -125,11 +125,11 @@
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="id" label="房屋编号" width="160"></el-table-column>
 									<el-table-column prop="precincts.namec" label="小区" width="128"></el-table-column>
-									<el-table-column prop="building" label="楼宇" width="108"></el-table-column>
-									<el-table-column prop="ste" label="单元号" width="124"></el-table-column>
+									<el-table-column prop="buildinges.buil" label="楼宇" width="108"></el-table-column>
+									<!-- <el-table-column prop="ste" label="单元号" width="124"></el-table-column> -->
 									<el-table-column prop="floor" label="所在楼层" width="140"></el-table-column>
 									<el-table-column prop="roomNumber" label="房号" width="108"></el-table-column>
-									<el-table-column prop="denominatorVolume" label="收费标准个数" width="172"></el-table-column>
+									<!-- <el-table-column prop="denominatorVolume" label="收费标准个数" width="172"></el-table-column> -->
                   <el-table-column prop="coveredArea" label="建筑面积" width="140"></el-table-column>
                   <el-table-column prop="useId" label="房屋类型" width="140"></el-table-column>
                   <el-table-column prop="roomType" label="房屋户型" width="140"></el-table-column>
@@ -312,19 +312,7 @@ export default {
       pageNoRoomStandard: 1,
       pageSizeRoomStandard: 10,
       pageSizesListRoomStandard: [10, 20, 30, 40, 50],
-      tableDataRoomStandard: [
-        {
-          room:'',
-          projectAcceptance:'',
-          acceptanceStandard:'',
-          acceptanceResult:'',
-          acceptanceBy:'',
-          acceptanceState:'',
-          acceptanceTime:'',
-          remark:'',
-          id: ''
-        }
-      ],//返回的结果集合
+      tableDataRoomStandard: [],//返回的结果集合
       totalDataNumberRoomStandard: 100,//数据的总数,
 
       //
@@ -336,38 +324,14 @@ export default {
       pageNoAdmin: 1,
       pageSizeAdmin: 10,
       pageSizesListAdmin: [10, 20, 30, 40, 50],
-      admin: [{
-          namec: '',
-          region: '',
-          overallFloorage: '',
-          cellParkingRelationship:{
-            garage:'',
-            carSeatNumber:'',
-          },
-          building: '',
-          totalUsableArea: '',
-          id:10
-        },
-      ],
+      admin: [],
       totalDataNumberAdmin: 100,//数据的总数,
 
       //楼宇
       pageNoBuilding: 1,
       pageSizeBuilding: 10,
       pageSizesListBuilding: [10, 20, 30, 40, 50],
-      build: [
-        {
-          precinctName: '',
-          namec: '',
-          roomRelationship:{
-            room:'',
-          } ,
-          layer: '',
-          buildingType: '',
-          struflatFabriccture: '',
-          buildingTowards: '',
-        },
-      ],
+      build: [],
       totalDataNumberBuilding: 100,//数据的总数,
 
       //房间
@@ -415,6 +379,8 @@ export default {
     }
     this.$ajax.get(url + 'precinct/flndAll').then(res=>{
       this.selectBuild=res.data.data
+      this.selectBuild.unshift({'id':'0','namec':'全部'})
+      // console.log(this.selectBuild)
     })
   },
   methods: {
@@ -435,6 +401,7 @@ export default {
                         type: 'success'
                     })
                     this.isShow = false
+                    this.getRoom()
                 }else if(res.data.status===403){
                   this.$message({
                     message:'权限不足',
@@ -449,7 +416,11 @@ export default {
             })
         },
     selectbuild(e){
-      this.selectABuild()
+      if(this.precinct === '0'){
+        this.getBuild()
+      }else{
+        this.selectABuild()
+      }
     },
     //选择楼宇
     selectABuild(){
@@ -603,6 +574,7 @@ export default {
           'token': sessionStorage.getItem('userId'),
         }
       }).then(res => {
+        console.log(res.data.data.rows)
         this.admin = res.data.data.rows
         this.totalDataNumberAdmin = res.data.data.records
       })
