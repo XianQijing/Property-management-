@@ -143,7 +143,7 @@ export default {
       // roomStandard.acceptanceTime = this.carForm.time
       // roomStandard.remark = this.carForm.remarks
       if (this.$route.query.id == "edit") {
-        roomStandard.id = this.$route.query.id
+        this.id = this.$route.query.id
         this.$ajax.put(url + 'roomStandard/updateRoomStandard', roomStandardVO).then(res => {
           if (res.data.status === 200) {
             this.$message({

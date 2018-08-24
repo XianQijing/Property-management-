@@ -14,17 +14,19 @@
           <el-form-item label="姓名:" prop="name">
             <el-input v-model="addCustomer.name" placeholder="请输入租户姓名"></el-input>
           </el-form-item>
-          <div class="ww">
+          <el-row>
+            <el-col :span="12">
             <el-form-item label="性别:" prop="radio">
               <el-radio v-model="addCustomer.radio" label="man" >男</el-radio>
               <el-radio v-model="addCustomer.radio" label="women">女</el-radio>
             </el-form-item>
-          </div>
-          <div class="ww">
+            </el-col>
+            <el-col :span="12">
             <el-form-item label="国籍:">
               <el-input v-model="addCustomer.nationality" placeholder="请输入租户国籍"></el-input>
             </el-form-item>
-          </div>
+            </el-col>
+          </el-row>
           <el-form-item label="民族:">
             <el-input v-model="addCustomer.nation" placeholder="请输入租户民族"></el-input>
           </el-form-item>
@@ -34,44 +36,51 @@
           <el-form-item label="政治面貌:">
             <el-input v-model="addCustomer.political" placeholder="请输入租户政治面貌"></el-input>
           </el-form-item>
-          <div class="ww">
-            <el-form-item label="身份证号:">
-              <el-input v-model="addCustomer.card" placeholder="请输入租户身份证号"></el-input>
-            </el-form-item>
-          </div>
-          <div class="ww">
-            <el-form-item label="生日:">
-              <el-date-picker
-                v-model="addCustomer.birth"
-                type="date"
-                format="yyyy-MM-dd"
-                placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
-          </div>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="身份证号:">
+                <el-input v-model="addCustomer.card" placeholder="请输入租户身份证号"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="生日:">
+                <el-date-picker
+                  v-model="addCustomer.birth"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  placeholder="选择日期"
+                  style="width:100%">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-form-item label="手机号:">
-            <el-input v-model="addCustomer.phone" placeholder="请输入租户手机"></el-input>
+            <el-input v-model="addCustomer.phone" placeholder="请输入租户手机" @blur="blur"></el-input>
           </el-form-item>
-          <div class="ww">
+          <el-row>
+            <el-col :span="12">
             <el-form-item label="邮箱:">
               <el-input v-model="addCustomer.mail" placeholder="请输入租户邮箱"></el-input>
             </el-form-item>
-          </div>
-          <div class="ww">
+            </el-col>
+          <el-col :span="12">
               <el-form-item label="邮编:">
                 <el-input v-model="addCustomer.post" placeholder="请输入邮编"></el-input>
               </el-form-item>
-          </div>
-          <div class="ww">
+          </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
             <el-form-item label="紧急联系人:">
               <el-input v-model="addCustomer.contact" placeholder="请输入紧急联系人"></el-input>
             </el-form-item>
-          </div>
-          <div class="ww">
+            </el-col>
+            <el-col :span="12">
             <el-form-item label="联系电话:">
               <el-input v-model="addCustomer.contactPhone" ></el-input>
             </el-form-item>
-          </div>
+            </el-col>
+          </el-row>
           <el-form-item label="现住址:">
             <el-input v-model="addCustomer.address" ></el-input>
           </el-form-item>
@@ -142,6 +151,25 @@ export default {
     this.sa()
   },
   methods:{
+    blur (e) {
+      var reg = /^\+?[1-9][0-9]*$/
+      if (!reg.test(e.target.value)) {
+        e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入数字',
+          type: 'error'
+        })
+      }else if(e.target.value.length!==11){
+          console.log(e.target.value.length)
+          e.target.style.borderColor = 'red'
+          this.$message({
+          message: '请输入11位数字',
+          type: 'error'
+        })
+      } else {
+        e.target.style.borderColor = '#67c23a'
+      }
+    },
     submitUpload() {
       this.$refs.upload.submit();
     },
@@ -277,6 +305,7 @@ export default {
 .input {
     width: 40%;
     margin: 0 0 0 24%;
+    min-width: 500px;
 }
 .nextStep {
   border-radius: 5px;

@@ -226,8 +226,8 @@
 								<el-table :data="customerMsg" style="width: 100%">
 									<el-table-column prop="name" label="客户" ></el-table-column>
 									<el-table-column prop="roomNumber" label="关联房屋"></el-table-column>
-									<el-table-column prop="categoryValue" label="事件类型"></el-table-column>
-									<el-table-column prop="content" label="事件描述"></el-table-column>
+									<el-table-column prop="categoryValue" label="类型"></el-table-column>
+									<el-table-column prop="content" label="描述"></el-table-column>
 									<el-table-column prop="occurrenceTime" label="反馈时间"></el-table-column>
 									<el-table-column prop="handler" label="受理人"></el-table-column>
 									<el-table-column prop="process_condition" label="处理情况"></el-table-column>
@@ -360,13 +360,14 @@
                     <el-input v-model="upload.name"></el-input>
                     </el-form-item>
                     <el-form-item label="联系方式:" prop="phone">
-                    <el-input v-model="upload.phone"></el-input>
+                    <el-input v-model="upload.phone" @blur="blur"></el-input>
                     </el-form-item>
                     <el-form-item label="领取时间:" prop="time">
 						<el-date-picker
 							v-model="upload.time"
 							type="datetime"
                             format="yyyy-MM-dd HH:mm:ss"
+							value-format="yyyy-MM-dd HH:mm:ss"
 							placeholder="选择日期时间"
 							style="width:100%">
 						</el-date-picker>
@@ -376,6 +377,7 @@
 							v-model="upload.useTime"
 							type="datetime"
                             format="yyyy-MM-dd HH:mm:ss"
+							value-format="yyyy-MM-dd HH:mm:ss"
 							placeholder="选择日期时间"
 							style="width:100%">
 						</el-date-picker>
@@ -673,6 +675,25 @@
 		},
 		
 		methods: {
+			blur (e) {
+				var reg = /^\+?[1-9][0-9]*$/
+				if (!reg.test(e.target.value)) {
+					e.target.style.borderColor = 'red'
+					this.$message({
+					message: '请输入数字',
+					type: 'error'
+					})
+				}else if(e.target.value.length!==11){
+					console.log(e.target.value.length)
+					e.target.style.borderColor = 'red'
+					this.$message({
+					message: '请输入11位数字',
+					type: 'error'
+					})
+				} else {
+					e.target.style.borderColor = '#67c23a'
+				}
+				},
 			changePosition() {
 			},
 			changeOne(e){
@@ -990,7 +1011,7 @@
 				visit.remarks=this.upload.remarks;
             this.$ajax.post(url+"visit/insert",visit
             ).then((res) => {
-				if(res.status === 200){
+				if(res.data.status === 200){
                 this.form = res.data
 				this.$message({
 					message: '添加成功',
@@ -998,9 +1019,14 @@
 					});
 				this.dialogVisible = false
 				this.getinandcome()
-				}else if(res.status===403){
+				}else if(res.data.status===403){
                     this.$message({
                         message: '权限不足',
+                        type: 'error'
+					})
+				}else{
+					this.$message({
+                        message: '添加失败',
                         type: 'error'
 					})
 				}

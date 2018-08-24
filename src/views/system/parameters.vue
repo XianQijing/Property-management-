@@ -19,9 +19,9 @@
       </el-pagination>
     </div>
     <el-dialog :title="this.name"	:visible.sync="modify" width="30%">
-      <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage" v-if="msg === 1">
+      <el-form :model="addMessage" :rules="rules" ref="addMessage" label-width="100px" class="demo-addMessage" v-if="msg === 1" style="width:90%">
         <el-form-item label="短信标题:" prop="title">
-          <el-select v-model="addMessage.title" placeholder="请输入短信标题">
+          <el-select v-model="addMessage.title" placeholder="请输入短信标题" style="width:100%">
             <el-option
               v-for="item in messageTitle"
               :key="item.value"
@@ -29,8 +29,7 @@
               :value="item.value">
             </el-option>
           </el-select>
-          <br>
-          <span>仅为表示，短信不发送标题</span>
+          <span class="tixing">仅为表示，短信不发送标题</span>
         </el-form-item>
           <el-form-item label="短信内容:" prop="content">
               <el-input
@@ -401,6 +400,10 @@ function birthDay1 (data) {
 	border: 1px solid #A1CEFF;
 	background: white;
 	color: #A1CEFF;
+}
+.tixing {
+  font-size: 11px;
+  color: red
 }
 </style>
 

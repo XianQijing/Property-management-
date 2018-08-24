@@ -9,7 +9,7 @@
                 <el-input v-model="ruleForm.name" v-on:blur="transformName" placeholder="请输入客户名字"></el-input>
                 </el-form-item>
                 <el-form-item label="客户手机号：" prop="phone">
-                <el-input v-model="ruleForm.phone" v-on:blur="transform" placeholder="请输入客户手机号"></el-input>
+                <el-input v-model="ruleForm.phone" v-on:blur="transform" placeholder="请输入客户手机号" @blur="blur"></el-input>
                 </el-form-item>
                <el-form-item label="关联房屋：" prop="house">
                     <!-- <el-select :value="ruleForm.house" v-model="ruleForm.house" placeholder="请选择活动楼宇" > -->
@@ -32,7 +32,7 @@
                 </el-form-item>
                 
                 <el-form-item label="处理时间：" prop="processTime" v-show="pan" >
-                <el-date-picker
+                    <el-date-picker
                         v-model="ruleForm.processTime"
                         type="datetime"
                         format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
@@ -40,9 +40,9 @@
                         style="width:100%">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="回访时间：" prop="visitDate" v-show="show">
-                <el-date-picker
-                        v-model="ruleForm.visitDate"
+                <el-form-item label="回访时间：" prop="visitTime" v-show="show">
+                    <el-date-picker
+                        v-model="ruleForm.visitTime"
                         type="datetime"
                         format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
                         placeholder="选择日期时间"
@@ -67,27 +67,34 @@
                 
                 <el-form-item label="处理满意度：" prop="process_cacsi" >
                     <el-select v-model="ruleForm.process_cacsi" placeholder="请选择">
-                            <el-option label="非常满意" value="非常满意"></el-option>
-                            <el-option label="满意" value="满意"></el-option>
-                            <el-option label="一般" value="一般"></el-option>
-                            <el-option label="不满意" value="不满意"></el-option>
-                            <el-option label="非常不满意" value="非常不满意"></el-option>
-                        </el-select>
+                        <el-option label="非常满意" value="非常满意"></el-option>
+                        <el-option label="满意" value="满意"></el-option>
+                        <el-option label="一般" value="一般"></el-option>
+                        <el-option label="不满意" value="不满意"></el-option>
+                        <el-option label="非常不满意" value="非常不满意"></el-option>
+                    </el-select>
                 <!-- <el-input v-model="ruleForm.process_cacsi" placeholder="请输入处理满意度"></el-input> -->
                 </el-form-item>
                 <el-form-item label="回访情况：" prop="visit_condition" v-show="show">
                 <el-input v-model="ruleForm.visit_condition" placeholder="请输入回访情况"></el-input>
                 </el-form-item>
-                <el-form-item label="发生时间:" prop="eventDate">
+                <el-form-item label="发生时间:" prop="occurrenceTime">
                     <el-date-picker
-                        v-model="ruleForm.eventDate"
+                        v-model="ruleForm.occurrenceTime"
                         type="datetime"
                         format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
                         placeholder="选择日期时间">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="回访满意度：" prop="visit_cacsi" v-show="pan">
-                <el-input v-model="ruleForm.visit_cacsi" placeholder="请输入回访满意度"></el-input>
+                    <el-select v-model="ruleForm.visit_cacsi" placeholder="请选择">
+                        <el-option label="非常满意" value="非常满意"></el-option>
+                        <el-option label="满意" value="满意"></el-option>
+                        <el-option label="一般" value="一般"></el-option>
+                        <el-option label="不满意" value="不满意"></el-option>
+                        <el-option label="非常不满意" value="非常不满意"></el-option>
+                    </el-select>
+                <!-- <el-input v-model="ruleForm.visit_cacsi" placeholder="请输入回访满意度"></el-input> -->
                 </el-form-item>
                 <el-form-item label="备注：" prop="remarks" v-show="pan">
                 <el-input v-model="ruleForm.remarks" placeholder="请输入房屋类型"></el-input>
@@ -140,35 +147,35 @@ export default {
                 process_condition:'',
                 processTime: '',
                 datetime: '',
-                visitDate: '',
+                visitTime: '',
                 event_depict: '',
                 phone:'',
                 agent:'',
                 process_mode:'',
                 process_cacsi:'',
                 visit_condition:'',
-                eventDate:'',
+                occurrenceTime:'',
                 visit_cacsi:'',
                 remarks:''
             },
-            input:{
-                house:["bangongqu","Azuo","105"],
-                event_type:'12',
-                name: '121',
-                process_condition:'12',
-                processTime: '2017.6.23',
-                datetime: '',
-                visitDate: '2017.6.23',
-                event_depict: 'qwq',
-                phone:'123123111231',
-                agent:'er',
-                process_mode:'wr',
-                process_cacsi:'wq',
-                visit_condition:'qr',
-                eventDate:'2017.6.23',
-                visit_cacsi:'1241',
-                remarks:'142'
-            },
+            // input:{
+            //     house:["bangongqu","Azuo","105"],
+            //     event_type:'12',
+            //     name: '121',
+            //     process_condition:'12',
+            //     processTime: '2017.6.23',
+            //     datetime: '',
+            //     visitDate: '2017.6.23',
+            //     event_depict: 'qwq',
+            //     phone:'123123111231',
+            //     agent:'er',
+            //     process_mode:'wr',
+            //     process_cacsi:'wq',
+            //     visit_condition:'qr',
+            //     eventDate:'2017.6.23',
+            //     visit_cacsi:'1241',
+            //     remarks:'142'
+            // },
 
         
         }
@@ -188,9 +195,10 @@ export default {
             })
              this.$ajax.get(url +'feedbackMessage/findIdVO/'+this.id).then(res => {
                  if(res.status===200){
+
                     this.ruleForm = res.data;
                     this.ruleForm.event_type = res.data.category;
-                    this.ruleForm.visitDate = res.data.visitTime;
+                    // this.ruleForm.visitDate = res.data.visitTime;
                     this.ruleForm.event_depict = res.data.content;
                     this.ruleForm.agent = res.data.handler;
                     this.ruleForm.eventDate = res.data.occurrenceTime;
@@ -219,10 +227,10 @@ export default {
                 if(res.status === 200){
                     this.ruleForm = res.data;
                     this.ruleForm.event_type = res.data.category;
-                    this.ruleForm.visitDate = res.data.visitTime;
+                    // this.ruleForm.visitDate = res.data.visitTime;
                     this.ruleForm.event_depict = res.data.content;
                     this.ruleForm.agent = res.data.handler;
-                    this.ruleForm.eventDate = res.data.occurrenceTime;
+                    // this.ruleForm.eventDate = res.data.occurrenceTime;
                     this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                     this.editChange(res.data.name,res.data.phone)
                         console.log(this.id)   
@@ -308,7 +316,25 @@ export default {
         }
     },
     methods:{
-
+        blur (e) {
+            var reg = /^\+?[1-9][0-9]*$/
+            if (!reg.test(e.target.value)) {
+                e.target.style.borderColor = 'red'
+                this.$message({
+                message: '请输入数字',
+                type: 'error'
+                })
+            }else if(e.target.value.length!==11){
+                console.log(e.target.value.length)
+                e.target.style.borderColor = 'red'
+                this.$message({
+                message: '请输入11位数字',
+                type: 'error'
+                })
+            } else {
+                e.target.style.borderColor = '#67c23a'
+            }
+        },
         editChange(a,b){
             this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
                 var aa = "";
@@ -404,8 +430,8 @@ export default {
             customerEventVO.event_depict=this.ruleForm.event_depict;   //事情描述
             customerEventVO.agent=this.ruleForm.agent;   //受理人
             customerEventVO.process_mode=this.ruleForm.process_mode;   //处理方式
-            customerEventVO.eventDate=this.ruleForm.eventDate;   //发生时间
-            customerEventVO.visitDate = this.ruleForm.visitDate;  //回访时间
+            customerEventVO.eventDate=this.ruleForm.occurrenceTime;   //发生时间
+            customerEventVO.visitDate = this.ruleForm.visitTime;  //回访时间
             customerEventVO.visit_condition = this.ruleForm.visit_condition;  //回访情况
             customerEventVO.event_loss = this.ruleForm.event_loss;   //事件损失
             customerEventVO.cacsi = this.ruleForm.process_cacsi;   //处理满意度
@@ -419,12 +445,12 @@ export default {
             feedbackMessageVO.category=this.ruleForm.event_type;   //事件类型
             feedbackMessageVO.process_condition = this.ruleForm.process_condition;  //处理情况
             feedbackMessageVO.processTime = this.ruleForm.processTime;  //处理时间
-            feedbackMessageVO.visitTime = this.ruleForm.visitDate;  //回访时间
+            feedbackMessageVO.visitTime = this.ruleForm.visitTime;  //回访时间
             feedbackMessageVO.content=this.ruleForm.event_depict;   //事情描述
             feedbackMessageVO.handler=this.ruleForm.agent;   //受理人
             feedbackMessageVO.process_cacsi=this.ruleForm.process_cacsi;   //处理满意度
             feedbackMessageVO.visit_condition=this.ruleForm.visit_condition;   //回访情况
-            feedbackMessageVO.occurrenceTime=this.ruleForm.eventDate;   //反馈时间
+            feedbackMessageVO.occurrenceTime=this.ruleForm.occurrenceTime;   //反馈时间
             feedbackMessageVO.visit_cacsi=this.ruleForm.visit_cacsi;   //回访满意度
             feedbackMessageVO.remarks=this.ruleForm.remarks;   //备注
           

@@ -4,7 +4,8 @@
         <el-form :model="detail" ref="detail" label-width="130px" class="demo-detail" :rules="rules" :disabled="edit">
         <div class="tianjia">
             <div class="input">
-                
+                <el-row>
+                    <el-col :span="12">
                     <el-form-item label="姓名:" prop="name">
                         <el-input v-model="detail.name" v-on:blur="transformName" clearable></el-input>
                     </el-form-item>
@@ -23,43 +24,46 @@
 							</el-option>
                         </el-select>
                     </el-form-item>
-                     <div class="zhuangxiu">
-                        <el-form-item label="受理时间:">
-                            <el-date-picker
-							v-model="detail.receiverTime"
-							type="datetime"
-                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
-							placeholder="选择日期时间">
-                        </el-date-picker>
-                    </el-form-item>
-                    </div>
-                    <div class="zhuangxiu">
-                    <el-form-item label="开工时间:">
-                         <el-date-picker
-							v-model="detail.startTime"
-							type="datetime"
-                            format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
-							placeholder="选择日期时间">
-                        </el-date-picker>
-                    </el-form-item>
-                    </div>
+                     <el-row>
+                         <el-col :span="12">
+                            <el-form-item label="受理时间:" prop="receiverTime">
+                                <el-date-picker
+                                v-model="detail.receiverTime"
+                                type="datetime"
+                                format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                                placeholder="选择日期时间"
+                                style="width:100%">
+                                </el-date-picker>
+                            </el-form-item>
+                         </el-col>
+                         <el-col :span="12">
+                            <el-form-item label="开工时间:">
+                                <el-date-picker
+                                    v-model="detail.startTime"
+                                    type="datetime"
+                                    format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                                    placeholder="选择日期时间"
+                                    style="width:100%">
+                                </el-date-picker>
+                            </el-form-item>
+                         </el-col>
+                     </el-row>
                     
                     <el-form-item label="派工至:">
                         <el-input v-model="detail.handler" clearable></el-input>
                     </el-form-item>
-
-
-            </div>
-        </div>
-
-        <div class="tianjia">
-            <div class="input">
+                    </el-col>
+                    <el-col :span="12">
                     <el-form-item label="手机号：" prop="phone">
                         <el-input v-model="detail.phone" v-on:blur="transform" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="类型：">
+                    <el-form-item label="要求处理事项：">
+                        <el-input placeholder="请输入内容" v-model="detail.problem">
+                    </el-input>
+        </el-form-item>
+                    <!-- <el-form-item label="类型：">
                         <el-input v-model="detail.leaseType" clearable></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="报修方式:">
                         <el-select v-model="detail.way" placeholder="报修方式" style="width:100%">
                             <el-option
@@ -70,39 +74,42 @@
 							</el-option>
                         </el-select>
                     </el-form-item>
-                    <div class="zhuangxiu">
+                    <el-row>
+                        <el-col :span="12">
                         <el-form-item label="派工时间:">
                             <el-date-picker
 							v-model="detail.dispatchingTime"
 							type="datetime"
                             format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
-							placeholder="选择日期时间">
+							placeholder="选择日期时间"
+                            style="width:100%">
                         </el-date-picker>
                     </el-form-item>
-                    </div>
-                    <div class="zhuangxiu">
+                        </el-col>
+                        <el-col :span="12">
                     <el-form-item label="完工时间:">
                         <el-date-picker
 							v-model="detail.endTime"
 							type="datetime"
                             format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
-							placeholder="选择日期时间">
+							placeholder="选择日期时间"
+                            style="width:100%">
                         </el-date-picker>
                     </el-form-item>
-                    </div>
+                        </el-col>
+                    </el-row>
                     <el-form-item label="专业分类:">
                         <el-input v-model="detail.professional_list" clearable></el-input>
                     </el-form-item>
+                    </el-col>
+                </el-row>
                     
             </div>
         </div>
         <div style="width:90%">
-            <el-form-item label="要求处理事项：">
-            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="detail.problem">
-        </el-input>
-        </el-form-item>
+            
         <el-form-item label="备注：">
-            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="detail.remarks">
+            <el-input type="textarea" :rows="8" placeholder="请输入内容" v-model="detail.remarks">
         </el-input>
         </el-form-item>
         </div>
@@ -234,6 +241,9 @@ export default {
           ],
           phone: [
             { required: true, message: '请输入手机号', trigger: 'blur' },
+          ],
+          receiverTime: [
+              { required: true, message: '请选择受理时间', trigger: 'blur' }
           ]
           },
           edit:true
@@ -257,7 +267,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$route.query.id)
          this.id = this.$route.query.id
          
         
@@ -299,12 +308,25 @@ export default {
         )
     },
     methods: {
-    //   handleRemove(file, fileList) {
-    //     console.log(file, fileList);
-    //   },
-    //   handlePictureCardPreview(file) {
-    //     this.dialogImageUrl = file.url;
-    //   },
+        blur (e) {
+            var reg = /^\+?[1-9][0-9]*$/
+            if (!reg.test(e.target.value)) {
+                e.target.style.borderColor = 'red'
+                this.$message({
+                message: '请输入数字',
+                type: 'error'
+                })
+            }else if(e.target.value.length!==11){
+                console.log(e.target.value.length)
+                e.target.style.borderColor = 'red'
+                this.$message({
+                message: '请输入11位数字',
+                type: 'error'
+                })
+            } else {
+                e.target.style.borderColor = '#67c23a'
+            }
+        },
     
     editChange(a,b){
             this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {
@@ -470,22 +492,19 @@ export default {
     background: white;
     z-index: 2000;
     width: 100%;
+    height: 100%;
 }
 .tianjia{
-    display: inline-block;
     vertical-align: top;
-    width: 47%;
-}
-
-
-.next input {
-    margin-left: 20px
-}
-
-.input {
     width: 90%;
-
 }
+
+
+/* .input {
+    width: 40%;
+    margin: 0 0 0 24%;
+    min-width: 500px;
+} */
 .nextStep {
   border-radius: 5px;
   background-color: rgb(50, 168, 238);

@@ -69,12 +69,12 @@
                 :visible.sync="entry"
                 width="30%" :model="entrydata">
                 <div class="tanchuang">
-                    <el-form ref="sd" label-width="130px" class="demo-sd" size="mini">
-                    <el-form-item label="关联租户：" prop="house">
-                    <el-cascader expand-trigger="hover" :options="options" v-model="entrydata.houseType"></el-cascader>
+                    <el-form ref="sd" label-width="130px" class="demo-sd" size="mini" :model="entrydata" :rules="rule">
+                    <el-form-item label="关联租户：" prop="houseType">
+                    <el-cascader expand-trigger="hover" :options="options" v-model="entrydata.houseType" style="width:100%"></el-cascader>
                     </el-form-item>
-                        <el-form-item label="收费项目:">
-                            <el-select v-model="entrydata.payItemMeterId" placeholder="请选择费用项目类型">
+                        <el-form-item label="收费项目:" prop="payItemMeterId">
+                            <el-select v-model="entrydata.payItemMeterId" placeholder="请选择费用项目类型" style="width:100%">
                                 <el-option v-for="item in charges" :label="item.payItemMeterName" :value="item.id" :key="item.id"></el-option>
                             </el-select>
                         </el-form-item>
@@ -82,16 +82,17 @@
                             <el-date-picker
                               v-model="entrydata.paymentDay"
                               type="datetime"
-                              placeholder="选择日期">
+                              placeholder="选择日期"
+                              style="width:100%">
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item label="单价:">
                             <el-input v-model="entrydata.univalence"></el-input>
                         </el-form-item>
-                        <el-form-item label="起度:">
+                        <el-form-item label="起度:" prop="lastRead">
                             <el-input v-model="entrydata.lastRead"></el-input>
                         </el-form-item>
-                        <el-form-item label="止度:">
+                        <el-form-item label="止度:" prop="currentRead">
                             <el-input v-model="entrydata.currentRead"></el-input>
                         </el-form-item>
                         <el-form-item label="备注:">
@@ -119,6 +120,20 @@ export default {
   name: "charge",
   data() {
     return {
+      rule: {
+        payItemMeterId: [
+          { required: true, message: '请选择收费项目', trigger: 'change' },
+        ],
+        houseType: [
+          { required: true, message: '请选择租户', trigger: 'change' },
+        ],
+        lastRead: [
+          { required: true, message: '请输入起度', trigger: 'blur' },
+        ],
+        currentRead: [
+          { required: true, message: '请输入止度', trigger: 'blur' },
+        ],
+      },
       updatePayMeterId:'',
       //应收费用的id
       shouldId: "180723BR7M3G986W",

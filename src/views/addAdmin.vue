@@ -15,13 +15,13 @@
               <el-input v-model="ruleForm.site"></el-input>
             </el-form-item>
             <el-form-item label="客服电话：" prop="serviceTel">
-              <el-input v-model="ruleForm.serviceTel"></el-input>
+              <el-input v-model="ruleForm.serviceTel" @blur="blur"></el-input>
             </el-form-item>
             <el-form-item label="负责人：" prop="principal">
               <el-input v-model="ruleForm.principal"></el-input>
             </el-form-item>
             <el-form-item label="负责人电话：" prop="principalNumber">
-              <el-input v-model="ruleForm.principalNumber"></el-input>
+              <el-input v-model="ruleForm.principalNumber" @blur="blur"></el-input>
             </el-form-item>
             <el-form-item label="楼宇数量" >
               <el-input v-model="ruleForm.building" :disabled="edit"></el-input>
@@ -166,17 +166,25 @@ export default {
           type: 'success'
         });
       },
-    
-    // submit () {
-    //   this.$ajax.post(url + '',{
-    //     param:{},
-    //     data:{
-    //         '':this.ruleForm.namec
-    //     }
-    //   }).then(res => {
-    //     goBack()
-    //   })
-    // },
+      blur (e) {
+      var reg = /^\+?[1-9][0-9]*$/
+      if (!reg.test(e.target.value)) {
+        e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入数字',
+          type: 'error'
+        })
+      }else if(e.target.value.length!==11){
+          console.log(e.target.value.length)
+          e.target.style.borderColor = 'red'
+          this.$message({
+          message: '请输入11位数字',
+          type: 'error'
+        })
+      } else {
+        e.target.style.borderColor = '#67c23a'
+      }
+    },
     save(){
       var precinctVO = {
         'namec':this.ruleForm.namec, 

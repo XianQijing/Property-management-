@@ -147,7 +147,7 @@
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname"></el-input>
             </el-form-item>
               <el-form-item label="手机号:">
-                <el-input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number"></el-input>
+                <el-input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number" @blur="blur"></el-input>
             </el-form-item>
               <el-form-item label="密码:">
                 <el-input id="mima" placeholder="新增密码" v-model="addpersonEdit.mima" type="password"></el-input>
@@ -236,7 +236,7 @@
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
             </el-form-item>
             <el-form-item label="手机号:" prop="number">
-                <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number"></el-input>
+                <el-input id="phone" placeholder="请输入手机号" @blur="blur" v-model="addperson.number"></el-input>
             </el-form-item>
             <el-form-item label="密码:" prop="mima">
                 <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
@@ -283,7 +283,7 @@
                       <el-input id="business" placeholder="请输入职务" v-model="btype.business"></el-input>
           </el-form-item>
           <el-form-item label="联系电话:" prop="phone">
-                      <el-input id="phone" placeholder="请输入联系电话" v-model="btype.phone"></el-input>
+                      <el-input id="phone"  @blur="blur" placeholder="请输入联系电话" v-model="btype.phone"></el-input>
           </el-form-item>
           <el-form-item label="地址:">
                       <el-input id="address" placeholder="请输入地址" v-model="btype.address"></el-input>
@@ -321,7 +321,7 @@
                             </li>
                             <li>
                                 <label for="phone">联系电话:</label>
-                                <input id="phone" placeholder="请输入联系电话" v-model="addbtypeEdit.phone">
+                                <input id="phone" @blur="blur" placeholder="请输入联系电话" v-model="addbtypeEdit.phone">
                             </li>
                             <li>
                                 <label for="address">地址:</label>
@@ -488,7 +488,9 @@ export default {
                     { required: true, message: '请输入单位名称', trigger: 'blur' }
                 ],
                 phone: [
-                    { required: true, message: '请输入手机号', trigger: 'blur' }
+                    { required: true, message: '请输入手机号', trigger: 'blur' },
+                    // { type: 'number', message: '必须为数字值'},
+                    // { min: '11',max: '11', message: '长度在11个字符', trigger: 'blur' }
                 ],
                 linkman: [
                     { required: true, message: '请输入姓名', trigger: 'blur' }
@@ -560,6 +562,25 @@ mounted(){
     // this.getRoleData()
 },
 methods:{
+    blur (e) {
+      var reg = /^\+?[1-9][0-9]*$/
+      if (!reg.test(e.target.value)) {
+        e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入数字',
+          type: 'error'
+        })
+      }else if(e.target.value.length!==11){
+          console.log(e.target.value.length)
+          e.target.style.borderColor = 'red'
+          this.$message({
+          message: '请输入11位数字',
+          type: 'error'
+        })
+      } else {
+        e.target.style.borderColor = '#67c23a'
+      }
+    },
   deleteRoleAll () {
       if (this.multipleSelection.length > 0) {
         var idArr = []
