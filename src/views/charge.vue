@@ -29,7 +29,7 @@
                               </div>
                           </div>                 
                         </el-tab-pane>
-                        <el-tab-pane label="抄表录入" v-if="this.role.indexOf('rubik:meterReading:list')!==-1">
+                        <el-tab-pane label="抄表录入" v-if="this.role.indexOf('rubik:meterReading:list')!==-1" name="second">
                           <div class="main">
                             <button class="add" @click="luru('','','add')">录入数据</button>
                             <el-table :data="meter" style="width: 100%">

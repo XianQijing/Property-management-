@@ -5,13 +5,13 @@
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="今日停车" name="first" v-if="this.role.indexOf('rubik:todayCar:list')!==-1">
+            <el-tab-pane label="今日停车" name="first" :lazy="lazy" v-if="this.role.indexOf('rubik:todayCar:list')!==-1">
               <today/>
             </el-tab-pane>
-            <el-tab-pane label="历史停车" name="second" v-if="this.role.indexOf('rubik:historyCar:list')!==-1">
+            <el-tab-pane label="历史停车" name="second" :lazy="lazy" v-if="this.role.indexOf('rubik:historyCar:list')!==-1">
               <history/>
             </el-tab-pane>
-            <el-tab-pane label="包月" name="third" v-if="this.role.indexOf('rubik:moon:list')!==-1">
+            <el-tab-pane label="包月" name="third" :lazy="lazy" v-if="this.role.indexOf('rubik:moon:list')!==-1">
               <month/>
             </el-tab-pane>
 					</el-tabs>
@@ -33,7 +33,8 @@ export default {
   data(){
     return{
       activeName: 'first',
-      role:[]
+      role:[],
+      lazy: true
     }
   },
   mounted(){

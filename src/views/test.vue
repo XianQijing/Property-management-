@@ -69,14 +69,13 @@ export default {
       options: [],
       roomId:'',
       id:'',
-      applyId: ''
+      applyId: '',
     }
   },
   mounted(){
     if (this.$route.query.id == "edit") {
       this.id = this.$route.query.roomId
       this.name = "编辑"
-      // GET /roomStandard/flndById/{id}
       this.$ajax.get(url + 'roomStandard/flndById/' + this.id).then(res => {
         if(res.data.status === 200){
         this.carForm.region = res.data.data.room.split(',')
@@ -97,11 +96,11 @@ export default {
         }
       })
     } else if(this.$route.query.id === "add") {
-      this.id = this.$route.query.id
+      // this.id = this.$route.query.id
       this.name = "添加"
     }else{
       this.name = "添加"
-      this.id = this.$route.query.id
+      // this.id = this.$route.query.id
       this.roomId = this.$route.params.id
       this.applyId = this.$route.params.zhuangxiu
       this.$ajax.get(url + 'room/selectById/' + this.roomId).then(res => {
@@ -132,18 +131,10 @@ export default {
         'acceptanceState': this.carForm.Explain,
         'acceptanceTime': this.carForm.time,
         'remark': this.carForm.remarks,
-        'applyId': this.applyId
+        'applyId': this.applyId,
+        'id':this.id
       }
-      // roomStandard.room = this.carForm.region[0] + ',' + this.carForm.region[1] + ',' +this.carForm.region[2]
-      // roomStandard.projectAcceptance = this.carForm.project
-      // roomStandard.acceptanceStandard = this.carForm.standard
-      // roomStandard.acceptanceResult = status2(this.carForm.Result)
-      // roomStandard.acceptanceBy = this.carForm.person
-      // roomStandard.acceptanceState = this.carForm.Explain
-      // roomStandard.acceptanceTime = this.carForm.time
-      // roomStandard.remark = this.carForm.remarks
       if (this.$route.query.id == "edit") {
-        this.id = this.$route.query.id
         this.$ajax.put(url + 'roomStandard/updateRoomStandard', roomStandardVO).then(res => {
           if (res.data.status === 200) {
             this.$message({

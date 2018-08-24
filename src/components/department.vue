@@ -259,6 +259,11 @@
             <el-form-item label="备注:">
                 <el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
             </el-form-item>
+            <!-- <el-form-item label="备注:">
+                <div class="fileWrap">
+                    <input type="file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" @change="upImg"/>
+                </div>
+            </el-form-item> -->
         </el-form>
         <div class="footer">
           <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="cancel">取消</button>
@@ -523,7 +528,8 @@ export default {
             first: true,
             second: true,
             third: true,
-            fourth: true
+            fourth: true,
+            img:''
         }
     },
     components:{
@@ -964,11 +970,6 @@ methods:{
                     cancelButtonText: '取消',
                     type: 'warning'
                     })
-            }else{
-                this.$message({
-                    type: 'error',
-                    message: res.data
-                });
             }
         })
     },
@@ -1083,6 +1084,7 @@ methods:{
                     type:'success'
                 })
                 this.zhiyuan = false;
+                this.staff()
             }else if(res.data.status===403){
                     this.$message({
                         message: '权限不足',
@@ -1284,6 +1286,8 @@ methods:{
                         message: '成功',
                         type: 'success'
                     })
+                    this.staff()
+                    this.isShow = false
                 }else if(res.data.status===403){
                     this.$message({
                         message: '权限不足',

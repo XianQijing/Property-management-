@@ -5,13 +5,13 @@
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="收费参数" name="first" v-if="this.role.indexOf('rubik:charge:list')!==-1">
+            <el-tab-pane label="收费参数" name="first" :lazy="lazy" v-if="this.role.indexOf('rubik:charge:list')!==-1">
               <message/>
             </el-tab-pane>
-            <el-tab-pane label="短信模板" name="second" v-if="this.role.indexOf('rubik:addMessageTemplate:list')!==-1">
+            <el-tab-pane label="短信模板" name="second" :lazy="lazy"  v-if="this.role.indexOf('rubik:addMessageTemplate:list')!==-1">
               <parameters/>
             </el-tab-pane>
-            <el-tab-pane label="权限管理" name="third" v-if="this.role.indexOf('rubik:permission:list')!==-1">
+            <el-tab-pane label="权限管理" name="third" :lazy="lazy"  v-if="this.role.indexOf('rubik:permission:list')!==-1">
               <role/>
             </el-tab-pane>
 					</el-tabs>
@@ -33,7 +33,8 @@ export default {
   data(){
     return{
       activeName: 'first',
-      role: []
+      role: [],
+      lazy:true
     }
   },
   mounted(){
@@ -42,6 +43,10 @@ export default {
         this.role.push(v.permission)
       })
     })
+    if(this.$route.query.tabPane)
+    {this.activeName = this.$route.query.tabPane}else{
+      this.activeName ='first'
+    }
   },
   methods: {
     handleClick(tab, event) {

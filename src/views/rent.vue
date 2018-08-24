@@ -148,7 +148,7 @@
 								<div v-if="indexTable === '4'">
 									<router-view class="test"></router-view>
                                 </div>
-								<router-link :to="{name: 'Test',query:{id:'add'}}"><button class="add">+ 添加</button></router-link>
+								<!-- <router-link :to="{name: 'Test',query:{id:'add'}}"><button class="add">+ 添加</button></router-link> -->
 								<el-table :data="tableDataRoomStandard" style="width: 100%" >
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="room" label="关联房屋" width="180"></el-table-column>
@@ -167,8 +167,9 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
-													<span @click="jumpHouse(scope.$index, tableDataRoomStandard)"><el-dropdown-item>查看 / 验收</el-dropdown-item></span>
-													<span @click="houseDelete(scope.$index, tableDataRoomStandard)"><el-dropdown-item>删除</el-dropdown-item></span>
+													<span @click="jumpHouse(scope.$index, tableDataRoomStandard)" v-if="scope.row.acceptancePhase === 0"><el-dropdown-item>验收</el-dropdown-item></span>
+													<span @click="check(scope.$index, tableDataRoomStandard)"><el-dropdown-item>重新验收</el-dropdown-item></span>
+                                                    <span @click="houseDelete(scope.$index, tableDataRoomStandard)"><el-dropdown-item>删除</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>
@@ -226,7 +227,9 @@
                         <el-date-picker
                             v-model="upload.visitTime"
                             type="datetime"
-                            placeholder="选择日期时间" style="width:100%">
+                            placeholder="选择日期时间" style="width:100%"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            format="yyyy-MM-dd HH:mm:ss">
                         </el-date-picker>
                     <!-- <el-input v-model="upload.visitTime" :placeholder="shuru.visitTime"></el-input> -->
                     </el-form-item>
@@ -415,11 +418,27 @@ export default {
        
     },
     methods:{
+        check(index,row){
+            this.$ajax.put(url + 'roomStandard/anew/'+this.tableDataRoomStandard[index].id).then(res=>{
+                if(res.data.status === 200){
+                    this.$message({
+                        message:'成功',
+                        type:'success'
+                    })
+                    this.getRoomStandard()
+                }else{
+                    this.$message({
+                        message: res.data.msg,
+                        type:'error'
+                    })
+                }
+            })
+        },
         Result: function(row, column) {
-            return row.authority == '0' ? "合格" : "不合格";
+            return row.acceptanceResult == '0' ? "不合格" : "合格";
         },
         Result1: function(row, column) {
-            return row.authority == '0' ? "已验收" : "未验收";
+            return row.acceptancePhase == '0' ? "未验收" : "已验收";
         },
         blur (e) {
 				var reg = /^\+?[1-9][0-9]*$/
@@ -430,7 +449,6 @@ export default {
 					type: 'error'
 					})
 				}else if(e.target.value.length!==11){
-					console.log(e.target.value.length)
 					e.target.style.borderColor = 'red'
 					this.$message({
 					message: '请输入11位数字',
@@ -490,7 +508,7 @@ export default {
             }
         },
         formatRole: function(row, column) {
-            return row.authority == '0' ? "可租" : "已租";
+            return row.renting == '0' ? "可租" : "已租";
         },
 
         changePosition() {
@@ -650,6 +668,7 @@ export default {
             prospectiveCustomer.priceNeed=this.upload.priceNeed
             prospectiveCustomer.visitingWay=this.upload.visitingWay
             prospectiveCustomer.comment=this.upload.comment
+            prospectiveCustomer.visitTime = this.upload.visitTime
             if(this.msg === "tianjia"){
                 this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',prospectiveCustomer).then(res => {
                     if(res.data.status === 200){
@@ -657,6 +676,7 @@ export default {
                         message: '添加成功',
                         type: 'success'
                     });
+                    this.flndAllBusiness()
                     this.dialogVisible = false
                     }else if(res.data.status===403){
                         this.$message({
@@ -680,7 +700,8 @@ export default {
                         "priceNeed":this.upload.priceNeed,
                         "visitingWay":this.upload.visitingWay,
                         "id":this.id,
-                        "comment":this.upload.comment
+                        "comment":this.upload.comment,
+                        'visitTime':this.upload.visitTime
                     }
                 ).then(res => {
                     if(res.data.status === 200){
@@ -688,6 +709,7 @@ export default {
                         message: '更新成功',
                         type: 'success'
                     });
+                    this.flndAllBusiness()
                     this.dialogVisible = false
                     }else if(res.data.status===403){
                         this.$message({
@@ -770,7 +792,6 @@ export default {
         //导出-个人
         out(index,rows) {
             let id = this.tableDataContract[index].id
-            console.log(this.tableDataContract[index])
             // let roomId = this.tableDataContract[index]
             this.$ajax.get(url + 'contract/turnDown/'+id,{
                 
@@ -831,6 +852,7 @@ export default {
                     message: '删除成功',
                     type: 'success'
                 })
+                this.getRoomStandard()
                 }else{
                         this.$message({
                         message: res.data.msg,

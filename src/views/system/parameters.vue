@@ -7,7 +7,7 @@
       <el-table-column prop="content" label="内容" width="400"></el-table-column>
       <el-table-column prop="signature" label="签名" width="350"></el-table-column>
       <el-table-column width="201">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.titleName!='费用通知'&&scope.row.titleName!='欠费通知'">
           <button class="operation" @click="noteTemplateEdit(scope.$index,template)">编辑</button>
           <button class="operation" @click="noteTemplateDelete(scope.$index, template)">删除</button>
         </template>
@@ -47,7 +47,7 @@
       <el-form :model="textMessage" ref="textMessage" label-width="100px" class="demo-textMessage" v-if="msg === 2">
         <el-form-item label="短信模板:">
           <el-select v-model="textMessage.templateId" placeholder="请选择短信模板">
-            <el-tooltip placement="right" v-for="items in template" :key="items.id" effect="light">
+            <el-tooltip placement="right" v-for="items in templates" :key="items.id" effect="light">
               <div slot="content">{{items.content}}</div>
               <el-option
                 :label="items.titleName"
@@ -139,7 +139,8 @@ export default {
         {label: "活动通知",value: 34},
         {label: "短信调查",value: 37}
       ],
-      options: []
+      options: [],
+      templates: []
     }
   },
   mounted(){
@@ -168,6 +169,7 @@ export default {
         this.name = '添加短信模板'
         this.addMessage = {}
       }else{
+        this.getTemplate()
         this.textMessage.title = '',
         this.textMessage.textarea = ''
         this.name = '短信群发'
@@ -185,7 +187,7 @@ export default {
       if(that.id){
         this.name = '编辑短信模板'
         this.$ajax.get(url+'noteTemplate/findId/' + this.id).then(res => {
-          if(res.data.status === 200){
+          if(res.status === 200){
           this.addMessage.title = birthDay(res.data.title);
           this.addMessage.content = res.data.content;
           this.addMessage.sign = res.data.signature;
@@ -248,7 +250,22 @@ export default {
         if(res.status===200){
           this.template = res.data.data.rows
           this.totalDataNumbertemplate = res.data.data.records
-        }else if(res.status===403){
+        }else if(res.data.status===403){
+                this.$alert('您的权限不足', '权限不足', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+                    this.news = false
+                  }
+                });
+              }
+      })
+    },
+    getTemplate() {
+      this.$ajax.get(url+'noteTemplate/findByExcept/'+this.pageNoTemplate+'/'+this.pageSizeTemplate).then((res) => {
+        if(res.status===200){
+          this.templates = res.data.data.rows
+          this.totalDataNumbertemplate = res.data.data.records
+        }else if(res.data.status===403){
                 this.$alert('您的权限不足', '权限不足', {
                   confirmButtonText: '确定',
                   callback: action => {

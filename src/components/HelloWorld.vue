@@ -46,7 +46,7 @@
 												<router-link :to="{name: 'Department',query:{tabPane:'second'}}">导入员工</router-link>
 											</span>
 											<span>
-												<router-link :to="{name: 'Department',query:{tabPane:'first'}}"><a>权限管理</a></router-link>
+												<router-link :to="{path: '/system',query:{tabPane:'third'}}"><a>权限管理</a></router-link>
 											</span>
 										</div>
 									</div>
@@ -73,7 +73,7 @@
 										</p>
 										<div class="link">
 											<span style="color:white">添加员工</span> 
-											<router-link :to="{name: 'House',query:{tabPane:'fourth'}}"><span>添加车位</span></router-link>
+											<router-link :to="{path: '/parking'}"><span>车位管理</span></router-link>
 											<!-- <router-link :to="{name: 'Daoru'}"><span>导入车位</span></router-link> -->
 										</div>
 									</div>
@@ -87,8 +87,8 @@
 										<div class="link">
 											<span style="color:white">添加员工</span> 
 											<!-- <span @click="task1">短信群发</span> -->
-											<router-link :to="{name: 'Relationship',query:{tabPane:'third'}}"><span>模板设计</span></router-link>
-											<router-link :to="{name: 'Relationship',query:{tabPane:'fourth'}}"><span>短信记录</span></router-link>
+											<router-link :to="{name: 'System',query:{tabPane:'second'}}"><span>模板设计</span></router-link>
+											<router-link :to="{name: 'Relationship',query:{tabPane:'third'}}"><span>短信记录</span></router-link>
 										</div>
 									</div>
 								</div>
