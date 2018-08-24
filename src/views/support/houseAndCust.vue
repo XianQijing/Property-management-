@@ -303,7 +303,7 @@ export default {
           orient: 'vertical',
         },
         tooltip : {
-          show: false,
+          show: true,
           trigger: 'axis',
           axisPointer : {
             type : 'shadow'
@@ -367,7 +367,7 @@ export default {
           orient: 'vertical',
         },
         tooltip : {
-          show: false,
+          show: true,
           trigger: 'axis',
           axisPointer : {
             type : 'shadow'
@@ -445,7 +445,7 @@ export default {
           orient: 'vertical',
         },
         tooltip : {
-          show: false,
+          show: true,
           trigger: 'axis',
           axisPointer : {
             type : 'shadow'

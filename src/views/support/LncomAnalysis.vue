@@ -219,7 +219,11 @@ export default {
           if (data === 'utilities') {
             this.chartsTwo()
           } else {
-            this.charts()
+            if (data === 'incomeAnalysis') {
+              this.charts('收入分析')
+            } else {
+              this.charts('应收费用情况表')
+            }
           }
         } else {
            if (val === 'exportExcelAll') {
@@ -284,7 +288,7 @@ export default {
       this.tableTab(this.num2, '更改日期')
     },
     // 收入分析
-    charts () {
+    charts (str) {
       let arr = []
       this.Data.forEach(v => {
         if (v.total) {
@@ -297,7 +301,7 @@ export default {
       myChart.setOption({
         color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
         title : {
-          text: '收入分析',
+          text: str,
           // subtext: '纯属虚构',
           x:'center'
         },
