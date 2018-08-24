@@ -99,15 +99,6 @@
 								</div>
 								<button class="add" @click="houseSource('0','0','add')">新增合同</button>
                                 <button class="add" @click="isShow = true">导入合同</button>
-<<<<<<< HEAD
-                                <!-- <button class="add">导出合同</button> -->
-                                 <div class="fenye" style="display:inline-block">
-                                     <!-- <button><img src=".././assets/down.png" style="width:16px;">模板</button> -->
-                                 </div>
-								<el-table :data="tableDataContract" style="width: 100%">
-									<el-table-column prop="tenantry" label="客户姓名" width="180"></el-table-column>
-									<el-table-column prop="phone" label="联系方式" width="180"></el-table-column>
-=======
                                 <button class="delect" id="delect" @click="stop">终止合同</button>
                                  <!-- <div class="fenye" style="display:inline-block">
                                      <button><img src=".././assets/down.png" style="width:16px;">模板</button>
@@ -116,7 +107,6 @@
                                     <el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="tenantry" label="客户姓名"></el-table-column>
 									<el-table-column prop="phone" label="联系方式"></el-table-column>
->>>>>>> XianQijing
 									<el-table-column prop="rooms.useId" label="租用类型"></el-table-column>
                                     <el-table-column prop="namec" label="楼宇"></el-table-column>
                                     <el-table-column prop="rooms.roomNumber" label="房号"></el-table-column>
