@@ -236,7 +236,7 @@
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
             </el-form-item>
             <el-form-item label="手机号:" prop="number">
-                <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number" @blur="blur"  @change="findPhone"></el-input>
+                <el-input id="phone" placeholder="请输入手机号" @blur="blur" v-model="addperson.number"></el-input>
             </el-form-item>
             <el-form-item label="密码:" prop="mima">
                 <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
@@ -261,7 +261,7 @@
             </el-form-item>
         </el-form>
         <div class="footer">
-          <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="add = !add">取消</button>
+          <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="cancel">取消</button>
         </div>
       </el-dialog>
       <!--外部联系人-->
@@ -562,16 +562,19 @@ mounted(){
     this.getRoleData()
 },
 methods:{
-    findPhone(){
-        var phone = this.addperson.number
-        this.$ajax.post(url + 'user/findPhone?phone='+phone).then(res => {
-            if(res.data.data){
-                this.$message({
-                    message:'已有手机号',
-                    type:'error'
-                })
-            }
-        })
+    cancel () {
+        this.add = !this.add
+        this.addperson = {
+            name:'',
+            number:'',
+            wechat:'',
+            nickname:'',
+            post:'',
+            position:'',
+            beizhu:'',
+            gangwei: [],
+            mima:''
+        }
     },
     blur (e) {
       var reg = /^\+?[1-9][0-9]*$/
