@@ -1,8 +1,8 @@
 <template>
   <div class="navHeader">
     <div class="search">
-      <span>当前物业</span>
-      <select>
+      <span>当前物业:</span>
+      <select class="sec">
         <option>卢比克摩方</option>
       </select>
 
@@ -101,5 +101,10 @@ input{
   background-position: 95% 50%;
   border: 1px solid #eeeeee;
   border-radius: 6px;
+}
+.sec {
+  border-radius: 13px;
+  width: 151px;
+  border: 1px solid #32a8ee;
 }
 </style>

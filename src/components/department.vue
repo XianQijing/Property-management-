@@ -236,11 +236,7 @@
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
             </el-form-item>
             <el-form-item label="手机号:" prop="number">
-<<<<<<< HEAD
-                <el-input id="phone" placeholder="请输入手机号" v-model="addperson.number" @change="findPhone"></el-input>
-=======
                 <el-input id="phone" placeholder="请输入手机号" @blur="blur" v-model="addperson.number"></el-input>
->>>>>>> XianQijing
             </el-form-item>
             <el-form-item label="密码:" prop="mima">
                 <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
@@ -263,6 +259,11 @@
             <el-form-item label="备注:">
                 <el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
             </el-form-item>
+            <!-- <el-form-item label="备注:">
+                <div class="fileWrap">
+                    <input type="file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" @change="upImg"/>
+                </div>
+            </el-form-item> -->
         </el-form>
         <div class="footer">
           <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="add = !add">取消</button>
@@ -527,7 +528,8 @@ export default {
             first: true,
             second: true,
             third: true,
-            fourth: true
+            fourth: true,
+            img:''
         }
     },
     components:{
@@ -566,18 +568,9 @@ mounted(){
     this.getRoleData()
 },
 methods:{
-<<<<<<< HEAD
-    findPhone(){
-        var phone = this.addperson.number
-        this.$ajax.post(url + 'user/findPhone?phone='+phone).then(res => {
-            if(res.data.data){
-                this.$message({
-                    message:'已有手机号',
-                    type:'error'
-                })
-            }
-        })
-=======
+    upImg(e) {
+        console.log(e.currentTarget.files[0])
+      },
     blur (e) {
       var reg = /^\+?[1-9][0-9]*$/
       if (!reg.test(e.target.value)) {
@@ -596,7 +589,6 @@ methods:{
       } else {
         e.target.style.borderColor = '#67c23a'
       }
->>>>>>> XianQijing
     },
   deleteRoleAll () {
       if (this.multipleSelection.length > 0) {
@@ -967,11 +959,6 @@ methods:{
                     cancelButtonText: '取消',
                     type: 'warning'
                     })
-            }else{
-                this.$message({
-                    type: 'error',
-                    message: res.data
-                });
             }
         })
     },
@@ -1086,6 +1073,7 @@ methods:{
                     type:'success'
                 })
                 this.zhiyuan = false;
+                this.staff()
             }else if(res.data.status===403){
                     this.$message({
                         message: '权限不足',
@@ -1287,6 +1275,8 @@ methods:{
                         message: '成功',
                         type: 'success'
                     })
+                    this.staff()
+                    this.isShow = false
                 }else if(res.data.status===403){
                     this.$message({
                         message: '权限不足',

@@ -353,7 +353,8 @@ export default {
       precinct: '',
       selectBuild:[],
       role:[],
-      radio:''
+      radio:'',
+      name:''
     }
   },
   mounted() {
