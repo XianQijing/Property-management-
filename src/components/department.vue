@@ -261,7 +261,7 @@
             </el-form-item>
         </el-form>
         <div class="footer">
-          <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="add = !add">取消</button>
+          <button class="confirm" @click="addOne">确定</button><button class="cancel" @click="cancel">取消</button>
         </div>
       </el-dialog>
       <!--外部联系人-->
@@ -562,6 +562,20 @@ mounted(){
     this.getRoleData()
 },
 methods:{
+    cancel () {
+        this.add = !this.add
+        this.addperson = {
+            name:'',
+            number:'',
+            wechat:'',
+            nickname:'',
+            post:'',
+            position:'',
+            beizhu:'',
+            gangwei: [],
+            mima:''
+        }
+    },
     blur (e) {
       var reg = /^\+?[1-9][0-9]*$/
       if (!reg.test(e.target.value)) {

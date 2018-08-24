@@ -339,7 +339,7 @@ export default {
         yAxis : [
           {
             type : 'value',
-            name: '空置率(%)',
+            // name: '空置率(%)',
             nameGap: 30,
             splitLine: {
               lineStyle: {
@@ -403,7 +403,7 @@ export default {
         yAxis : [
           {
             type : 'value',
-            name: '空置率(%)',
+            // name: '空置率(%)',
             nameGap: 30,
             splitLine: {
               lineStyle: {
@@ -414,7 +414,7 @@ export default {
         ],
         series : [
           {
-            name:'空置房屋',
+            name:'空置数量',
             type:'bar',
             stack: '总量',
             barWidth: '20px',
@@ -426,7 +426,7 @@ export default {
             }
           },
           {
-            name:'空置',
+            name:'出租数量',
             type:'bar',
             stack: '总量',
             barWidth: '20px',
