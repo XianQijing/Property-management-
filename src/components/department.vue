@@ -236,7 +236,7 @@
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
             </el-form-item>
             <el-form-item label="手机号:" prop="number">
-                <el-input id="phone" placeholder="请输入手机号" @blur="blur" v-model="addperson.number"></el-input>
+                <el-input id="phone" placeholder="请输入手机号" @change="findPhone" @blur="blur" v-model="addperson.number"></el-input>
             </el-form-item>
             <el-form-item label="密码:" prop="mima">
                 <el-input id="mima" placeholder="新增密码" v-model="addperson.mima"></el-input>
@@ -582,6 +582,20 @@ methods:{
             mima:''
         }
     },
+     findPhone(){
+        var phone = this.addperson.number
+        this.$ajax.post(url + 'user/findPhone?phone='+phone).then(res => {
+            if(res.data.data){
+                this.$message({
+                    message:'已有手机号',
+                    type:'error'
+                })
+            }
+        })
+    },
+    upImg(e) {
+        console.log(e.currentTarget.files[0])
+      },
     blur (e) {
       var reg = /^\+?[1-9][0-9]*$/
       if (!reg.test(e.target.value)) {
