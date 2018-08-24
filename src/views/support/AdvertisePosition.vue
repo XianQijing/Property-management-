@@ -186,7 +186,7 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          if (res.data && res.data.series.length > 0) {
+          if (res.data.series) {
             this.chartsTwo()
           } else {
             this.$message({
