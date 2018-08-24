@@ -21,17 +21,17 @@
     <!-- 弹窗 -->
     <el-dialog :title="this.name" :visible.sync="news" width="500px">
       <div class="tanchuang">
-        <el-form ref="shuru" label-width="130px" class="demo-shuru" size="mini" :model="add">
-          <el-form-item label="名称:">
+        <el-form ref="shuru" label-width="130px" class="demo-shuru" size="mini" :model="add" :rules="rule">
+          <el-form-item label="名称:" prop="name">
           <el-input v-model="add.name" placeholder="请输入名称"></el-input>
           </el-form-item>
-          <el-form-item label="费用项目类型:">
-            <el-select v-model="add.payItemId" placeholder="请选择费用项目类型">
+          <el-form-item label="费用项目类型:" prop="payItemId">
+            <el-select v-model="add.payItemId" placeholder="请选择费用项目类型" style="width:100%">
               <el-option v-for="item in payItems" :label="item.name" :value="item.id" :key="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="仪表种类:">
-            <el-select v-model="add.meterId" placeholder="请选择费用项目类型">
+          <el-form-item label="仪表种类:" prop="meterId">
+            <el-select v-model="add.meterId" placeholder="请选择费用项目类型" style="width:100%">
               <el-option v-for="item in types" :label="item.name" :value="item.id" :key="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -76,7 +76,18 @@ export default {
         payItems: [],
         msg:'',
         types: [],
-        name:'新建'
+        name:'新建',
+        rule: {
+          name: [
+            { required: true, message: '请填写名称', trigger: 'blur' }
+          ],
+          payItemId: [
+            { required: true, message: '请选择费用项目类型', trigger: 'change' }
+          ],
+          meterId: [
+            { required: true, message: '请选择仪表种类', trigger: 'change' }
+          ],
+        }
       }
     },
     mounted(){

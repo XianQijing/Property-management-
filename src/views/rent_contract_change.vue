@@ -83,7 +83,7 @@
                     <el-col :span="12">
                     <el-form-item label="联系电话：" prop="phone">
                         
-                        <el-input v-model="detail.phone" placeholder="请输入联系电话"></el-input>
+                        <el-input v-model="detail.phone" placeholder="请输入联系电话" @blur="blur"></el-input>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -505,6 +505,25 @@ export default {
         }
     },
     methods: {
+        blur (e) {
+				var reg = /^\+?[1-9][0-9]*$/
+				if (!reg.test(e.target.value)) {
+					e.target.style.borderColor = 'red'
+					this.$message({
+					message: '请输入数字',
+					type: 'error'
+					})
+				}else if(e.target.value.length!==11){
+					console.log(e.target.value.length)
+					e.target.style.borderColor = 'red'
+					this.$message({
+					message: '请输入11位数字',
+					type: 'error'
+					})
+				} else {
+					e.target.style.borderColor = '#67c23a'
+				}
+				},
         sumbit1(){
             if(this.detail.rooms.codes === ''){
                 this.$message({

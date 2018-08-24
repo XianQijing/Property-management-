@@ -99,6 +99,7 @@
 								</div>
 								<button class="add" @click="houseSource('0','0','add')">新增合同</button>
                                 <button class="add" @click="isShow = true">导入合同</button>
+<<<<<<< HEAD
                                 <!-- <button class="add">导出合同</button> -->
                                  <div class="fenye" style="display:inline-block">
                                      <!-- <button><img src=".././assets/down.png" style="width:16px;">模板</button> -->
@@ -106,11 +107,22 @@
 								<el-table :data="tableDataContract" style="width: 100%">
 									<el-table-column prop="tenantry" label="客户姓名" width="180"></el-table-column>
 									<el-table-column prop="phone" label="联系方式" width="180"></el-table-column>
+=======
+                                <button class="delect" id="delect" @click="stop">终止合同</button>
+                                 <!-- <div class="fenye" style="display:inline-block">
+                                     <button><img src=".././assets/down.png" style="width:16px;">模板</button>
+                                 </div> -->
+								<el-table :data="tableDataContract" style="width: 100%" @selection-change="handleSelectionChange">
+                                    <el-table-column type="selection" width="55"></el-table-column>
+									<el-table-column prop="tenantry" label="客户姓名"></el-table-column>
+									<el-table-column prop="phone" label="联系方式"></el-table-column>
+>>>>>>> XianQijing
 									<el-table-column prop="rooms.useId" label="租用类型"></el-table-column>
-                                    <el-table-column prop="namec" label="楼宇" width="180"></el-table-column>
+                                    <el-table-column prop="namec" label="楼宇"></el-table-column>
                                     <el-table-column prop="rooms.roomNumber" label="房号"></el-table-column>
                                     <el-table-column prop="rooms.coveredArea" label="建筑面积(平方米)"></el-table-column>
 									<el-table-column prop="rooms.useId" label="用途"></el-table-column>
+                                    <el-table-column prop="rooms.furnitureId" label="验收状态"></el-table-column>
 									<el-table-column prop="deliveryTime" label="交付时间"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
@@ -152,8 +164,9 @@
 									<el-table-column prop="room" label="关联房屋" width="180"></el-table-column>
 									<el-table-column prop="projectAcceptance" label="验收项目" width="180"></el-table-column>
 									<el-table-column prop="acceptanceStandard" label="验收标准" width="180"></el-table-column>
-									<el-table-column prop="acceptanceResult" label="验收结果"></el-table-column>
+									<el-table-column prop="acceptanceResult" label="验收结果" :formatter="Result"></el-table-column>
 									<el-table-column prop="acceptanceBy" label="验收人"></el-table-column>
+                                    <el-table-column prop="acceptancePhase" label="验收状态" :formatter="Result1"></el-table-column>
 									<el-table-column prop="acceptanceState" label="验收说明"></el-table-column>
 									<el-table-column prop="acceptanceTime" label="验收日期"></el-table-column>
 									<el-table-column prop="remark" label="备注"></el-table-column>
@@ -164,7 +177,7 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span>
 												<el-dropdown-menu slot="dropdown">
-													<span @click="jumpHouse(scope.$index, tableDataRoomStandard)"><el-dropdown-item>查看 / 编辑</el-dropdown-item></span>
+													<span @click="jumpHouse(scope.$index, tableDataRoomStandard)"><el-dropdown-item>查看 / 验收</el-dropdown-item></span>
 													<span @click="houseDelete(scope.$index, tableDataRoomStandard)"><el-dropdown-item>删除</el-dropdown-item></span>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -195,13 +208,13 @@
                 :visible.sync="dialogVisible"
                 width="30%">
 
-                <el-form :model="shuru" ref="shuru" :rules="rules" label-width="130px" class="demo-shuru" size="mini" :disabled="edit" style="margin:0 7% 0 0">
+                <el-form :model="shuru" ref="shuru" :rules="rule" label-width="130px" class="demo-shuru" size="mini" :disabled="edit" style="margin:0 7% 0 0">
                 
                     <el-form-item label="客户姓名:" prop="namec">
                     <el-input v-model="upload.namec" placeholder="请输入客户姓名"></el-input>
                     </el-form-item>
                     <el-form-item label="联系方式:" prop="phone">
-                    <el-input v-model="upload.phone" :placeholder="shuru.phone"></el-input>
+                    <el-input v-model="upload.phone" :placeholder="shuru.phone" @blur="blur"></el-input>
                     </el-form-item>
                     <el-form-item label="客户类别:">
                     <el-input v-model="upload.clientType" :placeholder="shuru.clientType"></el-input>
@@ -368,7 +381,7 @@ export default {
                 seeHouse: '0',
                 comment:''
             },
-            rules:{
+            rule:{
                 namec: [
                         { required: true, message: '请输入客户姓名', trigger: 'blur' },
                     ],
@@ -394,6 +407,7 @@ export default {
                 }
             ],//返回的结果集合
             totalDataNumberRoomStandard: 100,//数据的总数,
+            stopId:''
         }
     },
     
@@ -411,6 +425,80 @@ export default {
        
     },
     methods:{
+        Result: function(row, column) {
+            return row.authority == '0' ? "合格" : "不合格";
+        },
+        Result1: function(row, column) {
+            return row.authority == '0' ? "已验收" : "未验收";
+        },
+        blur (e) {
+				var reg = /^\+?[1-9][0-9]*$/
+				if (!reg.test(e.target.value)) {
+					e.target.style.borderColor = 'red'
+					this.$message({
+					message: '请输入数字',
+					type: 'error'
+					})
+				}else if(e.target.value.length!==11){
+					console.log(e.target.value.length)
+					e.target.style.borderColor = 'red'
+					this.$message({
+					message: '请输入11位数字',
+					type: 'error'
+					})
+				} else {
+					e.target.style.borderColor = '#67c23a'
+				}
+				},
+        stop(){
+            
+            var arr = []
+            this.multipleSelection.forEach(v => {
+                arr.push(v.id)
+            })
+            this.stopId = arr.join(',')
+            this.$confirm('此操作将终止合同, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$ajax.put(url+'/contract/terminationContract/'+this.stopId).then(res => {
+                    if (res.data.status === 200) {
+                        this.$message({
+                            message: '终止成功',
+                            type: 'success'
+                        })
+                        this.flndAllContract()
+                    }else if(res.data.status === 403){
+                        this.$message({
+                            message: '权限不足',
+                            type: 'error'
+                        })
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'error'
+                        })
+                    }
+                })
+            }).catch(() => {
+            this.$message({
+                type: 'info',
+                message: '已取消操作'
+            });          
+            });
+        
+        },
+        handleSelectionChange (val) {
+      //val 为选中数据的集合
+      this.multipleSelection = val
+        if (val.length > 0) {
+                // 楼宇批量删除按钮
+                document.getElementById('delect').style.cssText = 'border:1px solid red;background:red;color:white'
+            } else {
+                document.getElementById('delect').style.cssText = 'border:1px solid rgb(217, 217, 217);background:rgb(245, 245, 245);color:rgb(212, 212, 212)'
+            }
+        },
         formatRole: function(row, column) {
             return row.authority == '0' ? "可租" : "已租";
         },
@@ -464,7 +552,6 @@ export default {
                 if(res.data.status === 200){  
                 this.tableDataContract=res.data.data.rows
                 this.totalDataNumberContract=res.data.data.records
-                console.log(this.tableDataContract)
                 }
                 
             })
@@ -907,6 +994,21 @@ function rentHouse(data){
 .put form {
     display: inline-block;
 }
+.delect {
+		font-size: 14px;
+		font-family: "Microsoft YaHei";
+		color: rgb(212, 212, 212);
+		border-width: 1px;
+		border-color: rgb(217, 217, 217);
+		border-style: solid;
+		border-radius: 5px;
+		background-color: rgb(245, 245, 245);
+		width: 100px;
+		height: 31px;
+        margin-right: 10px;
+        margin-top: 10px;
+		margin-bottom: 20px;
+	}
 .yuangong {
     margin: 18px 5px;
     font-size: 16px;
