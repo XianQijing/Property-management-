@@ -196,14 +196,14 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          // if (data === 'emergency') {
-            this.chartsTwo()
-          // } else if (data === 'repairRanking') {
-          //   this.charts('次数')
-          // } else {
-          //   // this.charts('满意度（100%）')
-          //   this.chartsTwo()
-          // }
+          if (data === 'emergency') {
+            this.chartsTwo('事件统计')
+          } else if (data === 'repairRanking') {
+            this.chartsTwo('服务派工')
+          } else {
+            // this.charts('满意度（100%）')
+            this.chartsTwo('反馈满意度')
+          }
         } else {
           if (val === 'exportExcelAll') {
             this.tableExportData = res.data.dataTable
@@ -267,7 +267,7 @@ export default {
       this.tableTab(this.num2, '更改日期')
     },
     // 事件统计
-    chartsTwo () {
+    chartsTwo (data) {
       let arr = []
       this.Data.forEach(v => {
         arr.push(v.name)
@@ -276,7 +276,7 @@ export default {
       myChart.setOption({
         color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
         title : {
-          text: '事件统计',
+          text: data,
           x:'center'
         },
         tooltip : {
@@ -332,7 +332,7 @@ export default {
           // orient: 'vertical',
         },
         tooltip : {
-          show: false,
+          show: true,
           trigger: 'axis',
           axisPointer : {
             type : 'shadow'
