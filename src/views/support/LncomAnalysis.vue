@@ -217,12 +217,25 @@ export default {
         if (this.isChartShow === true) {
           this.Data = res.data
           if (data === 'utilities') {
-            this.chartsTwo()
+            if (!res.data.series) {
+              this.$message({
+                type: 'info',
+                message: '没有数据'
+              })
+            } else {
+              this.chartsTwo()
+            }
           } else {
             if (data === 'incomeAnalysis') {
-              this.charts('收入分析')
+              this.charts('收入分析') 
             } else {
               this.charts('应收费用情况表')
+            }
+            if (res.data.length <= 0) {
+              this.$message({
+                type: 'error',
+                message: '没有数据'
+              })
             }
           }
         } else {
@@ -354,9 +367,9 @@ export default {
         var oneOfSeries = {
           name: v.name,
           type: 'line',
-          stack: '总量',
+          // stack: '总量',
           symbol: 'circle',
-          symbolSize: '16',
+          symbolSize: '14',
           itemStyle: {
             borderWidth: 2,
             borderColor: '#fff',
@@ -364,7 +377,7 @@ export default {
             shadowBlur: 4
           },
           lineStyle: {
-            width: 4
+            width: 3
           },
           data: v.data
         }
@@ -419,6 +432,59 @@ export default {
           }
         },
         series: seriesArr
+        // series: [
+        //   {
+        //     name: '1',
+        //     type: 'line',
+        //     stack: '总量',
+        //     symbol: 'circle',
+        //     symbolSize: '16',
+        //     itemStyle: {
+        //       borderWidth: 2,
+        //       borderColor: '#fff',
+        //       shadowColor: 'rgba(0, 0, 0, 0.3)',
+        //       shadowBlur: 4
+        //     },
+        //     lineStyle: {
+        //       width: 4
+        //     },
+        //     data: [1,2,3,4,5,6,7,8]
+        //   },
+        //   {
+        //     name: '2',
+        //     type: 'line',
+        //     stack: '总量',
+        //     symbol: 'circle',
+        //     symbolSize: '16',
+        //     itemStyle: {
+        //       borderWidth: 2,
+        //       borderColor: '#fff',
+        //       shadowColor: 'rgba(0, 0, 0, 0.3)',
+        //       shadowBlur: 4
+        //     },
+        //     lineStyle: {
+        //       width: 4
+        //     },
+        //     data: [4,5,6,7,8,9,7,8]
+        //   },
+        //   {
+        //     name: '3',
+        //     type: 'line',
+        //     stack: '总量',
+        //     symbol: 'circle',
+        //     symbolSize: '16',
+        //     itemStyle: {
+        //       borderWidth: 2,
+        //       borderColor: '#fff',
+        //       shadowColor: 'rgba(0, 0, 0, 0.3)',
+        //       shadowBlur: 4
+        //     },
+        //     lineStyle: {
+        //       width: 4
+        //     },
+        //     data: [2,3,4,4,5,6,7,8]
+        //   }
+        // ]
       }, true)
     },
   },

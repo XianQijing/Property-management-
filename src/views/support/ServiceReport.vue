@@ -204,6 +204,12 @@ export default {
             // this.charts('满意度（100%）')
             this.chartsTwo('反馈满意度')
           }
+          if (res.data.length <= 0) {
+            this.$message({
+              type: 'error',
+              message: '没有数据'
+            })
+          }
         } else {
           if (val === 'exportExcelAll') {
             this.tableExportData = res.data.dataTable

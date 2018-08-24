@@ -215,6 +215,12 @@ export default {
           } else {
             this.charts()
           }
+          if (res.data.x.length <= 0) {
+            this.$message({
+              type: 'error',
+              message: '没有数据'
+            })
+          }
         } else {
           if (val === 'exportExcelAll') {
             this.tableExportData = res.data.dataTable

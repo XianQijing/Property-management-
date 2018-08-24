@@ -186,7 +186,14 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          this.chartsTwo()
+          if (res.data && res.data.series.length > 0) {
+            this.chartsTwo()
+          } else {
+            this.$message({
+              type: 'info',
+              message: '没有数据'
+            })
+          }
         } else {
            if (val === 'exportExcelAll') {
             this.tableExportData = res.data.dataTable
@@ -240,7 +247,6 @@ export default {
         var oneOfSeries = {
           name: v.name,
           type: 'line',
-          stack: '总量',
           symbol: 'circle',
           symbolSize: '16',
           itemStyle: {
