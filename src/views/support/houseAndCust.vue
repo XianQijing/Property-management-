@@ -55,10 +55,8 @@
 
         <el-table v-if="num2 === 4" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="namec" label="楼宇名"></el-table-column>
-          <el-table-column prop="count" label="小计"></el-table-column>
-          <el-table-column prop="nul" label="空置数量"></el-table-column>
-          <el-table-column prop="rent" label="出租数量"></el-table-column>
+          <el-table-column prop="owner_name" label="用户名"></el-table-column>
+          <el-table-column prop="days" label="帐龄(天数)"></el-table-column>
         </el-table>
 
         <div class="fenye">
@@ -142,7 +140,7 @@ export default {
         var str = '<tr><td>楼宇名</td><td>空置数量</td><td>小计</td><td>出租数量</td></tr>'
       }
       if (this.num2 === 4) {
-        var str = '<tr><td>楼宇名</td><td>空置数量</td><td>小计</td><td>出租数量</td></tr>'
+        var str = '<tr><td>帐龄(天数)</td><td>用户名</td></tr>'
       }
       //循环遍历，每行加入tr标签，每个单元格加td标签
       for(let i = 0 ; i < this.tableExportData.length; i++ ){
@@ -168,6 +166,7 @@ export default {
         </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
         </head><body><table>${ str }</table></body></html>`
       // 下载模板
+      // console.log(template)
       window.location.href = uri + base64(template)
     },
     getDate (data) {

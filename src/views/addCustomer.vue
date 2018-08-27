@@ -269,6 +269,8 @@ export default {
                     this.ruleForm = res.data;
                     this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                     this.ruleForm.process_cacsi = res.data.cacsi;
+                    this.ruleForm.occurrenceTime = res.data.eventDate;
+                    this.ruleForm.visitTime = res.data.visitDate;
                     this.editChange(res.data.name,res.data.phone)
                 }else if(res.status===403){
                     this.$alert('您的权限不足', '权限不足', {
@@ -292,6 +294,8 @@ export default {
                 this.ruleForm = res.data;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.ruleForm.process_cacsi = res.data.cacsi;
+                this.ruleForm.occurrenceTime = res.data.eventDate;
+                this.ruleForm.visitTime = res.data.visitDate;
                 this.editChange(res.data.name,res.data.phone)
                }else if(res.status===403){
                     this.$alert('您的权限不足', '权限不足', {
@@ -437,7 +441,7 @@ export default {
             customerEventVO.cacsi = this.ruleForm.process_cacsi;   //处理满意度
 
 
-            var feedbackMessageVO={};
+            var feedbackMessageVO={};   //客户反馈信息的数据
             feedbackMessageVO.name=this.ruleForm.name;           //租户姓名
             feedbackMessageVO.phone=this.ruleForm.phone;   //电话号码
             var arr=this.ruleForm.house;

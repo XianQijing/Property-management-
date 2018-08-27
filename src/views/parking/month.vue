@@ -103,6 +103,8 @@ export default {
           this.more1Id.push(v.id)
           this.more2Id = this.more1Id.join(',')
         })
+        var str = '<tr><td>车牌号</td><td>入库时间</td><td>出库时间</td><td>应收费用</td><td>实收费用</td><td>是否包月</td></tr>'
+
         for(let i = 0 ; i < this.multipleSelection.length; i++ ){
         str += '<tr>'
         for(let item in this.multipleSelection[i]){

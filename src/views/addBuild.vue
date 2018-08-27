@@ -170,6 +170,7 @@ export default {
           'precinct': this.ruleForm.precinct,
           'namec': this.ruleForm.namec,
           'room': this.ruleForm.room,
+          'layer': this.ruleForm.layer,
           'buildingType': this.ruleForm.buildingType,
           'flatFabric': this.ruleForm.flatFabric,
           'buildingTowards': this.ruleForm.buildingTowards,
