@@ -74,7 +74,29 @@ export default {
         this.multipleSelection.forEach(v => {
           this.moreId.push(v.id)
         })
-        window.location.href = url + 'pack/exportTheDayPackRecord?ids='+this.moreId
+         for(let i = 0 ; i < this.multipleSelection.length; i++ ){
+        str += '<tr>'
+        for(let item in this.multipleSelection[i]){
+          //增加\t为了不让表格显示科学计数法或者其他格式
+          // console.log(this.tableExportData[i][item])
+          str += `<td>${ this.multipleSelection[i][item] + '\t'}</td>`;    
+        }
+        }
+        str += '</tr>'
+        var worksheet = 'Sheet1'
+        var uri = 'data:application/vnd.ms-excel;base64,'
+
+        // 下载的表格模板数据
+        var template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+        xmlns:x="urn:schemas-microsoft-com:office:excel" 
+        xmlns="http://www.w3.org/TR/REC-html40">
+        <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+          <x:Name>${ worksheet }</x:Name>
+          <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+          </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+          </head><body><table>${ str }</table></body></html>`
+        // 下载模板
+        window.location.href = uri + base64(template)
       }else{
         this.$message({
           message: '请至少选择一条信息',
@@ -93,6 +115,7 @@ export default {
     }
   }
 }
+function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
 </script>
 
 <style>

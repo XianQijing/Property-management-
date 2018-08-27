@@ -16,7 +16,7 @@
             {{name}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <span @click="signOut"><el-dropdown-item>登出</el-dropdown-item></span>
+            <span @click="signOut"><el-dropdown-item>{{this.status}}</el-dropdown-item></span>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -32,6 +32,7 @@ export default {
   data () {
     return {
       name: '请登录',
+      status: '登出'
     }
   },
 	mounted(){
@@ -44,10 +45,11 @@ export default {
         this.name = res.data.data.username
       }else{
         this.$router.push('/login')
+        this.status = '登录'
       }
     })
     if(!sessionStorage.getItem("userId")){
-    console.log(sessionStorage.getItem("userId"))
+    // console.log(sessionStorage.getItem("userId"))
     this.$router.push('/login')
     }else{
 

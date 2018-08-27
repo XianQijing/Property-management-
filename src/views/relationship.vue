@@ -185,8 +185,8 @@
 								<el-table :data="customer" style="width: 100%">
 									<el-table-column prop="name" label="客户" ></el-table-column>
 									<el-table-column prop="phone" label="手机号"></el-table-column>
-									<el-table-column prop="eventTypeValue" label="事件类型"></el-table-column>
-									<el-table-column prop="event_depict" label="事件描述"></el-table-column>
+									<el-table-column prop="eventTypeValue" label="类型"></el-table-column>
+									<el-table-column prop="event_depict" label="描述"></el-table-column>
 									<el-table-column prop="event_loss" label="事件损失"></el-table-column>
 									<el-table-column prop="agent" label="经办人"></el-table-column>
 									<el-table-column prop="visit_condition" label="回访情况"></el-table-column>

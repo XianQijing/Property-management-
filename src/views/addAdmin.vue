@@ -24,43 +24,43 @@
               <el-input v-model="ruleForm.principalNumber" @blur="blur"></el-input>
             </el-form-item>
             <el-form-item label="楼宇数量" >
-              <el-input v-model="ruleForm.building" :disabled="edit"></el-input>
+              <el-input v-model="ruleForm.building" @blur="isStudentNo" :disabled="edit"></el-input>
             </el-form-item>
           </div>
           <div id="fenkai1">
             <el-form-item label="占地面积：">
-              <el-input v-model="ruleForm.totalArea">
+              <el-input @blur="isStudentNo" v-model="ruleForm.totalArea">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             <el-form-item label="建筑面积：">
-              <el-input v-model="ruleForm.overallFloorage">
+              <el-input @blur="isStudentNo" v-model="ruleForm.overallFloorage">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             <el-form-item label="公共区域面积：">
-              <el-input v-model="ruleForm.publicArea">
+              <el-input @blur="isStudentNo" v-model="ruleForm.publicArea">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             <el-form-item label="绿化面积：">
-              <el-input v-model="ruleForm.greenArea">
+              <el-input @blur="isStudentNo" v-model="ruleForm.greenArea">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             
             <el-form-item label="设计车位面积：">
-              <el-input v-model="ruleForm.parkingArea">
+              <el-input @blur="isStudentNo" v-model="ruleForm.parkingArea">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             <el-form-item label="车库数：" >
-              <el-input v-model="ruleForm.garage">
+              <el-input @blur="isStudentNo" v-model="ruleForm.garage">
                 <template slot="append">个</template>
               </el-input>
             </el-form-item>
             <el-form-item label="车位数：">
-              <el-input v-model="ruleForm.stall">
+              <el-input @blur="isStudentNo" v-model="ruleForm.stall">
                   <template slot="append">个</template>
               </el-input>
             </el-form-item>
@@ -125,21 +125,17 @@ export default {
   },
   mounted () {
     this.$ajax.get(url + 'china/selectArea').then(res => {
-      // console.log(res)
       this.options = res.data.data
     })
     this.id = this.$route.query.id
-    // console.log(this.$route.query.msg)
     if (this.$route.query.msg === "tianjia") {
       this.ruleForm = {}
       this.edit = false
     } else if (this.$route.query.msg === "bianji") {
-      // console.log(this.id)
       this.edit = true
       // GET /precinct/flndById/{id}/{page}/{pageSize
       this.$ajax.get(url+ 'precinct/flndById/' + this.$route.query.id).then(res => {
         if(res.data.status === 200){
-          console.log(res.data.data)
           this.ruleForm = res.data.data
           this.ruleForm.region = res.data.data.region.split(',').map(Number)
           this.ruleForm.garage=res.data.data.garage;
@@ -156,6 +152,18 @@ export default {
     }
   },
   methods: {
+    isStudentNo(e) {
+      var reg=/^\d+$/;   /*定义验证表达式*/
+      if(!reg.test(e.target.value)){
+        e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入数字',
+          type: 'error'
+        })
+      }else{
+        e.target.style.borderColor = '#67c23a'
+      }    /*进行验证*/
+    },
     handleChange () {},
     goBack () {
       window.history.back()
@@ -175,7 +183,6 @@ export default {
           type: 'error'
         })
       }else if(e.target.value.length!==11){
-          console.log(e.target.value.length)
           e.target.style.borderColor = 'red'
           this.$message({
           message: '请输入11位数字',
@@ -202,7 +209,6 @@ export default {
         'garage':this.ruleForm.garage, 
         'stall':this.ruleForm.stall, 
       }
-      // console.log(precinctVO)
       if (this.$route.query.msg === "tianjia") {
         this.$ajax.post(url + 'precinct/insertPrecinct',precinctVO).then(res => {
           if (res.data.status === 200) {
@@ -221,7 +227,6 @@ export default {
         // PUT /precinct/updatePrecinct
         precinctVO.id = this.$route.query.id
         this.$ajax.put(url + 'precinct/updatePrecinct', precinctVO).then(res => {
-          // console.log(res.data)
           if (res.data.status === 200) {
             // this.fullscreenLoading = false
             this.open2()
