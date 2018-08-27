@@ -77,7 +77,7 @@
             </el-col>
             <el-col :span="12">
             <el-form-item label="联系电话:">
-              <el-input v-model="addCustomer.contactPhone" ></el-input>
+              <el-input v-model="addCustomer.contactPhone" @blur="blur"></el-input>
             </el-form-item>
             </el-col>
           </el-row>
@@ -160,7 +160,6 @@ export default {
           type: 'error'
         })
       }else if(e.target.value.length!==11){
-          console.log(e.target.value.length)
           e.target.style.borderColor = 'red'
           this.$message({
           message: '请输入11位数字',
@@ -174,25 +173,18 @@ export default {
       this.$refs.upload.submit();
     },
     handleRemove(file, fileList) {
-      // console.log(file, fileList);
     },
     handlePreview(file) {
-      // console.log(file);
     },
     sa(){
-      // console.log(this.roomid)
       this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
-          // console.log(res.data)
-          // console.log(res)
           this.options=res.data;
-          console.log(this.options)
           
       })
       this.$ajax.get(url + 'owner/get/'+this.id+'/'+this.roomid+'/'+this.contractId).then(res => {
         if(res.status===200){
           this.addCustomer.name=res.data.name;
           this.addCustomer.selectRoom=[res.data.precinct, res.data.buildings, res.data.roomid];
-          console.log(this.addCustomer.selectRoom)
           this.addCustomer.radio=res.data.sexs;
           this.addCustomer.nationality=res.data.nationality;
           this.addCustomer.nation=res.data.nation;
@@ -240,7 +232,6 @@ export default {
       }else{
         owner.sex = 0;
       }
-      // console.log(this.addCustomer.radio);
       owner.nationality=this.addCustomer.nationality;
       owner.nation=this.addCustomer.nation;
       owner.nativeAddress=this.addCustomer.place;
@@ -256,7 +247,6 @@ export default {
       owner.fax=this.addCustomer.fax;
       this.$ajax.put(url+"owner/update",owner).then((res) => {
         this.form = res.data
-        console.log(this.form);
                   if(res.data.status === 200){
                          this.$message({
                                 message: '修改数据成功',
@@ -279,11 +269,9 @@ export default {
     },
     // 上传成功后的回调
   // uploadSuccess (response, file, fileList) {
-  //   console.log('上传文件', response)
   // },
   // 上传错误
   // uploadError (response, file, fileList) {
-  //   console.log('上传失败，请重试！')
   // },
   }
 }

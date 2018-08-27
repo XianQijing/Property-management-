@@ -146,6 +146,19 @@
             <el-form-item label="昵称:">
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname"></el-input>
             </el-form-item>
+            <el-form-item label="头像:" prop="nickname">
+                <el-popover
+                    placement="right"
+                    width="400"
+                    trigger="click">
+                    <div v-for="(img,index) in image" :key="index"  class="imgHeader" @click="upImg(index)">
+                        <img :src="img.img">
+                    </div>
+                <img :src="addpersonEdit.img" id="img" slot="reference">
+                <!-- <el-button slot="reference">click 激活</el-button> -->
+                </el-popover>
+                <!-- <input type="file" accept="image/*" @change="upImg" id="file"> -->
+            </el-form-item>
               <el-form-item label="手机号:">
                 <el-input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number" @blur="blur"></el-input>
             </el-form-item>
@@ -156,7 +169,7 @@
                 <el-input id="wechart" placeholder="请输入微信号" v-model="addpersonEdit.wechat"></el-input>
             </el-form-item>
               <el-form-item label="邮箱:">
-                <el-input id="email" placeholder="请输入邮箱" v-model="addpersonEdit.email"></el-input>
+                <el-input id="email" @blur="IsEmail" placeholder="请输入邮箱" v-model="addpersonEdit.email"></el-input>
             </el-form-item>
               <el-form-item label="角色:">
                 <el-select  id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
@@ -235,6 +248,19 @@
             <el-form-item label="昵称:" prop="nickname">
                 <el-input id="nickname" placeholder="请输入昵称" v-model="addperson.nickname"></el-input>
             </el-form-item>
+            <el-form-item label="头像:" prop="nickname">
+                <el-popover
+                    placement="right"
+                    width="400"
+                    trigger="click">
+                    <div v-for="(imgs,index) in image" :key="index"  class="imgHeader" @click="addimg(index)">
+                        <img :src="imgs.img">
+                    </div>
+                <img :src="addperson.img" id="img1" slot="reference">
+                <!-- <el-button slot="reference">click 激活</el-button> -->
+                </el-popover>
+                <!-- <input type="file" accept="image/*" @change="upImg" id="file"> -->
+            </el-form-item>
             <el-form-item label="手机号:" prop="number">
                 <el-input id="phone" placeholder="请输入手机号" @change="findPhone" @blur="blur" v-model="addperson.number"></el-input>
             </el-form-item>
@@ -245,7 +271,7 @@
                 <el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
             </el-form-item>
             <el-form-item label="邮箱:" prop="email">
-                <el-input id="email" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
+                <el-input id="email" @blur="IsEmail" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
             </el-form-item>
             <el-form-item label="角色:" prop="position">
                 <el-select  id="position" placeholder="请输入职位" v-model="addperson.position">
@@ -334,7 +360,7 @@
                             </li>
                             <li>
                                 <label for="remark">备注:</label>
-                                <input id="remark" placeholder="请输入邮箱" v-model="addbtypeEdit.remark">
+                                <input id="remark" placeholder="请输入备注" v-model="addbtypeEdit.remark">
                             </li>
                         </ul>
                 <span slot="footer" class="dialog-footer">
@@ -453,7 +479,8 @@ export default {
                 position:'',
                 beizhu:'',
                 gangwei: [],
-                mima:''
+                mima:'',
+                img: '/static/elephant.png'
             },
             addpersonEdit:{
                 name:'',
@@ -465,7 +492,8 @@ export default {
                 beizhu:'',
                 // gangwei: ['1'],
                 gangwei: [],
-                mima:''
+                mima:'',
+                img: '/static/elephant.png'
             },
             addbtypeEdit:{
                 btypeName:'',
@@ -529,7 +557,15 @@ export default {
             second: true,
             third: true,
             fourth: true,
-            img:''
+            image: [
+                {img:'/static/elephant.png'},
+                {img:'/static/crab.png'},
+                {img:'/static/1.png'},
+                {img:'/static/octopus.png'},
+                {img:'/static/parrot.png'},
+                {img:'/static/seals.png'},
+                {img:'/static/starfish.png'},
+            ]
         }
     },
     components:{
@@ -579,8 +615,14 @@ methods:{
             }
         })
     },
-    upImg(e) {
-        console.log(e.currentTarget.files[0])
+    openFile(){
+        // this.$el.querySelector('#file').click()
+    },
+    upImg(index) {
+        this.addpersonEdit.img = this.image[index].img
+      },
+      addimg(index){
+          this.addperson.img = this.image[index].img
       },
     blur (e) {
       var reg = /^\+?[1-9][0-9]*$/
@@ -600,6 +642,19 @@ methods:{
       } else {
         e.target.style.borderColor = '#67c23a'
       }
+    },
+     IsEmail(e) {
+        var reg=/^\w+@[a-zA-Z0-9]{2,10}(?:\.[a-z]{2,4}){1,3}$/;
+        if(!reg.test(e.target.value)){
+            e.target.style.borderColor = 'red'
+            this.$message({
+                message: '请输入正确的邮箱格式',
+                type: 'error'
+            })
+        }else{
+            e.target.style.borderColor = '#67c23a'
+        }
+        // return reg.test(str);
     },
   deleteRoleAll () {
       if (this.multipleSelection.length > 0) {
@@ -833,6 +888,7 @@ methods:{
             that.id = this.tableData[index].id;
             this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
                 if(res.data.status === 200){
+                    // console.log(res.data.data)
                     this.addpersonEdit.name = res.data.data.name;
                     this.addpersonEdit.nickname = res.data.data.username;
                     this.addpersonEdit.number = res.data.data.phone;
@@ -843,6 +899,7 @@ methods:{
                     // this.addpersonEdit.gangwei = res.data.data.orgId;
                     this.addpersonEdit.beizhu = res.data.data.remark;
                     this.zhiyuan = true;
+                    this.addpersonEdit.img = res.data.data.photo
                     this.$ajax.get(url + 'company/findById?id='+res.data.data.orgId).then(res=> {
                         let arr = res.data.data[0].parentIds.split(',').slice(1)
                         arr.push(res.data.data[0].value)
@@ -989,6 +1046,7 @@ methods:{
         users.password=this.addperson.mima;
         users.wechat=this.addperson.wechat;
         users.email=this.addperson.email;
+        users.photo = this.addperson.img;
         if (Array.isArray(this.addperson.gangwei)) {
           users.orgId = this.addperson.gangwei[this.addperson.gangwei.length - 1]
         } else {
@@ -1074,6 +1132,7 @@ methods:{
           users.orgId=this.addpersonEdit.gangwei
         }
         users.password=this.addpersonEdit.mima;
+        users.photo = this.addpersonEdit.img
         users.remark=this.addpersonEdit.beizhu;
         users.roleId=this.addpersonEdit.position;
         this.$ajax.post(url+"user/update",users).then((res) => {
@@ -1168,16 +1227,16 @@ methods:{
     append(data) {
         const newChild = { id: id++, label: 'testtest', children: [] };
         if (!data.children) {
-          this.$set(data, 'children', []);
-        }
-        data.children.push(newChild);
-      },
-      remove(node, data) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
-      },
+            this.$set(data, 'children', []);
+            }
+            data.children.push(newChild);
+        },
+        remove(node, data) {
+            const parent = node.parent;
+            const children = parent.data.children || parent.data;
+            const index = children.findIndex(d => d.id === data.id);
+            children.splice(index, 1);
+        },
       
       //删除
             handleSelectionChange (val) {
@@ -1311,6 +1370,7 @@ function zero (data) {
   if (data > 10) return data
   if (data < 10) return '0' + data
 }
+
 </script>
 
 <style scoped>
@@ -1622,5 +1682,23 @@ span {
 }
 .chuang{
     margin: 0 15% 0 10%
+}
+#img {
+    width: 50px;
+    overflow: hidden;
+}
+#img1 {
+    width: 50px;
+    overflow: hidden;
+}
+.file {
+    display: none;
+}
+.imgHeader{
+    display: inline-block;
+    margin: 0 20px;
+}
+.imgHeader img{
+    width: 50px;
 }
 </style>

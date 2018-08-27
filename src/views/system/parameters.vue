@@ -83,11 +83,11 @@
       </el-form>
         <span slot="footer" class="dialog-footer" v-show="tianjia">
           <el-button @click="modify = false">取 消</el-button>
-          <el-button type="primary" @click="addOne()">确 定1</el-button>
+          <el-button type="primary" @click="addOne()">确 定</el-button>
         </span>
         <span slot="footer" class="dialog-footer" v-show="bianji">
           <el-button @click="modify = false">取 消</el-button>
-          <el-button type="primary" @click="noteTemplateUpdate">确 定2</el-button>
+          <el-button type="primary" @click="noteTemplateUpdate">确 定</el-button>
         </span>
     </el-dialog>
   </div>

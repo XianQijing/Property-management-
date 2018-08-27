@@ -392,10 +392,10 @@ function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
 button {
   outline: none;
 }
-.charts {
+/* .charts { */
   /* height: 100%;
   overflow: auto; */
-}
+/* } */
 .title {
   overflow: hidden;
   padding: 35px 0 0;

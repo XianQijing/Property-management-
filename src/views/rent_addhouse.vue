@@ -4,7 +4,7 @@
     <h3>{{this.name}}房源</h3>
     <div class="tianjia" v-show="show1">
       <div class="input">
-        <el-form :model="addCustomer" ref="addCustomer" label-width="130px" class="demo-addCustomer">
+        <el-form :model="addCustomer" :rules='rules' ref="addCustomer" label-width="130px" class="demo-addCustomer">
           <el-form-item label="房屋类型：" prop="roomType">
             <el-input v-model="addCustomer.roomType" placeholder="请输入房屋类型"></el-input>
           </el-form-item>
@@ -20,11 +20,11 @@
           </el-form-item>
 
           <el-form-item label="建筑面积：" prop="coveredArea">
-            <el-input v-model="addCustomer.coveredArea" placeholder="请输入建筑面积"></el-input>
+            <el-input @blur="isStudentNo" v-model="addCustomer.coveredArea" placeholder="请输入建筑面积"></el-input>
           </el-form-item>
 
           <el-form-item label="定价：" prop="pricing">
-            <el-input v-model="addCustomer.pricing" placeholder="请输入定价">
+            <el-input @blur="isStudentNo" v-model="addCustomer.pricing" placeholder="请输入定价">
               <template slot="append">元/月</template>
             </el-input>
           </el-form-item>
@@ -74,6 +74,14 @@ export default {
         precinct:1
       },
       builds: [],
+      rules:{
+        buildings: [
+          { required: true, message: '请选择楼宇', trigger: 'change'}
+        ],
+        roomNumber: [
+          { required: true, message: '请输入房号', trigger: 'blur'}
+        ]
+      }
     }
   },
   mounted(){
@@ -113,6 +121,18 @@ export default {
     })
   },
   methods: {
+    isStudentNo(e) {
+      var reg=/^\d+$/;   /*定义验证表达式*/
+      if(!reg.test(e.target.value)){
+        e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入数字',
+          type: 'error'
+        })
+      }else{
+        e.target.style.borderColor = '#67c23a'
+      }    /*进行验证*/
+    },
     submitUpload () {
       this.$refs.upload.submit();
     },

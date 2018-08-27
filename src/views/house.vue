@@ -381,7 +381,6 @@ export default {
     this.$ajax.get(url + 'precinct/flndAll').then(res=>{
       this.selectBuild=res.data.data
       this.selectBuild.unshift({'id':'0','namec':'全部'})
-      // console.log(this.selectBuild)
     })
   },
   methods: {
@@ -392,7 +391,6 @@ export default {
     },
     submit(){
             var formData = new FormData()
-            // console.log(this.files)
             formData.append('file', this.file)
             // formData.append('status', this.radio)
             this.$ajax.post(url+ 'room/excelImport',formData).then(res => {
@@ -535,7 +533,7 @@ export default {
     adminDelete(index,rows){
         let that = this;
         that.id = this.admin[index].id;
-        rows.splice(index, 1);
+        // rows.splice(index, 1);
         this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -575,7 +573,6 @@ export default {
           'token': sessionStorage.getItem('userId'),
         }
       }).then(res => {
-        console.log(res.data.data.rows)
         this.admin = res.data.data.rows
         this.totalDataNumberAdmin = res.data.data.records
       })

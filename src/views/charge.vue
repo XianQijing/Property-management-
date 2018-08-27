@@ -87,13 +87,13 @@
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item label="单价:">
-                            <el-input v-model="entrydata.univalence"></el-input>
+                            <el-input @blur="isStudentNo" v-model="entrydata.univalence"></el-input>
                         </el-form-item>
                         <el-form-item label="起度:" prop="lastRead">
-                            <el-input v-model="entrydata.lastRead"></el-input>
+                            <el-input @blur="isStudentNo" v-model="entrydata.lastRead"></el-input>
                         </el-form-item>
                         <el-form-item label="止度:" prop="currentRead">
-                            <el-input v-model="entrydata.currentRead"></el-input>
+                            <el-input @blur="isStudentNo" v-model="entrydata.currentRead"></el-input>
                         </el-form-item>
                         <el-form-item label="备注:">
                             <el-input v-model="entrydata.remark"></el-input>
@@ -236,6 +236,18 @@ export default {
 
   //选项卡
   methods: {
+    isStudentNo(e) {
+      var reg=/^\d+$/;   /*定义验证表达式*/
+      if(!reg.test(e.target.value)){
+        e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入数字',
+          type: 'error'
+        })
+      }else{
+        e.target.style.borderColor = '#67c23a'
+      }    /*进行验证*/
+    },
     changePosition() {
     },
     handleClick(tab, event) {

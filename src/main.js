@@ -8,6 +8,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import "babel-polyfill"
+import { Message } from 'element-ui';
 
 axios.interceptors.request.use(
   config => {
@@ -30,24 +31,77 @@ axios.interceptors.request.use(
   }
 )
 
-axios.interceptors.response.use(data=> {
-  if (data.status && data.status == 200 && data.data.status == 'error') {
-    Message.error({message: data.data.msg});
-    return;
+axios.interceptors.response.use(
+  response => {
+    // console.log(response)
+    const data = response.data
+    if (data.status === 0) {
+      MessageBox.alert('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
+        confirmButtonText: '确定',
+        type: 'warning'
+      }).then(() => {
+        localStorage.clear()
+        router.replace({
+          path: '/login'
+        })
+        return
+      }).catch(() => {
+        localStorage.clear()
+        router.replace({
+          path: '/login'
+        })
+      })
+    } else {
+      return response
+    }
+  },
+  error => {
+    if (error && error.response) {
+      switch (error.response.status) {
+        case 400:
+          error.message = '请求错误'
+          break
+        case 401:
+          error.message = '未授权，请登录'
+          break
+        case 403:
+          error.message = '权限不足'
+          break
+        case 404:
+          error.message = (process.env.NODE_ENV === 'production' ? `请求地址出错` : `请求地址出错: ${error.response.config.url}`)
+          break
+        case 408:
+          error.message = '请求超时'
+          break
+        case 500:
+          error.message = '服务器内部错误'
+          break
+        case 501:
+          error.message = '服务未实现'
+          break
+        case 502:
+          error.message = '网关错误'
+          break
+        case 503:
+          error.message = '服务不可用'
+          break
+        case 504:
+          error.message = '网关超时'
+          break
+        case 505:
+          error.message = 'HTTP版本不受支持'
+          break
+        default:
+      }
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
+    return Promise.reject(error)
   }
-  return data;
-}, err=> {
-  if (err.response.status == 504||err.response.status == 404) {
-    Message.error({message: '服务器被吃了⊙﹏⊙∥'});
-  } else if (err.response.status == 200) {
-    Message.error({message: '权限不足,请联系管理员!'});
-  }else if(err.response.data == '该账户在另一设备登录'){
-    Message.error({message: '权限不足,请联系管理员!'})
-  }else {
-    Message.error({message: '未知错误!'});
-  }
-  return Promise.resolve(err);
-}),
+)
 
 axios.defaults.withCredentials = true
 Vue.prototype.$ajax = axios

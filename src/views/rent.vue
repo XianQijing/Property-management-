@@ -150,7 +150,7 @@
                                 </div>
 								<!-- <router-link :to="{name: 'Test',query:{id:'add'}}"><button class="add">+ 添加</button></router-link> -->
 								<el-table :data="tableDataRoomStandard" style="width: 100%" >
-									<el-table-column type="selection" width="55"></el-table-column>
+									
 									<el-table-column prop="room" label="关联房屋" width="180"></el-table-column>
 									<el-table-column prop="projectAcceptance" label="验收项目" width="180"></el-table-column>
 									<el-table-column prop="acceptanceStandard" label="验收标准" width="180"></el-table-column>
@@ -211,12 +211,12 @@
                     <el-input v-model="upload.clientType" :placeholder="shuru.clientType"></el-input>
                     </el-form-item>
                     <el-form-item label="需求面积:" prop="areaNeed">
-                    <el-input v-model="upload.areaNeed" :placeholder="shuru.areaNeed">
+                    <el-input @blur="isStudentNo" v-model="upload.areaNeed" :placeholder="shuru.areaNeed">
                         <template slot="append">平方米</template>
                     </el-input>
                     </el-form-item>
                     <el-form-item label="需求价格:">
-                    <el-input v-model="upload.priceNeed" :placeholder="shuru.priceNeed">
+                    <el-input @blur="isStudentNo" v-model="upload.priceNeed" :placeholder="shuru.priceNeed">
                         <template slot="append">元/月</template>
                     </el-input>
                     </el-form-item>
@@ -418,6 +418,18 @@ export default {
        
     },
     methods:{
+        isStudentNo(e) {
+            var reg=/^\d+$/;   /*定义验证表达式*/
+            if(!reg.test(e.target.value)){
+                e.target.style.borderColor = 'red'
+                this.$message({
+                message: '请输入数字',
+                type: 'error'
+                })
+            }else{
+                e.target.style.borderColor = '#67c23a'
+            }    /*进行验证*/
+        },
         check(index,row){
             this.$ajax.put(url + 'roomStandard/anew/'+this.tableDataRoomStandard[index].id).then(res=>{
                 if(res.data.status === 200){

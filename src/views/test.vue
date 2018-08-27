@@ -4,24 +4,24 @@
     <h3>{{this.name}}房产</h3>
     <div class="tianjia">
       <div class="input">
-        <el-form :model="carForm" ref="carForm" label-width="130px" class="demo-carForm">
-          <el-form-item label="关联房屋：">
+        <el-form :model="carForm" :rules="rules" ref="carForm" label-width="130px" class="demo-carForm">
+          <el-form-item label="关联房屋：" prop="region">
               <el-cascader expand-trigger="hover" :options="options" v-model="carForm.region" @change="handleChange"></el-cascader>
           </el-form-item>
-          <el-form-item label="验收项目：">
+          <el-form-item label="验收项目：" prop="project">
               <el-input v-model="carForm.project"></el-input>
           </el-form-item>
           <el-form-item label="验收标准：">
             <el-input v-model="carForm.standard">
             </el-input>
           </el-form-item>
-          <el-form-item label="验收结果：">
+          <el-form-item label="验收结果：" prop="Result">
             <el-select v-model="carForm.Result" placeholder="请选择验收结果">
               <el-option label="不合格" value="0"></el-option>
               <el-option label="合格" value="1"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="验收人：">
+          <el-form-item label="验收人：" prop="person">
             <el-input v-model="carForm.person" placeholder="请输入验收人"></el-input>
           </el-form-item>
           <el-form-item label="验收说明：" prop="Type">
@@ -70,6 +70,20 @@ export default {
       roomId:'',
       id:'',
       applyId: '',
+      rules: {
+        region: [
+          { required: true, message: '请选择关联房屋', trigger: 'change' }
+        ],
+        project: [
+          { required: true, message: '请输入验收项目', trigger: 'blur' }
+        ],
+        Result: [
+          { required: true, message: '请选择验收结果', trigger: 'change' }
+        ],
+        person: [
+          { required: true, message: '请输入验收人', trigger: 'blur' }
+        ]
+      }
     }
   },
   mounted(){

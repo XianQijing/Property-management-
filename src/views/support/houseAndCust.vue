@@ -53,6 +53,14 @@
           <el-table-column prop="rent" label="出租数量"></el-table-column>
         </el-table>
 
+        <el-table v-if="num2 === 4" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="namec" label="楼宇名"></el-table-column>
+          <el-table-column prop="count" label="小计"></el-table-column>
+          <el-table-column prop="nul" label="空置数量"></el-table-column>
+          <el-table-column prop="rent" label="出租数量"></el-table-column>
+        </el-table>
+
         <div class="fenye">
           <el-pagination
             @size-change="sizeChange"
@@ -89,7 +97,7 @@ export default {
       isChartShow: false,
       color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
       Data: {},
-      tableList: ['合同签约额度表', '历史缴费表', '合约状态表', '房屋状态表'],
+      tableList: ['合同签约额度表', '历史缴费表', '合约状态表', '房屋状态表', '欠款账龄'],
       tableData: [
         {
           ownername: ''
@@ -131,6 +139,9 @@ export default {
         var str = '<tr><td>续租人数</td><td>退租人数</td><td>在租人数</td></tr>'
       }
       if (this.num2 === 3) {
+        var str = '<tr><td>楼宇名</td><td>空置数量</td><td>小计</td><td>出租数量</td></tr>'
+      }
+      if (this.num2 === 4) {
         var str = '<tr><td>楼宇名</td><td>空置数量</td><td>小计</td><td>出租数量</td></tr>'
       }
       //循环遍历，每行加入tr标签，每个单元格加td标签
@@ -208,10 +219,13 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
+          
           if (data === 'rentOrNull') {
             this.chartsTwo()
           } else if (data === 'contractStatus') {
             this.chartsThree()
+          } else if(data === 'agingRanking'){
+            this.chartsFourth()
           } else {
             this.charts()
           }
@@ -254,6 +268,9 @@ export default {
           if (this.num2 === 3) {
             this.getData('rentOrNullTable', 'exportExcelAll')
           }
+          if (this.num2 === 4) {
+            this.getData('agingRankingTable', 'exportExcelAll')
+          }
         } else {
           if (this.num2 === 0) {
             this.getData('contractValueTable')
@@ -266,6 +283,9 @@ export default {
           }
           if (this.num2 === 3) {
             this.getData('rentOrNullTable')
+          }
+          if (this.num2 === 4) {
+            this.getData('agingRankingTable')
           }
         }
       } else {
@@ -283,6 +303,10 @@ export default {
         if (this.num2 === 3) {
           this.color = ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA']
           this.getData('rentOrNull')
+        }
+        if (this.num2 === 4) {
+          this.color = ['#FF9494']
+          this.getData('agingRanking')
         }
       }
     },
@@ -324,6 +348,7 @@ export default {
         },
         xAxis : [
           {
+            name:'客户名',
             type : 'category',
             data : this.Data.x,
             axisTick: {
@@ -339,7 +364,7 @@ export default {
         yAxis : [
           {
             type : 'value',
-            name: '空置率(%)',
+            name: '缴费额度(￥)',
             nameGap: 30,
             splitLine: {
               lineStyle: {
@@ -350,7 +375,7 @@ export default {
         ],
         series : [
           {
-            name:'空置房屋',
+            name:'缴费数额',
             type:'bar',
             barWidth: '51px',
             data: this.Data.y,
@@ -388,6 +413,7 @@ export default {
         },
         xAxis : [
           {
+            name: '楼宇名',
             type : 'category',
             data : this.Data.x,
             axisTick: {
@@ -403,7 +429,7 @@ export default {
         yAxis : [
           {
             type : 'value',
-            name: '空置率(%)',
+            name: '占比(%)',
             nameGap: 30,
             splitLine: {
               lineStyle: {
@@ -414,7 +440,7 @@ export default {
         ],
         series : [
           {
-            name:'空置房屋',
+            name:'空置率(%)',
             type:'bar',
             stack: '总量',
             barWidth: '20px',
@@ -426,7 +452,7 @@ export default {
             }
           },
           {
-            name:'空置',
+            name:'出租率(%)',
             type:'bar',
             stack: '总量',
             barWidth: '20px',
@@ -442,8 +468,7 @@ export default {
     chartsThree () {
       var myChart2 = echarts.init(document.getElementById('main1'));
       myChart2.setOption({
-        // color: ['#F9A400'],
-        // color: this.color,
+        color: this.color,
         legend: {
           type: 'plain',
           right: '10%',
@@ -466,6 +491,7 @@ export default {
         },
         xAxis : [
           {
+            name:'客户名',
             type : 'category',
             data : this.Data.x,
             axisTick: {
@@ -481,7 +507,7 @@ export default {
         yAxis : [
           {
             type : 'value',
-            name: '空置率(%)',
+            name: '缴费额度(￥)',
             nameGap: 30,
             splitLine: {
               lineStyle: {
@@ -492,23 +518,80 @@ export default {
         ],
         series : [
           {
-            name:'空置房屋',
+            name:'缴费数额',
             type:'bar',
-            stack: '总量',
-            barWidth: '20px',
+            barWidth: '51px',
             data: this.Data.y,
             label: {
               show: true,
-              // position: 'insideTop'
+            }
+          }
+        ]
+      }, true)
+    },
+    chartsFourth () {
+      var myChart3 = echarts.init(document.getElementById('main1'));
+      myChart3.setOption({
+        // color: ['#F9A400'],
+        color: this.color,
+        legend: {
+          type: 'plain',
+          right: '10%',
+          bottom: '30%',
+          orient: 'vertical',
+        },
+        tooltip : {
+          show: true,
+          trigger: 'axis',
+          axisPointer : {
+            type : 'shadow'
+          }
+        },
+        grid: {
+          top: '20%',
+          left: '18%',
+          height: '60%',
+          width: '64%',
+          containLabel: true
+        },
+        xAxis : [
+          {
+            name: '客户名',
+            type : 'category',
+            data : this.Data.x,
+            axisTick: {
+              alignWithLabel: true,
+              show: false,
+              interval: 0,
             },
-            itemStyle: { 
-              normal: { 
-                color: function(params) { 
-                　//首先定义一个数组 
-                  var colorList = ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7']
-                  return colorList[params.dataIndex] 
-                }
+            axisLabel: {
+              interval: 0,
+            }
+          }
+        ],
+        yAxis : [
+          {
+            type : 'value',
+            name: '帐龄(天数)',
+            nameGap: 30,
+            splitLine: {
+              lineStyle: {
+                type: 'dotted'
               }
+            }
+          }
+        ],
+        series : [
+          {
+            barWidth: '51px',
+            type:'bar',
+            stack: '总量',
+            barWidth: '20px',
+            // data: this.Data.y,
+            data: this.Data.y,
+            label: {
+              show: true,
+              position: 'insideTop'
             }
           }
         ]
