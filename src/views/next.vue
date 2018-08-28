@@ -25,17 +25,17 @@
             <el-input v-model="ruleForm.roomNumber" placeholder="请输入房号"></el-input>
           </el-form-item>
           <el-form-item label="建筑面积:" prop="coveredArea">
-            <el-input v-model="ruleForm.coveredArea" placeholder="请输入建筑面积" @blur="blur">
+            <el-input v-model="ruleForm.coveredArea" placeholder="请输入建筑面积">
               <template slot="append">平方米</template>
             </el-input>
           </el-form-item>
           <el-form-item label="套内面积:" prop="usableArea">
-            <el-input v-model="ruleForm.usableArea" placeholder="请输入套内面积" @blur="blur">
+            <el-input v-model="ruleForm.usableArea" placeholder="请输入套内面积">
               <template slot="append">平方米</template>
             </el-input>
           </el-form-item>
           <el-form-item label="公摊面积:" prop="gardenArea">
-            <el-input v-model="ruleForm.gardenArea" placeholder="请输入公摊面积" @blur="blur">
+            <el-input v-model="ruleForm.gardenArea" placeholder="请输入公摊面积">
               <template slot="append">平方米</template>
             </el-input>
           </el-form-item>

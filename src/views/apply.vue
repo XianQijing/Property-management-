@@ -12,7 +12,7 @@
                         <el-cascader expand-trigger="hover" :options="options" v-model="detail.house" @change="handleChange"></el-cascader>
                     </el-form-item>
                     <el-form-item label="负责人电话:" prop="principal_phone">
-                        <el-input v-model="detail.principal_phone" clearable></el-input>
+                        <el-input v-model="detail.principal_phone" @blur="blur" clearable></el-input>
                     </el-form-item>
 
                     <el-form-item label="开始装修时间:">
@@ -186,6 +186,25 @@ export default {
         )
     },
     methods: {
+        blur (e) {
+      var reg = /^\+?[1-9][0-9]*$/
+      if (!reg.test(e.target.value)) {
+        e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入数字',
+          type: 'error'
+        })
+      }else if(e.target.value.length!==11){
+          console.log(e.target.value.length)
+          e.target.style.borderColor = 'red'
+          this.$message({
+          message: '请输入11位数字',
+          type: 'error'
+        })
+      } else {
+        e.target.style.borderColor = '#67c23a'
+      }
+    },
        //编辑事件时弹出该客户已有的房间
     editChange(a,b){
             this.$ajax.get(url + 'owner/findByNameAndPhone/'+a+'/'+b).then(res => {

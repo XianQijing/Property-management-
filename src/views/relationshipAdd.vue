@@ -33,13 +33,13 @@
           <el-form-item label="籍贯:">
             <el-input v-model="addCustomer.place" placeholder="请输入租户籍贯"></el-input>
           </el-form-item>
-          <el-form-item label="政治面貌:">
-            <el-input v-model="addCustomer.political" placeholder="请输入租户政治面貌"></el-input>
+          <el-form-item label="身份证号:" prop="card">
+            <el-input v-model="addCustomer.card" placeholder="请输入租户身份证号"></el-input>
           </el-form-item>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="身份证号:">
-                <el-input v-model="addCustomer.card" placeholder="请输入租户身份证号"></el-input>
+              <el-form-item label="政治面貌:">
+                <el-input v-model="addCustomer.political" placeholder="请输入租户政治面貌"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -76,7 +76,7 @@
             </el-form-item>
             </el-col>
             <el-col :span="12">
-            <el-form-item label="联系电话:">
+            <el-form-item label="联系电话:" prop="contactPhone">
               <el-input v-model="addCustomer.contactPhone" @blur="blur"></el-input>
             </el-form-item>
             </el-col>
@@ -138,6 +138,12 @@ export default {
         ],
         buildArea: [
           { required: true, message: '请输入建筑面积', trigger: 'blur' }
+        ],
+        card: [
+          { required: true, message: '请输入身份证号', trigger: 'blur' }
+        ],
+        contactPhone: [
+          { required: true, message: '请输入联系电话', trigger: 'blur' }
         ]
       },
       options: [],
@@ -247,18 +253,18 @@ export default {
       owner.fax=this.addCustomer.fax;
       this.$ajax.put(url+"owner/update",owner).then((res) => {
         this.form = res.data
-                  if(res.data.status === 200){
-                         this.$message({
-                                message: '修改数据成功',
-                                type: 'success'
-                            }),
-                            this.goBack()
-                        }else{
-                            this.$message({
-                                message: res.data.msg,
-                                type: 'error'
-                        }) 
-                 }
+        if(res.data.status === 200){
+          this.$message({
+                message: '修改数据成功',
+                type: 'success'
+            }),
+            this.goBack()
+        }else{
+            this.$message({
+                message: res.data.msg,
+                type: 'error'
+          }) 
+        }
       })
     },
     goBack(){

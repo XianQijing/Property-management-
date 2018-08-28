@@ -45,26 +45,26 @@
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="三年后租金：">
-                                <el-input @blur="isStudentNo" v-model="detail.fixedGrowth" placeholder="请输入租金">
+                                <el-input v-model="detail.fixedGrowth" placeholder="请输入租金">
                                     <template slot="append">元</template>
                                 </el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                         <el-form-item label="租金:">
-                            <el-input @blur="isStudentNo" v-model="detail.dailyRent" placeholder="请输入租金">
+                            <el-input v-model="detail.dailyRent" placeholder="请输入租金">
                                 <template slot="append">元/天/平方米</template>
                             </el-input>
                         </el-form-item>
                         
                         <el-form-item label="物业管理费:">
-                            <el-input @blur="isStudentNo" v-model="detail.dailyManagementFee" placeholder="请输入物业管理费">
+                            <el-input v-model="detail.dailyManagementFee" placeholder="请输入物业管理费">
                                 <template slot="append">元/天/平方米</template>
                             </el-input>
                         </el-form-item>
                         
                     <el-form-item label="租金和物业费合计:">
-                            <el-input @blur="isStudentNo" v-model="form.total">
+                            <el-input v-model="form.total">
                                 <template slot="append">月/元</template>
                             </el-input>
                         </el-form-item>
@@ -107,7 +107,7 @@
                     <el-row>
                     <el-col :span="12">
                         <el-form-item label="建筑面积：">
-                            <el-input @blur="isStudentNo" v-model="detail.rooms.coveredAreas" :disabled="yes" placeholder="建筑面积"></el-input>
+                            <el-input v-model="detail.rooms.coveredAreas" :disabled="yes" placeholder="建筑面积"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -131,22 +131,22 @@
                     </el-form-item>
                     
                         <el-form-item label="每月租金为：">
-                            <el-input @blur="isStudentNo" v-model="detail.afterTheRent" placeholder="请输入租金">
+                            <el-input v-model="detail.afterTheRent" placeholder="请输入租金">
                                 <template slot="append">元</template>
                             </el-input>
                         </el-form-item>
                         <el-form-item label="合计:">
-                            <el-input @blur="isStudentNo" v-model="form.monthlyRent">
+                            <el-input v-model="form.monthlyRent">
                                 <template slot="append">月/元</template>
                             </el-input>
                         </el-form-item>
                         <el-form-item label="合计:">
-                            <el-input @blur="isStudentNo" v-model="form.monthlyManagementFee">
+                            <el-input v-model="form.monthlyManagementFee">
                                 <template slot="append">月/元</template>
                             </el-input>
                         </el-form-item>
                         <el-form-item label="大写：">
-                            <el-input @blur="isStudentNo" v-model="detail.big3"></el-input>
+                            <el-input v-model="detail.big3"></el-input>
                         </el-form-item>
                          <el-form-item label="免租时间">
                             <el-col :span="11">
@@ -163,22 +163,22 @@
                     <el-row>
                     <el-col :span="6">
                         <el-form-item label="合同保证金：">
-                            <el-input @blur="isStudentNo" v-model="detail.cashDeposit"></el-input>
+                            <el-input v-model="detail.cashDeposit"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6">
                         <el-form-item label="物业押金：">
-                            <el-input @blur="isStudentNo" v-model="detail.cashPledge"></el-input>
+                            <el-input v-model="detail.cashPledge"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6">
                         <el-form-item label="合计：">
-                            <el-input @blur="isStudentNo" v-model="detail.theDepositAmount"></el-input>
+                            <el-input v-model="detail.theDepositAmount"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6">
                         <el-form-item label="大写：">
-                            <el-input @blur="isStudentNo" v-model="detail.big4"></el-input>
+                            <el-input v-model="detail.big4"></el-input>
                         </el-form-item>
                     </el-col>
                     </el-row>
@@ -235,21 +235,21 @@
                 <el-form ref="form" :model="form" label-width="160px" size="small" :disabled="edit">
                     <el-col :span="12">
                     <el-form-item label="租金：">
-                    <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.monthlyRent">
+                    <el-input placeholder="请输入内容" v-model="form.monthlyRent">
                         <template slot="append">元人民币/月</template>
                     </el-input>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="物业管理费：">
-                    <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.monthlyManagementFee">
+                    <el-input placeholder="请输入内容" v-model="form.monthlyManagementFee">
                         <template slot="append">元人民币/月</template>
                     </el-input>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                     <el-form-item label="合计：">
-                    <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.total">
+                    <el-input placeholder="请输入内容" v-model="form.total">
                         <template slot="append">元人民币/月</template>
                     </el-input>
                     </el-form-item>
@@ -262,14 +262,14 @@
                 <el-form ref="form" :model="form" label-width="160px" size="small" :disabled="edit">
                     <el-col :span="12">
                     <el-form-item label="租赁保证金：">
-                    <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.premiumForLease">
+                    <el-input placeholder="请输入内容" v-model="form.premiumForLease">
                         <template slot="append">元</template>
                     </el-input>
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="管理费押金：">
-                        <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.cashPledge">
+                        <el-input placeholder="请输入内容" v-model="form.cashPledge">
                             <template slot="append">元</template>
                         </el-input>
                         </el-form-item>
@@ -285,7 +285,7 @@
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
-                            <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.administrativeFee">
+                            <el-input placeholder="请输入内容" v-model="form.administrativeFee">
                                 <template slot="append">元</template>
                             </el-input>
                         </el-col>
@@ -301,7 +301,7 @@
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
-                            <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.rental">
+                            <el-input placeholder="请输入内容" v-model="form.rental">
                                 <template slot="append">元</template>
                             </el-input>
                         </el-col>
@@ -316,14 +316,14 @@
                         </el-col>
                         <el-col class="line" :span="3">为</el-col>
                         <el-col :span="6">
-                            <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.managementCost">
+                            <el-input placeholder="请输入内容" v-model="form.managementCost">
                                 <template slot="append">元</template>
                             </el-input>
                         </el-col>
                     </el-form-item>
                     <el-col :span="12">
                     <el-form-item label="合计：">
-                    <el-input @blur="isStudentNo" placeholder="请输入内容" v-model="form.aggregate">
+                    <el-input placeholder="请输入内容" v-model="form.aggregate">
                         <template slot="append">元人民币/月</template>
                     </el-input>
                     </el-form-item>
