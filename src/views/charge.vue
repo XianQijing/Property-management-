@@ -87,7 +87,7 @@
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item label="单价:">
-                            <el-input @blur="isStudentNo" v-model="entrydata.univalence"></el-input>
+                            <el-input v-model="entrydata.univalence"></el-input>
                         </el-form-item>
                         <el-form-item label="起度:" prop="lastRead">
                             <el-input @blur="isStudentNo" v-model="entrydata.lastRead"></el-input>

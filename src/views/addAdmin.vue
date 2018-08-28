@@ -29,28 +29,28 @@
           </div>
           <div id="fenkai1">
             <el-form-item label="占地面积：">
-              <el-input @blur="isStudentNo" v-model="ruleForm.totalArea">
+              <el-input v-model="ruleForm.totalArea">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             <el-form-item label="建筑面积：">
-              <el-input @blur="isStudentNo" v-model="ruleForm.overallFloorage">
+              <el-input v-model="ruleForm.overallFloorage">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             <el-form-item label="公共区域面积：">
-              <el-input @blur="isStudentNo" v-model="ruleForm.publicArea">
+              <el-input v-model="ruleForm.publicArea">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             <el-form-item label="绿化面积：">
-              <el-input @blur="isStudentNo" v-model="ruleForm.greenArea">
+              <el-input v-model="ruleForm.greenArea">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>
             
             <el-form-item label="设计车位面积：">
-              <el-input @blur="isStudentNo" v-model="ruleForm.parkingArea">
+              <el-input v-model="ruleForm.parkingArea">
                   <template slot="append">平方米</template>
               </el-input>
             </el-form-item>

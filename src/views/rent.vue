@@ -211,12 +211,12 @@
                     <el-input v-model="upload.clientType" :placeholder="shuru.clientType"></el-input>
                     </el-form-item>
                     <el-form-item label="需求面积:" prop="areaNeed">
-                    <el-input @blur="isStudentNo" v-model="upload.areaNeed" :placeholder="shuru.areaNeed">
+                    <el-input v-model="upload.areaNeed" :placeholder="shuru.areaNeed">
                         <template slot="append">平方米</template>
                     </el-input>
                     </el-form-item>
                     <el-form-item label="需求价格:">
-                    <el-input @blur="isStudentNo" v-model="upload.priceNeed" :placeholder="shuru.priceNeed">
+                    <el-input v-model="upload.priceNeed" :placeholder="shuru.priceNeed">
                         <template slot="append">元/月</template>
                     </el-input>
                     </el-form-item>

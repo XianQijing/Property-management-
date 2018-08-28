@@ -20,11 +20,11 @@
           </el-form-item>
 
           <el-form-item label="建筑面积：" prop="coveredArea">
-            <el-input @blur="isStudentNo" v-model="addCustomer.coveredArea" placeholder="请输入建筑面积"></el-input>
+            <el-input v-model="addCustomer.coveredArea" placeholder="请输入建筑面积"></el-input>
           </el-form-item>
 
           <el-form-item label="定价：" prop="pricing">
-            <el-input @blur="isStudentNo" v-model="addCustomer.pricing" placeholder="请输入定价">
+            <el-input v-model="addCustomer.pricing" placeholder="请输入定价">
               <template slot="append">元/月</template>
             </el-input>
           </el-form-item>
