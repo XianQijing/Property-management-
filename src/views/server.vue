@@ -317,7 +317,6 @@ export default {
                 type: 'error'
                 })
             }else if(e.target.value.length!==11){
-                console.log(e.target.value.length)
                 e.target.style.borderColor = 'red'
                 this.$message({
                 message: '请输入11位数字',
@@ -360,14 +359,12 @@ export default {
                           
                          this.detail.name = null;
                        }
-                       console.log(res.data)
                    })
                  }else{
                       this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.detail.name+'/'+this.detail.phone).then(res => {
                         if(!res.data){
                             this.detail.phone = null;
                         }
-                        console.log(res.data)
                     })
                  }
               }
@@ -402,7 +399,6 @@ export default {
                  this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
                      this.options=res.data;
                  })
-                console.log(res.data)
             })
           }
       },
@@ -429,7 +425,6 @@ export default {
                  serviceAcceptVO.id = this.id;
                 this.$ajax.put(url+"serviceAccept/update",serviceAcceptVO).then((res) => {
                     this.form = res.data
-                    console.log(this.form);
                     if(res.data.status === 200){
                          this.$message({
                                 message: '修改数据成功',
@@ -453,7 +448,6 @@ export default {
             }else{
                 this.$ajax.post(url+"serviceAccept/insert",serviceAcceptVO).then((res) => {
                     this.form = res.data
-                    console.log(this.form);
                      if(res.data.status === 200){
                          this.$message({
                                  message: '增加数据成功',
@@ -480,7 +474,6 @@ export default {
           window.history.back()
       },
       handleChange(value) {
-        //console.log(value);
       }
     }
 }

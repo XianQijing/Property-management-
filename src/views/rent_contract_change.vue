@@ -526,7 +526,6 @@ export default {
 					type: 'error'
 					})
 				}else if(e.target.value.length!==11){
-					console.log(e.target.value.length)
 					e.target.style.borderColor = 'red'
 					this.$message({
 					message: '请输入11位数字',
@@ -732,9 +731,11 @@ export default {
         relation(e){
             
             this.$ajax.get(url + 'room/flndById/'+e[2]).then(res => {
+                if(this.rooms.indexOf(res.data.data.id)<0){
                 this.rooms.unshift(res.data.data.id)
                 this.thisRoom.unshift(res.data.data.roomNumber.toString())
                 this.detail.room = this.rooms.join()
+                }
             }
             )
         },

@@ -150,7 +150,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$route.query.id)
          this.id = this.$route.query.id
          this.$ajax.get(url +'adornApply/findIdVO/'+this.id).then(res => {
             this.input = res.data;
@@ -167,7 +166,6 @@ export default {
             adornCheck.receivedMoney = this.detail.aready;
             adornCheck.withholdMoney = this.detail.all;
             adornCheck.retreatMoney = this.detail.money;
-            console.log(adornCheck)
             adornCheck.checkState = this.detail.remark;
             if(this.detail.pass == true){
                 adornCheck.isPass = 1;
@@ -176,7 +174,6 @@ export default {
             }
            this.$ajax.post(url+"adornCheck/insert",adornCheck).then((res) => {
               this.form = res.data
-              console.log(this.form);
               if(res.data.status === 200){
                          this.$message({
                                 message: '新增数据成功',

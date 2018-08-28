@@ -48,7 +48,7 @@
             <!--职员信息-->
             <el-tab-pane label="职员信息" name="third" v-if="this.role1.indexOf('rubik:employee:list')!==-1">
               <div class="main">
-                <button @click="add = !add">+ 添加新员工</button>
+                <button @click="openAdd">+ 添加新员工</button>
                 <button @click="isShow = !isShow">导入</button>
                 <button class="shanchu" @click="allDelete">删除</button>
                 <el-table :data="tableData" style="width: 100%" @selection-change="handleSelectionChange">
@@ -480,7 +480,7 @@ export default {
                 beizhu:'',
                 gangwei: [],
                 mima:'',
-                img: '/static/elephant.png'
+                img: 'static/elephant.png'
             },
             addpersonEdit:{
                 name:'',
@@ -493,7 +493,7 @@ export default {
                 // gangwei: ['1'],
                 gangwei: [],
                 mima:'',
-                img: '/static/elephant.png'
+                img: 'static/elephant.png'
             },
             addbtypeEdit:{
                 btypeName:'',
@@ -558,13 +558,13 @@ export default {
             third: true,
             fourth: true,
             image: [
-                {img:'/static/elephant.png'},
-                {img:'/static/crab.png'},
-                {img:'/static/1.png'},
-                {img:'/static/octopus.png'},
-                {img:'/static/parrot.png'},
-                {img:'/static/seals.png'},
-                {img:'/static/starfish.png'},
+                {img:'static/elephant.png'},
+                {img:'static/crab.png'},
+                {img:'static/1.png'},
+                {img:'static/octopus.png'},
+                {img:'static/parrot.png'},
+                {img:'static/seals.png'},
+                {img:'static/starfish.png'},
             ]
         }
     },
@@ -590,18 +590,18 @@ mounted(){
         })
       })
     // /company/findAll
-    this.$ajax.get(url + 'company/findAll').then((res) => {
-        // console.log(res.data.data)
-        this.Data = res.data.data
-        this.options = this.transTreeData(this.Data)
-    })
+    // this.$ajax.get(url + 'company/findAll').then((res) => {
+    //     // console.log(res.data.data)
+    //     this.Data = res.data.data
+    //     this.options = this.transTreeData(this.Data)
+    // })
     this.$ajax.get(url + 'role/findRole').then(res=> {
         
         this.role = res.data.data
     })
-    this.staff(),
-    this.Btype()
-    this.getRoleData()
+    // this.staff(),
+    // this.Btype()
+    // this.getRoleData()
 },
 methods:{
     cancel () {
@@ -617,6 +617,14 @@ methods:{
             gangwei: [],
             mima:''
         }
+    },
+    //园区
+    Area(){
+        this.$ajax.get(url + 'company/findAll').then((res) => {
+        // console.log(res.data.data)
+        this.Data = res.data.data
+        this.options = this.transTreeData(this.Data)
+    })
     },
      findPhone(){
         var phone = this.addperson.number
@@ -895,9 +903,13 @@ methods:{
             this.pageNoB = val;
             this.Btype();
         },
-        
+        openAdd(){
+            this.add = true;
+            this.Area()
+        },
         //to职员编辑
         toUserEdit(index, rows){
+            this.Area()
             let that = this;
             that.id = this.tableData[index].id;
             this.$ajax.get(url + 'user/findById',{params:{"token":this.id}}).then((res) => {
@@ -1704,9 +1716,6 @@ span {
 #img1 {
     width: 50px;
     overflow: hidden;
-}
-.file {
-    display: none;
 }
 .imgHeader{
     display: inline-block;

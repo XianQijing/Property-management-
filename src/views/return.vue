@@ -200,7 +200,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$route.query.id)
          this.id = this.$route.query.id
          this.$ajax.get(url +'serviceAccept/findIdVO/'+this.id).then(res => {
              if(res.status === 200){
@@ -218,7 +217,6 @@ export default {
     },
     methods: {
       handleRemove(file, fileList) {
-        console.log(file, fileList);
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
@@ -232,7 +230,6 @@ export default {
             serviceVisit.serviceTimeliness = this.input.serviceTimeliness;
             this.$ajax.post(url+"serviceVisit/insert",serviceVisit).then((res) => {
                 this.form = res.data
-                console.log(this.form);
                 if(res.data.status === 200){
                          this.$message({
                                 message: '新增数据成功',
