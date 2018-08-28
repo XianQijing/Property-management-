@@ -59,7 +59,7 @@ export default {
         currentPage: 1,
         total: 7,
         pageSize: 5,
-        pageArr: [1, 2, 3, 4, 5]
+        pageArr: [10, 20, 30, 40, 50]
       },
       jurisdictionData:[]
     }

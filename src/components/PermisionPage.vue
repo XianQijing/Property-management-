@@ -122,7 +122,6 @@ export default {
         })
       } else {
         this.$ajax.post(url + 'role/ajaxsave?roleId=' + this.$route.query.id + '&fundIds=' + JSON.stringify(arr).split('[')[1].split(']')[0]).then(res => {
-          // console.log(res.data)
           if (res.data.status === 200) {
             window.history.back()
             this.$message({
@@ -142,7 +141,6 @@ export default {
       window.history.back()
     },
     boxchecked (event, scope, which, father) {
-      console.log(event, scope, which, father)
       if (which === 5) {
         if (event === true) {
           scope.row.look = true
@@ -226,8 +224,6 @@ export default {
       }
     },
     expandChange (row, expandedRows) {
-      // console.log(row)
-      // console.log(expandedRows)
     }
   }
 }

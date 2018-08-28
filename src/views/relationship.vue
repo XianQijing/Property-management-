@@ -684,7 +684,6 @@
 					type: 'error'
 					})
 				}else if(e.target.value.length!==11){
-					console.log(e.target.value.length)
 					e.target.style.borderColor = 'red'
 					this.$message({
 					message: '请输入11位数字',

@@ -86,7 +86,6 @@ export default {
         }
     },
      mounted(){
-        console.log(this.$route.query.id)
          this.id = this.$route.query.id
          this.getPatrol()
        
@@ -100,7 +99,6 @@ export default {
             var adornPatrol={};
             adornPatrol.applyid = this.id;
             adornPatrol.patrolTime = this.detail.day;
-            console.log(this.detail.day)
             adornPatrol.patrolNumber = this.detail.number;
             adornPatrol.patrolMan = this.detail.person;
             adornPatrol.patrolPhone = this.detail.phone;
@@ -114,7 +112,6 @@ export default {
             }else{
                 adornPatrol.isIllegal = 0;
             }
-            console.log(adornPatrol.isIllegal)
             adornPatrol.patrolContent = this.detail.remark;
             
            this.$ajax.post(url+"adornPatrol/insert/",adornPatrol).then((res) => {

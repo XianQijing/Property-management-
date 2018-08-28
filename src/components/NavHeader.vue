@@ -49,7 +49,6 @@ export default {
       }
     })
     if(!sessionStorage.getItem("userId")){
-    // console.log(sessionStorage.getItem("userId"))
     this.$router.push('/login')
     }else{
 
