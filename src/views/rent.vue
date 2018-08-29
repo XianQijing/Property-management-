@@ -471,7 +471,6 @@ export default {
 				}
 				},
         stop(){
-            
             var arr = []
             this.multipleSelection.forEach(v => {
                 arr.push(v.id)
@@ -534,7 +533,7 @@ export default {
         flndAllHousingResource(){
             this.$ajax.get(url + 'housingResource/flndAllHousingResource/'+this.pageNo+'/'+this.pageSize).then((res) => {
                 
-            if(res.data.status === 200){    
+            if(res.data.status === 200){
                 this.tableData=res.data.data.rows
                 this.totalDataNumber=res.data.data.records
                 }
@@ -588,14 +587,14 @@ export default {
             let that = this;
             this.id = this.tableData[index].id;
             this.msg = msg;
-            this.$router.push({name: 'Rent_addhouse',query:{id:that.id,msg:this.msg}})
+            var bid = this.tableData[index].bid
+            this.$router.push({name: 'Rent_addhouse',query:{id:that.id,msg:this.msg},params:{bid:bid}})
         },
         //商机添加
         shangji(index,row,msg){
             let that = this;
             this.msg = msg;
             this.dialogVisible = true;
-            
             if(this.msg == "chakan"){
                 this.id = this.tableDataBusiness[index].id;
                 this.edit = true
@@ -603,6 +602,7 @@ export default {
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
                     if(res.data.status===200){
                         this.upload = res.data.data
+                        console.log(this.upload)
                     }else if(res.data.status===403){
                     this.$alert('您的权限不足', '权限不足', {
                         confirmButtonText: '确定',
@@ -681,6 +681,7 @@ export default {
             prospectiveCustomer.visitingWay=this.upload.visitingWay
             prospectiveCustomer.comment=this.upload.comment
             prospectiveCustomer.visitTime = this.upload.visitTime
+            prospectiveCustomer.seeHouse = this.upload.seeHouse
             if(this.msg === "tianjia"){
                 this.$ajax.post(url+'prospectiveCustomer/addProspectiveCustomer',prospectiveCustomer).then(res => {
                     if(res.data.status === 200){
@@ -707,13 +708,14 @@ export default {
                     {
                         "namec":this.upload.namec,
                         "phone":this.upload.phone,
-                        "clientType":this.upload.clientTyp,
+                        "clientType":this.upload.clientType,
                         "areaNeed":this.upload.areaNeed,
                         "priceNeed":this.upload.priceNeed,
                         "visitingWay":this.upload.visitingWay,
                         "id":this.id,
                         "comment":this.upload.comment,
-                        'visitTime':this.upload.visitTime
+                        'visitTime':this.upload.visitTime,
+                        "seeHouse": this.upload.seeHouse
                     }
                 ).then(res => {
                     if(res.data.status === 200){

@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import "babel-polyfill"
 import { Message } from 'element-ui';
+import { MessageBox } from 'element-ui';
 
 axios.interceptors.request.use(
   config => {
@@ -35,22 +36,27 @@ axios.interceptors.response.use(
   response => {
     // console.log(response)
     const data = response.data
-    if (data.status === 0) {
-      MessageBox.alert('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-        confirmButtonText: '确定',
-        type: 'warning'
-      }).then(() => {
-        localStorage.clear()
-        router.replace({
-          path: '/login'
-        })
-        return
-      }).catch(() => {
-        localStorage.clear()
-        router.replace({
-          path: '/login'
-        })
+    if (data.status === 603) {
+      Message({
+        message: '您的账号在另一设备上登录',
+        type: 'error',
+        duration: 5 * 1000
       })
+      // MessageBox.alert('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
+      //   confirmButtonText: '确定',
+      //   type: 'warning'
+      // }).then(() => {
+      //   sessionStorage.clear()
+      //   router.replace({
+      //     path: '/login'
+      //   })
+      //   return
+      // }).catch(() => {
+      //   localStorage.clear()
+      //   router.replace({
+      //     path: '/login'
+      //   })
+      // })
     } else {
       return response
     }

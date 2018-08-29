@@ -10,9 +10,15 @@
           </el-form-item>
 
           <el-form-item label="楼宇：" prop="buildings">
-            <el-select v-model="addCustomer.buildings" placeholder="请选择楼宇">
+            <!-- <el-select v-model="addCustomer.buildings" placeholder="请选择楼宇">
               <el-option :label="item.namec" :value="item.id" v-for="item in builds" :key="item.id"></el-option>
-            </el-select>
+            </el-select> -->
+            <el-cascader
+                expand-trigger="hover"
+                :options="builds"
+                v-model="addCustomer.buildings"
+                @change="buildingChange">
+              </el-cascader>
           </el-form-item>
 
           <el-form-item label="房号：" prop="roomNumber">
@@ -64,14 +70,15 @@ export default {
       //数据
       addCustomer: {
         roomType:'',
-        buildings:'',
+        buildings: [],
         roomNumber:1,
         coveredArea: 1,
         pricing: '',
         renting: 1,
         reserve: 1,
         id:1,
-        precinct:1
+        precinct:1,
+        buildingsString: ''
       },
       builds: [],
       rules:{
@@ -85,12 +92,13 @@ export default {
     }
   },
   mounted(){
-    // console.log(this.$route.query.id)
+    this.$ajax.get(url + 'room/flndByBuilding/aaa').then(res => {
+      this.builds = res.data
+    })
     if (this.$route.query.msg == "tianjia") {
       this.name = '添加',
       this.addCustomer = {}
       // this.$ajax.get(url + 'building/flndAll/1/999').then(res => {
-      //   console.log(res);
       //   this.builds=res.data.data.rows
       //   goBack()
       // })
@@ -99,8 +107,9 @@ export default {
       this.id = this.$route.query.id
       this.$ajax.get(url + 'housingResource/flndHById/' + this.id).then(res => {
         if(res.data.status===200){
+        this.addCustomer.buildings = res.data.data.bid.split(',')
+        this.addCustomer.buildingsString = res.data.data.bid
         this.addCustomer.roomType = res.data.data.roomType
-        this.addCustomer.buildings = res.data.data.buildinges.id
         this.addCustomer.roomNumber = res.data.data.roomNumber
         this.addCustomer.coveredArea = res.data.data.coveredArea
         this.addCustomer.pricing = res.data.data.pricing
@@ -116,11 +125,12 @@ export default {
         }
       })
     }
-    this.$ajax.get(url + 'building/flndAllBuilding').then(res => {
-      this.builds = res.data.data
-    })
+    
   },
   methods: {
+    buildingChange(){
+      this.addCustomer.buildingsString = this.addCustomer.buildings.join(',')
+    },
     isStudentNo(e) {
       var reg=/^\d+$/;   /*定义验证表达式*/
       if(!reg.test(e.target.value)){
@@ -137,37 +147,64 @@ export default {
       this.$refs.upload.submit();
     },
     handleRemove (file, fileList) {
-      // console.log(file, fileList);
     },
     handlePreview (file) {
-      // console.log(file);
     },
     save () {
-      var housingResourceVO = {}
-      housingResourceVO.buildings = '1808016T8CPZFBXP',
-      housingResourceVO.coveredArea = this.addCustomer.coveredArea,
-      housingResourceVO.precinct = this.addCustomer.precinct,
-      housingResourceVO.pricing = this.addCustomer.pricing,
-      housingResourceVO.renting = this.addCustomer.renting,
-      housingResourceVO.reserve = this.addCustomer.reserve,
-      housingResourceVO.roomNumber = this.addCustomer.roomNumber,
-      housingResourceVO.roomType = "string"
-        
-      // housingResourceVO= this.addCustomer
-      this.$ajax.post(url + 'housingResource/insertRoom', housingResourceVO).then(res => {
-        if(res.data.status === 200){
-          this.$message({
-            message: '成功',
-            type: 'success'
-          })
-          this.$router.push('/rent')
-        }else if(res.data.status===403){
-          this.$message({
-              message:'权限不足',
-              type: 'error'
-          })
-        }
-      })
+      if(this.$route.query.msg === "tianjia"){
+        var housingResourceVO = {}
+        housingResourceVO.buildings = this.addCustomer.buildingsString
+        housingResourceVO.coveredArea = this.addCustomer.coveredArea,
+        housingResourceVO.precinct = this.addCustomer.precinct,
+        housingResourceVO.pricing = this.addCustomer.pricing,
+        housingResourceVO.renting = this.addCustomer.renting,
+        housingResourceVO.reserve = this.addCustomer.reserve,
+        housingResourceVO.roomNumber = this.addCustomer.roomNumber,
+        housingResourceVO.roomType = this.addCustomer.roomType
+          
+        // housingResourceVO= this.addCustomer
+        this.$ajax.post(url + 'housingResource/insertRoom', housingResourceVO).then(res => {
+          if(res.data.status === 200){
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+            this.$router.push('/rent')
+          }else if(res.data.status===403){
+            this.$message({
+                message:'权限不足',
+                type: 'error'
+            })
+          }
+        })
+      }else{
+        var housingResourceVO = {}
+        housingResourceVO.buildings = this.addCustomer.buildingsString
+        housingResourceVO.coveredArea = this.addCustomer.coveredArea,
+        housingResourceVO.precinct = this.addCustomer.precinct,
+        housingResourceVO.pricing = this.addCustomer.pricing,
+        housingResourceVO.renting = this.addCustomer.renting,
+        housingResourceVO.reserve = this.addCustomer.reserve,
+        housingResourceVO.roomNumber = this.addCustomer.roomNumber,
+        housingResourceVO.roomType = this.addCustomer.roomType
+         housingResourceVO.id = this.id
+          
+        // housingResourceVO= this.addCustomer
+        this.$ajax.put(url + 'housingResource/updateRooms', housingResourceVO).then(res => {
+          if(res.data.status === 200){
+            this.$message({
+              message: '编辑成功',
+              type: 'success'
+            })
+            this.$router.push('/rent')
+          }else if(res.data.status===403){
+            this.$message({
+                message:'权限不足',
+                type: 'error'
+            })
+          }
+        })
+      }
     },
     goBack () {
       window.history.back()
@@ -177,11 +214,9 @@ export default {
     },
     // 上传成功后的回调
     uploadSuccess (response, file, fileList) {
-      // console.log('上传文件', response)
     },
     // 上传错误
     uploadError (response, file, fileList) {
-      // console.log('上传失败，请重试！')
     },
   }
 }

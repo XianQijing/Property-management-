@@ -14,6 +14,9 @@
             <el-tab-pane label="权限管理" name="third" :lazy="lazy"  v-if="this.role.indexOf('rubik:permission:list')!==-1">
               <role/>
             </el-tab-pane>
+            <el-tab-pane label="操作日志" name="fourth" :lazy="lazy"  v-if="this.role.indexOf('rubik:permission:list')!==-1">
+              <operation/>
+            </el-tab-pane>
 					</el-tabs>
 				</div>
 			</div>
@@ -27,6 +30,7 @@ import NavBar from '@/components/NavBar'
 import Message from './message'
 import Parameters from './parameters'
 import Role from './role'
+import Operation from './operation'
 import url from '../../assets/Req.js'
 export default {
   name: 'system',
@@ -58,7 +62,8 @@ export default {
     NavBar,
     Message,
     Parameters,
-    Role
+    Role,
+    Operation
   }
 }
 </script>

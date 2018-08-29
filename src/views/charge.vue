@@ -7,19 +7,24 @@
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                       <el-tab-pane label="应收费用" name="third" v-if="this.role.indexOf('rubik:receivable:list')!==-1">
                           <div class="main">
-                              <div id="card"><button @click="feiyong3" id="linshi">临时费用</button><button @click="feiyong2" id="chaobiao">抄表费用</button><button class="active" @click="feiyong1" id="changgui">常规费用</button></div>
+                              <div id="card"><el-button size="small" v-for="(item, index) in date" :key="index" :class="{actived:index == num}" @click="tableTab(index)">{{ item.name }}</el-button></div>
                               <div id="main">
                                 <div>
                                   <el-table :data="temporary" style="width: 100%">
-                                    <el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column>
-                                    <el-table-column prop="build" label="楼宇" width="180"></el-table-column>
+                                    <!-- <el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column> -->
+                                    <el-table-column prop="build" label="楼宇"></el-table-column>
                                     <el-table-column prop="roomNum" label="房号"></el-table-column>
-                                    <el-table-column prop="clientName" label="租户名称" width="180"></el-table-column>
-                                    <el-table-column prop="itemName" label="收费项目" width="180"></el-table-column>
-                                    <el-table-column prop="meterName" label="仪表种类" width="180"></el-table-column>
-                                    <el-table-column prop="price" label="费用" width="180"></el-table-column>
-                                    <el-table-column prop="createTime" label="时间" width="180"></el-table-column>
-                                    <el-table-column prop="remarks" label="备注" width="180"></el-table-column>
+                                    <el-table-column prop="clientName" label="租户名称"></el-table-column>
+                                    <el-table-column prop="itemName" label="收费项目"></el-table-column>
+                                    <el-table-column prop="meterName" label="仪表种类"></el-table-column>
+                                    <el-table-column prop="price" label="费用"></el-table-column>
+                                    <el-table-column prop="createTime" label="时间"></el-table-column>
+                                    <el-table-column prop="remarks" label="备注"></el-table-column>
+                                    <el-table-column>
+                                      <template slot-scope="scope">
+                                        <el-button size="small">付款</el-button>
+                                      </template>
+                                    </el-table-column>
                                   </el-table>
                                   <div class="fenye">
                                     <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="currentPage2"  :page-size="pageSize2" :page-sizes="pageSizes2" layout="total, sizes, prev, pager, next, jumper" :total="totalData2">
@@ -120,6 +125,8 @@ export default {
   name: "charge",
   data() {
     return {
+      date: [],
+      num: 0,
       rule: {
         payItemMeterId: [
           { required: true, message: '请选择收费项目', trigger: 'change' },
@@ -136,7 +143,6 @@ export default {
       },
       updatePayMeterId:'',
       //应收费用的id
-      shouldId: "180723BR7M3G986W",
       entryChange: false,
       entry: false,
       news: false,
@@ -221,8 +227,9 @@ export default {
 				})
 			})
     
-    this.getMeter(), 
-    this.Cost(),
+    this.getMeter(),
+    this.selectCost(),
+    // this.Cost(),
     this.getType(),
     this.getCharges(),
     this.getOptions()
@@ -236,6 +243,11 @@ export default {
 
   //选项卡
   methods: {
+    tableTab(index){
+      this.num = index
+      this.shouldId = this.date[index].id
+      this.Cost()
+    },
     isStudentNo(e) {
       var reg=/^\d+$/;   /*定义验证表达式*/
       if(!reg.test(e.target.value)){
@@ -412,6 +424,13 @@ export default {
         //this.entrydata.time = res.data.data.paymentDay
       })
     },
+    selectCost(){
+      this.$ajax.get(url + 'pay/queryPayItemAll').then(res => {
+        this.date = res.data.data
+        this.shouldId = res.data.data[0].id
+        this.Cost()
+      })
+    },
     //应收费用
     Cost() {
       this.$ajax
@@ -427,6 +446,7 @@ export default {
           this.totalData2 = res.data.data.records;
         });
     },
+    //选择
     //仪表管理
     getMeter() {
       this.$ajax.get(url + "pay/queryMeterManagementAll", {
@@ -448,62 +468,62 @@ export default {
     },
     //
     //常规
-    feiyong1() {
-      document.getElementById('linshi').className=''
-      document.getElementById('chaobiao').className=''
-      document.getElementById('changgui').className='active'
-      this.shouldId = "180723BR7M3G986W";
-      this.$ajax
-        .get(url + "pay/queryReceivable", {
-          params: {
-            payItem: "180723BR7M3G986W",
-            page: this.currentPage2,
-            pageSize: this.pageSize2
-          }
-        })
-        .then(res => {
-          this.temporary = res.data.data.rows;
-          this.totalData2 = res.data.data.records;
-        });
-    },
+    // feiyong1() {
+    //   document.getElementById('linshi').className=''
+    //   document.getElementById('chaobiao').className=''
+    //   document.getElementById('changgui').className='active'
+    //   this.shouldId = "180723BR7M3G986W";
+    //   this.$ajax
+    //     .get(url + "pay/queryReceivable", {
+    //       params: {
+    //         payItem: "180723BR7M3G986W",
+    //         page: this.currentPage2,
+    //         pageSize: this.pageSize2
+    //       }
+    //     })
+    //     .then(res => {
+    //       this.temporary = res.data.data.rows;
+    //       this.totalData2 = res.data.data.records;
+    //     });
+    // },
     //抄表
-    feiyong2() {
-      document.getElementById('linshi').className=''
-      document.getElementById('chaobiao').className='active'
-      document.getElementById('changgui').className=''
-      this.shouldId = "180723BR8PBFT354";
-      this.$ajax
-        .get(url + "pay/queryReceivable", {
-          params: {
-            payItem: "180723BR8PBFT354",
-            page: this.currentPage2,
-            pageSize: this.pageSize2
-          }
-        })
-        .then(res => {
-          this.temporary = res.data.data.rows;
-          this.totalData2 = res.data.data.records;
-        });
-    },
+    // feiyong2() {
+    //   document.getElementById('linshi').className=''
+    //   document.getElementById('chaobiao').className='active'
+    //   document.getElementById('changgui').className=''
+    //   this.shouldId = "180723BR8PBFT354";
+    //   this.$ajax
+    //     .get(url + "pay/queryReceivable", {
+    //       params: {
+    //         payItem: "180723BR8PBFT354",
+    //         page: this.currentPage2,
+    //         pageSize: this.pageSize2
+    //       }
+    //     })
+    //     .then(res => {
+    //       this.temporary = res.data.data.rows;
+    //       this.totalData2 = res.data.data.records;
+    //     });
+    // },
     //临时
-    feiyong3() {
-      document.getElementById('linshi').className='active'
-      document.getElementById('chaobiao').className=''
-      document.getElementById('changgui').className=''
-      this.shouldId = "180723BRAS3GHR68";
-      this.$ajax
-        .get(url + "pay/queryReceivable", {
-          params: {
-            payItem: "180723BRAS3GHR68",
-            page: this.currentPage2,
-            pageSize: this.pageSize2
-          }
-        })
-        .then(res => {
-          this.temporary = res.data.data.rows;
-          this.totalData2 = res.data.data.records;
-        });
-    },
+    // feiyong3() {
+    //   document.getElementById('linshi').className='active'
+    //   document.getElementById('chaobiao').className=''
+    //   document.getElementById('changgui').className=''
+    //   this.shouldId = "180723BRAS3GHR68";
+    //   this.$ajax
+    //     .get(url + "pay/queryReceivable", {
+    //       params: {
+    //         payItem: "180723BRAS3GHR68",
+    //         page: this.currentPage2,
+    //         pageSize: this.pageSize2
+    //       }
+    //     })
+    //     .then(res => {
+    //       this.temporary = res.data.data.rows;
+    //       this.totalData2 = res.data.data.records;
+    //     });
+    // },
     submitIn(){
       if(this.name == "录入"){
       var arr=this.entrydata.houseType;
@@ -660,13 +680,11 @@ export default {
 }
 
 #card button {
-  border: 1px solid #999999;
   border-radius: 5px;
   margin-left: 5px;
-  background: white;
-  color: #999999;
-  height: 31px;
   float: right;
+  color: #419EFF;
+  border: 1px solid #C6E2FF
 }
 .active {
   border: 1px solid #32a8ee !important;
@@ -681,5 +699,10 @@ export default {
 }
 #main {
   padding-top: 52px;
+}
+.actived{
+  background: #ECF5FF;
+  color: #419EFF;
+  border: 1px solid #C6E2FF
 }
 </style>

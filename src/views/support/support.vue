@@ -14,7 +14,7 @@
             <el-menu-item index="1">房产与客户</el-menu-item>
             <el-menu-item index="2">服务报表</el-menu-item>
             <el-menu-item index="3">收入报表</el-menu-item>
-            <el-menu-item index="4">广告位</el-menu-item>
+            <el-menu-item index="4">车位</el-menu-item>
           </el-menu>
           <!-- 房产与客户 -->
           <HouseAndCust v-if="tabNum === '1'"/>

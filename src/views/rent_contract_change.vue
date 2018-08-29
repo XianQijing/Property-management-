@@ -58,7 +58,7 @@
                         </el-form-item>
                         
                         <el-form-item label="物业管理费:">
-                            <el-input v-model="detail.dailyManagementFee" placeholder="请输入物业管理费">
+                            <el-input v-model="form.dailyManagementFee " placeholder="请输入物业管理费">
                                 <template slot="append">元/天/平方米</template>
                             </el-input>
                         </el-form-item>
@@ -161,24 +161,19 @@
                 </el-row>
                 <div>
                     <el-row>
-                    <el-col :span="6">
+                    <el-col :span="8">
                         <el-form-item label="合同保证金：">
                             <el-input v-model="detail.cashDeposit"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6">
+                    <el-col :span="8">
                         <el-form-item label="物业押金：">
                             <el-input v-model="detail.cashPledge"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6">
+                    <el-col :span="8">
                         <el-form-item label="合计：">
                             <el-input v-model="detail.theDepositAmount"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-form-item label="大写：">
-                            <el-input v-model="detail.big4"></el-input>
                         </el-form-item>
                     </el-col>
                     </el-row>
@@ -399,7 +394,6 @@ export default {
                 fixedGrowth:''
             },
             form: {
-                deliveryTime: '',
                 terminationTime: '',
                 startTime: '',
                 endTime: '',
@@ -567,7 +561,7 @@ export default {
                     "phone":this.detail.phone,
                     "purpose": this.detail.purpose,
                     "comment":this.detail.comment,
-                    "deliveryTime": this.form.deliveryTime,
+                    "deliveryTime": this.detail.deliveryTime,
                     "terminationTime": this.form.terminationTime,
                     "startTime": this.detail.startTime,
                     "endTime": this.detail.endTime,
@@ -590,7 +584,13 @@ export default {
                     "budgeEndTime":this.form.budgeEndTime,
                     "budgeStartTime":this.form.budgeStartTime,
                     "id":this.id,
-                    "fixedGrowth":this.detail.fixedGrowth
+                    "fixedGrowth":this.detail.fixedGrowth,
+                    "fax": this.detail.fax,
+                    "budget": this.detail.budget,
+                    "taxes": this.detail.taxes,
+                    "theDepositAmount": this.detail.theDepositAmount,
+                    "dailyRent": this.detail.dailyRent,
+                    "dailyManagementFee": this.detail.dailyManagementFee
                         }
                 this.$ajax.put(url + 'contract/updateContract',data2
                 ).then(res => {
@@ -671,8 +671,7 @@ export default {
             // }
             
             this.$ajax.post(url + 'contract/addContract', {
-                
-                    "site":this.detail.site,
+                "site":this.detail.site,
                     "afterTheRent":this.detail.afterTheRent,
                     "amplification":this.detail.amplification,
                     "cashDeposit":this.detail.cashDeposit,
@@ -681,7 +680,7 @@ export default {
                     "phone":this.detail.phone,
                     "purpose": this.detail.purpose,
                     "comment":this.detail.comment,
-                    "deliveryTime": this.form.deliveryTime,
+                    "deliveryTime": this.detail.deliveryTime,
                     "terminationTime": this.form.terminationTime,
                     "startTime": this.detail.startTime,
                     "endTime": this.detail.endTime,
@@ -703,8 +702,14 @@ export default {
                     "roomNumber":this.detail.roomNumber,
                     "budgeEndTime":this.form.budgeEndTime,
                     "budgeStartTime":this.form.budgeStartTime,
-                    "fixedGrowth":this.detail.fixedGrowth
-                
+                    "id":this.id,
+                    "fixedGrowth":this.detail.fixedGrowth,
+                    "fax": this.detail.fax,
+                    "budget": this.detail.budget,
+                    "taxes": this.detail.taxes,
+                    "theDepositAmount": this.detail.theDepositAmount,
+                    "dailyRent": this.detail.dailyRent,
+                    "dailyManagementFee": this.detail.dailyManagementFee
             }).then(res => {
                 if(res.data.status === 200){
                     this.$message({
