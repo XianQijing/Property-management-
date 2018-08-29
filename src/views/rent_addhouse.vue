@@ -151,48 +151,6 @@ export default {
     handlePreview (file) {
     },
     save () {
-<<<<<<< HEAD
-      var housingResourceVO = {}
-      housingResourceVO.buildings = '1808016T8CPZFBXP',
-      housingResourceVO.coveredArea = this.addCustomer.coveredArea,
-      housingResourceVO.precinct = this.addCustomer.precinct,
-      housingResourceVO.pricing = this.addCustomer.pricing,
-      housingResourceVO.renting = this.addCustomer.renting,
-      housingResourceVO.reserve = this.addCustomer.reserve,
-      housingResourceVO.roomNumber = this.addCustomer.roomNumber,
-      housingResourceVO.roomType = "string",
-      housingResourceVO.id = this.id
-      if(this.name === '添加'){
-      housingResourceVO= this.addCustomer
-      this.$ajax.post(url + 'housingResource/insertRoom', housingResourceVO).then(res => {
-        if(res.data.status === 200){
-          this.$message({
-            message: '添加成功',
-            type: 'success'
-          })
-          this.$router.push('/rent')
-        }else if(res.data.status===403){
-          this.$message({
-              message:'权限不足',
-              type: 'error'
-          })
-        }
-      })
-      }else{
-        this.$ajax.put(url + 'housingResource/updateRooms',housingResourceVO).then(res => {
-          if(res.data.status === 200){
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          this.$router.push('/rent')
-        }else if(res.data.status===403){
-          this.$message({
-              message:'权限不足',
-              type: 'error'
-          })
-        }
-=======
       if(this.$route.query.msg === "tianjia"){
         var housingResourceVO = {}
         housingResourceVO.buildings = this.addCustomer.buildingsString
@@ -245,7 +203,6 @@ export default {
                 type: 'error'
             })
           }
->>>>>>> XianQijing
         })
       }
     },

@@ -606,8 +606,6 @@ mounted(){
     // this.getRoleData()
 },
 methods:{
-<<<<<<< HEAD
-=======
     // 身份证验证
     idCard(){
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
@@ -621,7 +619,6 @@ methods:{
             e.target.style.borderColor = '#67c23a'
         }
     },
->>>>>>> XianQijing
     cancel () {
         this.add = !this.add
         this.addperson = {
