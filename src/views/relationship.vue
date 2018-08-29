@@ -37,7 +37,7 @@
 												<el-dropdown-menu slot="dropdown">
 													<span @click="detail(scope.$index, base)"><el-dropdown-item>详情</el-dropdown-item></span>
 													<span @click="customerEdit(scope.$index, base)" v-if="scope.row.label == '在租'"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<span @click="baseDelete(scope.$index, base)"  v-if="scope.row.label == '在租'"><el-dropdown-item>迁出</el-dropdown-item></span>
+													<!-- <span @click="baseDelete(scope.$index, base)"  v-if="scope.row.label == '在租'"><el-dropdown-item>迁出</el-dropdown-item></span> -->
 												</el-dropdown-menu>
 											</el-dropdown>
 										</template>

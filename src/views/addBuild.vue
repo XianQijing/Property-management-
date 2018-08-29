@@ -194,7 +194,7 @@ export default {
               })
             }else{
               this.$message({
-                message: '修改失败',
+                message: res.data.msg,
                 type: 'error'
               })
             }
@@ -214,7 +214,7 @@ export default {
               })
             }else{
               this.$message({
-                message:'添加失败',
+                message:res.data.msg,
                 type:'error'
               })
             }

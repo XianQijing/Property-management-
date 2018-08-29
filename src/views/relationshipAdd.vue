@@ -5,11 +5,11 @@
     <div class="tianjia">
       <div class="input">
         <el-form :model="addCustomer" :rules="rules" ref="addCustomer" label-width="130px" size="small" class="demo-addCustomer" :disabled="edit">
-          <el-form-item label="关联房屋:" prop="selectRoom">
+          <!-- <el-form-item label="关联房屋:" prop="selectRoom">
             <div class="block">
               <el-cascader expand-trigger="hover" :options="options" v-model="addCustomer.selectRoom" @change="handleChange"></el-cascader>
             </div>
-          </el-form-item>
+          </el-form-item> -->
 
           <el-form-item label="姓名:" prop="name">
             <el-input v-model="addCustomer.name" placeholder="请输入租户姓名"></el-input>
@@ -190,7 +190,7 @@ export default {
       this.$ajax.get(url + 'owner/get/'+this.id+'/'+this.roomid+'/'+this.contractId).then(res => {
         if(res.status===200){
           this.addCustomer.name=res.data.name;
-          this.addCustomer.selectRoom=[res.data.precinct, res.data.buildings, res.data.roomid];
+          // this.addCustomer.selectRoom=[res.data.precinct, res.data.buildings, res.data.roomid];
           this.addCustomer.radio=res.data.sexs;
           this.addCustomer.nationality=res.data.nationality;
           this.addCustomer.nation=res.data.nation;

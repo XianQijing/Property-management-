@@ -5,7 +5,7 @@
                 <div class="departNav">
         <h1>部门</h1>
         <el-button type="text" @click="qq" v-if="this.data5.length == 0">添加部门</el-button>
-       <el-tree :data="data5"  node-key="id" default-expand-all  @node-click="back">
+       <el-tree :data="data5" node-key="id"  @node-click="back" lazy>
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <div class="aa">
@@ -129,25 +129,27 @@ export default {
             })
         }
       },
-      back(e){
+      back(e,node){
             this.id = e.id
+            if(this.id){
             this.$ajax.post(url + 'company/findCompanyById',"id="+e.id).then(res =>{
                 var child = res.data.data;
                 if (!e.children) {
                     this.$set(e, 'children', []);
                     }
-                    this.id = e.id
+                    this.id = ''
                 e.children = res.data.data
-                this.$ajax.get(url+'company/findUser',{
-                    params:{
-                        "id":this.id,
-                        "page":1,
-                        "pageSize":this.pageSizeCustomerMsg
-                    }
-                }).then((res) => {
-					this.tableData2 = res.data.data.rows
-					this.totalDataNumbercustomerMsg = res.data.data.records
-				})
+            })
+            }
+            this.$ajax.get(url+'company/findUser',{
+                params:{
+                    "id":this.id,
+                    "page":1,
+                    "pageSize":this.pageSizeCustomerMsg
+                }
+            }).then((res) => {
+                this.tableData2 = res.data.data.rows
+                this.totalDataNumbercustomerMsg = res.data.data.records
             })
             
       },
@@ -155,7 +157,6 @@ export default {
         const parent = node.parent;
         const children = parent.data.children || parent.data;
         const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
         this.$confirm('此操作将删除该部门及下属部门, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -166,7 +167,8 @@ export default {
                                 message: '删除成功',
                                 type: 'success'
                             })
-                            this.getbumen()
+                            // this.getbumen()
+                            children.splice(index, 1);
                         }else if(res.data.status===403){
                             this.$message({
                                 message: '权限不足',
@@ -271,8 +273,25 @@ export default {
                 message: '已取消删除'
             });          
         });
+    },
+    //  loadNode(node, resolve) {
+    //      if (node.level === 0) {
+    //       return resolve([{ name: 'region' }]);
+    //     }
+    //     if (node.level > 1) return resolve([]);
+
+    //     setTimeout(() => {
+    //       const data = [{
+    //         name: 'leaf',
+    //         leaf: true
+    //       }, {
+    //         name: 'zone'
+    //       }];
+
+    //       resolve(data);
+    //     }, 500);
+    //     }
     }
-      }
 }
 </script>
 

@@ -117,7 +117,7 @@ export default {
       tianjia:false,
       bianji:true,
       name:'添加短信模板',
-      totalDataNumbertemplate: 400,
+      totalDataNumbertemplate: 0,
       pageNoTemplate: 1,
       pageSizeTemplate: 10,
       pageSizesListTemplate: [10,20, 30, 40, 50],

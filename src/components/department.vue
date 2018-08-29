@@ -90,7 +90,7 @@
             <!--往来单位-->
             <el-tab-pane label="往来单位" name="fourth" v-if="this.role1.indexOf('rubik:btype:list')!==-1">
               <div class="main">
-                <button @click="contact = !contact">+ 添加联系人</button>
+                <button @click="toBtypeEdit('','','add')">+ 添加联系人</button>
                 <!-- <button @click="isShow = !isShow">导入</button> -->
                 <button @click="deleteAll">删除</button>
                 <el-table :data="tableData1" style="width: 100%" @selection-change="handleSelectionChange">
@@ -109,7 +109,7 @@
                           操作<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
 												<el-dropdown-menu slot="dropdown">
-													<el-dropdown-item><button @click="toBtypeEdit(scope.$index, tableData1)">编辑</button></el-dropdown-item>
+													<el-dropdown-item><button @click="toBtypeEdit(scope.$index, tableData1,'edit')">编辑</button></el-dropdown-item>
 													<el-dropdown-item><button @click="deleteRowB(scope.$index, tableData1)">删除</button></el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
@@ -297,7 +297,7 @@
       </el-dialog>
       <!--外部联系人-->
       <el-dialog
-          title="添加外部联系人"
+          :title='this.nowName'
           :visible.sync="contact"
           width="30%">
           <el-form ref="form" :model="btype" :rules="rules" label-width="90px" size="small" class="chuang">
@@ -324,12 +324,12 @@
           </el-form-item>
           </el-form>
           <div class="footer">
-                      <button class="confirm" @click="addBtype">确定</button><button class="cancel" @click="contact = !contact">取消</button>
+                <button class="confirm" @click="addBtype">确定</button><button class="cancel" @click="contact = !contact">取消</button>
           </div>
       </el-dialog>
 
     <!-- 往来单位-编辑 -->
-            <el-dialog
+            <!-- <el-dialog
                 title="编辑往来单位"
                 :visible.sync="wanglai"
                 width="30%">
@@ -367,7 +367,7 @@
                     <el-button @click="wanglai = false">取 消</el-button>
                     <el-button type="primary" @click="editBtype()">确 定</el-button>
                 </span>
-            </el-dialog>
+            </el-dialog> -->
 
             <!-- <el-dialog :title="addOrEdit" :visible.sync="dialogFormVisible" width="30%">
               <el-form>
@@ -418,6 +418,7 @@ export default {
             children: []
         }];
         return{
+            nowName:'',
             role:[],
           rolePage: {
               currentPage: 1,
@@ -565,7 +566,8 @@ export default {
                 {img:'static/parrot.png'},
                 {img:'static/seals.png'},
                 {img:'static/starfish.png'},
-            ]
+            ],
+            nowType:false
         }
     },
     components:{
@@ -604,6 +606,22 @@ mounted(){
     // this.getRoleData()
 },
 methods:{
+<<<<<<< HEAD
+=======
+    // 身份证验证
+    idCard(){
+        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(!reg.test(e.target.value)){
+            e.target.style.borderColor = 'red'
+            this.$message({
+                message: '请输入数字',
+                type: 'error'
+            })
+        }else{
+            e.target.style.borderColor = '#67c23a'
+        }
+    },
+>>>>>>> XianQijing
     cancel () {
         this.add = !this.add
         this.addperson = {
@@ -654,15 +672,17 @@ methods:{
           message: '请输入数字',
           type: 'error'
         })
+        this.nowType = false
       }else if(e.target.value.length!==11){
-          console.log(e.target.value.length)
           e.target.style.borderColor = 'red'
           this.$message({
           message: '请输入11位数字',
           type: 'error'
         })
+        this.nowType == false
       } else {
         e.target.style.borderColor = '#67c23a'
+        this.nowType == true
       }
     },
      IsEmail(e) {
@@ -771,78 +791,78 @@ methods:{
       })
     },
     // 编辑角色
-    edit (data) {
-      // get  /role/findById  id 进入编辑页面接口
-      this.$ajax.get(url + 'role/findById', {
-        params: {
-          id: data.row.id
-        }
-      }).then(res => {
-        this.dialogFormVisible = true
-        this.rolename = res.data.data.name
-        this.roleid = res.data.data.id
-        this.addOrEdit = '编辑角色'
-      })
-    },
+    // edit (data) {
+    //   // get  /role/findById  id 进入编辑页面接口
+    //   this.$ajax.get(url + 'role/findById', {
+    //     params: {
+    //       id: data.row.id
+    //     }
+    //   }).then(res => {
+    //     this.dialogFormVisible = true
+    //     this.rolename = res.data.data.name
+    //     this.roleid = res.data.data.id
+    //     this.addOrEdit = '编辑角色'
+    //   })
+    // },
     // 获取角色
-    getRoleData () {
-      // GET /role/findAll page当前页 pageSize每页显示条数
-      this.$ajax.get(url + 'role/findAll', {
-        params: {
-          page: this.rolePage.currentPage,
-          pageSize: this.rolePage.pageSize
-        }
-      }).then(res=> {
-        // console.log(res.data.data)
-        this.rolePage.total = res.data.data.records
-        res.data.data.rows.forEach(v => {
-          v.createDate = toDate(v.createDate)
-        })
-        this.jurisdictionData = res.data.data.rows
-      })
-    },
+    // getRoleData () {
+    //   // GET /role/findAll page当前页 pageSize每页显示条数
+    //   this.$ajax.get(url + 'role/findAll', {
+    //     params: {
+    //       page: this.rolePage.currentPage,
+    //       pageSize: this.rolePage.pageSize
+    //     }
+    //   }).then(res=> {
+    //     // console.log(res.data.data)
+    //     this.rolePage.total = res.data.data.records
+    //     res.data.data.rows.forEach(v => {
+    //       v.createDate = toDate(v.createDate)
+    //     })
+    //     this.jurisdictionData = res.data.data.rows
+    //   })
+    // },
     // 添加角色
-    addrole () {
-      if (this.rolename === '') {
-        this.$message({
-          message: '角色名称不能为空',
-          type: 'error'
-        })
-      } else {
-        // role/insert name
-        var insert = 'role/insert'
-        var role = {
-          name: this.rolename
-        }
-        if (this.addOrEdit === '添加角色') {
-          insert = 'role/insert'
-          role = {
-            name: this.rolename
-          }
-        } else {
-          insert = 'role/update'
-          role = {
-            name: this.rolename,
-            id: this.roleid
-          }
-        }
-        this.$ajax.post(url + insert, role).then(res=> {
-          if (res.data.status === 200) {
-            this.$message({
-              message: '角色名称添加成功',
-              type: 'success'
-            })
-            this.dialogFormVisible = false
-            this.getRoleData()
-          } else {
-            this.$message({
-              message: res.data.msg,
-              type: 'error'
-            })
-          }
-        })
-      }
-    },
+    // addrole () {
+    //   if (this.rolename === '') {
+    //     this.$message({
+    //       message: '角色名称不能为空',
+    //       type: 'error'
+    //     })
+    //   } else {
+    //     // role/insert name
+    //     var insert = 'role/insert'
+    //     var role = {
+    //       name: this.rolename
+    //     }
+    //     if (this.addOrEdit === '添加角色') {
+    //       insert = 'role/insert'
+    //       role = {
+    //         name: this.rolename
+    //       }
+    //     } else {
+    //       insert = 'role/update'
+    //       role = {
+    //         name: this.rolename,
+    //         id: this.roleid
+    //       }
+    //     }
+    //     this.$ajax.post(url + insert, role).then(res=> {
+    //       if (res.data.status === 200) {
+    //         this.$message({
+    //           message: '角色名称添加成功',
+    //           type: 'success'
+    //         })
+    //         this.dialogFormVisible = false
+    //         this.getRoleData()
+    //       } else {
+    //         this.$message({
+    //           message: res.data.msg,
+    //           type: 'error'
+    //         })
+    //       }
+    //     })
+    //   }
+    // },
     handleChange () {},
     transTreeData (items) {
         // console.log(items)
@@ -941,21 +961,31 @@ methods:{
 			})
         },
         //to往来单位编辑
-        toBtypeEdit(index, rows){
-            let that = this;
-            that.id = this.tableData1[index].id;
-            console.log(that.id);
-            this.$ajax.get(url + 'btype/findById',{params:{"id":that.id}}).then((res) => {
-                this.addbtypeEdit.btypeName = res.data.data.btypeName;
-                this.addbtypeEdit.type = res.data.data.type;
-                this.addbtypeEdit.linkman = res.data.data.linkman;
-                this.addbtypeEdit.business = res.data.data.business;
-                this.addbtypeEdit.phone = res.data.data.phone;
-                this.addbtypeEdit.address = res.data.data.address;
-                this.addbtypeEdit.remark = res.data.data.remark;
-                this.wanglai = true;
-                
-			})
+        toBtypeEdit(index, rows, type){
+            this.contact = true;
+            if(type === 'edit'){
+                this.nowName === "编辑外部联系人"
+                let that = this;
+                that.id = this.tableData1[index].id;
+                this.$ajax.get(url + 'btype/findById',{params:{"id":that.id}}).then((res) => {
+                    this.btype.btypeName = res.data.data.btypeName;
+                    this.btype.type = res.data.data.type;
+                    this.btype.linkman = res.data.data.linkman;
+                    this.btype.business = res.data.data.business;
+                    this.btype.phone = res.data.data.phone;
+                    this.btype.address = res.data.data.address;
+                    this.btype.remark = res.data.data.remark;
+                })
+            }else{
+                this.nowName === "添加外部联系人"
+                this.btype.btypeName = ''
+                    this.btype.type = ''
+                    this.btype.linkman = ''
+                    this.btype.business = ''
+                    this.btype.phone = ''
+                    this.btype.address = ''
+                    this.btype.remark = ''
+            }
         },
         //职员删除
         deleteRow(index, rows) {
@@ -1184,6 +1214,7 @@ methods:{
     //添加往来单位
     addBtype(){
         if(this.btype.btypeName && this.btype.linkman && this.btype.phone){
+            if(this.nowName = '添加外部联系人'){
             var btype={};
             btype.btypeName =this.btype.btypeName;
             btype.type = this.btype.type;
@@ -1213,22 +1244,17 @@ methods:{
                     })
                 }
             })
-        }
-    },
-    //编辑往来单位
-        editBtype(){
+        }else{
             var btype={};
             btype.id = this.id;
-            console.log(id);
-            btype.btypeName=this.addbtypeEdit.btypeName;
-            btype.type=this.addbtypeEdit.type;
-            btype.linkman=this.addbtypeEdit.linkman;
-            btype.business=this.addbtypeEdit.business;
-            btype.phone=this.addbtypeEdit.phone;
-            btype.address=this.addbtypeEdit.address;
-            btype.remark=this.addbtypeEdit.remark;
-            this.$ajax.post(url+'btype/update',btype
-            ).then((res) => {
+            btype.btypeName =this.btype.btypeName;
+            btype.type = this.btype.type;
+            btype.linkman = this.btype.linkman;
+            btype.business = this.btype.business;
+            btype.phone = this.btype.phone;
+            btype.address = this.btype.address;
+            btype.remark = this.btype.remark;
+            this.$ajax.post(url+'btype/update',btype).then((res) => {
                 if(res.data.status === 200){
                     this.$message({
                         message: '编辑成功',
@@ -1236,7 +1262,7 @@ methods:{
                     });
                     this.form = res.data
                     this.Btype()
-                    this.wanglai = false;
+                    this.contact = false
                 }else if(res.data.status===403){
                     this.$message({
                         message: '权限不足',
@@ -1244,12 +1270,48 @@ methods:{
                     })
                 }else{
                     this.$message({
-                        message: res.data.msg,
+                        message: '编辑失败',
                         type: 'error'
-                    });
+                    })
                 }
             })
-        },
+        }
+        }
+    },
+    //编辑往来单位
+        // editBtype(){
+        //     var btype={};
+        //     btype.id = this.id;
+        //     btype.btypeName=this.addbtypeEdit.btypeName;
+        //     btype.type=this.addbtypeEdit.type;
+        //     btype.linkman=this.addbtypeEdit.linkman;
+        //     btype.business=this.addbtypeEdit.business;
+        //     btype.phone=this.addbtypeEdit.phone;
+        //     btype.address=this.addbtypeEdit.address;
+        //     btype.remark=this.addbtypeEdit.remark;
+        //     this.$ajax.post(url+'btype/update',btype
+        //     ).then((res) => {
+        //         if(res.data.status === 200){
+        //             this.$message({
+        //                 message: '编辑成功',
+        //                 type: 'success'
+        //             });
+        //             this.form = res.data
+        //             this.Btype()
+        //             this.wanglai = false;
+        //         }else if(res.data.status===403){
+        //             this.$message({
+        //                 message: '权限不足',
+        //                 type: 'error'
+        //             })
+        //         }else{
+        //             this.$message({
+        //                 message: res.data.msg,
+        //                 type: 'error'
+        //             });
+        //         }
+        //     })
+        // },
     append(data) {
         const newChild = { id: id++, label: 'testtest', children: [] };
         if (!data.children) {

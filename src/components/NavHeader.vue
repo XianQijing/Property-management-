@@ -9,7 +9,7 @@
       <div class="sousuo">
         <!--搜索-->
         <form action="" method="post" style="display:inline-block;"></form>
-        <img src="../assets/yonghu.png">
+        <img :src="this.photo">
         <!-- <span class="demonstration"></span> -->
         <el-dropdown>
           <span class="el-dropdown-link">
@@ -32,7 +32,8 @@ export default {
   data () {
     return {
       name: '请登录',
-      status: '登出'
+      status: '登出',
+      photo: '../assets/yonghu.png'
     }
   },
 	mounted(){
@@ -43,9 +44,10 @@ export default {
     }).then(res => {
       if(res.data.status === 200){
         this.name = res.data.data.username
+        this.photo = res.data.data.photo
       }else{
+        this.status = '请登录'
         this.$router.push('/login')
-        this.status = '登录'
       }
     })
     if(!sessionStorage.getItem("userId")){

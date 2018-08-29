@@ -380,7 +380,7 @@ export default {
     }
     this.$ajax.get(url + 'precinct/flndAll').then(res=>{
       this.selectBuild=res.data.data
-      this.selectBuild.unshift({'id':'0','namec':'全部'})
+      // this.selectBuild.unshift({'id':'0','namec':'全部'})
     })
   },
   methods: {
@@ -415,7 +415,7 @@ export default {
             })
         },
     selectbuild(e){
-      if(this.precinct === '0'){
+      if(!this.precinct){
         this.getBuild()
       }else{
         this.selectABuild()
