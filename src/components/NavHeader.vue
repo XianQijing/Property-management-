@@ -64,6 +64,8 @@ export default {
       })
       sessionStorage.clear()
       removeCookie('phone', '/login')
+      delCookie('phone')
+      delCookie('pwd')
       this.$router.push('/login')
       window.history.go(0)
     }

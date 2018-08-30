@@ -36,20 +36,19 @@
                         <!-- <el-date-picker v-model="detail.startTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:100%" format="yyyy-MM-dd" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker> -->
                     </el-form-item>
                     <el-row>
-                        <el-col :span="12">
                             <el-form-item label="三年后租金增幅：">
-                                <el-input @blur="isStudentNo" v-model="detail.amplification" placeholder="请输入增幅">
-                                    <template slot="append">%/月</template>
-                                </el-input>
+                                <el-col :span="12">
+                                    <el-input @blur="isStudentNo" v-model="detail.amplification" placeholder="请输入增幅">
+                                        <template slot="append">%/月</template>
+                                    </el-input>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-input v-model="detail.fixedGrowth" placeholder="请输入租金">
+                                        <template slot="append">元</template>
+                                    </el-input>
+                                </el-col>
                             </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="三年后租金：">
-                                <el-input v-model="detail.fixedGrowth" placeholder="请输入租金">
-                                    <template slot="append">元</template>
-                                </el-input>
-                            </el-form-item>
-                        </el-col>
+                        
                     </el-row>
                         <el-form-item label="租金:">
                             <el-input v-model="detail.dailyRent" placeholder="请输入租金">
@@ -130,7 +129,7 @@
                         </el-input>
                     </el-form-item>
                     
-                        <el-form-item label="每月租金为：">
+                        <el-form-item label="三年后每月租金：">
                             <el-input v-model="detail.afterTheRent" placeholder="请输入租金">
                                 <template slot="append">元</template>
                             </el-input>
@@ -590,7 +589,8 @@ export default {
                     "taxes": this.detail.taxes,
                     "theDepositAmount": this.detail.theDepositAmount,
                     "dailyRent": this.detail.dailyRent,
-                    "dailyManagementFee": this.detail.dailyManagementFee
+                    "dailyManagementFee": this.detail.dailyManagementFee,
+                    "coveredAreas": this.detail.rooms.coveredAreas
                         }
                 this.$ajax.put(url + 'contract/updateContract',data2
                 ).then(res => {
@@ -709,7 +709,8 @@ export default {
                     "taxes": this.detail.taxes,
                     "theDepositAmount": this.detail.theDepositAmount,
                     "dailyRent": this.detail.dailyRent,
-                    "dailyManagementFee": this.detail.dailyManagementFee
+                    "dailyManagementFee": this.detail.dailyManagementFee,
+                    "coveredAreas": this.detail.rooms.coveredAreas
             }).then(res => {
                 if(res.data.status === 200){
                     this.$message({
@@ -737,16 +738,18 @@ export default {
             
             this.$ajax.get(url + 'room/flndById/'+e[2]).then(res => {
                 if(this.rooms.indexOf(res.data.data.id)<0){
-                this.rooms.unshift(res.data.data.id)
-                this.thisRoom.unshift(res.data.data.roomNumber.toString())
+                this.rooms.push(res.data.data.id)
+                this.thisRoom.push(res.data.data.roomNumber.toString())
                 this.detail.room = this.rooms.join()
                 }
             }
             )
         },
         handleClose(tag) {
+            var now = this.thisRoom.indexOf(tag)
         this.thisRoom.splice(this.thisRoom.indexOf(tag), 1);
-        this.rooms.splice(this.rooms.indexOf(tag), 1);
+        this.rooms.splice(now, 1);
+        this.detail.room = this.rooms.join()
       },
     }
 }

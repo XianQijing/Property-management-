@@ -46,8 +46,8 @@ aside {
 		top: 0;
 		bottom: 0;
 		left: 0;
-		z-index: 1;
-		min-width: 100px;
+		z-index: 4;
+		min-width: 150px;
     width: 11.7%;
 	}
 

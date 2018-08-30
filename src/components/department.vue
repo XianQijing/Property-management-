@@ -601,9 +601,9 @@ mounted(){
         
         this.role = res.data.data
     })
-    // this.staff(),
-    // this.Btype()
-    // this.getRoleData()
+    if(this.$route.query.tabPane){
+        this.activeName = this.$route.query.tabPane
+    }
 },
 methods:{
     // 身份证验证
@@ -898,9 +898,8 @@ methods:{
         },
         //职员信息
         handleSizeChange(val) {
-            // console.log(`每页 ${val} 条`);
             this.pageSize = val;
-            this.staff();
+            setTimeout(this.staff,1000)
         },
         //职员信息
         handleCurrentChange(val) {
@@ -912,7 +911,8 @@ methods:{
         handleSizeChangeB(val) {
             // console.log(`每页 ${val} 条`);
             this.pageSizeB = val;
-            this.Btype();
+            setTimeout(this.Btype(),1000)
+            
         },
         //往来单位管理
         handleCurrentChangeB(val) {

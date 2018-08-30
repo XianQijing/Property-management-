@@ -7,10 +7,10 @@
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                       <el-tab-pane label="应收费用" name="third" v-if="this.role.indexOf('rubik:receivable:list')!==-1">
                           <div class="main">
+                            <button class="add" @click="Interim" v-if="this.num == 2">录入数据</button>
                               <div id="card"><el-button size="small" v-for="(item, index) in date" :key="index" :class="{actived:index == num}" @click="tableTab(index)">{{ item.name }}</el-button></div>
                               <div id="main">
-                                <div>
-                                  <el-table :data="temporary" style="width: 100%">
+                                  <el-table :data="temporary" style="width: 100%" v-if="this.num == 0" key="routine">
                                     <!-- <el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column> -->
                                     <el-table-column prop="build" label="楼宇"></el-table-column>
                                     <el-table-column prop="roomNum" label="房号"></el-table-column>
@@ -22,7 +22,36 @@
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
                                     <el-table-column>
                                       <template slot-scope="scope">
-                                        <el-button size="small">付款</el-button>
+                                        <el-button size="small" @click="pay(scope.$index,temporary)">付款</el-button>
+                                      </template>
+                                    </el-table-column>
+                                  </el-table>
+                                  <el-table :data="temporary" style="width: 100%" v-if="this.num == 1" key="Meter">
+                                    <!-- <el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column> -->
+                                    <el-table-column prop="build" label="楼宇"></el-table-column>
+                                    <el-table-column prop="roomNum" label="房号"></el-table-column>
+                                    <el-table-column prop="clientName" label="租户名称"></el-table-column>
+                                    <el-table-column prop="itemName" label="收费项目"></el-table-column>
+                                    <el-table-column prop="meterName" label="仪表种类"></el-table-column>
+                                    <el-table-column prop="price" label="费用"></el-table-column>
+                                    <el-table-column prop="createTime" label="时间"></el-table-column>
+                                    <el-table-column prop="remarks" label="备注"></el-table-column>
+                                    <el-table-column>
+                                      <template slot-scope="scope">
+                                        <el-button size="small" @click="pay(scope.$index,temporary)">付款</el-button>
+                                      </template>
+                                    </el-table-column>
+                                  </el-table>
+                                  <el-table :data="temporary" style="width: 100%" v-if="this.num == 2" key="interim">
+                                    <!-- <el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column> -->
+                                    <el-table-column prop="feeEarners" label="收费人"></el-table-column>
+                                    <el-table-column prop="receivable" label="应收费用"></el-table-column>
+                                    <el-table-column prop="officialReceipts" label="实收费用"></el-table-column>
+                                    <el-table-column prop="time" label="收费日期"></el-table-column>
+                                    <el-table-column prop="remarks" label="备注"></el-table-column>
+                                    <el-table-column>
+                                      <template slot-scope="scope">
+                                        <el-button size="small" @click="pay(scope.$index,temporary)">付款</el-button>
                                       </template>
                                     </el-table-column>
                                   </el-table>
@@ -30,7 +59,6 @@
                                     <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="currentPage2"  :page-size="pageSize2" :page-sizes="pageSizes2" layout="total, sizes, prev, pager, next, jumper" :total="totalData2">
                                     </el-pagination>
                                   </div>
-                                </div>
                               </div>
                           </div>                 
                         </el-tab-pane>
@@ -112,6 +140,53 @@
                 </span>
 
             </el-dialog>
+            <el-dialog
+              title="应收费用"
+              :visible.sync="dialogVisible"
+              width="30%">
+              <el-form ref="form" :model="form" label-width="80px">
+              <el-form-item label="金额:">
+                <el-input v-model="form.money"></el-input>
+              </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="moneyYes">确 定</el-button>
+              </span>
+            </el-dialog>
+            <el-dialog
+              title="应收费用"
+              :visible.sync="interimCharge"
+              width="30%">
+              <el-form ref="form" :model="form" label-width="80px">
+              <el-form-item label="应收费用:">
+                <el-input v-model="form.receivable" @blur="float"></el-input>
+              </el-form-item>
+              <el-form-item label="实收费用:">
+                <el-input v-model="form.officialReceipts"></el-input>
+              </el-form-item>
+              <el-form-item label="收费人:">
+                <el-input v-model="form.feeEarners"></el-input>
+              </el-form-item>
+              <el-form-item label="收费日期:">
+                <el-date-picker
+                  v-model="form.time"
+                  type="datetime"
+                  placeholder="选择日期时间"
+                  style="width:100%"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  format="yyyy-MM-dd HH:mm:ss">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="备注:">
+                <el-input v-model="form.remarks"></el-input>
+              </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="interimCharge = false">取 消</el-button>
+                <el-button type="primary" @click="moneyYes">确 定</el-button>
+              </span>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -125,6 +200,17 @@ export default {
   name: "charge",
   data() {
     return {
+      moneyName: '',
+      moneyId: '',
+      form:{
+        money: '',
+        receivable: '',
+        officialReceipts: '',
+        feeEarners: '',
+        time: '',
+        remarks: '',
+      },
+      dialogVisible: false,
       date: [],
       num: 0,
       rule: {
@@ -217,7 +303,8 @@ export default {
       too: {
         remarks: ""
       },
-      role:[]
+      role:[],
+      interimCharge: false
     };
   },
   mounted() {
@@ -243,10 +330,72 @@ export default {
 
   //选项卡
   methods: {
+    //双精度
+    float(){
+      var reg=/^[-\+]?\d+(\.\d+)?$/;
+      if(!reg.test(e.target.value)){
+        e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入数字',
+          type: 'error'
+        })
+      } 
+    },
+    Interim(){
+      this.form = {}
+      this.interimCharge = true
+    },
+    pay(index,rows){
+      this.dialogVisible = true
+      this.form.money = ''
+      this.moneyId = this.temporary[index].id
+    },
+    moneyYes(){
+      if(this.form.money){
+      this.$ajax.get (url + 'pay/payOrder',{
+        params: {
+          "id": this.moneyId,
+          "pay_price": parseFloat(this.form.money).toFixed(2)
+        }
+      }).then(res => {
+        if(res.data.status === 200){
+          this.$message({
+          message: '成功',
+          type: 'success'
+        })
+          this.dialogVisible = false
+          this.Cost()
+        }
+      })
+      }else{
+       this.$ajax.post(url + 'payTemporary/insert',{
+        "receivable": this.form.receivable,
+        "officialReceipts": this.form.officialReceipts,
+        "feeEarners": this.form.feeEarners,
+        "time": this.form.time,
+        "remarks": this.form.remarks
+       }).then(res => {
+         if(res.data.status === 200){
+           this.$message({
+             message:'添加成功',
+             type: 'success'
+           })
+           this.interimCharge = false
+           this.Cost()
+         }else{
+           this.$message({
+             message: res.data.msg,
+             type: 'error'
+           })
+         }
+       })
+      }
+    },
     tableTab(index){
       this.num = index
       this.shouldId = this.date[index].id
-      this.Cost()
+      this.moneyName = this.date[index].name
+      setTimeout(this.Cost(),1000)
     },
     isStudentNo(e) {
       var reg=/^\d+$/;   /*定义验证表达式*/
@@ -428,23 +577,41 @@ export default {
       this.$ajax.get(url + 'pay/queryPayItemAll').then(res => {
         this.date = res.data.data
         this.shouldId = res.data.data[0].id
+        this.moneyName = res.data.data[0].name
         this.Cost()
       })
     },
     //应收费用
     Cost() {
-      this.$ajax
-        .get(url + "pay/queryReceivable", {
-          params: {
-            payItem: this.shouldId,
-            page: this.currentPage2,
-            pageSize: this.pageSize2
-          }
-        })
-        .then(res => {
+      if(this.moneyName == "抄表费用"){
+        this.$ajax.get(url + "pay/queryReceivable", {
+            params: {
+              payItem: this.shouldId,
+              page: this.currentPage2,
+              pageSize: this.pageSize2
+            }
+          }).then(res => {
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
+      }else if(this.moneyName == "临时费用"){
+        this.$ajax.get(url + "payTemporary/condition/"+this.currentPage2+'/'+this.pageSize2).then(res => {
+          this.temporary = res.data.data.rows;
+          console.log(res.data.data.rows)
+          this.totalData2 = res.data.data.records;
+        });
+      }else{
+        this.$ajax.get(url + "pay/queryReceivable", {
+            params: {
+              payItem: this.shouldId,
+              page: this.currentPage2,
+              pageSize: this.pageSize2
+            }
+          }).then(res => {
+          this.temporary = res.data.data.rows;
+          this.totalData2 = res.data.data.records;
+        });
+      }
     },
     //选择
     //仪表管理
@@ -697,12 +864,12 @@ export default {
 #main div:nth-child(3) {
   display: none;
 }
-#main {
-  padding-top: 52px;
-}
 .actived{
   background: #ECF5FF;
   color: #419EFF;
   border: 1px solid #C6E2FF
+}
+#card{
+  float: right;
 }
 </style>

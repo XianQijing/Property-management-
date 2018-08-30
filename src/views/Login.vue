@@ -13,7 +13,8 @@
 				</div>
 				<div class="password">
 					<span>
-						<input type="checkbox"  id="remember" v-model="remember" @keyup.enter.native="sumbitLogin()"><span class="yes">记住密码</span>
+						<el-checkbox v-model="remember"><span class="yes">记住密码</span></el-checkbox>
+						<!-- <input type="checkbox"  id="remember" v-model="remember" @keyup.enter.native="sumbitLogin()"> -->
 					</span>
 					<!-- <a link=""><span>忘记密码</span></a> -->
 				</div>
@@ -36,31 +37,38 @@
 				phone: '',
 				password: '',
 				tishi: '',
-				remember:''
+				remember: false
 			};
 		},
 		mounted() {
 			/*页面挂载获取cookie，如果存在phone的cookie，则跳转到主页，不需登录*/
-			// if(getCookie('phone')) {
-			// 	this.$router.push('/HelloWorld')
-			// }
+			if(getCookie('phone')) {
+				// console.log('11123')
+				// sessionStorage.setItem('userId',res.data.data.token)
+				// this.$router.push('/helloWorld')
+				this.phone = getCookie('phone')
+				this.password = getCookie('pwd')
+				this.sumbitLogin()
+			}
 		},
 		methods: {
 			//登录
 			sumbitLogin() {
 				var remember = document.getElementById('remember')
 				if(this.phone == "" || this.password == "") {
-					// alert("请输入用户名或密码")
 					this.$message({
 						message: '请输入用户名或密码',
 						type: 'error'
 					})
 				} else {
-					/*接口请求*/
+					if (this.remember == true){
+						setCookie('phone',this.phone,1000*60)
+						setCookie('pwd',this.password,1000*60)//保存帐号到cookie，有效期7天
+					}
 					this.$ajax.post(url + 'login/login_in', qs.stringify({
 							'phone': this.phone,
 							'password': this.password,
-							'remember':'5'
+							'remember': this.remember
 						
 					})).then((res) => {
 						/*接口的传值是(-1,该用户不存在),(0,密码错误)，同时还会检测管理员账号的值*/
@@ -69,35 +77,6 @@
 							this.showTishi = true
 							this.$router.push('/helloWorld')
 							sessionStorage.setItem('userId',res.data.data.token)
-							// 没有值
-							// sessionStorage.setItem('judge',res.data.data)
-
-							if (this.remember = true){
-								setCookie('phone',this.phone,1000*60)//保存帐号到cookie，有效期7天
-							}
-							// setCookie('phone', this.phone, 1000 * 60)
-							// setTimeout(function() {
-							// 	this.$router.push('/hellowWorld')
-							// }.bind(this), 1000)
-							// this.tishi = "该用户不存在"
-							// this.showTishi = true
-						// } else if(res.data == 0) {
-						// 	this.tishi = "密码输入错误"
-						// 	this.showTishi = true
-						// } else if(res.data == 'admin') {
-						// 	/*路由跳转this.$router.push*/
-						// 	this.$router.push('/main')
-						// } else {
-						// 	this.tishi = "登录成功"
-						// 	this.showTishi = true
-						// 	if (remember.checked){
-						// 		setCookie('phone',this.phone,7)//保存帐号到cookie，有效期7天
-						// 		setCookie('password',this.password,7)//保存密码到cookie，有效期7天
-						// 	}
-						// 	// setCookie('phone', this.phone, 1000 * 60)
-						// 	setTimeout(function() {
-						// 		this.$router.push('/hellowWorld')
-						// 	}.bind(this), 1000)
 						}else{
 							this.tishi = res.data.data.msg;
 							this.showTishi = true
