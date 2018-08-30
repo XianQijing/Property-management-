@@ -233,6 +233,7 @@ export default {
                     // this.ruleForm.eventDate = res.data.occurrenceTime;
                     this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                     this.editChange(res.data.name,res.data.phone)
+                        console.log(this.id)   
                 }else if(res.status===403){
                     this.$alert('您的权限不足', '权限不足', {
                         confirmButtonText: '确定',
@@ -268,6 +269,8 @@ export default {
                     this.ruleForm = res.data;
                     this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                     this.ruleForm.process_cacsi = res.data.cacsi;
+                    this.ruleForm.occurrenceTime = res.data.eventDate;
+                    this.ruleForm.visitTime = res.data.visitDate;
                     this.editChange(res.data.name,res.data.phone)
                 }else if(res.status===403){
                     this.$alert('您的权限不足', '权限不足', {
@@ -291,6 +294,8 @@ export default {
                 this.ruleForm = res.data;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.ruleForm.process_cacsi = res.data.cacsi;
+                this.ruleForm.occurrenceTime = res.data.eventDate;
+                this.ruleForm.visitTime = res.data.visitDate;
                 this.editChange(res.data.name,res.data.phone)
                }else if(res.status===403){
                     this.$alert('您的权限不足', '权限不足', {
@@ -324,6 +329,7 @@ export default {
                 type: 'error'
                 })
             }else if(e.target.value.length!==11){
+                console.log(e.target.value.length)
                 e.target.style.borderColor = 'red'
                 this.$message({
                 message: '请输入11位数字',
@@ -365,6 +371,7 @@ export default {
                           
                          this.ruleForm.name = null;
                        }
+                       console.log(res.data)
                    })
                  }else{
                       this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.ruleForm.name+'/'+this.ruleForm.phone).then(res => {
@@ -376,6 +383,7 @@ export default {
                          
                             this.ruleForm.phone = null;
                         }
+                        console.log(res.data)
                     })
                  }
               }
@@ -410,6 +418,7 @@ export default {
                  this.$ajax.get(url + 'room/flndByClientId/'+aa).then(res => {
                      this.options=res.data;
                  })
+                console.log(res.data)
             })
           }
       },
@@ -418,6 +427,7 @@ export default {
             var customerEventVO={};   //客户事件的数据
             customerEventVO.name=this.ruleForm.name;           //租户姓名
             customerEventVO.phone=this.ruleForm.phone;   //电话号码
+            // console.log(this.ruleForm.house);
             var arr=this.ruleForm.house;
             customerEventVO.room=arr[arr.length-1];//关联房屋
             customerEventVO.event_type=this.ruleForm.event_type;   //事件类型
@@ -431,7 +441,7 @@ export default {
             customerEventVO.cacsi = this.ruleForm.process_cacsi;   //处理满意度
 
 
-            var feedbackMessageVO={};
+            var feedbackMessageVO={};   //客户反馈信息的数据
             feedbackMessageVO.name=this.ruleForm.name;           //租户姓名
             feedbackMessageVO.phone=this.ruleForm.phone;   //电话号码
             var arr=this.ruleForm.house;
@@ -546,19 +556,7 @@ export default {
             window.history.back()
         },
         handleChange(value) {
-            this.$ajax.get(url + 'owner/findOwnerByRoomId/'+value[2]).then(res => {
-              if(res.data.status === 200){
-                  this.ruleForm.name = res.data.data.name
-                  this.ruleForm.phone = res.data.data.phone
-              }else{
-                  this.$message({
-                      message:res.data.msg,
-                      type: 'error'
-                  })
-                  this.ruleForm.name = '',
-                  this.ruleForms.phone = ''
-              }
-          })
+        //console.log(value);
       }
     }
 

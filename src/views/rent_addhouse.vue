@@ -36,15 +36,14 @@
           </el-form-item>
 
           <el-form-item label="租用状态：" prop="renting">
-            <el-select v-model="addCustomer.renting" placeholder="请选择房屋类型">
+            <el-select v-model="addCustomer.renting" placeholder="请选择房屋类型" :disabled="disabled">
               <el-option label="可租" value="0"></el-option>
-              <el-option label="不可租" value="1"></el-option>
-              <el-option label="已租" value="2"></el-option>
+              <el-option label="已租" value="1"></el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item label="预定状态：" prop="reserve">
-            <el-select v-model="addCustomer.reserve" placeholder="请选择房屋类型">
+            <el-select v-model="addCustomer.reserve" placeholder="请选择房屋类型" :disabled="disabled">
               <el-option label="未预定" value="0"></el-option>
               <el-option label="已预定" value="1"></el-option>
             </el-select>
@@ -81,6 +80,7 @@ export default {
         buildingsString: ''
       },
       builds: [],
+      disabled:false,
       rules:{
         buildings: [
           { required: true, message: '请选择楼宇', trigger: 'change'}
@@ -104,6 +104,7 @@ export default {
       // })
     } else {
       this.name = '编辑'
+      this.disabled = true
       this.id = this.$route.query.id
       this.$ajax.get(url + 'housingResource/flndHById/' + this.id).then(res => {
         if(res.data.status===200){
@@ -113,8 +114,8 @@ export default {
         this.addCustomer.roomNumber = res.data.data.roomNumber
         this.addCustomer.coveredArea = res.data.data.coveredArea
         this.addCustomer.pricing = res.data.data.pricing
-        this.addCustomer.renting = res.data.data.renting
-        this.addCustomer.reserve = res.data.data.reserve
+        this.addCustomer.renting = res.data.data.renting.toString()
+        this.addCustomer.reserve = res.data.data.reserve.toString()
         }else if(res.data.status===403){
           this.$alert('您的权限不足', '权限不足', {
               confirmButtonText: '确定',

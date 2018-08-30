@@ -24,7 +24,7 @@
 									<el-table-column prop="coveredArea" label="建筑面积(平方米)"></el-table-column>
 									<el-table-column prop="pricing" label="价格(元/月)"></el-table-column>
 									<el-table-column prop="renting" label="租用状态" :formatter="formatRole"></el-table-column>
-									<el-table-column prop="reserve" label="预定状态"></el-table-column>
+									<el-table-column prop="reserve" label="预定状态" :formatter="formatRole1"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
 											<span style="color:#32a8ee;" @click="toBianji(scope.$index,tableData,'bianji')">编辑</span>
@@ -521,6 +521,9 @@ export default {
         formatRole: function(row, column) {
             return row.renting == '0' ? "可租" : "已租";
         },
+        formatRole1: function(row, column) {
+            return row.reserve == '0' ? "未预定" : "已预定";
+        },
 
         changePosition() {
 		},
@@ -540,7 +543,8 @@ export default {
             })
         },handleSizeChange(val) {
             this.pageSize=val;
-            this.display(this.bb)
+            setTimeout(this.display(this.bb),1000)
+            
         },handleCurrentChange(val) {
             this.pageNo=val;
             // this.flndAllHousingResource()
@@ -576,7 +580,8 @@ export default {
             })
         },handleSizeChangeContract(val) {
             this.pageSizeContract=val;
-            this.flndAllContract()
+            setTimeout(this.flndAllContract(),1000)
+            
         },handleCurrentChangeContract(val) {
             this.pageNoContract=val;
             this.flndAllContract()
@@ -602,7 +607,6 @@ export default {
                 this.$ajax.get(url + 'prospectiveCustomer/flngById/'+this.id).then(res => {
                     if(res.data.status===200){
                         this.upload = res.data.data
-                        console.log(this.upload)
                     }else if(res.data.status===403){
                     this.$alert('您的权限不足', '权限不足', {
                         confirmButtonText: '确定',
@@ -784,6 +788,7 @@ export default {
             var formData = new FormData()
             formData.append('file',this.file)
             formData.append('status',this.radio)
+            if(this.file){
             this.$ajax.post(url + 'contract/excelImport',formData).then(res => {
                 if(res.data.status === 200){
                     this.$message({
@@ -792,6 +797,7 @@ export default {
                     });
                     this.isShow = false
                     this.flndAllContract()
+                    this.file.name = ''
                 }else if(res.data.status===403){
                     this.$alert('您的权限不足', '权限不足', {
                         confirmButtonText: '确定',
@@ -799,8 +805,19 @@ export default {
                             this.isShow = false
                         }
                     });
+                }else{
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'error'
+                    });
                 }
             })
+            }else{
+                this.$message({
+                        message: '请选择文件',
+                        type: 'error'
+                    });
+            }
         },
 
         //导出-个人
@@ -825,7 +842,8 @@ export default {
         //房产验收
         handleSizeChange1(val) {
             this.pageSizeRoomStandard=val
-            this.getRoomStandard()
+            setTimeout(this.getRoomStandard(),1000)
+            
         },
         handleCurrentChange1(val) {
             this.pageNoRoomStandard=val

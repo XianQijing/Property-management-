@@ -18,7 +18,7 @@
 						<div class="bodymain">
 							<div v-for="(ok,index) in inform" :key="index" class="notic-body" >
 								<p :class="ok.titlep">{{ok.title}}</p>
-								<span @click="detail(index)">{{ok.header}}</span>
+								<span class="click" @click="detail(index)">{{ok.header}}</span>
                                 <el-tag type="danger" size="mini">{{ok.status}}</el-tag>
                                 <span class="time" @click="del(index)">删除</span>
 								<!-- <span class="time">{{ok.createTime}}</span> -->
@@ -40,10 +40,10 @@
 										</p>
 										<div class="link">
 											<span>
-												<router-link :to="{name: 'Department',query:{tabPane:'second'}}">添加员工</router-link>
+												<router-link :to="{path: '/Department',query:{tabPane:'third'}}">添加员工</router-link>
 											</span>
 											<span>
-												<router-link :to="{name: 'Department',query:{tabPane:'second'}}">导入员工</router-link>
+												<router-link :to="{path: '/Department',query:{tabPane:'third'}}">导入员工</router-link>
 											</span>
 											<span>
 												<router-link :to="{path: '/system',query:{tabPane:'third'}}"><a>权限管理</a></router-link>
@@ -142,6 +142,7 @@
 					<div class="title1">
 						<p class="liucheng">收费统计</p>
 						<div class="bodymain">
+                            <div id="main1" style="width: 100%;height:350px;background: #fff;margin: 0 auto;"></div>
 						</div>
 					</div>
 				</div>
@@ -166,6 +167,16 @@ import NavHeader from ".././components/NavHeader.vue";
 import { setCookie, getCookie, delCookie } from ".././assets/js/cookie.js";
 import url from "../assets/Req.js";
 import DetailsNotification from "../views/DetailsNotification";
+
+var echarts = require('echarts/lib/echarts');
+// 引入柱状图
+require('echarts/lib/chart/bar');
+require('echarts/lib/chart/pie');
+require('echarts/lib/chart/line');
+// 引入提示框和标题组件
+require('echarts/lib/component/tooltip');
+require('echarts/lib/component/title');
+require('echarts/lib/component/legend')
 
 export default {
     name: "HelloWorld",
@@ -210,17 +221,31 @@ export default {
             ],
             tuling: "",
             index: 0,
-            title:''
+            title:'',
+            Data: []
         };
     },
 
     mounted() {
-        this.getDetail()
+        this.getDetail(),
+        this.getChart(),
+        this.work()
     },
 
     methods: {
+        work(){
+            this.$ajax.get(url + 'index/countWork').then(res => {
+                // console.log(res.data)
+                this.countWork = res.data
+            })
+        },
         del(index){
             var id = this.inform[index].id
+            this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
             this.$ajax.post(url + 'notification/del/'+id).then(res => {
                 if(res.data.status === 200){
                     this.$message({
@@ -230,11 +255,17 @@ export default {
                     this.getDetail()
                 }else if(res.status){
                     this.$message({
-                        message:'sfesf',
+                        message:'删除失败',
                         type: 'error'
                     })
                 }
             })
+            }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
         },
         detail(index){
             this.inform[index].status = '已读'
@@ -252,12 +283,83 @@ export default {
                     this.inform[i].status = judge(this.inform[i].status)
                 }
             })
+        },
+        getChart(){
+            this.$ajax.get(url + 'report/incomeAnalysis', { 
+                params:{
+                    'howTime': this.howTime,
+                    'time': this.howDate,
+                    'building': ''
+                }
+             }).then(res => {
+                 this.Data = res.data
+                 this.charts('收入分析') 
+             })
+        },
+        //收入分析
+        charts (str) {
+            let arr = []
+            this.Data.forEach(v => {
+                if (v.total) {
+                v.name = v.pay_item_name
+                v.value = v.total
+                }
+                arr.push(v.name)
+            })
+            var myChart = echarts.init(document.getElementById('main1'));
+            myChart.setOption({
+                color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
+                title : {
+                text: str,
+                // subtext: '纯属虚构',
+                x:'center'
+                },
+                tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                type: 'plain',
+                left: '35%',
+                bottom: '15%',
+                // orient: 'vertical',
+                data: arr,
+                formatter: '{name}'
+                },
+                grid: {
+                top: '20%',
+                left: '18%',
+                height: '60%',
+                width: '64%',
+                containLabel: true
+                },
+                series : [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius : '55%',
+                    center: ['50%', '40%'],
+                    data: this.Data,
+                    itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                    },
+                    label: {
+                    position: 'inside',
+                    formatter: '{d}%'
+                    }
+                }
+                ]
+            }, true)
         }
     },
     components: {
         NavBar,
         NavHeader,
-        DetailsNotification
+        DetailsNotification,
     }
 };
 function judge(data){
@@ -416,11 +518,12 @@ html {
 .notic-body {
     margin-top: 30px;
     border-bottom: 1px solid #eeeeee;
-    cursor: pointer;
+    cursor:default;
 }
 .time {
     float: right;
     color: #48a3f0;
+    cursor:pointer;
 }
 
 .mainbody {
@@ -473,5 +576,8 @@ html {
 .content{
     width: 90%;
     overflow: auto;
+}
+.click{
+    cursor:pointer;
 }
 </style>

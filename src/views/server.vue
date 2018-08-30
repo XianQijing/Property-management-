@@ -50,7 +50,15 @@
                      </el-row>
                     
                     <el-form-item label="派工至:">
-                        <el-input v-model="detail.handler" clearable></el-input>
+                        <el-select v-model="detail.handler" placeholder="服务类别" style="width:100%" @change="findUsers">
+                            <el-option
+								v-for="items in serviceTo"
+								:key="items.id"
+								:label="items.label"
+								:value="items.id">
+							</el-option>
+                        </el-select>
+                        <!-- <el-input v-model="detail.handler" clearable></el-input> -->
                     </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -99,7 +107,15 @@
                         </el-col>
                     </el-row>
                     <el-form-item label="专业分类:">
-                        <el-input v-model="detail.professional_list" clearable></el-input>
+                        <el-select v-model="detail.professional_lis" placeholder="服务类别" style="width:100%">
+                            <el-option
+								v-for="find in handlerTo"
+								:key="find.id"
+								:label="find.name"
+								:value="find.id">
+							</el-option>
+                        </el-select>
+                        <!-- <el-input v-model="detail.professional_list" clearable></el-input> -->
                     </el-form-item>
                     </el-col>
                 </el-row>
@@ -146,92 +162,13 @@ export default {
                 require: '',
                 textarea:'',
             },
-            service:[
-
-            ],
+            service:[],
+            serviceTo: [],
+            handlerTo: [],
             ways:[
 
             ],
-            options: [
-          {
-          value: 'bangongqu',
-          label: '办公区',
-          children: [{
-              value: 'Azuo',
-              label: 'A座',
-              children: [{
-                value: '101',
-                label: '101'
-              }, {
-                value: '102',
-                label: '102'
-              }, {
-                value: '103',
-                label: '103'
-              }, {
-                value: '104',
-                label: '104'
-              },
-              {
-                value: '105',
-                label: '105'
-              }]
-          }, 
-          {
-            value: 'Bzuo',
-            label: 'B座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          },{
-            value: 'Czuo',
-            label: 'C座',
-            children: [{
-              value: '101',
-              label: '101'
-            }, {
-              value: '102',
-              label: '102'
-            }, {
-              value: '103',
-              label: '103'
-            }, {
-              value: '104',
-              label: '104'
-            },
-            {
-              value: '105',
-              label: '105'
-            }]
-          }]
-        },{
-          value: 'yanjiedianpu',
-          label: '沿街店铺',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
-        }],
+            options: [],
         rules: {
           name: [
             { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -246,30 +183,14 @@ export default {
               { required: true, message: '请选择受理时间', trigger: 'blur' }
           ]
           },
-          edit:true
-            // input: {
-            //     name: '李文',
-            //     sex: '男',
-            //     house: '办公室C座301',
-            //     type:'管理费',
-            //     money: '5000元/年',
-            //     time: '2018.6.23',
-            //     startTime: '2017.6.23',
-            //     card: '323265787894',
-            //     phone:'18874562233',
-            //     mold: '办公区',
-            //     ammeter:'1354',
-            //     watermeter:'787',
-            //     textarea:'2年',
-            //     rentTime:'2年',
-            // },
-            
+          edit:true  
         }
     },
     mounted(){
+        this.$ajax.get(url + 'company/findAll').then(res => {
+            this.serviceTo = res.data.data
+        })
          this.id = this.$route.query.id
-         
-        
          this.$ajax.get(url + 'serviceAccept/findByDictType/1').then(res => {
                 this.service=res.data;
          })
@@ -308,6 +229,16 @@ export default {
         )
     },
     methods: {
+        findUsers(){
+            this.$ajax.get(url+'company/findUsers',{
+                params:{
+                    "id": this.detail.handler
+                }
+            }).then(res => {
+                console.log(res.data.data)
+                this.handlerTo = res.data.data
+            })
+        },
         blur (e) {
             var reg = /^\+?[1-9][0-9]*$/
             if (!reg.test(e.target.value)) {

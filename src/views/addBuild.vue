@@ -174,7 +174,8 @@ export default {
           'flatFabric': this.ruleForm.flatFabric,
           'buildingTowards': this.ruleForm.buildingTowards,
           'comment': this.ruleForm.comment,
-          'id': this.$route.query.id
+          'id': this.$route.query.id,
+          'layer': this.ruleForm.layer
         }
         // loading图标
         this.fullscreenLoading = true

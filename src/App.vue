@@ -18,6 +18,7 @@ a:hover {
 html,
 body {
   height: 100%;
+  min-width: 1300px;
 }
 .container {
   max-width: 1800px;

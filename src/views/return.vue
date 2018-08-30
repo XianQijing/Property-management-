@@ -18,38 +18,38 @@
                 </div>
                 <div class="pp">
                     <el-form-item label="验收情况:">
-                        <!-- <el-select v-model="input.checkCondition" placeholder="请选择">
+                        <el-select v-model="input.checkCondition" placeholder="请选择">
                             <el-option label="非常满意" value="非常满意"></el-option>
                             <el-option label="满意" value="满意"></el-option>
                             <el-option label="一般" value="一般"></el-option>
                             <el-option label="不满意" value="不满意"></el-option>
                             <el-option label="非常不满意" value="非常不满意"></el-option>
-                        </el-select> -->
-                        <el-input v-model="input.checkCondition"></el-input>
+                        </el-select>
+                        <!-- <el-input v-model="input.checkCondition"></el-input> -->
                     </el-form-item>
                 </div>
                 <div class="pp">
                     <el-form-item label="回访情况:">
-                        <!-- <el-select v-model="input.visitExplain" placeholder="请选择">
+                        <el-select v-model="input.visitExplain" placeholder="请选择">
                             <el-option label="非常满意" value="非常满意"></el-option>
                             <el-option label="满意" value="满意"></el-option>
                             <el-option label="一般" value="一般"></el-option>
                             <el-option label="不满意" value="不满意"></el-option>
                             <el-option label="非常不满意" value="非常不满意"></el-option>
-                        </el-select> -->
-                        <el-input v-model="input.visitExplain"></el-input>
+                        </el-select>
+                        <!-- <el-input v-model="input.visitExplain"></el-input> -->
                     </el-form-item>
                 </div>
                 <div class="pp">
                     <el-form-item label="服务及时率:">
-                        <!-- <el-select v-model="input.visitExplain" placeholder="请选择">
+                        <el-select v-model="input.serviceTimeliness" placeholder="请选择">
                             <el-option label="非常满意" value="非常满意"></el-option>
                             <el-option label="满意" value="满意"></el-option>
                             <el-option label="一般" value="一般"></el-option>
                             <el-option label="不满意" value="不满意"></el-option>
                             <el-option label="非常不满意" value="非常不满意"></el-option>
-                        </el-select> -->
-                        <el-input v-model="input.visitExplain"></el-input>
+                        </el-select>
+                        <!-- <el-input v-model="input.visitExplain"></el-input> -->
                     </el-form-item>
                 </div>
                 

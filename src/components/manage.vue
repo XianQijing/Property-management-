@@ -137,7 +137,7 @@ export default {
                 if (!e.children) {
                     this.$set(e, 'children', []);
                     }
-                    this.id = ''
+                    // this.id = ''
                 e.children = res.data.data
             })
             }

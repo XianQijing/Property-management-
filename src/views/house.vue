@@ -408,7 +408,7 @@ export default {
                   })
                 }else{
                     this.$message({
-                        message: '失败',
+                        message: res.data.msg,
                         type: 'error'
                     })
                 }
@@ -594,12 +594,6 @@ export default {
       }).then((res) => {
         this.build = res.data.data.rows
         this.totalDataNumberBuilding =  res.data.data.records
-        // for(var i=0;i<this.build.length;i++){
-        //   var o = {}
-        //   if(this.buildArr.indexOf(this.build[i].precinctName) == -1){
-        //     this.buildArr.push(this.build[i].precinctName)
-        //   }
-        // }
       })
     },
     buildingSizeChange(val) {
@@ -869,7 +863,11 @@ export default {
 				this.getAdmin()
         this.getRoom()
         this.getRoomStandard()
+        if(!this.precinct){
         this.getBuild()
+      }else{
+        this.selectABuild()
+      }
 			}
 		}
 }
