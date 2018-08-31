@@ -46,7 +46,16 @@
                         type="datetime"
                         format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
                         placeholder="选择日期时间"
-                        style="width:100%">
+                        style="width:100%"
+                        v-if="this.$route.query.msg!=5">
+                    </el-date-picker>
+                    <el-date-picker
+                        v-model="ruleForm.visitDate"
+                        type="datetime"
+                        format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                        placeholder="选择日期时间"
+                        style="width:100%"
+                        v-if="this.$route.query.msg===5">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="事件损失：" prop="loss" v-show="duan">
@@ -83,7 +92,15 @@
                         v-model="ruleForm.occurrenceTime"
                         type="datetime"
                         format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
-                        placeholder="选择日期时间">
+                        placeholder="选择日期时间"
+                        v-if="this.$route.query.msg!=5">
+                    </el-date-picker>
+                    <el-date-picker
+                        v-model="ruleForm.eventDate"
+                        type="datetime"
+                        format="yyyy/MM/dd HH:mm:ss" value-format="yyyy/MM/dd HH:mm:ss"
+                        placeholder="选择日期时间"
+                        v-if="this.$route.query.msg===5">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="回访满意度：" prop="visit_cacsi" v-show="pan">
@@ -156,7 +173,9 @@ export default {
                 visit_condition:'',
                 occurrenceTime:'',
                 visit_cacsi:'',
-                remarks:''
+                remarks:'',
+                eventDate: '',
+                visitDate: ''
             },
             // input:{
             //     house:["bangongqu","Azuo","105"],
@@ -233,7 +252,6 @@ export default {
                     // this.ruleForm.eventDate = res.data.occurrenceTime;
                     this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                     this.editChange(res.data.name,res.data.phone)
-                        console.log(this.id)   
                 }else if(res.status===403){
                     this.$alert('您的权限不足', '权限不足', {
                         confirmButtonText: '确定',
@@ -294,8 +312,8 @@ export default {
                 this.ruleForm = res.data;
                 this.ruleForm.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.ruleForm.process_cacsi = res.data.cacsi;
-                this.ruleForm.occurrenceTime = res.data.eventDate;
-                this.ruleForm.visitTime = res.data.visitDate;
+                // this.ruleForm.occurrenceTime = res.data.eventDate;
+                // this.ruleForm.visitTime = res.data.visitDate;
                 this.editChange(res.data.name,res.data.phone)
                }else if(res.status===403){
                     this.$alert('您的权限不足', '权限不足', {
@@ -433,9 +451,14 @@ export default {
             customerEventVO.event_type=this.ruleForm.event_type;   //事件类型
             customerEventVO.event_depict=this.ruleForm.event_depict;   //事情描述
             customerEventVO.agent=this.ruleForm.agent;   //受理人
-            customerEventVO.process_mode=this.ruleForm.process_mode;   //处理方式
-            customerEventVO.eventDate=this.ruleForm.occurrenceTime;   //发生时间
-            customerEventVO.visitDate = this.ruleForm.visitTime;  //回访时间
+            customerEventVO.process_mode=this.ruleForm.process_mode; 
+            if(this.$route.query.msg === 5){
+                customerEventVO.eventDate=this.ruleForm.eventDate
+                customerEventVO.visitDate = this.ruleForm.visitDate;
+            }else{
+                customerEventVO.eventDate=this.ruleForm.occurrenceTime; 
+                customerEventVO.visitDate = this.ruleForm.visitTime;
+            }
             customerEventVO.visit_condition = this.ruleForm.visit_condition;  //回访情况
             customerEventVO.event_loss = this.ruleForm.event_loss;   //事件损失
             customerEventVO.cacsi = this.ruleForm.process_cacsi;   //处理满意度

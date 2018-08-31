@@ -129,10 +129,13 @@
 					<div class="title1">
 						<p class="tongzhi">待办任务</p>
 						<div class="bodymain">
-							<div v-for="nn in task1" :key="nn.id" class="notic-body">
-								<p :class="nn.class">{{nn.title}}</p>
-								<span>{{nn.main}}</span>
-								<span class="time">{{nn.time}}</span>
+							<div v-for="(item,index) in Project" :key="index" class="notic-body" >
+								<p class="xitong">{{item.title}}</p>
+								<span >{{item.content}}</span>
+                                <!-- <el-tag type="danger" size="mini">{{item.status}}</el-tag> -->
+                                <!-- <span class="time" @click="del(index)">删除</span> -->
+								<!-- <span class="time">{{ok.createTime}}</span> -->
+                                <p>{{item.createDate}}</p>
 							</div>
 						</div>
 					</div>
@@ -182,6 +185,7 @@ export default {
     name: "HelloWorld",
     data() {
         return {
+            Project: [],
             content: '',
             dialogVisible: false,
             username: "",
@@ -229,10 +233,17 @@ export default {
     mounted() {
         this.getDetail(),
         this.getChart(),
-        this.work()
+        this.work(),
+        this.project()
     },
 
     methods: {
+        //待办任务
+        project(){
+            this.$ajax.get(url + 'index/backlog').then(res => {
+                this.Project = res.data.data
+            })
+        },
         work(){
             this.$ajax.get(url + 'index/countWork').then(res => {
                 // console.log(res.data)

@@ -75,7 +75,7 @@
 						if(res.data.status === 200) {
 							this.tishi = "登录成功"
 							this.showTishi = true
-							this.$router.push('/helloWorld')
+							this.$router.push('/home')
 							sessionStorage.setItem('userId',res.data.data.token)
 						}else{
 							this.tishi = res.data.data.msg;

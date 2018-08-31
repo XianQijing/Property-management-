@@ -105,7 +105,7 @@ export default {
       ],
       house: {
         currentPage: 1,
-        pageArr: [1, 2, 3, 4, 5],
+        pageArr:  [10, 20, 30, 40, 50],
         pageSize: 5,
         total: 3,
       },

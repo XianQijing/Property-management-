@@ -165,7 +165,7 @@ export default {
 function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
 </script>
 
-<style>
+<style scoped>
 .history{
   background: white;
   width: 100%;

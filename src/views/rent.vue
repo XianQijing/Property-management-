@@ -386,19 +386,7 @@ export default {
             pageNoRoomStandard: 1,
             pageSizeRoomStandard: 10,
             pageSizesListRoomStandard: [10, 20, 30, 40, 50],
-            tableDataRoomStandard: [
-                {
-                room:'',
-                projectAcceptance:'',
-                acceptanceStandard:'',
-                acceptanceResult:'',
-                acceptanceBy:'',
-                acceptanceState:'',
-                acceptanceTime:'',
-                remark:'',
-                id: ''
-                }
-            ],//返回的结果集合
+            tableDataRoomStandard: [],//返回的结果集合
             totalDataNumberRoomStandard: 100,//数据的总数,
             stopId:''
         }

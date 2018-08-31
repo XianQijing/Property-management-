@@ -457,15 +457,7 @@
 				// modify:false,
 				activeName: 'first',
 				//出入证管理
-				inandcome: [
-					{
-						name: 'sfsd',
-						phone:'189494561',
-						reason:'dfs',
-						remarks: '困得一批',
-						time: '2018.07.25'
-					}
-				],
+				inandcome: [],
 				//出入证添加
 				upload: 
 				{
@@ -476,111 +468,18 @@
 					useTime:''
 				},
 				//装修
-				redecorated:[
-					{
-						name: 'adaef',
-						phone: '189486669841',
-						rentType: '店铺',
-						building: '门面',
-						roomNumber: 'efef',
-						area:'dawr',
-						type: 'werewe',
-						person: 'def',
-						startTime:'2018-01-01',
-						endTime:'2018-12-12',
-						id:145786414,
-						odelFlag: ''
-					}
-				],
+				redecorated:[],
 				//服务派工
-				server:[
-					{
-						name: 'adaef',
-						phone: '189486669841',
-						rentType: '店铺',
-						building: '门面',
-						roomNumber: 'efef',
-						area:'dawr',
-						type: 'werewe',
-						person: 'def',
-						startTime:'2018-01-01',
-						endTime:'2018-12-12',
-						odelFlag: '',
-						id:''
-					}
-				],
+				server:[],
 				//客户事件
-				customer: [
-					{
-						name: 'adaef',
-						phone: '189486669841',
-						rentType: '店铺',
-						building: '门面',
-						roomNumber: 'efef',
-						area:'dawr',
-						type: 'werewe',
-						person: 'def',
-						startTime:'2018-01-01',
-						endTime:'2018-12-12',
-						id:589641654,
-						odelFlag: ''
-					}
-				],
+				customer: [],
 				//客户信息管理
-				customerMsg: [
-					{
-						name: 'adaef',
-						phone: '189486669841',
-						rentType: '店铺',
-						building: '门面',
-						roomNumber: 'efef',
-						area:'dawr',
-						type: 'werewe',
-						person: 'def',
-						startTime:'2018-01-01',
-						endTime:'2018-12-12',
-						odelFlag:'',
-						id: ''
-					}
-				],
+				customerMsg: [],
 				//客户基本资料
-				base: [{
-						name: 'A座',
-						rentType: '1',
-                        build: '3',
-                        phone:'146848964',
-                        remarks:'fewf',
-                        time:'8798',
-                        templateNumber:'er'
-				}],
+				base: [],
 				//已迁出
-                MoveOut: [
-                    
-                    {
-                        name:'038568',
-                        phone:'魔方物业',
-                        rentType:'A栋',
-                        build:'1',
-                        templateNumber:'4单元',
-                        startTime: '105',
-                        endTime:'0154',
-                        ammeter:'150',
-                        WaterMeter:'办公',
-						id: 2
-                    }
-				],
-				car: [{
-						carrentType: '卢比克魔方',
-						name: 'A座',
-						rentType: '1',
-						carType: '3',
-						state: '多层',
-						endTime: '钢筋混凝土',
-						remarks: '坐北朝南',
-						id:10,
-						ammeter:'',
-					},
-				],
+                MoveOut: [],
+				car: [],
 				//添加短信模板
 				template:[
 					{
@@ -605,13 +504,7 @@
 				],
 				tabIndex: '0',
 				//已发送短信
-				sended:[ {
-					name: 'sfsd',
-					phone:'dsf',
-					content:'dfs',
-					title: 'sdf',
-					time: '2018.07.25'
-				},],
+				sended:[],
 				// rules: {
                 //     title: [
 				// 		{ required: true, message: '请输入短信标题', trigger: 'blur' },
