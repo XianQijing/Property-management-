@@ -178,7 +178,7 @@
             </el-form-item>
               <el-form-item label="园区:">
                 <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input>{{addpersonEdit.gangwei}} -->
-                <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange"></el-cascader>
+                <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange" change-on-select></el-cascader>
             </el-form-item>
             <el-form-item label="备注:">
                 <el-input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu"></el-input>
@@ -280,7 +280,7 @@
             </el-form-item>
             <el-form-item label="园区:" prop="gangwei">
                 <!-- <el-input id="gangwei"  placeholder="请输入岗位" v-model="addperson.gangwei"></el-input> -->
-                <el-cascader id="gangwei" expand-trigger="hover" :options="options" v-model="addperson.gangwei" @change="handleChange"></el-cascader>
+                <el-cascader id="gangwei" expand-trigger="hover" :options="options" v-model="addperson.gangwei" @change="handleChange" change-on-select></el-cascader>
             </el-form-item>
             <el-form-item label="备注:">
                 <el-input id="remark" placeholder="备注信息" v-model="addperson.beizhu"></el-input>
@@ -461,16 +461,7 @@ export default {
             selectArr: [],
             data5: JSON.parse(JSON.stringify(datato)),
             tableData: [],
-            tableData1:[{
-                id:'',
-                btypeName: "123456",
-                type: "",
-                linkman: "",
-                business: "",
-                address: "",
-                phone: "",
-                remark: ""
-            }],
+            tableData1:[],
             addperson:{
                 name:'',
                 number:'',

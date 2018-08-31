@@ -119,7 +119,7 @@ export default {
 function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
 </script>
 
-<style>
+<style scoped>
 .today{
   background: white;
   width: 100%;

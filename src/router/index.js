@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import Home from '@/components/home'
 import Department from '@/components/department'
 import House from '@/views/house'
 import Next from '@/views/next'
@@ -45,12 +45,12 @@ export default new Router({
     path: '/',
     name: 'Index',
     component: Index,
-    redirect: '/helloWorld',
+    redirect: '/Home',
     children: [
       {
-        path: 'helloWorld',
-        name: 'HelloWorld',
-        component: HelloWorld,
+        path: 'home',
+        name: 'Home',
+        component: Home,
         children: [
           {
             path: 'notice',
