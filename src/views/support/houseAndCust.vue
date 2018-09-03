@@ -9,8 +9,8 @@
         </div>
         <div class="tab">
           <button class="left" :class="{active:0 == num}" @click="tab(0)">
-            <img v-if="num === 1" src="../../assets/img/icon_1.png" alt="">
-            <img v-if="num === 0" src="../../assets/img/icon_3.png" alt="">
+            <img v-if="num === 1" src="static/icon_1.png" alt="">
+            <img v-if="num === 0" src="static/icon_3.png" alt="">
           </button>
           <button class="right" :class="{active:1 == num}" @click="tab(1)">
             <img v-if="num === 0" src="../../assets/img/icon_2.png" alt="">
@@ -55,15 +55,10 @@
 
         <el-table v-if="num2 === 4" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-<<<<<<< HEAD
-          <el-table-column prop="owner_name" label="用户名"></el-table-column>
-          <el-table-column prop="days" label="帐龄(天数)"></el-table-column>
-=======
           <el-table-column prop="owner_name" label="客户名"></el-table-column>
           <el-table-column prop="days" label="欠款时间（天数）"></el-table-column>
           <!-- <el-table-column prop="nul" label="空置数量"></el-table-column>
           <el-table-column prop="rent" label="出租数量"></el-table-column> -->
->>>>>>> XianQijing
         </el-table>
 
         <div class="fenye">

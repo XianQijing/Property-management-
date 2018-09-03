@@ -9,8 +9,8 @@
         </div>
         <div class="tab">
           <button class="left" :class="{active:0 == num}" @click="tab(0)">
-            <img v-if="num === 1" src="../../assets/img/icon_1.png" alt="">
-            <img v-if="num === 0" src="../../assets/img/icon_3.png" alt="">
+            <img v-if="num === 1" src="static/icon_1.png" alt="">
+            <img v-if="num === 0" src="static/icon_3.png" alt="">
           </button>
           <button class="right" :class="{active:1 == num}" @click="tab(1)">
             <img v-if="num === 0" src="../../assets/img/icon_2.png" alt="">

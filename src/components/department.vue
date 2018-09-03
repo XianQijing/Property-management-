@@ -144,7 +144,7 @@
                 <el-input placeholder="请输入姓名" v-model="addpersonEdit.name"></el-input>
             </el-form-item>
             <el-form-item label="昵称:">
-                <el-input id="nickname" placeholder="请输入昵称" v-model="addpersonEdit.nickname"></el-input>
+                <el-input placeholder="请输入昵称" v-model="addpersonEdit.nickname"></el-input>
             </el-form-item>
             <el-form-item label="头像:" prop="nickname">
                 <el-popover
@@ -160,19 +160,19 @@
                 <!-- <input type="file" accept="image/*" @change="upImg" id="file"> -->
             </el-form-item>
               <el-form-item label="手机号:">
-                <el-input id="phone" placeholder="请输入手机号" v-model="addpersonEdit.number" @blur="blur"></el-input>
+                <el-input placeholder="请输入手机号" v-model="addpersonEdit.number" @blur="blur"></el-input>
             </el-form-item>
               <el-form-item label="密码:">
-                <el-input id="mima" placeholder="新增密码" v-model="addpersonEdit.mima" type="password"></el-input>
+                <el-input placeholder="新增密码" v-model="addpersonEdit.mima" type="password"></el-input>
             </el-form-item>
               <el-form-item label="微信号:">
-                <el-input id="wechart" placeholder="请输入微信号" v-model="addpersonEdit.wechat"></el-input>
+                <el-input placeholder="请输入微信号" v-model="addpersonEdit.wechat"></el-input>
             </el-form-item>
               <el-form-item label="邮箱:">
-                <el-input id="email" @blur="IsEmail" placeholder="请输入邮箱" v-model="addpersonEdit.email"></el-input>
+                <el-input @blur="IsEmail" placeholder="请输入邮箱" v-model="addpersonEdit.email"></el-input>
             </el-form-item>
               <el-form-item label="角色:">
-                <el-select  id="position" placeholder="请输入职位" v-model="addpersonEdit.position">
+                <el-select  placeholder="请输入职位" v-model="addpersonEdit.position">
                   <el-option v-for="roleAdd in role" :key="roleAdd.id" :value="roleAdd.id" :label="roleAdd.name"></el-option>
                 </el-select>
             </el-form-item>
@@ -181,7 +181,7 @@
                 <el-cascader  expand-trigger="hover" :options="options" v-model="addpersonEdit.gangwei" @change="handleChange" change-on-select></el-cascader>
             </el-form-item>
             <el-form-item label="备注:">
-                <el-input id="remark" placeholder="备注信息" v-model="addpersonEdit.beizhu"></el-input>
+                <el-input placeholder="备注信息" v-model="addpersonEdit.beizhu"></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

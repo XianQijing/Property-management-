@@ -33,7 +33,7 @@ export default {
     return {
       name: '请登录',
       status: '登出',
-      photo: '../assets/yonghu.png'
+      photo: 'static/yonghu.png'
     }
   },
 	mounted(){

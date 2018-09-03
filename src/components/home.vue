@@ -317,6 +317,10 @@ export default {
                 }
                 arr.push(v.name)
             })
+            // for (let i in this.Data){
+            //     // console.log(this.Data)
+            //     arr.push(this.Data[i].pay_item_name)
+            // }
             var myChart = echarts.init(document.getElementById('main1'));
             myChart.setOption({
                 color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
