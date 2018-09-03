@@ -156,7 +156,7 @@ export default {
       }
       // Worksheet名
       var worksheet = 'Sheet1'
-      var uri = 'data:application/vnd.ms-excel;base64,'
+      var uri = 'data:application/vnd.ms-excel;charset=utf-8;base64,'
 
       // 下载的表格模板数据
       var template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
@@ -242,7 +242,6 @@ export default {
           } else {
             this.tableData = res.data.dataTable
             this.house.total = res.data.total
-            console.log(this.tableData)
           }
           // this.house.pageArr = [1, 2, 3, 4, 5, res.data.total]
         }

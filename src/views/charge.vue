@@ -23,7 +23,7 @@
                                     <el-table-column prop="payTime" label="实收时间"></el-table-column>
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
                                     <el-table-column>
-                                      <template slot-scope="scope">
+                                      <!-- <template slot-scope="scope">
                                         <el-dropdown>
                                           <span class="el-dropdown-link">
                                               操作<i class="el-icon-arrow-down el-icon--right"></i>
@@ -33,7 +33,7 @@
                                             <span  @click="Interim(scope.$index,temporary,'edit')"><el-dropdown-item>修改</el-dropdown-item></span>
                                           </el-dropdown-menu>
                                         </el-dropdown>
-                                      </template>
+                                      </template> -->
                                     </el-table-column>
                                   </el-table>
                                   <el-table :data="temporary" style="width: 100%" v-if="this.num == 1" key="Meter">
@@ -461,7 +461,6 @@ export default {
         this.msg = msg
         this.$ajax.get(url + 'payOrderHistory/findId/'+this.temporary[index].id).then(res => {
           // this.form = res.data.data
-          console.log(res.data.data)
         })
       }else{this.msg}
     },
@@ -541,7 +540,6 @@ export default {
     tableTab(index){
       this.num = index
       this.shouldId = this.date[index].id
-      console.log(this.shouldId)
       this.moneyName = this.date[index].name
       this.handleCurrentChange2 = 1
       setTimeout(this.Cost(),1000)
