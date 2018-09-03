@@ -263,17 +263,6 @@
         :visible.sync="isShow"
         width="500px">
         <div class="put">
-          <p>导入设置:</p>
-          <form>
-            <ul class="shuju">
-              <li>
-                <el-radio v-model="radio" label="0">重复数据不导入</el-radio>
-              </li> 
-              <li>
-                <el-radio v-model="radio" label="1">重复数据覆盖</el-radio>
-              </li>
-            </ul>
-          </form>
           <div class="upload">
             <span>选择excel上传：</span><div class="file"><input type="file" @change="getPath" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>点击上传</div>
           </div>

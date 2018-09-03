@@ -17,6 +17,9 @@
             <el-tab-pane label="操作日志" name="fourth" :lazy="lazy"  v-if="this.role.indexOf('rubik:permission:list')!==-1">
               <operation/>
             </el-tab-pane>
+            <!-- <el-tab-pane>
+              <depart-nav/>
+            </el-tab-pane> -->
 					</el-tabs>
 				</div>
 			</div>
@@ -32,6 +35,7 @@ import Parameters from './parameters'
 import Role from './role'
 import Operation from './operation'
 import url from '../../assets/Req.js'
+// import DepartNav from '../../components/departNav.vue'
 export default {
   name: 'system',
   data(){
@@ -64,6 +68,7 @@ export default {
     Parameters,
     Role,
     Operation
+    // DepartNav
   }
 }
 </script>

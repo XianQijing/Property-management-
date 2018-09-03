@@ -13,7 +13,7 @@
       <el-table-column prop="ownerName" label="客户姓名"></el-table-column>
       <el-table-column prop="payItemName" label="费用类别"></el-table-column>
       <el-table-column prop="shouldPrice" label="应收"></el-table-column>
-      <el-table-column prop="payPrice" label="实收,"></el-table-column>
+      <el-table-column prop="payPrice" label="实收"></el-table-column>
       <el-table-column prop="shouldTime" label="应收时间"></el-table-column>
       <el-table-column prop="payTime" label="实收时间"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>

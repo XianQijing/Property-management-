@@ -10,6 +10,7 @@ import axios from 'axios'
 import "babel-polyfill"
 import { Message } from 'element-ui';
 import { MessageBox } from 'element-ui';
+import Router from './router'
 
 axios.interceptors.request.use(
   config => {
@@ -42,6 +43,7 @@ axios.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
+      Router.push('/login')
       // MessageBox.alert('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
       //   confirmButtonText: '确定',
       //   type: 'warning'

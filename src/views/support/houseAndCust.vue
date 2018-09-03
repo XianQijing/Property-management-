@@ -55,10 +55,8 @@
 
         <el-table v-if="num2 === 4" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="owner_name" label="客户名"></el-table-column>
-          <el-table-column prop="days" label="欠款时间（天数）"></el-table-column>
-          <!-- <el-table-column prop="nul" label="空置数量"></el-table-column>
-          <el-table-column prop="rent" label="出租数量"></el-table-column> -->
+          <el-table-column prop="owner_name" label="用户名"></el-table-column>
+          <el-table-column prop="days" label="帐龄(天数)"></el-table-column>
         </el-table>
 
         <div class="fenye">

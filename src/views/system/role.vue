@@ -14,9 +14,9 @@
       </el-table-column>
             <el-table-column label="操作">
         <template slot-scope="scope">
-          <span style="cursor: pointer;" @click="edit(scope)">编辑</span>
-          &nbsp;&nbsp;
-          <span style="cursor: pointer;" @click="roleDel(scope)">删除</span>
+          <button class="operation"  @click="edit(scope)">编辑</button>
+          <!-- &nbsp;&nbsp; -->
+          <button class="operation" @click="roleDel(scope)">删除</button>
         </template>
       </el-table-column>
     </el-table>
@@ -303,6 +303,14 @@ button {
     margin-right: 20px;
     margin-top: 10px;
     margin-bottom: 20px;
+}
+.operation{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #A1CEFF;
+	background: white;
+	color: #A1CEFF;
 }
 </style>
 

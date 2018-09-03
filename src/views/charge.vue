@@ -12,7 +12,7 @@
                               <div id="main">
                                   <el-table :data="temporary" style="width: 100%" v-if="this.num == 0" key="routine">
                                     <!-- <el-table-column prop="roomType" label="房屋类型" width="180"></el-table-column> -->
-                                    <el-table-column prop="roomBuilding" label="楼宇"></el-table-column>
+                                    <!-- <el-table-column prop="roomBuilding" label="楼宇"></el-table-column>
                                     <el-table-column prop="roomNum" label="房号"></el-table-column>
                                     <el-table-column prop="ownerName" label="租户名称"></el-table-column>
                                     <el-table-column prop="payItemName" label="收费项目"></el-table-column>
@@ -21,6 +21,14 @@
                                     <el-table-column prop="payPrice" label="实收费用"></el-table-column>
                                     <el-table-column prop="shouldTime" label="应收时间"></el-table-column>
                                     <el-table-column prop="payTime" label="实收时间"></el-table-column>
+                                    <el-table-column prop="remarks" label="备注"></el-table-column> -->
+                                    <el-table-column prop="build" label="楼宇"></el-table-column>
+                                    <el-table-column prop="roomNum" label="房号"></el-table-column>
+                                    <el-table-column prop="clientName" label="租户名称"></el-table-column>
+                                    <el-table-column prop="itemName" label="收费项目"></el-table-column>
+                                    <!-- <el-table-column prop="meterName" label="仪表种类"></el-table-column> -->
+                                    <el-table-column prop="price" label="费用"></el-table-column>
+                                    <el-table-column prop="createTime" label="时间"></el-table-column>
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
                                     <el-table-column>
                                       <template slot-scope="scope">
@@ -178,7 +186,7 @@
               <!-- <el-form-item label="收费项目:" prop="payItemName" v-if="this.num == 0">
                 <el-input v-model="form.payItemName"></el-input>
               </el-form-item> -->
-              <el-form-item label="仪表种类:" prop="payItemTypeId" v-if="this.num == 0">
+              <el-form-item label="收费项目:" prop="payItemTypeId" v-if="this.num == 0">
                 <!-- <el-input v-model="form.payItemTypeName"></el-input> -->
                 <el-select v-model="form.payItemTypeId" placeholder="请选择费用项目类型" style="width:100%">
                     <el-option v-for="item in list" :label="item.name" :value="item.id" :key="item.id"></el-option>
@@ -187,9 +195,9 @@
               <el-form-item label="应收费用:" prop="shouldPrice" v-if="this.num == 0">
                 <el-input v-model="form.shouldPrice" @blur="float"></el-input>
               </el-form-item>
-              <el-form-item label="实收费用:" prop="payPrice" v-if="this.num == 0">
+              <!-- <el-form-item label="实收费用:" prop="payPrice" v-if="this.num == 0">
                 <el-input v-model="form.payPrice" @blur="float"></el-input>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="应收时间:" prop="shouldTime" v-if="this.num == 0">
                 <el-date-picker
                   v-model="form.shouldTime"
@@ -200,7 +208,7 @@
                   format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
               </el-form-item>
-              <el-form-item label="实收时间:" prop="payTime" v-if="this.num == 0">
+              <!-- <el-form-item label="实收时间:" prop="payTime" v-if="this.num == 0">
                 <el-date-picker
                   v-model="form.payTime"
                   type="datetime"
@@ -209,7 +217,7 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="备注:"  v-if="this.num == 0">
                 <el-input v-model="form.remark"></el-input>
               </el-form-item>
@@ -435,7 +443,16 @@ export default {
   methods: {
     find(){
       this.$ajax.get(url + 'owner/findOwnerByRoomId/'+this.form.roomNum[2]).then(res => {
-        this.ownerName = res.data.data.name
+        if(res.data.status === 200){
+          this.ownerName = res.data.data.name
+        }else{
+          this.ownerName = ''
+          this.$message({
+                message:res.data.msg,
+                type: 'error'
+            })
+        }
+        // this.ownerName = res.data.data.name
         // var name = res.data.data.name
         // if(res.data.status === 200){
         //     this.form.ownerName = name
@@ -503,9 +520,9 @@ export default {
             }
           })
         }else{
-          this.$ajax.put(url + 'payOrderHistory/update',{
+          this.$ajax.put(url + 'pay/update',{
             'id':this.moneyId,
-            'payPrice': this.form.money
+            'remark': this.form.money
           }).then(res => {
             if(res.data.status === 200){
               this.$message({
@@ -546,14 +563,14 @@ export default {
             }
           })
         }else if(this.num == 0){
-          this.$ajax.post(url + 'payOrderHistory/insert',{
+          this.$ajax.post(url + 'pay/insertByRapid',{
             "roomNum": this.form.roomNum[2],
-            "ownerName": this.ownerName,
-            "payItemTypeId": this.form.payItemTypeId,
-            "shouldPrice": this.form.shouldPrice,
-            "payPrice": this.form.payPrice,
-            "shouldTime": this.form.shouldTime,
-            "payTime": this.form.payTime,
+            "tenantName": this.ownerName,
+            "payItemId": this.form.payItemTypeId,
+            "orderMoney": this.form.shouldPrice,
+            // "payPrice": this.form.payPrice,
+            "collectionTime": this.form.shouldTime,
+            // "payTime": this.form.payTime,
             "remark": this.form.remark
           }).then(res => {
             if(res.data.status === 200){
@@ -780,7 +797,13 @@ export default {
           this.totalData2 = res.data.data.records;
         });
       }else if(this.moneyName == "常规费用"){
-        this.$ajax.get(url + "payOrderHistory/condition/"+this.shouldId+'/'+this.currentPage2+'/'+this.pageSize2).then(res => {
+        this.$ajax.get(url + "pay/queryReceivable", {
+            params: {
+              payItem: this.shouldId,
+              page: this.currentPage2,
+              pageSize: this.pageSize2
+            }
+          }).then(res => {
           this.temporary = res.data.data.rows;
           this.totalData2 = res.data.data.records;
         });
@@ -1066,5 +1089,6 @@ export default {
 	border: 1px solid #A1CEFF;
 	background: white;
 	color: #A1CEFF;
+  margin: 0;
 }
 </style>
