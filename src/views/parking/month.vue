@@ -16,6 +16,7 @@
       <el-table-column prop="owner" label="车主"></el-table-column>
       <el-table-column prop="startDate" label="入库时间"></el-table-column>
       <el-table-column prop="endDate" label="出库时间"></el-table-column>
+      <el-table-column prop="uid" label="车库编号"></el-table-column>
     </el-table>
     <div class="fenye">
       <el-pagination
@@ -103,30 +104,47 @@ export default {
           this.more1Id.push(v.id)
           this.more2Id = this.more1Id.join(',')
         })
-        var str = '<tr><td>车牌号</td><td>车主</td><td>入库时间</td><td>出库时间</td>/tr>'
-        for(let i = 0 ; i < this.multipleSelection.length; i++ ){
-        str += '<tr>'
-        for(let item in this.multipleSelection[i]){
-          //增加\t为了不让表格显示科学计数法或者其他格式
-          // console.log(this.tableExportData[i][item])
-          str += `<td>${ this.multipleSelection[i][item] + '\t'}</td>`;    
-        }
-        }
-        str += '</tr>'
-        var worksheet = 'Sheet1'
-        var uri = 'data:application/vnd.ms-excel;base64,'
+        // var str = '<tr><td>车牌号</td><td>车主</td><td>入库时间</td><td>出库时间</td>/tr>'
+        // for(let i = 0 ; i < this.multipleSelection.length; i++ ){
+        // str += '<tr>'
+        // for(let item in this.multipleSelection[i]){
+        //   //增加\t为了不让表格显示科学计数法或者其他格式
+        //   // console.log(this.tableExportData[i][item])
+        //   str += `<td>${ this.multipleSelection[i][item] + '\t'}</td>`;    
+        // }
+        // }
+        // str += '</tr>'
+        // var worksheet = 'Sheet1'
+        // var uri = 'data:application/vnd.ms-excel;base64,'
 
-        // 下载的表格模板数据
-        var template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
-        xmlns:x="urn:schemas-microsoft-com:office:excel" 
-        xmlns="http://www.w3.org/TR/REC-html40">
-        <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-          <x:Name>${ worksheet }</x:Name>
-          <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
-          </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-          </head><body><table>${ str }</table></body></html>`
-        // 下载模板
-        window.location.href = uri + base64(template)
+        // // 下载的表格模板数据
+        // var template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+        // xmlns:x="urn:schemas-microsoft-com:office:excel" 
+        // xmlns="http://www.w3.org/TR/REC-html40">
+        // <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+        //   <x:Name>${ worksheet }</x:Name>
+        //   <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+        //   </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+        //   </head><body><table>${ str }</table></body></html>`
+        // // 下载模板
+        // window.location.href = uri + base64(template)
+        let str = `车牌编号,入库时间,出库时间,车牌号, 车主, 手机号, 车库编号\n`;
+      //增加\t为了不让表格显示科学计数法或者其他格式
+      for(let i = 0 ; i < this.multipleSelection.length ; i++ ){
+        for(let item in this.multipleSelection[i]){
+            str+=`${this.multipleSelection[i][item] + '\t'},`;     
+        }
+        str+='\n';
+      }
+      //encodeURIComponent解决中文乱码
+      let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+      //通过创建a标签实现
+      var link = document.createElement("a");
+      link.href = uri;
+      //对下载的文件命名
+      link.download =  "包月.csv";
+      document.body.appendChild(link);
+      link.click();
       }else{
         this.$message({
           message: '请至少选择一条信息',
@@ -153,7 +171,7 @@ export default {
     }
   }
 }
-function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+// function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
 </script>
 
 <style scoped>
