@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="search">
-        <el-input v-model="input" size="small" placeholder="请输入内容" clearable>
+        <el-input v-model="input" size="small" placeholder="请输入姓名" clearable>
           <template slot="append"><el-button type="primary" size="small" icon="el-icon-search" @click="tableTab1(6)">搜索</el-button></template>
         </el-input>
       </div>

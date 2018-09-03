@@ -23,17 +23,9 @@
                                     <el-table-column prop="payTime" label="实收时间"></el-table-column>
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
                                     <el-table-column>
-                                      <!-- <template slot-scope="scope">
-                                        <el-dropdown>
-                                          <span class="el-dropdown-link">
-                                              操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                          </span>
-                                          <el-dropdown-menu slot="dropdown">
-                                            <span  @click="pay(scope.$index,temporary)"><el-dropdown-item>付款</el-dropdown-item></span>
-                                            <span  @click="Interim(scope.$index,temporary,'edit')"><el-dropdown-item>修改</el-dropdown-item></span>
-                                          </el-dropdown-menu>
-                                        </el-dropdown>
-                                      </template> -->
+                                      <template slot-scope="scope">
+                                        <button class="operation" @click="pay(scope.$index,temporary,1)">付款</button>
+                                      </template>
                                     </el-table-column>
                                   </el-table>
                                   <el-table :data="temporary" style="width: 100%" v-if="this.num == 1" key="Meter">
@@ -48,7 +40,7 @@
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
                                     <el-table-column>
                                       <template slot-scope="scope">
-                                        <el-button size="small" @click="pay(scope.$index,temporary)">付款</el-button>
+                                        <button class="operation" @click="pay(scope.$index,temporary,2)">付款</button>
                                       </template>
                                     </el-table-column>
                                   </el-table>
@@ -59,11 +51,11 @@
                                     <el-table-column prop="officialReceipts" label="实收费用"></el-table-column>
                                     <el-table-column prop="time" label="收费日期"></el-table-column>
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
-                                    <el-table-column>
+                                    <!-- <el-table-column>
                                       <template slot-scope="scope">
                                         <el-button size="small" @click="pay(scope.$index,temporary)">付款</el-button>
                                       </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
                                   </el-table>
                                   <div class="fenye">
                                     <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="currentPage2"  :page-size="pageSize2" :page-sizes="pageSizes2" layout="total, sizes, prev, pager, next, jumper" :total="totalData2">
@@ -89,7 +81,7 @@
                               <el-table-column prop="remark" label="备注"></el-table-column>
                               <el-table-column>
                                 <template slot-scope="scope">
-                                  <span ><button @click="editThis(scope.$index,meter)">编辑</button></span>
+                                  <span ><button class="operation" @click="editThis(scope.$index,meter)">编辑</button></span>
                                 </template>
                               </el-table-column>
                             </el-table>
@@ -181,7 +173,7 @@
                 </el-cascader>
               </el-form-item>
               <el-form-item label="租户名称:" prop="ownerName" v-if="this.num == 0">
-                <el-input v-model="ownerName"></el-input>
+                <el-input v-model="ownerName" disabled></el-input>
               </el-form-item>
               <!-- <el-form-item label="收费项目:" prop="payItemName" v-if="this.num == 0">
                 <el-input v-model="form.payItemName"></el-input>
@@ -198,7 +190,7 @@
               <el-form-item label="实收费用:" prop="payPrice" v-if="this.num == 0">
                 <el-input v-model="form.payPrice" @blur="float"></el-input>
               </el-form-item>
-              <el-form-item label="实收时间:" prop="shouldTime" v-if="this.num == 0">
+              <el-form-item label="应收时间:" prop="shouldTime" v-if="this.num == 0">
                 <el-date-picker
                   v-model="form.shouldTime"
                   type="datetime"
@@ -304,6 +296,27 @@ export default {
         ],
       },
       rul: {
+        roomNum: [
+          { required: true, message: '请选择房号', trigger: 'blur' },
+        ],
+        payItemTypeId: [
+          { required: true, message: '请先选择项目类型', trigger: 'change' },
+        ],
+        shouldPrice: [
+          { required: true, message: '请输入应收费用', trigger: 'blur' },
+        ],
+        payPrice: [
+          { required: true, message: '请输入实收费用', trigger: 'blur' },
+        ],
+        shouldTime: [
+          { required: true, message: '请输入应收时间', trigger: 'blur' },
+        ],
+        payTime: [
+          { required: true, message: '请输入实收时间', trigger: 'blur' },
+        ],
+        ownerName: [
+          { required: true, message: '请输入实收费用', trigger: 'blur' },
+        ],
         receivable: [
           { required: true, message: '请输入应收费用', trigger: 'blur' },
         ],
@@ -448,7 +461,7 @@ export default {
         e.target.style.borderColor = '#67c23a'
       }  
     },
-    Interim(index,rows,msg){
+    Interim(){
       this.form = {}
       this.ownerName=''
       this.interimCharge = true
@@ -457,35 +470,58 @@ export default {
           this.list = res.data.data
         })
       }
-      if(msg){
-        this.msg = msg
-        this.$ajax.get(url + 'payOrderHistory/findId/'+this.temporary[index].id).then(res => {
-          // this.form = res.data.data
-        })
-      }else{this.msg}
+      // if(msg){
+      //   this.msg = msg
+      //   this.$ajax.get(url + 'payOrderHistory/findId/'+this.temporary[index].id).then(res => {
+      //     this.form = res.data.data
+      //     console.log(this.form)
+      //   })
+      // }
     },
-    pay(index,rows){
+    pay(index,rows, msg){
+      this.msg = msg
       this.dialogVisible = true
       this.form.money = ''
       this.moneyId = this.temporary[index].id
     },
     moneyYes(){
       if(this.form.money){
-      this.$ajax.get (url + 'pay/payOrder',{
-        params: {
-          "id": this.moneyId,
-          "pay_price": parseFloat(this.form.money).toFixed(2)
+        if(this.msg === 2){
+          this.$ajax.get (url + 'pay/payOrder',{
+            params: {
+              "id": this.moneyId,
+              "pay_price": parseFloat(this.form.money).toFixed(2)
+            }
+          }).then(res => {
+            if(res.data.status === 200){
+              this.$message({
+              message: '成功',
+              type: 'success'
+            })
+              this.dialogVisible = false
+              this.Cost()
+            }
+          })
+        }else{
+          this.$ajax.put(url + 'payOrderHistory/update',{
+            'id':this.moneyId,
+            'payPrice': this.form.money
+          }).then(res => {
+            if(res.data.status === 200){
+              this.$message({
+                message: '更新成功',
+                type: 'success'
+              })
+              this.dialogVisible = false
+              this.Cost()
+            }else{
+              this.$message({
+                message: res.data.msg,
+                type: 'error'
+              })
+            }
+          })
         }
-      }).then(res => {
-        if(res.data.status === 200){
-          this.$message({
-          message: '成功',
-          type: 'success'
-        })
-          this.dialogVisible = false
-          this.Cost()
-        }
-      })
       }else{
         if(this.num == 2){
           this.$ajax.post(url + 'payTemporary/insert',{
@@ -987,11 +1023,11 @@ export default {
   border-radius: 5px;
 }
 
-.cell button {
+/* .cell button {
   background: none;
   border: none;
   color: #32a8ee;
-}
+} */
 
 .tanchuang {
   width: 80%;
@@ -1022,5 +1058,13 @@ export default {
 }
 #card{
   float: right;
+}
+.operation{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #A1CEFF;
+	background: white;
+	color: #A1CEFF;
 }
 </style>

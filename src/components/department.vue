@@ -541,7 +541,7 @@ export default {
                     { required: true, message: '请选择角色', trigger: 'change' }
                 ],
                 gangwei: [
-                    { required: true, message: '请选择岗位', trigger: 'change' }
+                    { required: true, message: '请选择园区', trigger: 'change' }
                 ]
             },
             role1:[],
@@ -594,6 +594,11 @@ mounted(){
     })
     if(this.$route.query.tabPane){
         this.activeName = this.$route.query.tabPane
+    }
+    if(this.activeName == 'third'){
+        this.staff()
+    }else if(this.activeName === 'fourth'){
+        this.Btype()
     }
 },
 methods:{

@@ -27,7 +27,7 @@
 									<el-table-column prop="reserve" label="预定状态" :formatter="formatRole1"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
-											<span style="color:#32a8ee;" @click="toBianji(scope.$index,tableData,'bianji')">编辑</span>
+											<button class="operation" @click="toBianji(scope.$index,tableData,'bianji')">编辑</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -1056,5 +1056,13 @@ function rentHouse(data){
 
 ul li {
     list-style: none;
+}
+.operation{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #A1CEFF;
+	background: white;
+	color: #A1CEFF;
 }
 </style>
