@@ -28,17 +28,16 @@
       width="500px">
       <el-date-picker
         v-model="time"
-        type="date"
+        type="daterange"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-        value-format="yyyy-MM-dd HH:mm:ss"
+        value-format="yyyy-MM-dd"
         :clearable="clear"
         @change="selectTime">
     </el-date-picker>
     <div class="center">
-      <span>应收：</span><div class="radius"></div>
-      <span>实收：</span><div class="radius"></div>
+      
     </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -213,14 +212,5 @@ function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
   .el-range-editor {
     margin: 0 27px; 
   }
-  .center {
-    display: flex;
-    justify-content: center;
-  }
-  .radius {
-    height: 139px;
-    width: 139px;
-    border-radius: 70px;
-    background: pink;
-  }
+
 </style>

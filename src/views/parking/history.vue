@@ -3,11 +3,11 @@
     <button class="delect" id="more2" @click="out">批量导出</button>
     <el-date-picker
       v-model="time"
-      type="date"
+      type="daterange"
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
-      value-format="yyyy-MM-dd HH:mm:ss"
+      value-format="yyyy-MM-dd"
       @change="selectTime">
     </el-date-picker>
     <el-table :data="historyData" style="width: 100%" @selection-change="handleSelectionChange">
