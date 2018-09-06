@@ -3,7 +3,7 @@
     <button class="delect" id="more2" @click="out">批量导出</button>
     <el-date-picker
       v-model="time"
-      type="datetimerange"
+      type="date"
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
