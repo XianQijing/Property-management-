@@ -1,7 +1,6 @@
 <template>
   <div class="today">
     <button class="delect" id="more" @click="out">批量导出</button>
-    <button class="add1" @click="all">合计</button>
     <el-table :data="todayData" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="carNo" label="车牌号"></el-table-column>
@@ -22,28 +21,6 @@
       :total="total">
     </el-pagination>
     </div>
-    <el-dialog
-      title="请选择时间"
-      :visible.sync="dialogVisible"
-      width="500px">
-      <el-date-picker
-        v-model="time"
-        type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        value-format="yyyy-MM-dd"
-        :clearable="clear"
-        @change="selectTime">
-    </el-date-picker>
-    <div class="center">
-      
-    </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -53,7 +30,6 @@ export default {
   name: 'today',
   data(){
     return{
-      clear: false,
       todayData:[{
         name:'1234648'
       }],
@@ -62,18 +38,13 @@ export default {
       //分页数据
       currentPage:1,
       pageSize:10,
-      total:30,
-      dialogVisible: false,
-      time: []
+      total:30
     }
   },
   mounted(){
     this.getToday()
   },
   methods: {
-    selectTime(){
-      console.log(this.time)
-    },
     //多选变色
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -159,9 +130,6 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       this.getToday()
-    },
-    all () {
-      this.dialogVisible = true
     }
   }
 }
@@ -198,19 +166,4 @@ function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
   float: right;
   padding: 20px 0;
 }
-.add1 {
-  color: white;
-  background-color: #32a8ee;
-  font-size: 14px;
-  font-family: "Microsoft YaHei";
-  border: 1px solid #32a8ee;
-  border-radius: 5px;
-  width: 63px;
-  height: 31px;
-  margin-right: 10px;
-  }
-  .el-range-editor {
-    margin: 0 27px; 
-  }
-
 </style>
