@@ -165,7 +165,11 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val
       if(this.time){
-        this.selectTime()
+        if(this.time.length != 0){
+          this.selectTime()
+        }else{
+          this.gethistory()
+        }
       }else{
         this.gethistory()
       }
@@ -173,7 +177,11 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       if(this.time){
-        this.selectTime()
+        if(this.time.length != 0){
+          this.selectTime()
+        }else{
+          this.gethistory()
+        }
       }else{
         this.gethistory()
       }

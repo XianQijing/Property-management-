@@ -7,15 +7,15 @@
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
-      value-format="yyyy-MM-dd HH:mm:ss"
+      value-format="timestamp"
       @change="selectTime">
     </el-date-picker>
     <el-table :data="monthData" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="carPlate" label="车牌号"></el-table-column>
       <el-table-column prop="owner" label="车主"></el-table-column>
-      <el-table-column prop="startDate" label="入库时间"></el-table-column>
-      <el-table-column prop="endDate" label="出库时间"></el-table-column>
+      <el-table-column prop="startDate" label="月卡开始时间"></el-table-column>
+      <el-table-column prop="endDate" label="月卡结束时间"></el-table-column>
       <!-- <el-table-column prop="uid" label="车库编号"></el-table-column> -->
     </el-table>
     <div class="fenye">
@@ -156,7 +156,11 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val
       if(this.time){
-        this.selectTime()
+        if(this.time.length != 0){
+          this.selectTime()
+        }else{
+          this.getmonth()
+        }
       }else{
         this.getmonth()
       }
@@ -164,7 +168,11 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       if(this.time){
-        this.selectTime()
+        if(this.time.length != 0){
+          this.selectTime()
+        }else{
+          this.getmonth()
+        }
       }else{
         this.getmonth()
       }

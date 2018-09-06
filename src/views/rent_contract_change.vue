@@ -12,12 +12,12 @@
                     <el-form-item label="联系地址:" prop="site">
                         <el-input v-model="detail.site" placeholder="请输入联系地址"></el-input>
                     </el-form-item>
-                    <el-form-item label="关联房屋:" prop="room">
+                    <el-form-item label="关联房屋:" prop="selectedOptions2">
                         <!-- <el-cascader expand-trigger="hover" :options="options" v-model="detail.rooms" @change="relation" v-if="this.message==='add'"></el-cascader> -->
                         <el-cascader
                             expand-trigger="hover"
                             :options="options"
-                            v-model="selectedOptions2"
+                            v-model="detail.selectedOptions2"
                             @change="relation"
                              v-if="this.message==='add'">
                         </el-cascader>
@@ -390,7 +390,8 @@ export default {
                 buildingId: '',
                 roomNumber: '',
                 endTime: '',
-                fixedGrowth:''
+                fixedGrowth:'',
+                selectedOptions2: []
             },
             form: {
                 terminationTime: '',
@@ -439,7 +440,6 @@ export default {
             building: [],
             rooms:[],
             close:true,
-            selectedOptions2: []
         }
     },
     mounted(){
@@ -735,7 +735,6 @@ export default {
             window.history.back()
         },
         relation(e){
-            
             this.$ajax.get(url + 'room/flndById/'+e[2]).then(res => {
                 if(this.rooms.indexOf(res.data.data.id)<0){
                 this.rooms.push(res.data.data.id)

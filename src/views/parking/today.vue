@@ -1,6 +1,7 @@
 <template>
   <div class="today">
     <button class="delect" id="more" @click="out">批量导出</button>
+    <button class="add">合计</button>
     <el-table :data="todayData" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="carNo" label="车牌号"></el-table-column>
