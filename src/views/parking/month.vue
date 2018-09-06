@@ -7,7 +7,7 @@
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
-      value-format="timestamp"
+      value-format="yyyy-MM-dd HH:mm:ss"
       @change="selectTime">
     </el-date-picker>
     <el-table :data="monthData" style="width: 100%" @selection-change="handleSelectionChange">
