@@ -1,7 +1,7 @@
 <template>
   <div class="parking">
-		<div class="container">
-			<nav-header/>
+		<div>
+			<!-- <nav-header/> -->
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
@@ -104,8 +104,10 @@ export default {
       })
     })
     this.$ajax.get(url + 'pack/queryToDayReceivableAndPayables').then(res => {
-      this.today.should = res.data.data.receivable
-      this.today.had = res.data.data.payables
+      if (res.data.data) {
+        this.today.should = res.data.data.receivable
+        this.today.had = res.data.data.payables
+      }
     })
   },
   methods: {
@@ -141,13 +143,6 @@ export default {
 }
 </script>
 <style scoped>
-.container {
-  width: 88%;
-  position: relative;
-  left: 6%;
-  background-color: #eeeeee;
-  padding: 0;
-}
 .parking {
   background: #eeeeee;
 }
@@ -226,4 +221,13 @@ export default {
   padding:5px 0 5px 5px;
 }
 </style>
+<style>
+.parking .el-date-editor .el-range-separator {
+    padding: 0!important;
+    line-height: 20px;
+    width: 5%;
+    color: #303133;
+}
+</style>
+
 

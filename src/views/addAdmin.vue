@@ -175,21 +175,22 @@ export default {
         });
       },
       blur (e) {
-      var reg = /^\+?[1-9][0-9]*$/
-      if (!reg.test(e.target.value)) {
-        e.target.style.borderColor = 'red'
-        this.$message({
-          message: '请输入数字',
-          type: 'error'
-        })
-      }else if(e.target.value.length!==11){
-          e.target.style.borderColor = 'red'
-          this.$message({
-          message: '请输入11位数字',
-          type: 'error'
-        })
-      } else {
+      var reg = /^1[3|4|5|8][0-9]\d{4,8}$/
+      var isMob= /^([0-9]{3,4}-)?[0-9]{7,8}$/
+      if (isMob.test(e.target.value)||reg.test(e.target.value)) {
         e.target.style.borderColor = '#67c23a'
+      // }else if(e.target.value.length!==11){
+      //     e.target.style.borderColor = 'red'
+      //     this.$message({
+      //     message: '请输入11位数字',
+      //     type: 'error'
+      //   })
+      } else {
+         e.target.style.borderColor = 'red'
+        this.$message({
+          message: '请输入正确的号码格式',
+          type: 'error'
+        })
       }
     },
     save(){

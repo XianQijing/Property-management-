@@ -495,6 +495,26 @@ export default {
                     });
                 }
             })
+        } else {
+            this.addOne = false,
+            this.changeOne = false,
+            this.watchOne = true
+            this.edit = true
+            this.$ajax.get(url+'contract/selectHistoricalContractId/'+this.id).then(res => {
+                if(res.data.status === 200){
+                    this.detail = res.data.data
+                    this.form = res.data.data
+                    this.thisRoom = this.detail.rooms.roomNumber.split(',')
+                    this.close = false
+                }else if(res.data.status===403){
+                    this.$alert('您的权限不足', '权限不足', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.goBack()
+                        }
+                    });
+                }
+            })
         }
     },
     methods: {

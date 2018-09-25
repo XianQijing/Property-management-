@@ -12,7 +12,7 @@
           <router-link style="color: #6AC8FF; cursor: pointer;" :to="{name: 'Page', query: {id: scope.row.id}}">权限设置</router-link>
         </template>
       </el-table-column>
-            <el-table-column label="操作">
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <button class="operation"  @click="edit(scope)">编辑</button>
           <!-- &nbsp;&nbsp; -->
@@ -58,7 +58,7 @@ export default {
       rolePage: {
         currentPage: 1,
         total: 7,
-        pageSize: 5,
+        pageSize: 10,
         pageArr: [10, 20, 30, 40, 50]
       },
       jurisdictionData:[]
@@ -143,7 +143,7 @@ export default {
           pageSize: this.rolePage.pageSize
         }
       }).then(res=> {
-        // console.log(res.data.data)
+        console.log(res.data.data)
         this.rolePage.total = res.data.data.records
         res.data.data.rows.forEach(v => {
           v.createDate = toDate(v.createDate)
@@ -292,7 +292,8 @@ function zero (data) {
 	border-radius: 5px;
 	border: 1px solid #A1CEFF;
 	background: white;
-	color: #A1CEFF;
+  color: #A1CEFF;
+  margin: 0
 }
 button {
     color: white;
@@ -303,14 +304,6 @@ button {
     margin-right: 20px;
     margin-top: 10px;
     margin-bottom: 20px;
-}
-.operation{
-	width: 64px;
-	height: 32px;
-	border-radius: 5px;
-	border: 1px solid #A1CEFF;
-	background: white;
-	color: #A1CEFF;
 }
 </style>
 

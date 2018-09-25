@@ -1,8 +1,8 @@
 <template>
     <div class="support">
         <nav-bar/>
-        <div class="container">
-            <nav-header/>
+        <div>
+            <!-- <nav-header/> -->
             <div class="card row">
                 <div class="col-md-12">
                     <el-tabs v-model="activeName" @tab-click="handleClick">

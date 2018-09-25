@@ -1,8 +1,8 @@
 <template>
   <div class="department">
-    <div class="container">
+    <div>
             
-      <nav-header></nav-header>
+      <!-- <nav-header></nav-header> -->
       <div class="card row">
         <div class="col-md-12">
           <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -48,34 +48,27 @@
             <!--职员信息-->
             <el-tab-pane label="职员信息" name="third" v-if="this.role1.indexOf('rubik:employee:list')!==-1">
               <div class="main">
-                <button @click="openAdd">+ 添加新员工</button>
-                <button @click="isShow = !isShow">导入</button>
-                <button class="shanchu" @click="allDelete">删除</button>
+                <button @click="openAdd" class="btnn">+ 添加新员工</button>
+                <button @click="isShow = !isShow" class="btnn">导入</button>
+                <button class="delete2" @click="allDelete" id="clear">删除</button>
                 <el-table :data="tableData" style="width: 100%" @selection-change="handleSelectionChange">
-									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="name" label="姓名" width="180"></el-table-column>
-									<el-table-column prop="phone" label="手机号" width="180"></el-table-column>
-									<el-table-column prop="wechat" label="微信号"></el-table-column>
-									<el-table-column prop="username" label="昵称"></el-table-column>
-									<el-table-column prop="rname" label="职位"></el-table-column>
-									<el-table-column prop="cname" label="部门"></el-table-column>
-									<el-table-column prop="remark" label="备注"></el-table-column>
-									<el-table-column>
-                    <template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                          操作<i class="el-icon-arrow-down el-icon--right"></i>
-                        </span>
-												<el-dropdown-menu slot="dropdown">
-													<span @click="toUserEdit(scope.$index, tableData)"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<span @click="deleteRow(scope.$index, tableData)"><el-dropdown-item>删除</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
-										</template>
-									</el-table-column>
-								</el-table>
+                    <el-table-column type="selection" width="55"></el-table-column>
+                    <el-table-column prop="name" label="姓名" width="180"></el-table-column>
+                    <el-table-column prop="phone" label="手机号" width="180"></el-table-column>
+                    <el-table-column prop="wechat" label="微信号" width="180"></el-table-column>
+                    <el-table-column prop="username" label="昵称" width="180"></el-table-column>
+                    <el-table-column prop="rname" label="职位" width="180"></el-table-column>
+                    <el-table-column prop="cname" label="部门" width="180"></el-table-column>
+                    <el-table-column prop="remark" label="备注" width="180"></el-table-column>
+                    <el-table-column width="180">
+                        <template slot-scope="scope"  v-if="scope.row.phone == role3 || role4 == 'admin' || role4 == '经理'">
+                            <button class="operation" @click="toUserEdit(scope.$index, tableData)">编辑</button>
+                            <button class="delete1" @click="deleteRow(scope.$index, tableData)" >删除</button>
+                        </template>
+                    </el-table-column>
+                </el-table>
                 <div class="fenye">
-									<el-pagination
+                    <el-pagination
                       @size-change="handleSizeChange"
                       @current-change="handleCurrentChange"
                       :current-page="pageNo"
@@ -83,41 +76,34 @@
                       :page-size="pageSize"
                       layout="total, sizes, prev, pager, next, jumper"
                       :total="totalDataNumber">
-                  </el-pagination>
-								</div>
+                    </el-pagination>
+                </div>
               </div>
             </el-tab-pane>
             <!--往来单位-->
             <el-tab-pane label="往来单位" name="fourth" v-if="this.role1.indexOf('rubik:btype:list')!==-1">
               <div class="main">
-                <button @click="toBtypeEdit('','','add')">+ 添加联系人</button>
+                <button @click="toBtypeEdit('','','add')" class="btnn">+ 添加联系人</button>
                 <!-- <button @click="isShow = !isShow">导入</button> -->
-                <button @click="deleteAll">删除</button>
+                <button @click="deleteAll" class="delete2" id="clear2">删除</button>
                 <el-table :data="tableData1" style="width: 100%" @selection-change="handleSelectionChange">
-									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="btypeName" label="单位名称" width="180"></el-table-column>
-									<el-table-column prop="type" label="行业" width="180"></el-table-column>
-									<el-table-column prop="linkman" label="姓名"></el-table-column>
-									<el-table-column prop="business" label="职务"></el-table-column>
-									<el-table-column prop="phone" label="联系电话"></el-table-column>
-									<el-table-column prop="address" label="地址"></el-table-column>
-									<el-table-column prop="remark" label="备注"></el-table-column>
-									<el-table-column>
-										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                          操作<i class="el-icon-arrow-down el-icon--right"></i>
-                        </span>
-												<el-dropdown-menu slot="dropdown">
-													<el-dropdown-item><button @click="toBtypeEdit(scope.$index, tableData1,'edit')">编辑</button></el-dropdown-item>
-													<el-dropdown-item><button @click="deleteRowB(scope.$index, tableData1)">删除</button></el-dropdown-item>
-												</el-dropdown-menu>
-											</el-dropdown>
-										</template>
-									</el-table-column>
-								</el-table>
+                    <el-table-column type="selection" width="55"></el-table-column>
+                    <el-table-column prop="btypeName" label="单位名称" width="180"></el-table-column>
+                    <el-table-column prop="type" label="行业" width="180"></el-table-column>
+                    <el-table-column prop="linkman" label="姓名"></el-table-column>
+                    <el-table-column prop="business" label="职务"></el-table-column>
+                    <el-table-column prop="phone" label="联系电话"></el-table-column>
+                    <el-table-column prop="address" label="地址"></el-table-column>
+                    <el-table-column prop="remark" label="备注"></el-table-column>
+                    <el-table-column width="180">
+                        <template slot-scope="scope">
+                            <button class="operation" @click="toBtypeEdit(scope.$index, tableData1,'edit')">编辑</button>
+                            <button class="delete1" @click="deleteRowB(scope.$index, tableData1)">删除</button>
+                        </template>
+                    </el-table-column>
+                </el-table>
                 <div class="fenye">
-									<el-pagination
+                    <el-pagination
                       @size-change="handleSizeChangeB"
                       @current-change="handleCurrentChangeB"
                       :current-page="pageNoB"
@@ -125,8 +111,8 @@
                       :page-size="pageSizeB"
                       layout="total, sizes, prev, pager, next, jumper"
                       :total="totalDataNumberB">
-                  </el-pagination>
-								</div>
+                    </el-pagination>
+                </div>
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -146,6 +132,8 @@
             <el-form-item label="昵称:">
                 <el-input placeholder="请输入昵称" v-model="addpersonEdit.nickname"></el-input>
             </el-form-item>
+            <input type="text" id="aaa" style="opacity: 0; position: absolute"/>   
+        　　<input type="password" id="aba" style="opacity: 0;position: absolute" />
             <el-form-item label="头像:" prop="nickname">
                 <el-popover
                     placement="right"
@@ -160,10 +148,10 @@
                 <!-- <input type="file" accept="image/*" @change="upImg" id="file"> -->
             </el-form-item>
               <el-form-item label="手机号:">
-                <el-input placeholder="请输入手机号" v-model="addpersonEdit.number" @blur="blur"></el-input>
+                <el-input placeholder="请输入手机号" @change="findPhone" v-model="addpersonEdit.number" @blur="blur"></el-input>
             </el-form-item>
               <el-form-item label="密码:">
-                <el-input placeholder="新增密码" v-model="addpersonEdit.mima" type="password"></el-input>
+                <el-input placeholder="新增密码" type='password' v-model="addpersonEdit.mima"></el-input>
             </el-form-item>
               <el-form-item label="微信号:">
                 <el-input placeholder="请输入微信号" v-model="addpersonEdit.wechat"></el-input>
@@ -270,7 +258,7 @@
             <el-form-item label="微信号:">
                 <el-input id="wechart" placeholder="请输入微信号" v-model="addperson.wechat"></el-input>
             </el-form-item>
-            <el-form-item label="邮箱:" prop="email">
+            <el-form-item label="邮箱:">
                 <el-input id="email" @blur="IsEmail" placeholder="请输入邮箱" v-model="addperson.email"></el-input>
             </el-form-item>
             <el-form-item label="角色:" prop="position">
@@ -401,7 +389,7 @@
 </template>
 
 <script>
-import { setCookie,getCookie,delCookie } from '.././assets/js/cookie.js'
+// import { setCookie,getCookie,delCookie } from '.././assets/js/cookie.js'
 import NavBar from '.././components/NavBar.vue'
 import NavHeader from '.././components/NavHeader.vue'
 import departNav from './departNav'
@@ -418,6 +406,8 @@ export default {
             children: []
         }];
         return{
+            role4: '',
+            role3: '',
             nowName:'',
             role:[],
           rolePage: {
@@ -534,9 +524,6 @@ export default {
                 mima: [
                     { required: true, message: '请输入密码', trigger: 'blur' }
                 ],
-                email: [
-                    { required: true, message: '请输入邮箱', trigger: 'blur' }
-                ],
                 position: [
                     { required: true, message: '请选择角色', trigger: 'change' }
                 ],
@@ -558,7 +545,7 @@ export default {
                 {img:'static/seals.png'},
                 {img:'static/starfish.png'},
             ],
-            nowType:false
+            nowType:true
         }
     },
     components:{
@@ -577,6 +564,8 @@ export default {
   }
 },
 mounted(){
+    this.role3 = sessionStorage.getItem("phone")
+    this.role4 = sessionStorage.getItem("rname")
     this.$ajax.get(url + 'role/findPermission').then(res => {
         res.data.data.forEach(v => {
             this.role1.push(v.permission)
@@ -637,19 +626,18 @@ methods:{
         this.options = this.transTreeData(this.Data)
     })
     },
-     findPhone(){
-        var phone = this.addperson.number
+     findPhone(e){
+        var phone = e
         this.$ajax.post(url + 'user/findPhone?phone='+phone).then(res => {
             if(res.data.data){
                 this.$message({
                     message:'已有手机号',
                     type:'error'
                 })
+                this.addperson.number = ''
+                this.addpersonEdit.number = ''
             }
         })
-    },
-    openFile(){
-        // this.$el.querySelector('#file').click()
     },
     upImg(index) {
         this.addpersonEdit.img = this.image[index].img
@@ -672,10 +660,10 @@ methods:{
           message: '请输入11位数字',
           type: 'error'
         })
-        this.nowType == false
+        this.nowType = false
       } else {
         e.target.style.borderColor = '#67c23a'
-        this.nowType == true
+        this.nowType = true
       }
     },
      IsEmail(e) {
@@ -1124,11 +1112,6 @@ methods:{
             message: '请输入密码',
             type: 'warning'
             });
-        }else if(!this.addperson.email){
-            this.$message({
-            message: '请输入邮箱',
-            type: 'warning'
-            });
         }else if(!this.addperson.position){
             this.$message({
             message: '请输入角色',
@@ -1139,9 +1122,13 @@ methods:{
             message: '请输入岗位',
             type: 'warning'
             });
+        }else if(!this.nowType){
+            this.$message({
+            message: '请输入正确的手机号',
+            type: 'warning'
+            });
         }else{
-            this.$ajax.post(url+"user/insert",users
-            ).then((res) => {
+            this.$ajax.post(url+"user/insert",users).then((res) => {
                 this.form = res.data
                 if (res.data.status === 200) {
                     this.$message({
@@ -1184,6 +1171,42 @@ methods:{
         users.photo = this.addpersonEdit.img
         users.remark=this.addpersonEdit.beizhu;
         users.roleId=this.addpersonEdit.position;
+        if(!this.addpersonEdit.name){
+            this.$message({
+            message: '请输入姓名',
+            type: 'warning'
+            });
+        }else if(!this.addpersonEdit.nickname){
+            this.$message({
+            message: '请输入昵称',
+            type: 'warning'
+            });
+        }else if(!this.addpersonEdit.number){
+            this.$message({
+            message: '请输入手机号',
+            type: 'warning'
+            });
+        }else if(!this.addpersonEdit.mima){
+            this.$message({
+            message: '请输入密码',
+            type: 'warning'
+            });
+        }else if(!this.addpersonEdit.position){
+            this.$message({
+            message: '请输入角色',
+            type: 'warning'
+            });
+        }else if(this.addpersonEdit.gangwei.length === 0){
+            this.$message({
+            message: '请输入岗位',
+            type: 'warning'
+            });
+        }else if(!this.nowType){
+            this.$message({
+            message: '请输入正确的手机号',
+            type: 'warning'
+            });
+        }else{
         this.$ajax.post(url+"user/update",users).then((res) => {
             if(res.data.status === 200){
                 this.form = res.data
@@ -1200,6 +1223,7 @@ methods:{
                     })
                 }
         })
+        }
     },
     test(){
         this.value
@@ -1323,6 +1347,14 @@ methods:{
             handleSelectionChange (val) {
             //val 为选中数据的集合
                 this.multipleSelection = val
+                if (this.multipleSelection.length > 0) {
+                    document.getElementById('clear').style.cssText = 'background:red;border:1px solid red;color:white'
+                    document.getElementById('clear2').style.cssText = 'background:red;border:1px solid red;color:white'
+
+                } else {
+                    document.getElementById('clear').style.cssText = 'background:#f5f5f5;border:1px solid rgb(217, 217, 217);color:rgb(217, 217, 217)'
+                    document.getElementById('clear2').style.cssText = 'background:#f5f5f5;border:1px solid rgb(217, 217, 217);color:rgb(217, 217, 217)'
+                }
                 // console.log(this.multipleSelection)
             },
             //职员信息批量删除
@@ -1465,13 +1497,13 @@ body {
 .department {
     background-color: #eeeeee;
 }
-.container {
+/* .container {
 		width: 88%;
 		position: relative;
 		left: 6%;
         background-color: #eeeeee;
         padding: 0
-	}
+	} */
 .card ul{
     display: inline-block;
 }
@@ -1517,7 +1549,7 @@ input{
 .name {
     color: #6fc055;
 }
-.main button {
+.btnn {
     color: white;
     background-color: #32a8ee;
     border: none;
@@ -1548,7 +1580,7 @@ select {
 }
 .fenye {
     float: right;
-        padding: 20px 0;
+    padding: 20px 0;
 }
 .fenye input {
     width: 3em;
@@ -1779,4 +1811,5 @@ span {
 .imgHeader img{
     width: 50px;
 }
+
 </style>

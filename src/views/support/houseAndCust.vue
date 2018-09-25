@@ -18,7 +18,7 @@
           </button>
         </div>
       </div>
-      <div v-show="isChartShow" id="main1" style="width: 100%;height:500px;background: #fff;margin: 0 auto;"></div>
+      <div v-show="isChartShow" id="main1" style="width: 100%;height:600px;background: #fff;margin: 0 auto;"></div>
       <div v-show="!isChartShow" class="changeTable">
         <div class="daochu">
           <button id="batchExport" @click="exportExcel" disabled>批量导出</button>
@@ -350,6 +350,7 @@ export default {
             name:'客户名',
             type : 'category',
             data : this.Data.x,
+            // nameRotate: 50,
             axisTick: {
               alignWithLabel: true,
               show: false,
@@ -357,6 +358,7 @@ export default {
             },
             axisLabel: {
               interval: 0,
+              rotate:20
             }
           }
         ],
@@ -376,10 +378,11 @@ export default {
           {
             name:'缴费数额',
             type:'bar',
-            barWidth: '51px',
+            barWidth: '31px',
             data: this.Data.y,
             label: {
               show: true,
+              position: 'top'
             }
           }
         ]
@@ -442,23 +445,24 @@ export default {
             name:'空置率(%)',
             type:'bar',
             stack: '总量',
-            barWidth: '20px',
+            barWidth: '40px',
             // data: this.Data.y,
             data: this.Data.yNull,
             label: {
               show: true,
-              position: 'insideTop'
+              // position: 'insideTop',
             }
           },
           {
             name:'出租率(%)',
             type:'bar',
             stack: '总量',
-            barWidth: '20px',
+            barWidth: '40px',
             data: this.Data.yRent,
             label: {
-              show: true,
-              position: 'insideTop'
+              show: true
+              // position: 'insideTop',
+              // distance: 10
             }
           }
         ]

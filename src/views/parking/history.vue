@@ -10,7 +10,7 @@
       value-format="yyyy-MM-dd"
       @change="selectTime">
     </el-date-picker>
-    <el-table :data="historyData" style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table :data="historyData" style="width: 100%" @selection-change="handleSelectionChange"  :row-class-name="tableRowClassName">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="carNo" label="车牌号"></el-table-column>
       <el-table-column prop="inputTime" label="入库时间"></el-table-column>
@@ -24,7 +24,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[10, 20, 30, 40]"
+      :page-sizes="[10, 20, 30, 40, 100]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
@@ -56,6 +56,13 @@ export default {
     this.gethistory()
   },
   methods: {
+    // 变色
+    tableRowClassName({row, rowIndex}) {
+      if (row.receivable !== row.reality) {
+        return 'ww';
+      }
+      return 'tt';
+    },
     //选择时间
     selectTime(){
       if(this.time){
@@ -135,7 +142,7 @@ export default {
       //     </head><body><table>${ str }</table></body></html>`
       //   // 下载模板
       //   window.location.href = uri + base64(template)
-      let str = `车牌号,入库时间,出库时间, 应收费用, 实收费用\n`;
+      let str = `车牌号, 应收费用, 实收费用,入库时间,出库时间\n`;
       //增加\t为了不让表格显示科学计数法或者其他格式
       for(let i = 0 ; i < this.multipleSelection.length ; i++ ){
         for(let item in this.multipleSelection[i]){
@@ -221,4 +228,11 @@ function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
   float: right;
   padding: 20px 0;
 }
+
 </style>
+<style>
+.ww {
+  background: oldlace!important;
+}
+</style>
+

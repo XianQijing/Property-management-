@@ -24,7 +24,15 @@
           <button id="batchExport" @click="exportExcel" disabled>批量导出</button>
           <button id="allExport" @click="exportExcelAll">全部导出</button>
         </div>
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+        <el-table v-if="num2 === 0"  ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="car_no" label="车牌"></el-table-column>
+          <el-table-column prop="input_time" label="入场时间"></el-table-column>
+          <el-table-column prop="out_time" label="出场时间"></el-table-column>
+          <el-table-column prop="reality" label="实收"></el-table-column>
+          <el-table-column prop="receivable" label="应收"></el-table-column>
+        </el-table>
+        <el-table v-if="num2 === 1" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="car_no" label="车牌"></el-table-column>
           <el-table-column prop="input_time" label="入场时间"></el-table-column>
@@ -69,7 +77,7 @@ export default {
       isChartShow: false,
       color: ['#F0788F', '#DE76CA', '#9972E7', '#6E72EA'],
       Data: {},
-      tableList: ['车辆次数'],
+      tableList: ['车辆次数', '车辆收费'],
       tableData: [
         {
           owner_name: ''
@@ -110,6 +118,8 @@ export default {
           <td>实收</td>
           <td>应收</td>
         </tr>`
+      } else {
+        var str = '<tr><td>签约额度</td><td>电话</td><td>姓名</td></tr>'
       }
       //循环遍历，每行加入tr标签，每个单元格加td标签
       for(let i = 0 ; i < this.tableExportData.length; i++ ){
@@ -186,9 +196,11 @@ export default {
         this.Data = []
         if (this.isChartShow === true) {
           this.Data = res.data
-          if (res.data.series) {
+          if (data === 'carPass') {
             this.chartsTwo()
-          } else {
+          } else if (data === 'carIncome') {
+            this.chartsThree()
+          }else {
             this.$message({
               type: 'info',
               message: '没有数据'
@@ -217,8 +229,14 @@ export default {
           if (this.num2 === 0) {
             this.getData('carPassTable', 'exportExcelAll')
           }
+          if (this.num2 === 1) {
+            this.getData('carPassTable', 'exportExcelAll')
+          }
         } else {
           if (this.num2 === 0) {
+            this.getData('carPassTable')
+          }
+          if (this.num2 === 1) {
             this.getData('carPassTable')
           }
         }
@@ -226,6 +244,10 @@ export default {
         if (this.num2 === 0) {
           this.isArea = false
           this.getData('carPass')
+        }
+        if (this.num2 === 1) {
+          // this.color = ['#FF9494']
+          this.getData('carIncome')
         }
       }
     },
@@ -264,6 +286,80 @@ export default {
       })
       // console.log(seriesArr)
       myChart2.setOption({
+        color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
+        tooltip: {
+          trigger: this.Data.tooltip.trigger
+        },
+        legend: {
+          type: 'plain',
+          data: this.Data.legend.data
+        },
+        grid: {
+          top: '20%',
+          left: '18%',
+          height: '60%',
+          width: '64%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          splitLine: {
+            show: true
+          },
+          data: this.Data.xAxis.data,
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          type: 'value',
+          splitLine: {
+            show: true
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        series: seriesArr
+      }, true)
+    },
+    // 车辆收费
+    chartsThree () {
+      var myChart3 = echarts.init(document.getElementById('main1'))
+      var seriesArr = []
+      this.Data.series.forEach(v => {
+        var oneOfSeries = {
+          name: v.name,
+          type: 'line',
+          symbol: 'circle',
+          symbolSize: '16',
+          itemStyle: {
+            borderWidth: 2,
+            borderColor: '#fff',
+            shadowColor: 'rgba(0, 0, 0, 0.3)',
+            shadowBlur: 4
+          },
+          lineStyle: {
+            width: 4
+          },
+          data: v.data
+        }
+        seriesArr.push(oneOfSeries)
+      })
+      // console.log(seriesArr)
+      myChart3.setOption({
         color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
         tooltip: {
           trigger: this.Data.tooltip.trigger

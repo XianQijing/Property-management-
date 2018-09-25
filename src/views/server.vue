@@ -161,13 +161,12 @@ export default {
                 person:'',
                 require: '',
                 textarea:'',
+                handler: ''
             },
             service:[],
             serviceTo: [],
             handlerTo: [],
-            ways:[
-
-            ],
+            ways:[],
             options: [],
         rules: {
           name: [
@@ -203,6 +202,8 @@ export default {
                     this.detail = res.data;
                     this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
                     this.editChange(res.data.name,res.data.phone)
+                    this.detail.handler = Number(res.data.handler)
+                    this.findUsers()
                 }else if(res.status===403){
                     this.$alert('您的权限不足', '权限不足', {
                         confirmButtonText: '确定',
@@ -218,6 +219,9 @@ export default {
                 this.detail = res.data;
                 this.detail.house = [res.data.precinct, res.data.buildings, res.data.room];
                 this.editChange(res.data.name,res.data.phone)
+                this.detail.handler = Number(res.data.handler)
+                this.findUsers()
+                this.detail.professional_list = res.data.professional_list
             })
             this.edit = false
         }else(
@@ -235,7 +239,6 @@ export default {
                     "id": this.detail.handler
                 }
             }).then(res => {
-                console.log(res.data.data)
                 this.handlerTo = res.data.data
             })
         },

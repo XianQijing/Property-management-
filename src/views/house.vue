@@ -1,7 +1,7 @@
 <template>
 	<div class="house">
-		<div class="container">
-			<nav-header/>
+		<div>
+			<!-- <nav-header/> -->
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
@@ -19,17 +19,10 @@
 									<el-table-column prop="stall" label="车位(个)"></el-table-column>
 									<el-table-column prop="building" label="楼宇(栋)"></el-table-column>
 									<el-table-column prop="principal" label="负责人"></el-table-column>
-									<el-table-column>
+									<el-table-column width="180">
 										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                          操作<i class="el-icon-arrow-down el-icon--right"></i>
-                        </span>
-                        <el-dropdown-menu slot="dropdown">
-													<span @click="addToAdmin(scope.$index, admin,'bianji')"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<span  @click="adminDelete(scope.$index,admin)"><el-dropdown-item>删除</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
+                      <button class="operation" @click="addToAdmin(scope.$index, admin,'bianji')">编辑</button>
+                      <button class="operation" @click="adminDelete(scope.$index,admin)">删除</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -76,17 +69,10 @@
 									<el-table-column prop="buildingType" label="楼宇类型"></el-table-column>
 									<el-table-column prop="flatFabric" label="楼宇结构"></el-table-column>
 									<el-table-column prop="buildingTowards" label="楼宇朝向"></el-table-column>
-									<el-table-column>
+									<el-table-column width="180">
 										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                          操作<i class="el-icon-arrow-down el-icon--right"></i>
-                        </span>
-												<el-dropdown-menu slot="dropdown">
-													<span @click="jumpBuild(scope.$index, build)"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<span  @click="buildDelete(scope.$index, build)"><el-dropdown-item>删除</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
+													<button class="operation" @click="jumpBuild(scope.$index, build)">编辑</button>
+													<button class="operation" @click="buildDelete(scope.$index, build)">删除</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -133,19 +119,10 @@
                   <el-table-column prop="coveredArea" label="建筑面积" width="140"></el-table-column>
                   <el-table-column prop="useId" label="房屋类型" width="140"></el-table-column>
                   <el-table-column prop="roomType" label="房屋户型" width="140"></el-table-column>
-									<el-table-column>
+									<el-table-column width="180">
 										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                          操作<i class="el-icon-arrow-down el-icon--right"></i>
-                        </span>
-												<el-dropdown-menu slot="dropdown">
-                          <!-- <el-dropdown-item>绑定住户</el-dropdown-item> -->
-													<!-- <el-dropdown-item>添加收费标准</el-dropdown-item> -->
-													<span @click="jumpRoom(scope.$index, room)"><el-dropdown-item>详情/编辑</el-dropdown-item></span>
-													<span @click="roomDelete(scope.$index, room)"><el-dropdown-item>删除</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
+													<button class="operation" @click="jumpRoom(scope.$index, room)">编辑</button>
+													<button class="operation" @click="roomDelete(scope.$index, room)">删除</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -666,6 +643,11 @@ export default {
       this.$ajax.get(url + 'room/flndAll/'+this.pageNoRoom+'/'+this.pageSizeRoom+'',{
       }).then(res => {
         this.room = res.data.data.rows
+        // console.log(this.room.buildinges.buil + this.room.roomNumber)
+        this.room.forEach(v => {
+          var tt = v.buildinges.buil + '/' + v.roomNumber
+          // console.log(tt)
+        })
         this.totalDataNumberRoom =  res.data.data.records
       })
     },
@@ -1151,5 +1133,14 @@ li{
     border: 1px solid rgb(217, 217, 217);
     color: rgb(138, 138, 138);
     border-radius: 5px;
+}
+.operation{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #A1CEFF;
+	background: white;
+  color: #A1CEFF;
+  margin: 0
 }
 </style>

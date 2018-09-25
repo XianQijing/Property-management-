@@ -1,0 +1,41 @@
+.operation{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #A1CEFF;
+	background: white;
+    color: #A1CEFF;
+    margin: 0
+}
+.delete1{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid red;
+	background: red;
+    color: white;
+    margin: 0
+}
+.delete2 {
+    font-size: 14px;
+    font-family: "Microsoft YaHei";
+    color: rgb(212, 212, 212);
+    border-width: 1px;
+    border-color: rgb(217, 217, 217);
+    border-style: solid;
+    border-radius: 5px;
+    background-color: rgb(245, 245, 245);
+    width: 63px;
+    height: 31px;
+}
+.fenye {
+    float: right;
+    padding: 20px 0;
+}
+.fenye input {
+    width: 3em;
+    height: 2em;
+    border: 1px solid #eeeeee;
+    background-color: white;
+    border-radius: 5px;
+}

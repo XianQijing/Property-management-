@@ -55,6 +55,7 @@
 			//登录
 			sumbitLogin() {
 				var remember = document.getElementById('remember')
+				var redirect = decodeURIComponent(this.$route.query.redirect || '/')
 				if(this.phone == "" || this.password == "") {
 					this.$message({
 						message: '请输入用户名或密码',
@@ -75,8 +76,13 @@
 						if(res.data.status === 200) {
 							this.tishi = "登录成功"
 							this.showTishi = true
-							this.$router.push('/home')
+							// this.$router.push('/home')
 							sessionStorage.setItem('userId',res.data.data.token)
+							sessionStorage.setItem('pwd',this.password)
+							this.$router.push({
+								//  你需要接受路由的参数再跳转
+								path: redirect
+							})
 						}else{
 							this.tishi = res.data.data.msg;
 							this.showTishi = true

@@ -3,7 +3,7 @@
       <aside v-if="this.role">
         <div class="nav"><img src="@/assets/logo@3x.png"></div>
         <ul class="asideList">
-          <li><router-link :to="{path:'/home'}"><img src=".././assets/shouye.png">个人首页</router-link></li>
+          <li @click="test"><router-link :to="{path:'/home'}"><img src=".././assets/shouye.png">个人首页</router-link></li>
           <li id="base" v-if="this.role.indexOf('rubik:baseInfo:list')!==-1"><router-link :to="{path:'/Department'}"><img src=".././assets/jichu.png">基础信息</router-link></li>
           <li id="house" v-if="this.role.indexOf('rubik:house:list')!==-1"><router-link :to="{path:'/house'}"><img src=".././assets/kehu.png">房产管理</router-link></li>
           <li id="customer" v-if="this.role.indexOf('rubik:relationship:list')!==-1"><router-link :to="{path:'/relationship'}"><img src=".././assets/hetong.png">客户关系</router-link></li>
@@ -15,10 +15,14 @@
           <li><router-link to=""><img src=".././assets/gongzhonghao.png">微信公众号</router-link></li>
         </ul>
       </aside>
+			<div class="container">
+			<nav-header></nav-header>
       <router-view/>
+			</div>
     </div>
 </template>
 <script>
+import NavHeader from '.././components/NavHeader.vue'
 import url from '../assets/Req.js'
 export default {
     name: 'index',
@@ -26,6 +30,9 @@ export default {
       return{
         role:[]
       }
+		},
+		components:{
+        NavHeader
     },
     mounted(){
       this.$ajax.get(url + 'role/findPermission').then(res => {
@@ -36,6 +43,9 @@ export default {
 			})
     },
     methods:{
+			test () {
+				// console.log(sessionStorage.getItem('userId'))
+			}
     }
 }
 </script>
@@ -104,6 +114,13 @@ ul{
 }
 .index {
 	height: 100%;
+}
+.container {
+	width: 88%;
+	position: relative;
+	left: 6%;
+	background-color: #eeeeee;
+	padding: 0
 }
 </style>
 

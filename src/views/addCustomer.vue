@@ -389,7 +389,7 @@ export default {
                           
                          this.ruleForm.name = null;
                        }
-                       console.log(res.data)
+                    //    console.log(res.data)
                    })
                  }else{
                       this.$ajax.get(url + 'owner/findByNameAndPhone/'+this.ruleForm.name+'/'+this.ruleForm.phone).then(res => {

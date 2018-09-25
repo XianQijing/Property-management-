@@ -1,7 +1,7 @@
 <template>
   <div class="system">
-		<div class="container">
-			<nav-header/>
+		<div>
+			<!-- <nav-header/> -->
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
@@ -28,8 +28,6 @@
 </template>
 
 <script>
-import NavHeader from '@/components/NavHeader'
-import NavBar from '@/components/NavBar'
 import Message from './message'
 import Parameters from './parameters'
 import Role from './role'
@@ -62,8 +60,6 @@ export default {
     },
   },
   components: {
-    NavHeader,
-    NavBar,
     Message,
     Parameters,
     Role,

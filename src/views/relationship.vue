@@ -1,7 +1,7 @@
 <template>
 	<div class="name">
-		<div class="container">
-			<nav-header/>
+		<div>
+			<!-- <nav-header/> -->
 			<div class="card row">
 				<div class="col-md-12">
 					<el-tabs v-model="activeName" @tab-click="handleClick">
@@ -28,24 +28,15 @@
 										</template>
 									</el-table-column>
 									<el-table-column prop="decorateSituation" label="装修状态"></el-table-column>
-									<el-table-column>
+									<el-table-column width="180">
 										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
-												<el-dropdown-menu slot="dropdown">
-													<span @click="detail(scope.$index, base)"><el-dropdown-item>详情</el-dropdown-item></span>
-													<span @click="customerEdit(scope.$index, base)" v-if="scope.row.label == '在租'"><el-dropdown-item>编辑</el-dropdown-item></span>
-													<!-- <span @click="baseDelete(scope.$index, base)"  v-if="scope.row.label == '在租'"><el-dropdown-item>迁出</el-dropdown-item></span> -->
-												</el-dropdown-menu>
-											</el-dropdown>
+											<button class="operation" @click="detail(scope.$index, base)">详情</button>
+											<button class="operation" @click="customerEdit(scope.$index, base)" v-if="scope.row.label == '在租'">编辑</button>
 										</template>
 									</el-table-column>
 								</el-table>
 								<div class="fenye">
 									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo"  :page-size="pageSize" :page-sizes="pageSizesList" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumber">
-
 									</el-pagination>
 								</div>
 							</div>
@@ -64,7 +55,6 @@
 								</el-table>
 								<div class="fenye">
 									<el-pagination @size-change="handleSizeChangesended" @current-change="handleCurrentChangesended" :current-page="pageNoSended"  :page-size="pageSizeSended" :page-sizes="pageSizesListSended" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumbersended">
-
 									</el-pagination>
 								</div>
 							</div>
@@ -80,11 +70,9 @@
 									<el-table-column prop="remarks" label="备注"></el-table-column>
 									<el-table-column prop="useTime" label="使用时间"></el-table-column>
 									<el-table-column prop="times" label="领取时间"></el-table-column>
-									
 								</el-table>
 								<div class="fenye">
 									<el-pagination @size-change="handleSizeChangeinandcome" @current-change="handleCurrentChangeinandcome" :current-page="pageNoInandcome"  :page-size="pageSizeInandcome" :page-sizes="pageSizesListInandcome" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumberinandcome">
-
 									</el-pagination>
 								</div>
 							</div>
@@ -127,7 +115,6 @@
 								</el-table>
 								<div class="fenye">
 									<el-pagination @size-change="handleSizeChangeredecorated" @current-change="handleCurrentChangeredecorated" :current-page="pageNoRedecorated"  :page-size="pageSizeRedecorated" :page-sizes="pageSizesListRedecorated" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumberredecorated">
-
 									</el-pagination>
 								</div>
 							</div>
@@ -169,7 +156,6 @@
 								</el-table>
 								<div class="fenye">
 									<el-pagination @size-change="handleSizeChangeserver" @current-change="handleCurrentChangeserver" :current-page="pageNoServer"  :page-size="pageSizeServer" :page-sizes="pageSizesListServer" layout="total, sizes, prev, pager, next, jumper" :total="totalDataNumberserver">
-
 									</el-pagination>
 								</div>
 							</div>
@@ -193,17 +179,10 @@
 									<el-table-column prop="cacsi" label="满意度"></el-table-column>
 									<el-table-column prop="eventDate" label="发生时间"></el-table-column>
 									<!-- <el-table-column prop="remarks" label="备注"></el-table-column> -->
-									<el-table-column>
+									<el-table-column width="180">
 										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
-												<el-dropdown-menu slot="dropdown">
-													<span @click="see(scope.$index,customer,4)"><el-dropdown-item>查看</el-dropdown-item></span>
-													<span @click="see(scope.$index,customer,5)"  v-if="scope.row.odelFlag == 1"><el-dropdown-item>回访</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
+											<button class="operation" @click="see(scope.$index,customer,4)">查看</button>
+											<button class="operation" @click="see(scope.$index,customer,5)"  v-if="scope.row.odelFlag == 1">回访</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -234,17 +213,10 @@
 									<el-table-column prop="processTime" label="处理时间"></el-table-column>
 									<el-table-column prop="process_cacsi" label="满意度"></el-table-column>
 									<el-table-column prop="remarks" label="备注"></el-table-column>
-									<el-table-column>
+									<el-table-column width="180">
 										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
-												<el-dropdown-menu slot="dropdown">
-													<span @click="see1(scope.$index,customerMsg,2)"><el-dropdown-item>查看</el-dropdown-item></span>
-													<span @click="see1(scope.$index,customerMsg,3)"  v-if="scope.row.odelFlag == 1"><el-dropdown-item>修改</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
+											<button class="operation" @click="see1(scope.$index,customerMsg,2)">查看</button>
+											<button class="operation" @click="see1(scope.$index,customerMsg,3)"  v-if="scope.row.odelFlag == 1">修改</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -904,7 +876,8 @@
             this.$ajax.post(url+"visit/insert",visit
             ).then((res) => {
 				if(res.data.status === 200){
-                this.form = res.data
+				this.form = res.data
+				this.upload = {}
 				this.$message({
 					message: '添加成功',
 					type: 'success'
@@ -1324,5 +1297,6 @@ a{
 	border: 1px solid #A1CEFF;
 	background: white;
 	color: #A1CEFF;
+	margin: 0
 }
 </style>

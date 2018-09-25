@@ -128,7 +128,7 @@ export default {
         //   </head><body><table>${ str }</table></body></html>`
         // // 下载模板
         // window.location.href = uri + base64(template)
-        let str = `车牌号,入库时间,出库时间, 车主, 手机号\n`;
+        let str = `车牌号, 车主, 手机号,入库时间,出库时间\n`;
       //增加\t为了不让表格显示科学计数法或者其他格式
       for(let i = 0 ; i < this.multipleSelection.length ; i++ ){
         for(let item in this.multipleSelection[i]){

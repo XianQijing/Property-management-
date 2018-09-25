@@ -1,11 +1,11 @@
 <template>
 	<div class="HelloWorld">
-		<div class="container">
-			<div class="row">
+		<div>
+			<!-- <div class="row">
 				<div class="personal col-md-12">
 					<nav-header :name="username"></nav-header>
 				</div>
-			</div>
+			</div> -->
 			<div class="row">
 				<div class="personal col-md-12">
 					<p>个人首页</p>
@@ -33,91 +33,103 @@
 						<div class="bodymain">
 							<div class="aa">
 								<div class="card">
-									<img src="@/assets/card-yuangong.png">
-									<div class="linkto">
-										<p>员工
-											<span style="float:right">{{countWork[0].count}}个</span>
-										</p>
-										<div class="link">
-											<span>
-												<router-link :to="{path: '/Department',query:{tabPane:'third'}}">添加员工</router-link>
-											</span>
-											<span>
-												<router-link :to="{path: '/Department',query:{tabPane:'third'}}">导入员工</router-link>
-											</span>
-											<span>
-												<router-link :to="{path: '/system',query:{tabPane:'third'}}"><a>权限管理</a></router-link>
-											</span>
-										</div>
-									</div>
+                                    <router-link :to="{path: '/Department',query:{tabPane:'third'}}">
+                                        <img src="@/assets/card-yuangong.png">
+                                        <div class="linkto">
+                                            <p>员工
+                                                <span style="float:right">{{countWork[0].count}}个</span>
+                                            </p>
+                                            <div class="link">
+                                                <span>
+                                                    <router-link :to="{path: '/Department',query:{tabPane:'third'}}">添加员工</router-link>
+                                                </span>
+                                                <span>
+                                                    <router-link :to="{path: '/Department',query:{tabPane:'third'}}">导入员工</router-link>
+                                                </span>
+                                                <span>
+                                                    <router-link :to="{path: '/system',query:{tabPane:'third'}}"><a>权限管理</a></router-link>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </router-link>
 								</div>
 								<div class="card">
-									<img src="@/assets/card-zuhu.png">
-									<div class="linkto">
-										<p>租户
-											<span style="float:right">{{countWork[1].count}}个</span>
-										</p>
-										<div class="link">
-											<span style="color:white">添加员工</span> 
-											<!-- <span>添加租户</span>
-											<span>导入租户</span>
-											<span>迁入审核</span> -->
-										</div>
-									</div>
+                                    <router-link :to="{path: '/relationship',query:{tabPane:'first'}}">
+                                        <img src="@/assets/card-zuhu.png">
+                                        <div class="linkto">
+                                            <p>租户
+                                                <span style="float:right">{{countWork[1].count}}个</span>
+                                            </p>
+                                            <div class="link">
+                                                <span style="color:white">添加员工</span> 
+                                                <!-- <span>添加租户</span>
+                                                <span>导入租户</span>
+                                                <span>迁入审核</span> -->
+                                            </div>
+                                        </div>
+                                    </router-link>
 								</div>
 								<div class="card">
-									<img src="@/assets/card-tingche.png">
-									<div class="linkto">
-										<p>停车
-											<span style="float:right">{{countWork[2].count}}个</span>
-										</p>
-										<div class="link">
-											<span style="color:white">添加员工</span> 
-											<router-link :to="{path: '/parking'}"><span>车位管理</span></router-link>
-											<!-- <router-link :to="{name: 'Daoru'}"><span>导入车位</span></router-link> -->
-										</div>
-									</div>
+                                    <router-link :to="{path: '/parking'}">
+                                        <img src="@/assets/card-tingche.png">
+                                        <div class="linkto">
+                                            <p>停车
+                                                <span style="float:right">{{countWork[2].count}}个</span>
+                                            </p>
+                                            <div class="link">
+                                                <span style="color:white">添加员工</span> 
+                                                <router-link :to="{path: '/parking'}"><span>车位管理</span></router-link>
+                                                <!-- <router-link :to="{name: 'Daoru'}"><span>导入车位</span></router-link> -->
+                                            </div>
+                                        </div>
+                                    </router-link>
 								</div>
 								<div class="card">
-									<img src="@/assets/card-duanxin.png">
-									<div class="linkto">
-										<p>短信
-											<span style="float:right">{{countWork[3].count}}个</span>
-										</p>
-										<div class="link">
-											<span style="color:white">添加员工</span> 
-											<!-- <span @click="task1">短信群发</span> -->
-											<router-link :to="{name: 'System',query:{tabPane:'second'}}"><span>模板设计</span></router-link>
-											<router-link :to="{name: 'Relationship',query:{tabPane:'third'}}"><span>短信记录</span></router-link>
-										</div>
-									</div>
+                                    <router-link :to="{name: 'Relationship',query:{tabPane:'third'}}">
+                                        <img src="@/assets/card-duanxin.png">
+                                        <div class="linkto">
+                                            <p>短信
+                                                <span style="float:right">{{countWork[3].count}}个</span>
+                                            </p>
+                                            <div class="link">
+                                                <span style="color:white">添加员工</span> 
+                                                <!-- <span @click="task1">短信群发</span> -->
+                                                <router-link :to="{name: 'System',query:{tabPane:'second'}}"><span>模板设计</span></router-link>
+                                                <router-link :to="{name: 'Relationship',query:{tabPane:'third'}}"><span>短信记录</span></router-link>
+                                            </div>
+                                        </div>
+                                    </router-link>
 								</div>
 								<div class="card">
-									<img src="@/assets/card-chaobiao.png">
-									<div class="linkto">
-										<p>抄表记录
-											<span style="float:right">{{countWork[4].count}}个</span>
-										</p>
-										<div class="link">
-											<span style="color:white">添加员工</span> 
-											<router-link :to="{name: 'Charge',query:{tabPane:'second'}}"><span>录入数据</span></router-link>
-											<!-- <span>导入表单</span>
-											<span>导出表单</span> -->
-										</div>
-									</div>
+                                    <router-link :to="{name: 'Charge',query:{tabPane:'second'}}">
+                                        <img src="@/assets/card-chaobiao.png">
+                                        <div class="linkto">
+                                            <p>抄表记录
+                                                <span style="float:right">{{countWork[4].count}}个</span>
+                                            </p>
+                                            <div class="link">
+                                                <span style="color:white">添加员工</span> 
+                                                <router-link :to="{name: 'Charge',query:{tabPane:'second'}}"><span>录入数据</span></router-link>
+                                                <!-- <span>导入表单</span>
+                                                <span>导出表单</span> -->
+                                            </div>
+                                        </div>
+                                    </router-link>
 								</div>
 								<div class="card">
-									<img src="@/assets/card-jiaofei.png">
-									<div class="linkto">
-										<p>缴费通知
-											<span style="float:right">{{countWork[5].count}}个</span>
-										</p>
-										<div class="link">
-											<span style="color:white">添加员工</span> 
-											<!-- <span>发送短信</span> -->
-											<router-link :to="{name: 'Relationship',query:{tabPane:'third'}}"><span>查看详情</span></router-link>
-										</div>
-									</div>
+                                    <router-link :to="{name: 'Relationship',query:{tabPane:'third'}}">
+                                        <img src="@/assets/card-jiaofei.png">
+                                        <div class="linkto">
+                                            <p>缴费通知
+                                                <span style="float:right">{{countWork[5].count}}个</span>
+                                            </p>
+                                            <div class="link">
+                                                <span style="color:white">添加员工</span> 
+                                                <!-- <span>发送短信</span> -->
+                                                <router-link :to="{name: 'Relationship',query:{tabPane:'third'}}"><span>查看详情</span></router-link>
+                                            </div>
+                                        </div>
+                                    </router-link>
 								</div>
 							</div>
 						</div>
@@ -296,7 +308,7 @@ export default {
             })
         },
         getChart(){
-            this.$ajax.get(url + 'report/incomeAnalysis', { 
+            this.$ajax.get(url + 'report/indexIncomeAnalysis', { 
                 params:{
                     'howTime': this.howTime,
                     'time': this.howDate,
@@ -570,6 +582,7 @@ html {
     position: relative;
     top: 21px;
     width: 68%;
+    height: 10vh;
 }
 
 .link {

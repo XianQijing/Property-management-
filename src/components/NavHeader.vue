@@ -9,18 +9,39 @@
       <div class="sousuo">
         <!--搜索-->
         <form action="" method="post" style="display:inline-block;"></form>
-        <img :src="this.photo">
+        <img :src="photo">
         <!-- <span class="demonstration"></span> -->
         <el-dropdown>
           <span class="el-dropdown-link">
             {{name}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
+            <span @click="change"><el-dropdown-item>修改密码</el-dropdown-item></span>
             <span @click="signOut"><el-dropdown-item>{{this.status}}</el-dropdown-item></span>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
     </div>
+    <el-dialog
+      title="修改密码"
+      :visible.sync="dialogVisible"
+      width="450px">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="登录密码:" prop="oldPwd">
+            <el-input v-model="ruleForm.oldPwd" autocomplete="off" type="password"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="pass">
+            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" prop="checkPass">
+            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+          </el-form-item>
+          <div class="fenye">
+            <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+          <el-button @click="dialogVisible = false">取消</el-button>
+          </div>
+        </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -30,10 +51,56 @@ import url from '../assets/Req.js'
 export default {
   name: 'NavHeader',
   data () {
+     var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.ruleForm.checkPass !== '') {
+            this.$refs.ruleForm.validateField('checkPass');
+          }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.ruleForm.pass) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
+      var validateOldpwd = (rule, value, callback) =>{
+        if (value === '') {
+          callback(new Error('请输入登录密码'));
+        } else if (value !== sessionStorage.getItem('pwd')) {
+          callback(new Error('登录密码错误'))
+        } else {
+          callback();
+        }
+      }
     return {
       name: '请登录',
       status: '登出',
-      photo: 'static/yonghu.png'
+      photo: 'static/yonghu.png',
+      dialogVisible: false,
+      ruleForm: {
+        oldPwd: '',
+        pass: '',
+        checkPass: '',
+        id: ''
+      },
+      rules: {
+        oldPwd: [
+          { required: true,validator: validateOldpwd, trigger: 'blur' },
+        ],
+        pass: [
+          { required: true,validator: validatePass, trigger: 'blur' }
+        ],
+        checkPass: [
+          { required: true,validator: validatePass2, trigger: 'blur' }
+        ],
+      }
     }
   },
 	mounted(){
@@ -43,20 +110,21 @@ export default {
       }
     }).then(res => {
       if(res.data.status === 200){
+        sessionStorage.setItem('phone',res.data.data.phone)
+        sessionStorage.setItem('rname', res.data.data.rname)
         this.name = res.data.data.username
-        this.photo = res.data.data.photo
+        this.ruleForm.id = res.data.data.id
+        if (res.data.data.photo) {
+          this.photo = res.data.data.photo
+        }
       }else{
-        this.status = '请登录'
-        this.$router.push('/login')
+        // this.status = '请登录'
+        // this.$router.push('/login')
       }
     })
-    if(!sessionStorage.getItem("userId")){
-    this.$router.push('/login')
-    }else{
-
-    }
-    //   this.$router.push('/')
-    
+    // if(!sessionStorage.getItem("userId")){
+    // this.$router.push('/login')
+    // }else{}
   },
 	methods: {
     signOut () {
@@ -67,8 +135,33 @@ export default {
       delCookie('phone')
       delCookie('pwd')
       this.$router.push('/login')
-      window.history.go(0)
-    }
+      // window.history.go(0)
+    },
+    change () {
+      this.dialogVisible = true
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$ajax.post(url + 'user/indexUpdate/'+this.ruleForm.id+'/'+this.ruleForm.pass).then(res => {
+            if (res.data.status === 200){
+              this.$message({
+                message:'修改成功',
+                type:'success'
+              })
+              this.dialogVisible = false
+            } else {
+              this.$message({
+                message:'修改失败',
+                type:'error'
+              })
+            }
+          })
+        } else {
+          return false;
+        }
+      });
+    },
 	}
 }
 </script>
@@ -111,5 +204,9 @@ input{
   border-radius: 13px;
   width: 151px;
   border: 1px solid #32a8ee;
+}
+.fenye {
+  width: 100%;
+  text-align: right
 }
 </style>

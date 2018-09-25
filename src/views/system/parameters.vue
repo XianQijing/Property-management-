@@ -36,8 +36,11 @@
                   type="textarea"
                   :rows="2"
                   placeholder="请输入内容"
-                  v-model="addMessage.content">
+                  v-model="addMessage.content"
+                  maxlength=17
+                  resize="none">
               </el-input>
+              <span class="tips">{{tips}}/17</span>
           </el-form-item>
             <el-form-item label="签名:" prop="sign">
               <el-input v-model="addMessage.sign"></el-input>
@@ -99,6 +102,7 @@ export default {
   name: 'parameters',
   data(){
     return{
+      tips: 0,
       template:[],
       msg: 0,
       textMessage: {
@@ -109,7 +113,7 @@ export default {
         more:[]
       },
       addMessage: {
-        content:'b',
+        content:'',
         title: 32,
         sign: 'a'
       },
@@ -146,6 +150,13 @@ export default {
   mounted(){
     this.gettemplate()
     this.moreSelect()
+  },
+  watch: {
+    'addMessage.content': function (val) {
+      if (val){
+        this.tips = val.length
+      }
+    }
   },
   methods:{
     tt(){
@@ -361,7 +372,7 @@ export default {
           });
 				}
 			})
-		},
+		}
   }
 }
 function birthDay (data) {
@@ -421,6 +432,12 @@ function birthDay1 (data) {
 .tixing {
   font-size: 11px;
   color: red
+}
+.tips {
+  position: absolute;
+  top: 20px;
+  right: 14px;
+  color: #909399;
 }
 </style>
 

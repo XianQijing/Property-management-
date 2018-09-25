@@ -1,7 +1,7 @@
 <template>
     <div class="rent">
-        <div class="container">
-            <nav-header/>
+        <div>
+            <!-- <nav-header/> -->
             <div class="card row">
                 <div class="col-md-12">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -103,6 +103,11 @@
                                  <!-- <div class="fenye" style="display:inline-block">
                                      <button><img src=".././assets/down.png" style="width:16px;">模板</button>
                                  </div> -->
+                                <div class="search">
+                                    <el-input v-model="input" size="small" placeholder="请输入合同编号" clearable>
+                                    <template slot="append"><el-button type="primary" size="small" icon="el-icon-search" @click="tableTab1(input)">搜索</el-button></template>
+                                    </el-input>
+                                </div>
 								<el-table :data="tableDataContract" style="width: 100%" @selection-change="handleSelectionChange">
                                     <el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="tenantry" label="客户姓名"></el-table-column>
@@ -143,7 +148,10 @@
 								</div>
 							</div>                 
                         </el-tab-pane>
-                        <el-tab-pane label="房产验收" name="fifth" v-if="this.role.indexOf('rubik:acceptance:list')!==-1">
+                        <el-tab-pane label="历史合同" lazy>
+                            <history-contract rel="child"/>
+                        </el-tab-pane>
+                        <el-tab-pane label="房产验收" v-if="this.role.indexOf('rubik:acceptance:list')!==-1">
 							<div class="main">
 								<div v-if="indexTable === '4'">
 									<router-view class="test"></router-view>
@@ -278,10 +286,12 @@
 	import NavHeader from '@/components/NavHeader'
     import NavBar from '@/components/NavBar'
     import url from '../assets/Req.js'
+    import HistoryContract from '@/views/historyContract'
 export default {
     name:'rent',
     data(){
         return{
+            input: '',
             role:[],
             isShow: false,
             radio: '0',
@@ -374,6 +384,9 @@ export default {
        
     },
     methods:{
+        tableTab1 (val) {
+            this.$router.push({name: 'Rent_contract_change',query: {id: val,msg: 'edit'}})
+        },
         isStudentNo(e) {
             var reg=/^\d+$/;   /*定义验证表达式*/
             if(!reg.test(e.target.value)){
@@ -444,6 +457,10 @@ export default {
                             type: 'success'
                         })
                         this.flndAllContract()
+                        this.getRoomStandard()
+                        if (this.$refs.child) {
+                            this.$refs.child.getData()
+                        }
                     }else if(res.data.status === 403){
                         this.$message({
                             message: '权限不足',
@@ -859,7 +876,8 @@ export default {
     },
     components: {
         NavHeader,
-        NavBar
+        NavBar,
+        HistoryContract
     },
     watch:{
         '$route'(){
@@ -1032,5 +1050,9 @@ ul li {
 	border: 1px solid #A1CEFF;
 	background: white;
 	color: #A1CEFF;
+}
+.search {
+    width: 250px;
+    float: right;
 }
 </style>

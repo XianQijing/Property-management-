@@ -10,6 +10,7 @@ import axios from 'axios'
 import "babel-polyfill"
 import { Message } from 'element-ui';
 import Router from './router'
+import '../static/css/wuye.css'
 
 axios.interceptors.request.use(
   config => {
@@ -43,7 +44,12 @@ axios.interceptors.response.use(
         duration: 5 * 1000
       })
       Router.push('/login')
-    } else {
+    } else if (data.status === 403) {
+      Message({
+        message: '权限不足',
+        type: 'error'
+      })
+    }else{
       return response
     }
   },
@@ -102,14 +108,17 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 router.beforeEach((to, from, next) => {
+  const userKey = sessionStorage.getItem('userId')
   if (to.matched.some(res => res.meta.requireAuth)) { // 验证是否需要登陆
-    if (sessionStorage.getItem('userId')) { // 查询本地存储信息是否已经登陆
-      next()
-    } else {
+    if (!userKey && to.path !== '/login') { // 查询本地存储信息是否已经登陆
       next({
-        path: '/login', // 未登录则跳转至login页面
-        query: {redirect: to.fullPath} // 登陆成功后回到当前页面，这里传值给login页面，to.fullPath为当前点击的页面
+        path: '/login',
+        query: { redirect: to.fullPath }
       })
+    } else if (userKey && to.path === '/login') {
+      next({ path: '/' })
+    } else {
+      next()
     }
   } else {
     next()
