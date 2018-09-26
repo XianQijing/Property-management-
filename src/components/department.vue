@@ -1436,7 +1436,6 @@ methods:{
             });
                 
             }
-            console.log(num)
         },
         //上传的方法
          getPath(e){

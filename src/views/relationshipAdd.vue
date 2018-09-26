@@ -54,9 +54,18 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item label="手机号:">
-            <el-input v-model="addCustomer.phone" placeholder="请输入租户手机" @blur="blur"></el-input>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="手机号:">
+                <el-input v-model="addCustomer.phone" placeholder="请输入租户手机" @blur="blur"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="固定电话:">
+                <el-input v-model="addCustomer.landline" placeholder="请输入租户固话"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-row>
             <el-col :span="12">
             <el-form-item label="邮箱:">
@@ -109,6 +118,7 @@ export default {
       name:"查看",
       xiangqing:true,
       addCustomer: {
+        landline: '',
         name: '',
         selectRoom: ["bangongqu","Azuo","105"],
         radio: '',
@@ -205,6 +215,7 @@ export default {
           this.addCustomer.contactPhone=res.data.linkphone;
           this.addCustomer.address=res.data.address;
           this.addCustomer.fax=res.data.fax;
+          this.addCustomer.landline = res.data.landline
         }else if(res.status===403){
           this.$alert('您的权限不足', '权限不足', {
           confirmButtonText: '确定',
@@ -251,6 +262,7 @@ export default {
       owner.linkphone=this.addCustomer.contactPhone;
       owner.address=this.addCustomer.address;
       owner.fax=this.addCustomer.fax;
+      owner.landline = this.addCustomer.landline
       this.$ajax.put(url+"owner/update",owner).then((res) => {
         this.form = res.data
         if(res.data.status === 200){

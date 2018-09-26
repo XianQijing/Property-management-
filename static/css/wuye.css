@@ -11,9 +11,9 @@
 	width: 64px;
 	height: 32px;
 	border-radius: 5px;
-	border: 1px solid red;
-	background: red;
-    color: white;
+	border: 1px solid #F56C6C;
+	background: #FEF0F0;
+    color: #F56C6C;
     margin: 0
 }
 .operation1{

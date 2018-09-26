@@ -80,6 +80,7 @@
                             <button class="add" @click="luru('','','add')">录入数据</button>
                             <button class="btn4">导入</button>
                             <input type="file" class="fileIn" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="upLoad">
+                            <button class="btn4" @click="down"><i class="el-icon-download"></i>模板</button>
                             <button class="btn4" @click="out" :disabled="disabled">导出</button>
                             <el-table :data="meter" style="width: 100%" @selection-change="handleSelectionChange">
                               <el-table-column type="selection" width="55"></el-table-column>
@@ -1049,8 +1050,19 @@ export default {
       var formData = new FormData()
       formData.append('file', e.currentTarget.files[0])
       this.$ajax.post(url + 'pay/excelImport', formData).then(res => {
-        console.log(res.data)
+        if (res.data.status === 200) {
+          this.$message({
+            message: '成功',
+            type: 'success'
+          })
+          this.getMeter()
+        }
       })
+    },
+    down () {
+      this.$ajax.get(url + 'pay/getPayMeterExcel').then(res => {
+        console.log(res)
+      })  
     }
   },
   components: {
