@@ -2,14 +2,14 @@
   <div class="message">
     <button class="add" @click="tanchaung(0, 0,1)">新增收费项目</button>
     <el-table :data="charge" style="width: 100%">
-      <el-table-column prop="name" label="名称" width="280"></el-table-column>
-      <el-table-column prop="charge" label="收费项目" width="290"></el-table-column>
-      <el-table-column prop="meter" label="仪表种类" width="290"></el-table-column>
-      <el-table-column prop="remark" label="备注" width="290"></el-table-column>
-      <el-table-column width="300">
+      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="charge" label="收费项目"></el-table-column>
+      <el-table-column prop="meter" label="仪表种类"></el-table-column>
+      <el-table-column prop="remark" label="备注"></el-table-column>
+      <el-table-column width=180>
         <template slot-scope="scope">
           <button class="operation" @click="tanchaung(scope.$index, charge,2)">编辑</button>
-          <button class="operation" @click="chargeDelete(scope.$index, charge)">删除</button>
+          <button class="delete1" @click="chargeDelete(scope.$index, charge)">删除</button>
         </template>
       </el-table-column>
       <el-table-column></el-table-column>

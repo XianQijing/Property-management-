@@ -30,10 +30,11 @@
                                     <el-table-column prop="price" label="费用"></el-table-column>
                                     <el-table-column prop="createTime" label="时间"></el-table-column>
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
-                                    <el-table-column width=180>
+                                    <el-table-column width=250>
                                       <template slot-scope="scope">
                                         <button class="operation" @click="pay(scope.$index,temporary,1)">付款</button>
-                                        <button class="operation" @click="del(scope.$index,temporary)">删除</button>
+                                        <button class="operation1" @click="clear(scope.$index,temporary,'pay/update')">清空</button>
+                                        <button class="delete1" @click="del(scope.$index,temporary)">删除</button>
                                       </template>
                                     </el-table-column>
                                   </el-table>
@@ -47,9 +48,10 @@
                                     <el-table-column prop="price" label="费用"></el-table-column>
                                     <el-table-column prop="createTime" label="时间"></el-table-column>
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
-                                    <el-table-column>
+                                    <el-table-column width=180>
                                       <template slot-scope="scope">
                                         <button class="operation" @click="pay(scope.$index,temporary,2)">付款</button>
+                                        <button class="operation1" @click="clear(scope.$index,temporary,'pay/payOrder')">清空</button>
                                       </template>
                                     </el-table-column>
                                   </el-table>
@@ -76,8 +78,11 @@
                         <el-tab-pane label="抄表录入" v-if="this.role.indexOf('rubik:meterReading:list')!==-1" name="second">
                           <div class="main">
                             <button class="add" @click="luru('','','add')">录入数据</button>
-                            <el-table :data="meter" style="width: 100%">
-                              <!-- <el-table-column prop="roomType" label="房屋类型"></el-table-column> -->
+                            <button class="btn4">导入</button>
+                            <input type="file" class="fileIn" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="upLoad">
+                            <button class="btn4" @click="out" :disabled="disabled">导出</button>
+                            <el-table :data="meter" style="width: 100%" @selection-change="handleSelectionChange">
+                              <el-table-column type="selection" width="55"></el-table-column>
                               <el-table-column prop="build" label="楼宇"></el-table-column>
                               <el-table-column prop="roomNum" label="房号"></el-table-column>
                               <el-table-column prop="payItemName" label="收费项目"></el-table-column>
@@ -127,28 +132,49 @@
                         type="month"
                         placeholder="选择日期"
                         style="width:100%"
-                        value-format="yyyy-MM">
+                        value-format="yyyy-MM-dd">
                       </el-date-picker>
                     </el-form-item>
-                    <div v-for="(test, index) in test" :key="index">
-                      <img src=".././assets/add.png" @click="addPrice(index)">
+                    <div v-if="this.name === '录入'">
+                      <div v-for="(test, index) in test" :key="index">
+                        <img src=".././assets/add.png" @click="addPrice(index)">
+                        <el-form-item label="收费项目:" prop="payItemMeterId">
+                            <el-select v-model="test.payItemMeterId" placeholder="请选择费用项目类型" style="width:100%" @change="changePrice($event,index)">
+                                <el-option v-for="item in charges" :label="item.payItemMeterName" :value="item.id" :key="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="单价:">
+                            <el-input v-model="test.univalence"></el-input>
+                        </el-form-item>
+                        <el-form-item label="起度:" prop="lastRead">
+                            <el-input @blur="isStudentNo" v-model="test.lastRead"></el-input>
+                        </el-form-item>
+                        <el-form-item label="止度:" prop="currentRead">
+                            <el-input @blur="isStudentNo" v-model="test.currentRead"></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注:">
+                            <el-input v-model="test.remark"></el-input>
+                        </el-form-item>
+                      </div>
+                    </div>
+                    <div v-if="this.name === '编辑'">
                       <el-form-item label="收费项目:" prop="payItemMeterId">
-                          <el-select v-model="test.payItemMeterId" placeholder="请选择费用项目类型" style="width:100%" @change="changePrice($event,index)">
-                              <el-option v-for="item in charges" :label="item.payItemMeterName" :value="item.id" :key="item.id"></el-option>
-                          </el-select>
-                      </el-form-item>
-                      <el-form-item label="单价:">
-                          <el-input v-model="test.univalence"></el-input>
-                      </el-form-item>
-                      <el-form-item label="起度:" prop="lastRead">
-                          <el-input @blur="isStudentNo" v-model="test.lastRead"></el-input>
-                      </el-form-item>
-                      <el-form-item label="止度:" prop="currentRead">
-                          <el-input @blur="isStudentNo" v-model="test.currentRead"></el-input>
-                      </el-form-item>
-                      <el-form-item label="备注:">
-                          <el-input v-model="entrydata.remark"></el-input>
-                      </el-form-item>
+                            <el-select v-model="entrydata.payItemMeterId" placeholder="请选择费用项目类型" style="width:100%" @change="changePrice($event,index)">
+                                <el-option v-for="item in charges" :label="item.payItemMeterName" :value="item.id" :key="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="单价:">
+                            <el-input v-model="entrydata.univalence"></el-input>
+                        </el-form-item>
+                        <el-form-item label="起度:" prop="lastRead">
+                            <el-input @blur="isStudentNo" v-model="entrydata.lastRead"></el-input>
+                        </el-form-item>
+                        <el-form-item label="止度:" prop="currentRead">
+                            <el-input @blur="isStudentNo" v-model="entrydata.currentRead"></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注:">
+                            <el-input v-model="entrydata.remark"></el-input>
+                        </el-form-item>
                     </div>
                   </el-form>
                 </div>
@@ -269,6 +295,8 @@ export default {
   name: "charge",
   data() {
     return {
+      disabled:true,
+      multipleSelection:[],
       addPriceIndex: 0,
       msg: '',
       list: [],
@@ -499,13 +527,6 @@ export default {
           this.list = res.data.data
         })
       }
-      // if(msg){
-      //   this.msg = msg
-      //   this.$ajax.get(url + 'payOrderHistory/findId/'+this.temporary[index].id).then(res => {
-      //     this.form = res.data.data
-      //     console.log(this.form)
-      //   })
-      // }
     },
     pay(index,rows, msg){
       this.msg = msg
@@ -706,38 +727,6 @@ export default {
           this.option=res.data;
       })
     },
-    //弹窗
-    // tanchaung(index, rows, msg) {
-    //   if (msg === 2) {
-    //     let that = this;
-    //     (this.addNewOne = false),
-    //       (this.changeOne = true),
-    //       (that.id = this.charge[index].id);
-    //     this.news = true;
-    //     if (that.id !== "") {
-    //       this.name = "编辑";
-    //       this.$ajax
-    //         .get(url + "pay/queryPayItemMeter", {
-    //           params: {
-    //             payItemMeterId: this.id
-    //           }
-    //         })
-    //         .then(res => {
-    //           var temp = res.data.data;
-    //           this.add = temp;
-    //           this.add.payItemId = temp.payItemId;
-    //           this.add.remarks = temp.remark;
-    //           this.add.name = temp.name;
-    //         });
-    //     }
-    //   }
-    // },
-    // addNewProject() {
-    //   (this.add = {}),
-    //   (this.addNewOne = false),
-    //   (this.changeOne = true),
-    //   (this.news = true);
-    // },
     luru() {
       this.entrydata = {};
       this.entry = true;
@@ -849,91 +838,42 @@ export default {
         this.charges=res.data.data;
        });
     },
-    //
-    //常规
-    // feiyong1() {
-    //   document.getElementById('linshi').className=''
-    //   document.getElementById('chaobiao').className=''
-    //   document.getElementById('changgui').className='active'
-    //   this.shouldId = "180723BR7M3G986W";
-    //   this.$ajax
-    //     .get(url + "pay/queryReceivable", {
-    //       params: {
-    //         payItem: "180723BR7M3G986W",
-    //         page: this.currentPage2,
-    //         pageSize: this.pageSize2
-    //       }
-    //     })
-    //     .then(res => {
-    //       this.temporary = res.data.data.rows;
-    //       this.totalData2 = res.data.data.records;
-    //     });
-    // },
-    //抄表
-    // feiyong2() {
-    //   document.getElementById('linshi').className=''
-    //   document.getElementById('chaobiao').className='active'
-    //   document.getElementById('changgui').className=''
-    //   this.shouldId = "180723BR8PBFT354";
-    //   this.$ajax
-    //     .get(url + "pay/queryReceivable", {
-    //       params: {
-    //         payItem: "180723BR8PBFT354",
-    //         page: this.currentPage2,
-    //         pageSize: this.pageSize2
-    //       }
-    //     })
-    //     .then(res => {
-    //       this.temporary = res.data.data.rows;
-    //       this.totalData2 = res.data.data.records;
-    //     });
-    // },
-    //临时
-    // feiyong3() {
-    //   document.getElementById('linshi').className='active'
-    //   document.getElementById('chaobiao').className=''
-    //   document.getElementById('changgui').className=''
-    //   this.shouldId = "180723BRAS3GHR68";
-    //   this.$ajax
-    //     .get(url + "pay/queryReceivable", {
-    //       params: {
-    //         payItem: "180723BRAS3GHR68",
-    //         page: this.currentPage2,
-    //         pageSize: this.pageSize2
-    //       }
-    //     })
-    //     .then(res => {
-    //       this.temporary = res.data.data.rows;
-    //       this.totalData2 = res.data.data.records;
-    //     });
-    // },
     submitIn(){
       if(this.name == "录入"){
-      var params = new URLSearchParams(); 
       for (var i = 0; i < this.test.length; i++){
-        this.test[i].houseType = this.entrydata.houseType
+        this.test[i].roomId = this.entrydata.houseType[2]
         this.test[i].paymentDay = this.entrydata.paymentDay
-      }
-      this.$ajax.post(url + 'pay/savePayOrder',{'payOrder':JSON.stringify(this.test)}).then(res => {
-        if(res.data.status === 200){
-          this.$message({
-            message: '录入成功',
-            type: 'success'
-          });
-          this.entry = false
-          this.getMeter()
-        }else if(res.data.status===403){
-          this.$message({
-              message:'权限不足',
+        var payMeterVO = {
+          "roomId":this.test[i].roomId,//关联房屋
+          "payItemMeterId":this.test[i].payItemMeterId,//收费项目
+          "payMonth":this.test[i].paymentDay,//录入时间
+          "univalence":this.test[i].univalence,//单价
+          "lastRead":this.test[i].lastRead,//起度
+          "currentRead":this.test[i].currentRead,//止
+          "remark":this.test[i].remark  //备注
+        }
+        this.$ajax.post(url + 'pay/createPayMeter',payMeterVO).then(res => {
+          if(res.data.status === 200){
+            this.$message({
+              message: '录入成功',
+              type: 'success'
+            });
+            this.entry = false
+            this.getMeter()
+          }else if(res.data.status===403){
+            this.$message({
+                message:'权限不足',
+                type: 'error'
+            })
+          }else{
+            this.$message({
+              message: '录入失败',
               type: 'error'
-          })
-        }else{
-        this.$message({
-          message: '录入失败',
-          type: 'error'
-        });
+            });
+          }
+        })
       }
-      })}else {
+      }else {
       var arr=this.entrydata.houseType;
       var payMeter = {
         "id":this.updatePayMeterId,
@@ -1020,7 +960,97 @@ export default {
         })
       } else {
       }
-      console.log(this.test)
+    },
+    // 清空
+    clear (index, row, msg) {
+      if (msg === 'pay/update') {
+        this.$ajax.put(url + 'pay/update',{
+            'id':this.temporary[index].id,
+            'remark': this.temporary[index].price
+          }).then(res => {
+          if(res.data.status === 200){
+            this.$message({
+              message: '更新成功',
+              type: 'success'
+            })
+            this.dialogVisible = false
+            this.Cost()
+            if (this.$refs.historyCharge) {
+              this.$refs.historyCharge.getHistory('getPayOrderHistory')
+            }
+          }else{
+            this.$message({
+              message: res.data.msg,
+              type: 'error'
+            })
+          }
+        })
+      } else {
+        this.$ajax.get (url + 'pay/payOrder',{
+            params: {
+              "id": this.temporary[index].id,
+              "pay_price": this.temporary[index].price
+            }
+          }).then(res => {
+            if(res.data.status === 200){
+              this.$message({
+              message: '成功',
+              type: 'success'
+            })
+              this.dialogVisible = false
+              this.Cost()
+              if (this.$refs.historyCharge) {
+                this.$refs.historyCharge.getHistory('getPayOrderHistory')
+              }
+            }
+          })
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      if(this.multipleSelection.length > 0){
+        this.disabled = false
+      }else{
+        this.disabled = true
+      }
+    },
+    //导出
+    out(){
+      if(this.multipleSelection.length > 0){
+        // this.multipleSelection.forEach(v => {
+        //   this.more2Id.push(v.id)
+        //   this.more3Id = this.more2Id.join(',')
+        // })
+      let str = `id,房号,楼宇,收费项目,收款日期,单价,费用,止度,起度,用量,备注\n`;
+      //增加\t为了不让表格显示科学计数法或者其他格式
+      for(let i = 0 ; i < this.multipleSelection.length ; i++ ){
+        for(let item in this.multipleSelection[i]){
+            str+=`${this.multipleSelection[i][item] + '\t'},`;     
+        }
+        str+='\n';
+      }
+      //encodeURIComponent解决中文乱码
+      let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+      //通过创建a标签实现
+      var link = document.createElement("a");
+      link.href = uri;
+      //对下载的文件命名
+      link.download =  "抄表录入.csv";
+      document.body.appendChild(link);
+      link.click();
+      }else{
+        this.$message({
+          message: '请至少选择一条信息',
+          type: 'error'
+        })
+      }
+    },
+    upLoad (e) {
+      var formData = new FormData()
+      formData.append('file', e.currentTarget.files[0])
+      this.$ajax.post(url + 'pay/excelImport', formData).then(res => {
+        console.log(res.data)
+      })
     }
   },
   components: {
@@ -1059,7 +1089,7 @@ export default {
   border-radius: 5px;
   width: 100px;
   height: 31px;
-  margin-right: 10px;
+  margin-right: 5px;
   margin-top: 10px;
   margin-bottom: 20px;
 }
@@ -1140,5 +1170,12 @@ img {
   position: absolute;
   right: 80px;
   cursor: pointer;
+}
+.fileIn {
+  width: 34px;
+  position: absolute;
+  left: 162px;
+  top: 15px;
+  opacity: 0;
 }
 </style>

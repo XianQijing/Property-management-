@@ -1,8 +1,8 @@
 <template>
   <div class="role">
     <router-view></router-view>
-    <button @click="AddRole">+ 添加角色</button>
-    <button class="shanchu" id="roll_all_del" @click="deleteRoleAll">删除</button>
+    <button class="button" @click="AddRole">+ 添加角色</button>
+    <button class="delete1" id="roll_all_del" @click="deleteRoleAll" :disabled="disabled">删除</button>
     <el-table :data="jurisdictionData" style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="name" label="角色" width="180"></el-table-column>
@@ -16,7 +16,7 @@
         <template slot-scope="scope">
           <button class="operation"  @click="edit(scope)">编辑</button>
           <!-- &nbsp;&nbsp; -->
-          <button class="operation" @click="roleDel(scope)">删除</button>
+          <button class="delete1" @click="roleDel(scope)">删除</button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,7 +61,8 @@ export default {
         pageSize: 10,
         pageArr: [10, 20, 30, 40, 50]
       },
-      jurisdictionData:[]
+      jurisdictionData:[],
+      disabled: true
     }
   },
   mounted(){
@@ -201,6 +202,11 @@ export default {
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
+      if (val.length > 0) {
+        this.disabled = false
+      } else {
+        this.disabled = true
+      }
     },
      roleSizeChange (val) {
       // console.log(`每页 ${val} 条`)
@@ -295,7 +301,7 @@ function zero (data) {
   color: #A1CEFF;
   margin: 0
 }
-button {
+.button {
     color: white;
     background-color: #32a8ee;
     border: none;
@@ -304,6 +310,18 @@ button {
     margin-right: 20px;
     margin-top: 10px;
     margin-bottom: 20px;
+}
+.delete1:disabled {
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  color: rgb(212, 212, 212);
+  border-width: 1px;
+  border-color: rgb(217, 217, 217);
+  border-style: solid;
+  border-radius: 5px;
+  background-color: rgb(245, 245, 245);
+  width: 63px;
+  height: 31px;
 }
 </style>
 

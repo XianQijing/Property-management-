@@ -222,7 +222,7 @@ export default {
 }
 </style>
 <style>
-.parking .el-date-editor .el-range-separator {
+.sel .el-date-editor .el-range-separator {
     padding: 0!important;
     line-height: 20px;
     width: 5%;

@@ -63,15 +63,8 @@
 									<el-table-column prop="visitTime" label="来访时间"></el-table-column>
 									<el-table-column>
 										<template slot-scope="scope">
-											<el-dropdown>
-												<span class="el-dropdown-link">
-                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </span>
-												<el-dropdown-menu slot="dropdown">
-													<span @click="shangji(scope.$index,tableDataBusiness,'chakan')"><el-dropdown-item>查看</el-dropdown-item></span>
-													<span  @click="shangji(scope.$index,tableDataBusiness,'gengxin')"><el-dropdown-item>更新</el-dropdown-item></span>
-												</el-dropdown-menu>
-											</el-dropdown>
+                                            <button class="operation1" @click="shangji(scope.$index,tableDataBusiness,'chakan')">查看</button>
+                                            <button class="operation" @click="shangji(scope.$index,tableDataBusiness,'gengxin')">更新</button>
 										</template>
 									</el-table-column>
 								</el-table>

@@ -30,7 +30,7 @@
 									<el-table-column prop="decorateSituation" label="装修状态"></el-table-column>
 									<el-table-column width="180">
 										<template slot-scope="scope">
-											<button class="operation" @click="detail(scope.$index, base)">详情</button>
+											<button class="operation1" @click="detail(scope.$index, base)">详情</button>
 											<button class="operation" @click="customerEdit(scope.$index, base)" v-if="scope.row.label == '在租'">编辑</button>
 										</template>
 									</el-table-column>
@@ -181,7 +181,7 @@
 									<!-- <el-table-column prop="remarks" label="备注"></el-table-column> -->
 									<el-table-column width="180">
 										<template slot-scope="scope">
-											<button class="operation" @click="see(scope.$index,customer,4)">查看</button>
+											<button class="operation1" @click="see(scope.$index,customer,4)">查看</button>
 											<button class="operation" @click="see(scope.$index,customer,5)"  v-if="scope.row.odelFlag == 1">回访</button>
 										</template>
 									</el-table-column>
@@ -215,7 +215,7 @@
 									<el-table-column prop="remarks" label="备注"></el-table-column>
 									<el-table-column width="180">
 										<template slot-scope="scope">
-											<button class="operation" @click="see1(scope.$index,customerMsg,2)">查看</button>
+											<button class="operation1" @click="see1(scope.$index,customerMsg,2)">查看</button>
 											<button class="operation" @click="see1(scope.$index,customerMsg,3)"  v-if="scope.row.odelFlag == 1">修改</button>
 										</template>
 									</el-table-column>
@@ -569,7 +569,9 @@
 			},
 			handleSizeChange(val) {
 				this.pageSize = val;
-				this.getbase()
+				this.pageNo = 1
+				setTimeout(this.getbase(),1000)
+				
 			},
 			handleCurrentChange(val) {
 				this.pageNo = val;
@@ -832,6 +834,7 @@
     },
 			handleSizeChangesended(val) {
 				this.pageSizeSended = val;
+				this.pageNoSended = 1
 				this.getsended()
 			},
 			handleCurrentChangesended(val) {
@@ -847,6 +850,7 @@
 			},
 			handleSizeChangeinandcome(val) {
 				this.pageSizeInandcome = val;
+				this.pageNoInandcome = 1
 				this.getinandcome()
 			},
 			handleCurrentChangeinandcome(val) {

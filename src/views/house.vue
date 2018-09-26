@@ -22,7 +22,7 @@
 									<el-table-column width="180">
 										<template slot-scope="scope">
                       <button class="operation" @click="addToAdmin(scope.$index, admin,'bianji')">编辑</button>
-                      <button class="operation" @click="adminDelete(scope.$index,admin)">删除</button>
+                      <button class="delete1" @click="adminDelete(scope.$index,admin)">删除</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -72,7 +72,7 @@
 									<el-table-column width="180">
 										<template slot-scope="scope">
 													<button class="operation" @click="jumpBuild(scope.$index, build)">编辑</button>
-													<button class="operation" @click="buildDelete(scope.$index, build)">删除</button>
+													<button class="delete1" @click="buildDelete(scope.$index, build)">删除</button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -109,7 +109,7 @@
                 <button class="delect" id="roomDelete" @click="allDeletelou('room')">删除</button>
 								<el-table :data="room" style="width: 100%" @selection-change="handleSelectionChange">
 									<el-table-column type="selection" width="55"></el-table-column>
-									<el-table-column prop="id" label="房屋编号" width="160"></el-table-column>
+									<el-table-column prop="id" label="房屋编号"></el-table-column>
 									<el-table-column prop="precincts.namec" label="小区" width="128"></el-table-column>
 									<el-table-column prop="buildinges.buil" label="楼宇" width="108"></el-table-column>
 									<!-- <el-table-column prop="ste" label="单元号" width="124"></el-table-column> -->
@@ -117,12 +117,12 @@
 									<el-table-column prop="roomNumber" label="房号" width="108"></el-table-column>
 									<!-- <el-table-column prop="denominatorVolume" label="收费标准个数" width="172"></el-table-column> -->
                   <el-table-column prop="coveredArea" label="建筑面积" width="140"></el-table-column>
-                  <el-table-column prop="useId" label="房屋类型" width="140"></el-table-column>
-                  <el-table-column prop="roomType" label="房屋户型" width="140"></el-table-column>
+                  <el-table-column prop="useId" label="房屋类型"></el-table-column>
+                  <el-table-column prop="roomType" label="房屋户型"></el-table-column>
 									<el-table-column width="180">
 										<template slot-scope="scope">
 													<button class="operation" @click="jumpRoom(scope.$index, room)">编辑</button>
-													<button class="operation" @click="roomDelete(scope.$index, room)">删除</button>
+													<button class="delete1" @click="roomDelete(scope.$index, room)">删除</button>
 										</template>
 									</el-table-column>
 								</el-table>

@@ -215,8 +215,8 @@
     font-size: 0.7vw;
 }
 
-.input input:focus {
-	border: 1px solid rgb(255, 196, 76);
+input {
+	border: 1px solid #eeeeee;
 }
 
 input::-webkit-input-placeholder{
@@ -228,8 +228,7 @@ input::-webkit-input-placeholder{
 	background-repeat:no-repeat;
 	border: 1px solid #999999;
 }
-
-#ss:focus {
+input:focus {
 	border: 1px solid rgb(255, 196, 76);
 }
 .sh{
@@ -238,5 +237,8 @@ input::-webkit-input-placeholder{
 	margin: 0;
 	height: 0.5vw;
 	position: absolute
+}
+#ww {
+	border: 1px solid #999999
 }
 </style>

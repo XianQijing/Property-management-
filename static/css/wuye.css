@@ -16,6 +16,24 @@
     color: white;
     margin: 0
 }
+.operation1{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #E6A23C;
+	background: white;
+    color: #E6A23C;
+    margin: 0
+}
+.btn4{
+	width: 76px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #32A8EE;
+	background: #32A8EE;
+    color: white;
+    margin-right: 5px;
+}
 .delete2 {
     font-size: 14px;
     font-family: "Microsoft YaHei";
@@ -32,10 +50,23 @@
     float: right;
     padding: 20px 0;
 }
-.fenye input {
+/* .fenye input {
     width: 3em;
     height: 2em;
     border: 1px solid #eeeeee;
     background-color: white;
     border-radius: 5px;
+} */
+.el-pagination .el-select .el-input .el-input__inner {
+    padding-right: 15px!important;
+}
+.btn4:disabled {
+    font-size: 14px;
+    font-family: "Microsoft YaHei";
+    color: rgb(212, 212, 212);
+    border-width: 1px;
+    border-color: rgb(217, 217, 217);
+    border-style: solid;
+    border-radius: 5px;
+    background-color: rgb(245, 245, 245);
 }

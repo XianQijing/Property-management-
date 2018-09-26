@@ -5,16 +5,17 @@
         <template slot="append"><el-button type="primary" size="small" icon="el-icon-search" @click="search">搜索</el-button></template>
       </el-input>
     </div>
-    <el-button type="primary" size="small" class="all" @click="getHistory('getPayOrderHistory')">全部</el-button>
-    <el-table :data="historyMoney" style="width: 100%">
-      <!-- <el-table-column prop="roomType" label="房屋类型"></el-table-column> -->
+    <button class="all" @click="getHistory('getPayOrderHistory')">全部</button>
+    <button id="more" class="delete2" @click="out" :disabled="disabled">导出</button>
+    <el-table :data="historyMoney" style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="roomBuilding" label="楼宇"></el-table-column>
       <el-table-column prop="roomNum" label="房号"></el-table-column>
       <el-table-column prop="ownerName" label="客户姓名"></el-table-column>
       <el-table-column prop="payItemName" label="费用类别"></el-table-column>
       <el-table-column prop="shouldPrice" label="应收"></el-table-column>
       <el-table-column prop="payPrice" label="实收"></el-table-column>
-      <el-table-column prop="shouldTime" label="应收时间"></el-table-column>
+      <el-table-column prop="shouldTime" label="所属月份"></el-table-column>
       <el-table-column prop="payTime" label="实收时间"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
       <!-- <el-table-column>
@@ -44,7 +45,9 @@ export default {
         pageSize: 10,
         totalData: 400,
         pageSizes: [10, 20, 30, 40, 50]
-      }
+      },
+      multipleSelection: [],
+      disabled: true
     }
   },
   mounted(){
@@ -83,6 +86,47 @@ export default {
       this.page.currentPage = 1
       this.page.pageSize = 10
       this.getHistory('getPayOrderHistoryByOwnerName')
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      if(this.multipleSelection.length > 0){
+        this.disabled = false
+        document.getElementById('more').style.cssText = "border:1px solid #32a8ee;background:#32a8ee;color:white"
+      }else{
+        this.disabled = true
+        document.getElementById('more').style.cssText = "border:1px solid rgb(217, 217, 217);background: rgb(245, 245, 245);color:rgb(217, 217, 217)"
+      }
+    },
+    //导出
+    out(){
+      if(this.multipleSelection.length > 0){
+        // this.multipleSelection.forEach(v => {
+        //   this.more2Id.push(v.id)
+        //   this.more3Id = this.more2Id.join(',')
+        // })
+      let str = `楼宇, 房号, 客户姓名,费用类别,应收,实收,所属月份,实收时间,备注\n`;
+      //增加\t为了不让表格显示科学计数法或者其他格式
+      for(let i = 0 ; i < this.multipleSelection.length ; i++ ){
+        for(let item in this.multipleSelection[i]){
+            str+=`${this.multipleSelection[i][item] + '\t'},`;     
+        }
+        str+='\n';
+      }
+      //encodeURIComponent解决中文乱码
+      let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+      //通过创建a标签实现
+      var link = document.createElement("a");
+      link.href = uri;
+      //对下载的文件命名
+      link.download =  "历史费用.csv";
+      document.body.appendChild(link);
+      link.click();
+      }else{
+        this.$message({
+          message: '请至少选择一条信息',
+          type: 'error'
+        })
+      }
     }
   }
 }
@@ -111,5 +155,11 @@ export default {
 }
 .all {
   margin: 20px 0;
+  width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid #32A8EE;
+	background: #32A8EE;
+  color: white;
 }
 </style>

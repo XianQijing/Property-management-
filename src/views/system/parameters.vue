@@ -9,7 +9,7 @@
       <el-table-column width="201">
         <template slot-scope="scope" v-if="scope.row.titleName!='费用通知'&&scope.row.titleName!='欠费通知'">
           <button class="operation" @click="noteTemplateEdit(scope.$index,template)">编辑</button>
-          <button class="operation" @click="noteTemplateDelete(scope.$index, template)">删除</button>
+          <button class="delete1" @click="noteTemplateDelete(scope.$index, template)">删除</button>
         </template>
       </el-table-column>
       <el-table-column></el-table-column>

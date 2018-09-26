@@ -1,5 +1,5 @@
 <template>
-  <div class="operation">
+  <div class="operation2">
     <div class="date">
       <div class="time">
         <div>
@@ -43,7 +43,7 @@
 <script>
 import url from '../../assets/Req.js'
 export default {
-  name: 'operation',
+  name: 'operation2',
   data(){
     return{
       date: [{name: '全部', value: '0'},{name:'近三天', value:-3}, {name:'近一周', value:-7}, {name:'半个月', value:-15}, {name:'一个月', value:-30}],
@@ -167,7 +167,7 @@ function doHandleMonth(month){
 </script>
 
 <style scoped>
-.operation{
+.operation2{
   background: white;
   width: 100%;
   margin: 0;

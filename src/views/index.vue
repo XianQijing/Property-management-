@@ -12,7 +12,7 @@
           <li id="charge" v-if="this.role.indexOf('rubik:income:list')!==-1"><router-link :to="{path:'/charge'}"><img src=".././assets/renshi.png">收费管理</router-link></li>
           <li id="parking" v-if="this.role.indexOf('rubik:park:list')!==-1"><router-link :to="{path:'/parking'}"><img src=".././assets/tingche.png">停车管理</router-link></li>
           <li id="system" v-if="this.role.indexOf('rubik:system:list')!==-1"><router-link :to="{path:'/system'}"><img src=".././assets/system.png">系统管理</router-link></li>
-          <li><router-link to=""><img src=".././assets/gongzhonghao.png">微信公众号</router-link></li>
+          <!-- <li><router-link to=""><img src=".././assets/gongzhonghao.png">微信公众号</router-link></li> -->
         </ul>
       </aside>
 			<div class="container">
@@ -51,42 +51,43 @@ export default {
 </script>
 <style scoped>
 aside {
-		background-color: #2e3d50;
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		z-index: 4;
-		min-width: 150px;
-    width: 11.7%;
-	}
+	background-color: #2e3d50;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 4;
+	min-width: 150px;
+	width: 11.7%;
+}
 
-		aside li {
-		height: 70px;
-		list-style-type: none;
-		color: white;
-		width: 100%;
-		text-align: center;
-	}
+	aside li {
+	height: 70px;
+	list-style-type: none;
+	color: white;
+	width: 100%;
+	text-align: center;
+}
 
-	.nav {
-		height: 11%;
-		display:flex;
-		align-items:center;
-		justify-content: center;
-	}
+.nav {
+	height: 11%;
+	display:flex;
+	align-items:center;
+	justify-content: center;
+}
 
-	.asideList img {
-		margin-right: 16px;
-	}
+.asideList img {
+	margin-right: 16px;
+}
 
-	a {
-		color: white;
-        display: inline-block;
-        width: 100%;
-        padding: 20px 0;
-		font-size: 0.8vw
-	}
+a {
+	color: white;
+	display: inline-block;
+	width: 100%;
+	padding: 20px 0;
+	font-size: 0.8vw;
+	text-decoration: none;
+}
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
@@ -121,6 +122,11 @@ ul{
 	left: 6%;
 	background-color: #eeeeee;
 	padding: 0
+}
+a:hover {
+	background-color: #202F41;
+	color: white;
+	/* border-left: 6.68px solid #32A8EE; */
 }
 </style>
 

@@ -118,30 +118,6 @@ export default {
           this.more2Id.push(v.id)
           this.more3Id = this.more2Id.join(',')
         })
-        //循环遍历，每行加入tr标签，每个单元格加td标签
-      //   var str = '<tr><td>车牌编号</td><td>车牌号</td><td>入库时间</td><td>出库时间</td><td>应收费用</td><td>实收费用</td><td>是否包月</td></tr>'
-      // for(let i = 0 ; i < this.multipleSelection.length; i++ ){
-      //   str += '<tr>'
-      //   for(let item in this.multipleSelection[i]){
-      //     //增加\t为了不让表格显示科学计数法或者其他格式
-      //     // console.log(this.tableExportData[i][item])
-      //     str += `<td>${ this.multipleSelection[i][item] + '\t'}</td>`;    
-      //   }
-      //   str += '</tr>'
-      //   var worksheet = 'Sheet1'
-      //   var uri = 'data:application/vnd.ms-excel;base64,'
-
-      //   // 下载的表格模板数据
-      //   var template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
-      //   xmlns:x="urn:schemas-microsoft-com:office:excel" 
-      //   xmlns="http://www.w3.org/TR/REC-html40">
-      //   <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-      //     <x:Name>${ worksheet }</x:Name>
-      //     <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
-      //     </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-      //     </head><body><table>${ str }</table></body></html>`
-      //   // 下载模板
-      //   window.location.href = uri + base64(template)
       let str = `车牌号, 应收费用, 实收费用,入库时间,出库时间\n`;
       //增加\t为了不让表格显示科学计数法或者其他格式
       for(let i = 0 ; i < this.multipleSelection.length ; i++ ){
@@ -159,8 +135,6 @@ export default {
       link.download =  "历史停车.csv";
       document.body.appendChild(link);
       link.click();
-
-      // }
       }else{
         this.$message({
           message: '请至少选择一条信息',
