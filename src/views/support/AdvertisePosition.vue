@@ -408,7 +408,7 @@ export default {
         },
         series: seriesArr
       }, true)
-    },
+    }
   },
   components: {
     DecisionCommonHeader

@@ -1060,9 +1060,10 @@ export default {
       })
     },
     down () {
-      this.$ajax.get(url + 'pay/getPayMeterExcel').then(res => {
-        console.log(res)
-      })  
+      // this.$ajax.get(url + 'pay/getPayMeterExcel', {}).then(res => {
+      //   console.log(res)
+      // })
+      window.location.href = url + 'pay/getPayMeterExcel'
     }
   },
   components: {

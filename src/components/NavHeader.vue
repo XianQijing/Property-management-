@@ -36,7 +36,7 @@
           <el-form-item label="确认密码" prop="checkPass">
             <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
           </el-form-item>
-          <div class="fenye">
+          <div class="fenye1">
             <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
           <el-button @click="dialogVisible = false">取消</el-button>
           </div>
@@ -114,6 +114,7 @@ export default {
         sessionStorage.setItem('rname', res.data.data.rname)
         this.name = res.data.data.username
         this.ruleForm.id = res.data.data.id
+        console.log(res.data.data.photo)
         if (res.data.data.photo) {
           this.photo = res.data.data.photo
         }
@@ -205,7 +206,7 @@ input{
   width: 151px;
   border: 1px solid #32a8ee;
 }
-.fenye {
+.fenye1 {
   width: 100%;
   text-align: right
 }

@@ -59,6 +59,12 @@
           <el-table-column prop="days" label="帐龄(天数)"></el-table-column>
         </el-table>
 
+        <el-table v-if="num2 === 5" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="owner_name" label="用户名"></el-table-column>
+          <el-table-column prop="days" label="帐龄(天数)"></el-table-column>
+        </el-table>
+
         <div class="fenye">
           <el-pagination
             @size-change="sizeChange"
@@ -95,7 +101,7 @@ export default {
       isChartShow: false,
       color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
       Data: {},
-      tableList: ['合同签约额度表', '历史缴费表', '合约状态表', '房屋状态表', '欠款账龄'],
+      tableList: ['合同签约额度表', '历史缴费表', '合约状态表', '房屋状态表', '欠款账龄', 'pkr的表格'],
       tableData: [
         {
           ownername: ''
@@ -140,6 +146,9 @@ export default {
         var str = '<tr><td>楼宇名</td><td>空置数量</td><td>小计</td><td>出租数量</td></tr>'
       }
       if (this.num2 === 4) {
+        var str = '<tr><td>帐龄(天数)</td><td>用户名</td></tr>'
+      }
+      if (this.num2 === 5) {
         var str = '<tr><td>帐龄(天数)</td><td>用户名</td></tr>'
       }
       //循环遍历，每行加入tr标签，每个单元格加td标签
@@ -225,7 +234,9 @@ export default {
             this.chartsThree()
           } else if(data === 'agingRanking'){
             this.chartsFourth()
-          } else {
+          } else if (data === 'rentLine') {
+            this.chartsFifth()
+          } else{
             this.charts()
           }
           if (res.data.x.length <= 0) {
@@ -270,6 +281,9 @@ export default {
           if (this.num2 === 4) {
             this.getData('agingRankingTable', 'exportExcelAll')
           }
+          if (this.num2 === 5) {
+            this.getData('agingRankingTable', 'exportExcelAll')
+          }
         } else {
           if (this.num2 === 0) {
             this.getData('contractValueTable')
@@ -284,6 +298,9 @@ export default {
             this.getData('rentOrNullTable')
           }
           if (this.num2 === 4) {
+            this.getData('agingRankingTable')
+          }
+          if (this.num2 === 5) {
             this.getData('agingRankingTable')
           }
         }
@@ -306,6 +323,10 @@ export default {
         if (this.num2 === 4) {
           this.color = ['#FF9494']
           this.getData('agingRanking')
+        }
+        if (this.num2 === 5) {
+          this.color = ['#FF9494']
+          this.getData('rentLine')
         }
       }
     },
@@ -598,6 +619,81 @@ export default {
             }
           }
         ]
+      }, true)
+    },
+    chartsFifth () {
+      var myChart5 = echarts.init(document.getElementById('main1'))
+      var seriesArr = []
+      this.Data.series.forEach(v => {
+        var oneOfSeries = {
+          name: v.name,
+          type: 'line',
+          symbol: 'circle',
+          symbolSize: '16',
+          itemStyle: {
+            borderWidth: 2,
+            borderColor: '#fff',
+            shadowColor: 'rgba(0, 0, 0, 0.3)',
+            shadowBlur: 4
+          },
+          lineStyle: {
+            width: 4
+          },
+          data: v.data
+        }
+        seriesArr.push(oneOfSeries)
+      })
+      // console.log(seriesArr)
+      myChart5.setOption({
+        color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
+        tooltip: {
+          trigger: this.Data.tooltip.trigger
+        },
+        legend: {
+          type: 'plain',
+          data: this.Data.legend.data
+        },
+        grid: {
+          top: '20%',
+          left: '18%',
+          height: '60%',
+          width: '64%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          name: '时间',
+          type: 'category',
+          boundaryGap: false,
+          splitLine: {
+            show: true
+          },
+          data: this.Data.xAxis.data,
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          name: '租金(￥)',
+          type: 'value',
+          splitLine: {
+            show: true
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        series: seriesArr
       }, true)
     }
   },
