@@ -5,7 +5,7 @@
     <div class="charts">
       <div class="title">
         <div class="tableTab">
-          <el-button size="small" v-for="(item, index) in tableList" :key="index" :class="{actived:index == num2}" @click="tableTab(index)">{{ item }}</el-button>
+          <el-button size="small" v-for="(item, index) in tableList" :key="index" :class="{actived:index == num2}" @click="tableTab1(index)">{{ item }}</el-button>
         </div>
         <div class="tab">
           <button class="left" :class="{active:0 == num}" @click="tab(0)">
@@ -82,7 +82,7 @@ export default {
       house: {
         currentPage: 1,
         pageArr:  [10, 20, 30, 40, 50],
-        pageSize: 5,
+        pageSize: 10,
         total: 3,
       },
       isArea: false,
@@ -250,9 +250,12 @@ export default {
         }
       })
     },
-    tableTab (index, changetab) {
+    tableTab1 (index) {
       this.num2 = index
       this.house.currentPage = 1
+      this.tableTab(this.num2)
+    },
+    tableTab (index, changetab) {
       if (!changetab) {
         this.howDate = ''
       }

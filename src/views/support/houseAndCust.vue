@@ -5,7 +5,7 @@
     <div class="charts">
       <div class="title">
         <div class="tableTab">
-          <el-button size="small" v-for="(item, index) in tableList" :key="index" :class="{actived:index == num2}" @click="tableTab(index)">{{ item }}</el-button>
+          <el-button size="small" v-for="(item, index) in tableList" :key="index" :class="{actived:index == num2}" @click="tableTab1(index)">{{ item }}</el-button>
         </div>
         <div class="tab">
           <button class="left" :class="{active:0 == num}" @click="tab(0)">
@@ -62,7 +62,21 @@
         <el-table v-if="num2 === 5" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="owner_name" label="用户名"></el-table-column>
-          <el-table-column prop="days" label="帐龄(天数)"></el-table-column>
+          <el-table-column prop="should_time" label="应付时间"></el-table-column>
+          <el-table-column prop="should_price" label="应付款（￥）"></el-table-column>
+          <el-table-column prop="pay_time" label="实付款时间"></el-table-column>
+          <el-table-column prop="pay_price" label="实收款（￥）"></el-table-column>
+          <el-table-column prop="remark" label="备注"></el-table-column>
+        </el-table>
+
+        <el-table v-if="num2 === 6" ref="multipleTable" id="table" :data="tableData" tooltip-effect="dark" style="width: 100%"  @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="owner_name" label="用户名"></el-table-column>
+          <el-table-column prop="should_time" label="应付时间"></el-table-column>
+          <el-table-column prop="should_price" label="应付款（￥）"></el-table-column>
+          <el-table-column prop="pay_time" label="实付款时间"></el-table-column>
+          <el-table-column prop="pay_price" label="实收款（￥）"></el-table-column>
+          <el-table-column prop="remark" label="备注"></el-table-column>
         </el-table>
 
         <div class="fenye">
@@ -101,7 +115,7 @@ export default {
       isChartShow: false,
       color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
       Data: {},
-      tableList: ['合同签约额度表', '历史缴费表', '合约状态表', '房屋状态表', '欠款账龄', 'pkr的表格'],
+      tableList: ['合同签约额度表', '历史缴费表', '合约状态表', '房屋状态表', '欠款账龄', '租金分析', '物业费分析'],
       tableData: [
         {
           ownername: ''
@@ -110,7 +124,7 @@ export default {
       house: {
         currentPage: 1,
         pageArr:  [10, 20, 30, 40, 50],
-        pageSize: 5,
+        pageSize: 10,
         total: 3,
       },
       isArea: false,
@@ -149,7 +163,10 @@ export default {
         var str = '<tr><td>帐龄(天数)</td><td>用户名</td></tr>'
       }
       if (this.num2 === 5) {
-        var str = '<tr><td>帐龄(天数)</td><td>用户名</td></tr>'
+        var str = '<tr><td>实收款（￥）</td><td>用户名</td><td>应付款（￥）</td><td>应付时间</td><td>实付款时间</td><td>备注</td></tr>'
+      }
+      if (this.num2 === 6) {
+        var str = '<tr><td>实收款（￥）</td><td>用户名</td><td>应付款（￥）</td><td>应付时间</td><td>实付款时间</td><td>备注</td></tr>'
       }
       //循环遍历，每行加入tr标签，每个单元格加td标签
       for(let i = 0 ; i < this.tableExportData.length; i++ ){
@@ -236,7 +253,9 @@ export default {
             this.chartsFourth()
           } else if (data === 'rentLine') {
             this.chartsFifth()
-          } else{
+          } else if (data === 'propertyLine') {
+            this.chartsSixth()
+          } else {
             this.charts()
           }
           if (res.data.x.length <= 0) {
@@ -258,9 +277,13 @@ export default {
       })
     },
     // 切换数据
-    tableTab (index, changetab) {
+    tableTab1 (index) {
       this.num2 = index
       this.house.currentPage = 1
+      this.tableTab(this.num2)
+    },
+    tableTab (index, changetab) {
+      // this.num2 = index
       if (!changetab) {
         this.howDate = ''
       }
@@ -282,7 +305,10 @@ export default {
             this.getData('agingRankingTable', 'exportExcelAll')
           }
           if (this.num2 === 5) {
-            this.getData('agingRankingTable', 'exportExcelAll')
+            this.getData('rentLineTable', 'exportExcelAll')
+          }
+          if (this.num2 === 6) {
+            this.getData('propertyLineTable', 'exportExcelAll')
           }
         } else {
           if (this.num2 === 0) {
@@ -301,7 +327,10 @@ export default {
             this.getData('agingRankingTable')
           }
           if (this.num2 === 5) {
-            this.getData('agingRankingTable')
+            this.getData('rentLineTable')
+          }
+          if (this.num2 === 6) {
+            this.getData('propertyLineTable')
           }
         }
       } else {
@@ -327,6 +356,10 @@ export default {
         if (this.num2 === 5) {
           this.color = ['#FF9494']
           this.getData('rentLine')
+        }
+        if (this.num2 === 6) {
+          this.color = ['#FF9494']
+          this.getData('propertyLine')
         }
       }
     },
@@ -682,6 +715,81 @@ export default {
         },
         yAxis: {
           name: '租金(￥)',
+          type: 'value',
+          splitLine: {
+            show: true
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        series: seriesArr
+      }, true)
+    },
+    chartsSixth () {
+      var myChart6 = echarts.init(document.getElementById('main1'))
+      var seriesArr = []
+      this.Data.series.forEach(v => {
+        var oneOfSeries = {
+          name: v.name,
+          type: 'line',
+          symbol: 'circle',
+          symbolSize: '16',
+          itemStyle: {
+            borderWidth: 2,
+            borderColor: '#fff',
+            shadowColor: 'rgba(0, 0, 0, 0.3)',
+            shadowBlur: 4
+          },
+          lineStyle: {
+            width: 4
+          },
+          data: v.data
+        }
+        seriesArr.push(oneOfSeries)
+      })
+      // console.log(seriesArr)
+      myChart6.setOption({
+        color: ['#87e5da', '#92a4c0', '#f4adad', '#e58cdb', '#d0efb5', '#eb7878', '#2f3e75', '#f3e595', '#eda1c1', '#fab2ac', '#bee4d2', '#d7f8f7'],
+        tooltip: {
+          trigger: this.Data.tooltip.trigger
+        },
+        legend: {
+          type: 'plain',
+          data: this.Data.legend.data
+        },
+        grid: {
+          top: '20%',
+          left: '18%',
+          height: '60%',
+          width: '64%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          name: '时间',
+          type: 'category',
+          boundaryGap: false,
+          splitLine: {
+            show: true
+          },
+          data: this.Data.xAxis.data,
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          name: '物业费(￥)',
           type: 'value',
           splitLine: {
             show: true
