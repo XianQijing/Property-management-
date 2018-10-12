@@ -128,6 +128,21 @@ a:hover {
 	color: white;
 	/* border-left: 6.68px solid #32A8EE; */
 }
+@media (min-width: 576px){
+	.container {
+			max-width: 88%;
+	}
+}
+@media (min-width: 992px) {
+	.container {
+			max-width: 88%;
+	}
+}
+@media (min-width: 768) {
+	.container {
+			max-width: 88%;
+	}
+}
 </style>
 
 

@@ -86,6 +86,7 @@
                               <el-table-column type="selection" width="55"></el-table-column>
                               <el-table-column prop="build" label="楼宇"></el-table-column>
                               <el-table-column prop="roomNum" label="房号"></el-table-column>
+                              <el-table-column prop="cname" label="名称"></el-table-column>
                               <el-table-column prop="payItemName" label="收费项目"></el-table-column>
                               <el-table-column prop="payMonth" label="收款日期"></el-table-column>
                               <el-table-column prop="univalence" label="单价"></el-table-column>
@@ -125,7 +126,10 @@
                 <div class="tanchuang">
                     <el-form ref="sd" label-width="130px" class="demo-sd" size="mini" :model="entrydata">
                     <el-form-item label="关联租户：" prop="houseType">
-                      <el-cascader expand-trigger="hover" :options="option" v-model="entrydata.houseType" style="width:100%"></el-cascader>
+                      <el-cascader @change="find(2)" expand-trigger="hover" :options="option" v-model="entrydata.houseType" style="width:100%"></el-cascader>
+                    </el-form-item>
+                    <el-form-item label="名称:">
+                      <el-input v-model="oname" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="所属月份:">
                       <el-date-picker
@@ -210,7 +214,7 @@
                     expand-trigger="hover"
                     :options="option"
                     v-model="form.roomNum"
-                    @change="find">
+                    @change="find(1)">
                 </el-cascader>
               </el-form-item>
               <el-form-item label="租户名称:" prop="ownerName" v-if="this.num == 0">
@@ -296,6 +300,7 @@ export default {
   name: "charge",
   data() {
     return {
+      oname: '',
       disabled:true,
       multipleSelection:[],
       addPriceIndex: 0,
@@ -427,6 +432,7 @@ export default {
       
       //仪表管理-录入
       entrydata: {
+        oname: '',
         houseType: [],
         charge: "",
         start: "",
@@ -482,12 +488,23 @@ export default {
     }
   },
   methods: {
-    find(){
-      this.$ajax.get(url + 'owner/findOwnerByRoomId/'+this.form.roomNum[2]).then(res => {
+    find(msg){
+      var id = ''
+      if(msg === 1) {
+        id = this.form.roomNum[2]
+      } else {
+        id = this.entrydata.houseType[2]
+      }
+      this.$ajax.get(url + 'owner/findOwnerByRoomId/'+id).then(res => {
         if(res.data.status === 200){
-          this.ownerName = res.data.data.name
+          if (msg === 1) {
+            this.ownerName = res.data.data.name
+          } else {
+            this.oname = res.data.data.name
+          }
         }else{
           this.ownerName = ''
+          this.oname = ''
           this.$message({
                 message:res.data.msg,
                 type: 'error'
@@ -641,7 +658,7 @@ export default {
       this.num = index
       this.shouldId = this.date[index].id
       this.moneyName = this.date[index].name
-      this.handleCurrentChange2 = 1
+      this.currentPage2 = 1
       setTimeout(this.Cost(),1000)
     },
     isStudentNo(e) {
@@ -732,6 +749,7 @@ export default {
       this.entrydata = {};
       this.entry = true;
       this.name = "录入"
+      this.oname = ''
       this.test = [
         {
           payItemMeterId: '',
@@ -751,11 +769,11 @@ export default {
               params: {
                 payMeterId : this.meter[index].id
               }
-            })
-      .then(res =>{
+            }).then(res =>{
         if(res.data.status === 200){
           this.entrydata = res.data.data;
           this.entrydata.houseType=res.data.data.arrList;
+          this.oname = res.data.data.owner.name
         }else if(res.status===403){
           this.$alert('您的权限不足', '权限不足', {
               confirmButtonText: '确定',
@@ -1022,7 +1040,30 @@ export default {
         //   this.more2Id.push(v.id)
         //   this.more3Id = this.more2Id.join(',')
         // })
-      let str = `id,房号,楼宇,收费项目,收款日期,单价,费用,止度,起度,用量,备注\n`;
+        // if(!!window.ActiveXObject || "ActiveXObject" in window === true) {
+        //   var curTbl = document.getElementsByTagName('table')[3]
+        //   var oXL = new ActiveXObject("Excel.Application"); 
+        //   var oWB = oXL.Workbooks.Add();  
+        //   var xlsheet = oWB.Worksheets(1);  
+        //   var sel = document.body.createTextRange();  
+        //   sel.moveToElementText(curTbl);  
+        //   sel.select();  
+        //   sel.execCommand("Copy");  
+        //   xlsheet.Paste();  
+        //   oXL.Visible = true;  
+        //   try {  
+        //       var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");  
+        //   } catch (e) {  
+        //       print("Nested catch caught " + e);  
+        //   } finally {
+        //       oWB.SaveAs(fname);  
+        //       oWB.Close(savechanges = false);  
+        //       oXL.Quit();  
+        //       oXL = null;  
+        //       idTmr = window.setInterval("Cleanup();", 1);  
+        //   }
+        // }
+      let str = `id,房号,楼宇,名称,收费项目,收款日期,单价,费用,止度,起度,用量,备注\n`;
       //增加\t为了不让表格显示科学计数法或者其他格式
       for(let i = 0 ; i < this.multipleSelection.length ; i++ ){
         for(let item in this.multipleSelection[i]){
@@ -1034,6 +1075,7 @@ export default {
       let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
       //通过创建a标签实现
       var link = document.createElement("a");
+      link.target = "_blank";
       link.href = uri;
       //对下载的文件命名
       link.download =  "抄表录入.csv";

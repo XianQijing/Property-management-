@@ -144,7 +144,6 @@ export default {
           pageSize: this.rolePage.pageSize
         }
       }).then(res=> {
-        console.log(res.data.data)
         this.rolePage.total = res.data.data.records
         res.data.data.rows.forEach(v => {
           v.createDate = toDate(v.createDate)

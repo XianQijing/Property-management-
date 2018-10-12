@@ -114,7 +114,6 @@ export default {
         sessionStorage.setItem('rname', res.data.data.rname)
         this.name = res.data.data.username
         this.ruleForm.id = res.data.data.id
-        console.log(res.data.data.photo)
         if (res.data.data.photo) {
           this.photo = res.data.data.photo
         }

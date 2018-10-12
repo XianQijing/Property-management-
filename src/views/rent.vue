@@ -109,7 +109,7 @@
                                     <el-table-column prop="namec" label="楼宇"></el-table-column>
                                     <el-table-column prop="rooms.roomNumber" label="房号"></el-table-column>
                                     <el-table-column prop="rooms.coveredArea" label="建筑面积(平方米)"></el-table-column>
-									<el-table-column prop="rooms.useId" label="用途"></el-table-column>
+									<el-table-column prop="purpose" label="用途"></el-table-column>
                                     <el-table-column prop="rooms.furnitureId" label="验收状态"></el-table-column>
 									<el-table-column prop="deliveryTime" label="交付时间"></el-table-column>
 									<el-table-column>
@@ -141,7 +141,7 @@
 								</div>
 							</div>                 
                         </el-tab-pane>
-                        <el-tab-pane label="历史合同" lazy>
+                        <el-tab-pane label="历史合同" lazy v-if="this.role.indexOf('rubik:messageHistory:list')!==-1">
                             <history-contract rel="child"/>
                         </el-tab-pane>
                         <el-tab-pane label="房产验收" v-if="this.role.indexOf('rubik:acceptance:list')!==-1">
@@ -443,7 +443,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$ajax.put(url+'/contract/terminationContract/'+this.stopId).then(res => {
+                this.$ajax.put(url+'contract/terminationContract/'+this.stopId).then(res => {
                     if (res.data.status === 200) {
                         this.$message({
                             message: '终止成功',

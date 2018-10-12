@@ -341,462 +341,448 @@
 </template>
 
 <script>
-import url from '../assets/Req.js'
+import url from "../assets/Req.js";
 export default {
-    name:'Rent_contract_change',
-    data(){
-        return{
-            yes:true,
-            ww:true,
-            tt:false,
-            id:'',
-            nextUp:true,
-            nextDown: false,
-            detail: {
-                id: "",
-                startTime: '',
-                tenantry: '',
-                site: '',
-                amplification: '',
-                afterTheRent: '',
-                dailyRent: '',
-                monthlyRent: '',
-                dailyManagementFee: '',
-                monthlyManagementFee: '',
-                total: '',
-                budget: '',
-                phone: '',
-                fax: '',
-                room: [],
-                purpose: '',
-                rooms: {
-                    coveredAreas:''
-                },
-                deliveryTime: '',
-                taxes: '',
-                budgeStartTime: '',
-                budgeEndTime: '',
-                cashDeposit: '',
-                cashPledge: '',
-                theDepositAmount: '',
-                comment: '',
-                room1: [],
-                big: '',
-                big1: '',
-                big2: '',
-                big3: '',
-                big4: '',
-                room: '',
-                buildingId: '',
-                roomNumber: '',
-                endTime: '',
-                fixedGrowth:'',
-                selectedOptions2: []
-            },
-            form: {
-                terminationTime: '',
-                startTime: '',
-                endTime: '',
-                monthlyRent: '',
-                monthlyManagementFee: '',
-                total: '',
-                premiumForLease: 0,
-                cashPledge: '',
-                manageStartTime: '',
-                manageEndTime: '',
-                administrativeFee: '',
-                rentalStartTime: '',
-                rentalEndTime: '',
-                rental: '',
-                managementCostStartTime: '',
-                managementCostEndTime: '',
-                managementCost: '',
-                aggregate: '',
-                budgeStartTime: '',
-                budgeEndTime: ''
-            },
-            date: '',
-            rules: {
-                tenantry: [
-                    { required: true, message: '请输入承租方', trigger: 'blur' },
-                ],
-                site: [
-                    { required: true, message: '请输入联系地址', trigger: 'blur' },
-                ],
-                phone:[
-                    { required: true, message: '请输入联系电话', trigger: 'blur' },
-                ],
-                room:[
-                    { required: true, message: '请选择关联房屋', trigger: 'change' }
-                ]
-            },
-            edit: true,
-            message:'',
-            options: [],
-            addOne:true,
-            changeOne:false,
-            watchOne:false,
-            thisRoom: [],
-            building: [],
-            rooms:[],
-            close:true,
-        }
-    },
-    mounted(){
-        this.id = this.$route.query.id
-        this.message = this.$route.query.msg
-
-        this.$ajax.get(url + 'room/flndByClientId/aaa').then(res => {
-                this.options=res.data;
-                // console.log(res)
-            })
-        if (this.$route.query.msg === "watch"){
-            this.addOne = false,
-            this.changeOne = false,
-            this.watchOne = true
-            this.edit = true,
-            this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
-                if(res.data.status === 200){
-                this.detail = res.data.data
-                this.form = res.data.data
-                this.thisRoom = this.detail.rooms.roomNumbers.split(',')
-                this.close = false
-                }else if(res.data.status===403){
-                    this.$alert('您的权限不足', '权限不足', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                            this.goBack()
-                        }
-                    });
-                }
-            })
-        }else if(this.$route.query.msg === "add"){
-            this.addOne=true,
-            this.changeOne=false,
-            this.watchOne=false
-            this.edit = false
-        }else if(this.$route.query.msg === "edit"){
-            this.addOne=false,
-            this.changeOne=true,
-            this.watchOne=false
-            this.edit = false
-            this.$ajax.get(url+'contract/flndById/'+this.id).then(res => {
-                if(res.data.status === 200){
-                    this.detail = res.data.data
-                    this.form = res.data.data
-                    this.thisRoom = this.detail.rooms.roomNumbers.split(',')
-                    this.close = false
-                }else if(res.data.status===403){
-                    this.$alert('您的权限不足', '权限不足', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                            this.goBack()
-                        }
-                    });
-                }
-            })
-        } else {
-            this.addOne = false,
-            this.changeOne = false,
-            this.watchOne = true
-            this.edit = true
-            this.$ajax.get(url+'contract/selectHistoricalContractId/'+this.id).then(res => {
-                if(res.data.status === 200){
-                    this.detail = res.data.data
-                    this.form = res.data.data
-                    this.thisRoom = this.detail.rooms.roomNumber.split(',')
-                    this.close = false
-                }else if(res.data.status===403){
-                    this.$alert('您的权限不足', '权限不足', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                            this.goBack()
-                        }
-                    });
-                }
-            })
-        }
-    },
-    methods: {
-        isStudentNo(e) {
-            var reg=/^\d+$/;   /*定义验证表达式*/
-            if(!reg.test(e.target.value)){
-                e.target.style.borderColor = 'red'
-                this.$message({
-                message: '请输入数字',
-                type: 'error'
-                })
-            }else{
-                e.target.style.borderColor = '#67c23a'
-            }    /*进行验证*/
+  name: "Rent_contract_change",
+  data() {
+    return {
+      yes: true,
+      ww: true,
+      tt: false,
+      id: "",
+      nextUp: true,
+      nextDown: false,
+      detail: {
+        id: "",
+        startTime: "",
+        tenantry: "",
+        site: "",
+        amplification: "",
+        afterTheRent: "",
+        dailyRent: "",
+        monthlyRent: "",
+        dailyManagementFee: "",
+        monthlyManagementFee: "",
+        total: "",
+        budget: "",
+        phone: "",
+        fax: "",
+        room: [],
+        purpose: "",
+        rooms: {
+          coveredAreas: ""
         },
-        blur (e) {
-				var reg = /^\+?[1-9][0-9]*$/
-				if (!reg.test(e.target.value)) {
-					e.target.style.borderColor = 'red'
-					this.$message({
-					message: '请输入数字',
-					type: 'error'
-					})
-				}else if(e.target.value.length!==11){
-					e.target.style.borderColor = 'red'
-					this.$message({
-					message: '请输入11位数字',
-					type: 'error'
-					})
-				} else {
-					e.target.style.borderColor = '#67c23a'
-				}
-				},
-        sumbit1(){
-            if(this.detail.rooms.codes === ''){
-                this.$message({
-                    message: '请选择关联房屋',
-                    type: 'warning'
-                });
-            }else if(this.detail.tenantry === ''){
-                this.$message({
-                    message: '请输入承租方',
-                    type: 'warning'
-                });
-            }else if(this.detail.address === ''){
-                this.$message({
-                    message: '请输入联系地址',
-                    type: 'warning'
-                });
-            }else if(this.detail.phone === ''){
-                this.$message({
-                    message: '请输入联系电话',
-                    type: 'warning'
-                });
-            }else{
-                var data2 = {
-                    "site":this.detail.site,
-                    "afterTheRent":this.detail.afterTheRent,
-                    "amplification":this.detail.amplification,
-                    "cashDeposit":this.detail.cashDeposit,
-                    "tenantry":this.detail.tenantry,
-                    "room":this.detail.room,
-                    "phone":this.detail.phone,
-                    "purpose": this.detail.purpose,
-                    "comment":this.detail.comment,
-                    "deliveryTime": this.detail.deliveryTime,
-                    "terminationTime": this.form.terminationTime,
-                    "startTime": this.detail.startTime,
-                    "endTime": this.detail.endTime,
-                    "monthlyRent": this.form.monthlyRent,
-                    "monthlyManagementFee": this.form.monthlyManagementFee,
-                    "total": this.form.total,
-                    "premiumForLease": this.form.premiumForLease,
-                    "cashPledge": this.form.cashPledge,
-                    "manageStartTime": this.form.manageStartTime,
-                    "manageEndTime": this.form.manageEndTime,
-                    "administrativeFee": this.form.administrativeFee,
-                    "rentalStartTime": this.form.rentalStartTime,
-                    "rentalEndTime": this.form.rentalEndTime,
-                    "rental": this.form.rental,
-                    "managementCostStartTime": this.form.managementCostStartTime,
-                    "managementCostEndTime": this.form.managementCostEndTime,
-                    "managementCost": this.form.managementCost,
-                    "aggregate": this.form.aggregate,
-                    "roomNumber":this.detail.roomNumber,
-                    "budgeEndTime":this.form.budgeEndTime,
-                    "budgeStartTime":this.form.budgeStartTime,
-                    "id":this.id,
-                    "fixedGrowth":this.detail.fixedGrowth,
-                    "fax": this.detail.fax,
-                    "budget": this.detail.budget,
-                    "taxes": this.detail.taxes,
-                    "theDepositAmount": this.detail.theDepositAmount,
-                    "dailyRent": this.detail.dailyRent,
-                    "dailyManagementFee": this.detail.dailyManagementFee,
-                    "coveredAreas": this.detail.rooms.coveredAreas
-                        }
-                this.$ajax.put(url + 'contract/updateContract',data2
-                ).then(res => {
-                    if(res.data.status === 200){
-                        this.$message({
-                            message: '编辑成功',
-                            type: 'success'
-                            })
-                        this.$router.push('/rent')
-                    }else if(res.data.status===403){
-                            this.$message({
-                                message:'权限不足',
-                                type: 'error'
-                            })
-                        }else{
-                            this.$message({
-                                message: res.data.msg,
-                                type: 'error'
-                        }) 
-                     }
-                })
-            }
-
-        },
-        sumbit(){
-            // 交付时间： paymentTime
-            // 合同终止时间： terminationTime
-            // 租赁时间： startTime   endTime
-
-            // 月租金： monthlyRent
-            // 月物业管理费： monthlyManagementFee
-            // 租金物业费合计： total
-            
-            // 租赁保证金： leaseCommencementDate
-            // cashPledge 物业管理费押金
-            // 物业管理费开始日期 manageStartTime
-            // 物业管理费结束日期 manageEndTime
-            // 管理费 administrativeFee
-            // 租金开始时间 rentalStartTime
-            // 租金结束时间 rentalEndTime
-            // 租金 rental
-            // 管理费开始时间 managementCostStartTime
-            // 合同中的第二次管理费结束时间 managementCostEndTime
-            // 合同中的第二次管理费 managementCost
-            // 合计 aggregate
-            // var contractVO = {
-            //      "site":this.detail.site,
-            //         "afterTheRent":this.detail.afterTheRent,
-            //         "amplification":this.detail.amplification,
-            //         "cashDeposit":this.detail.cashDeposit,
-            //         "tenantry":this.detail.tenantry,
-            //         "ContractualRelation.roomId":this.detail.room,
-            //         "phone":this.detail.phone,
-            //         "purpose": this.detail.purpose,
-            //         "comment":this.detail.comment,
-            //         "deliveryTime": this.form.deliveryTime,
-            //         "terminationTime": this.form.terminationTime,
-            //         "startTime": this.detail.startTime,
-            //         "endTime": this.detail.endTime,
-            //         "monthlyRent": this.form.monthlyRent,
-            //         "monthlyManagementFee": this.form.monthlyManagementFee,
-            //         "total": this.form.total,
-            //         "leaseCommencementDate": this.form.leaseCommencementDate,
-            //         "cashPledge": this.form.cashPledge,
-            //         "manageStartTime": this.form.manageStartTime,
-            //         "manageEndTime": this.form.manageEndTime,
-            //         "administrativeFee": this.form.administrativeFee,
-            //         "rentalStartTime": this.form.rentalStartTime,
-            //         "rentalEndTime": this.form.rentalEndTime,
-            //         "rental": this.form.rental,
-            //         "managementCostStartTime": this.form.managementCostStartTime,
-            //         "managementCostEndTime": this.form.managementCostEndTime,
-            //         "managementCost": this.form.managementCost,
-            //         "aggregate": this.form.aggregate,
-            //         "roomNumber":this.detail.roomNumber,
-            //         "budgeEndTime":this.form.budgeEndTime,
-            //         "budgeStartTime":this.form.budgeStartTime
-            // }
-            
-            this.$ajax.post(url + 'contract/addContract', {
-                "site":this.detail.site,
-                    "afterTheRent":this.detail.afterTheRent,
-                    "amplification":this.detail.amplification,
-                    "cashDeposit":this.detail.cashDeposit,
-                    "tenantry":this.detail.tenantry,
-                    "room":this.detail.room,
-                    "phone":this.detail.phone,
-                    "purpose": this.detail.purpose,
-                    "comment":this.detail.comment,
-                    "deliveryTime": this.detail.deliveryTime,
-                    "terminationTime": this.form.terminationTime,
-                    "startTime": this.detail.startTime,
-                    "endTime": this.detail.endTime,
-                    "monthlyRent": this.form.monthlyRent,
-                    "monthlyManagementFee": this.form.monthlyManagementFee,
-                    "total": this.form.total,
-                    "premiumForLease": this.form.premiumForLease,
-                    "cashPledge": this.form.cashPledge,
-                    "manageStartTime": this.form.manageStartTime,
-                    "manageEndTime": this.form.manageEndTime,
-                    "administrativeFee": this.form.administrativeFee,
-                    "rentalStartTime": this.form.rentalStartTime,
-                    "rentalEndTime": this.form.rentalEndTime,
-                    "rental": this.form.rental,
-                    "managementCostStartTime": this.form.managementCostStartTime,
-                    "managementCostEndTime": this.form.managementCostEndTime,
-                    "managementCost": this.form.managementCost,
-                    "aggregate": this.form.aggregate,
-                    "roomNumber":this.detail.roomNumber,
-                    "budgeEndTime":this.form.budgeEndTime,
-                    "budgeStartTime":this.form.budgeStartTime,
-                    "id":this.id,
-                    "fixedGrowth":this.detail.fixedGrowth,
-                    "fax": this.detail.fax,
-                    "budget": this.detail.budget,
-                    "taxes": this.detail.taxes,
-                    "theDepositAmount": this.detail.theDepositAmount,
-                    "dailyRent": this.detail.dailyRent,
-                    "dailyManagementFee": this.detail.dailyManagementFee,
-                    "coveredAreas": this.detail.rooms.coveredAreas
-            }).then(res => {
-                if(res.data.status === 200){
-                    this.$message({
-                        message: '添加成功',
-                        type: 'success'
-                    });
-                    this.$router.push('/rent')
-                }else if(res.data.status===403){
-                            this.$message({
-                                message:'权限不足',
-                                type: 'error'
-                            })
-                        } else {
-                    this.$message({
-                        message: res.data.msg,
-                        type: 'error'
-                    });
-                }
-            })
-        },
-        goBack(){
-            window.history.back()
-        },
-        relation(e){
-            this.$ajax.get(url + 'room/flndById/'+e[2]).then(res => {
-                if(this.rooms.indexOf(res.data.data.id)<0){
-                this.rooms.push(res.data.data.id)
-                this.thisRoom.push(res.data.data.roomNumber.toString())
-                this.detail.room = this.rooms.join()
-                }
-            }
-            )
-        },
-        handleClose(tag) {
-            var now = this.thisRoom.indexOf(tag)
-        this.thisRoom.splice(this.thisRoom.indexOf(tag), 1);
-        this.rooms.splice(now, 1);
-        this.detail.room = this.rooms.join()
+        deliveryTime: "",
+        taxes: "",
+        budgeStartTime: "",
+        budgeEndTime: "",
+        cashDeposit: "",
+        cashPledge: "",
+        theDepositAmount: "",
+        comment: "",
+        room1: [],
+        big: "",
+        big1: "",
+        big2: "",
+        big3: "",
+        big4: "",
+        room: "",
+        buildingId: "",
+        roomNumber: "",
+        endTime: "",
+        fixedGrowth: "",
+        selectedOptions2: []
       },
+      form: {
+        terminationTime: "",
+        startTime: "",
+        endTime: "",
+        monthlyRent: "",
+        monthlyManagementFee: "",
+        total: "",
+        premiumForLease: 0,
+        cashPledge: "",
+        manageStartTime: "",
+        manageEndTime: "",
+        administrativeFee: "",
+        rentalStartTime: "",
+        rentalEndTime: "",
+        rental: "",
+        managementCostStartTime: "",
+        managementCostEndTime: "",
+        managementCost: "",
+        aggregate: "",
+        budgeStartTime: "",
+        budgeEndTime: ""
+      },
+      date: "",
+      rules: {
+        tenantry: [
+          { required: true, message: "请输入承租方", trigger: "blur" }
+        ],
+        site: [{ required: true, message: "请输入联系地址", trigger: "blur" }],
+        phone: [{ required: true, message: "请输入联系电话", trigger: "blur" }],
+        room: [{ required: true, message: "请选择关联房屋", trigger: "change" }]
+      },
+      edit: true,
+      message: "",
+      options: [],
+      addOne: true,
+      changeOne: false,
+      watchOne: false,
+      thisRoom: [],
+      building: [],
+      rooms: [],
+      close: true
+    };
+  },
+  mounted() {
+    this.id = this.$route.query.id;
+    this.message = this.$route.query.msg;
+
+    this.$ajax.get(url + "room/flndByClientId/aaa").then(res => {
+      this.options = res.data;
+      // console.log(res)
+    });
+    if (this.$route.query.msg === "watch") {
+      (this.addOne = false), (this.changeOne = false), (this.watchOne = true);
+      (this.edit = true),
+        this.$ajax.get(url + "contract/flndById/" + this.id).then(res => {
+          if (res.data.status === 200) {
+            this.detail = res.data.data;
+            this.form = res.data.data;
+            this.thisRoom = this.detail.rooms.roomNumbers.split(",");
+            this.close = false;
+          } else if (res.data.status === 403) {
+            this.$alert("您的权限不足", "权限不足", {
+              confirmButtonText: "确定",
+              callback: action => {
+                this.goBack();
+              }
+            });
+          }
+        });
+    } else if (this.$route.query.msg === "add") {
+      (this.addOne = true), (this.changeOne = false), (this.watchOne = false);
+      this.edit = false;
+    } else if (this.$route.query.msg === "edit") {
+      (this.addOne = false), (this.changeOne = true), (this.watchOne = false);
+      this.edit = false;
+      this.$ajax.get(url + "contract/flndById/" + this.id).then(res => {
+        if (res.data.status === 200) {
+          this.detail = res.data.data;
+          this.form = res.data.data;
+          this.thisRoom = this.detail.rooms.roomNumbers.split(",");
+          this.close = false;
+        } else if (res.data.status === 403) {
+          this.$alert("您的权限不足", "权限不足", {
+            confirmButtonText: "确定",
+            callback: action => {
+              this.goBack();
+            }
+          });
+        }
+      });
+    } else {
+      (this.addOne = false), (this.changeOne = false), (this.watchOne = true);
+      this.edit = true;
+      this.$ajax
+        .get(url + "contract/selectHistoricalContractId/" + this.id)
+        .then(res => {
+          if (res.data.status === 200) {
+            this.detail = res.data.data;
+            this.form = res.data.data;
+            this.thisRoom = this.detail.rooms.roomNumber.split(",");
+            this.close = false;
+          } else if (res.data.status === 403) {
+            this.$alert("您的权限不足", "权限不足", {
+              confirmButtonText: "确定",
+              callback: action => {
+                this.goBack();
+              }
+            });
+          }
+        });
     }
-}
+  },
+  methods: {
+    isStudentNo(e) {
+      var reg = /^\d+$/; /*定义验证表达式*/
+      if (!reg.test(e.target.value)) {
+        e.target.style.borderColor = "red";
+        this.$message({
+          message: "请输入数字",
+          type: "error"
+        });
+      } else {
+        e.target.style.borderColor = "#67c23a";
+      } /*进行验证*/
+    },
+    blur(e) {
+      var reg = /^1[3|4|5|8][0-9]\d{4,8}$/;
+      var isMob = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
+      if (isMob.test(e.target.value) || reg.test(e.target.value)) {
+        e.target.style.borderColor = "#67c23a";
+        // }else if(e.target.value.length!==11){
+        //     e.target.style.borderColor = 'red'
+        //     this.$message({
+        //     message: '请输入11位数字',
+        //     type: 'error'
+        //   })
+      } else {
+        e.target.style.borderColor = "red";
+        this.$message({
+          message: "请输入正确的号码格式",
+          type: "error"
+        });
+      }
+    },
+    sumbit1() {
+      if (this.detail.rooms.codes === "") {
+        this.$message({
+          message: "请选择关联房屋",
+          type: "warning"
+        });
+      } else if (this.detail.tenantry === "") {
+        this.$message({
+          message: "请输入承租方",
+          type: "warning"
+        });
+      } else if (this.detail.address === "") {
+        this.$message({
+          message: "请输入联系地址",
+          type: "warning"
+        });
+      } else if (this.detail.phone === "") {
+        this.$message({
+          message: "请输入联系电话",
+          type: "warning"
+        });
+      } else {
+        var data2 = {
+          site: this.detail.site,
+          afterTheRent: this.detail.afterTheRent,
+          amplification: this.detail.amplification,
+          cashDeposit: this.detail.cashDeposit,
+          tenantry: this.detail.tenantry,
+          room: this.detail.room,
+          phone: this.detail.phone,
+          purpose: this.detail.purpose,
+          comment: this.detail.comment,
+          deliveryTime: this.detail.deliveryTime,
+          terminationTime: this.form.terminationTime,
+          startTime: this.detail.startTime,
+          endTime: this.detail.endTime,
+          monthlyRent: this.form.monthlyRent,
+          monthlyManagementFee: this.form.monthlyManagementFee,
+          total: this.form.total,
+          premiumForLease: this.form.premiumForLease,
+          cashPledge: this.form.cashPledge,
+          manageStartTime: this.form.manageStartTime,
+          manageEndTime: this.form.manageEndTime,
+          administrativeFee: this.form.administrativeFee,
+          rentalStartTime: this.form.rentalStartTime,
+          rentalEndTime: this.form.rentalEndTime,
+          rental: this.form.rental,
+          managementCostStartTime: this.form.managementCostStartTime,
+          managementCostEndTime: this.form.managementCostEndTime,
+          managementCost: this.form.managementCost,
+          aggregate: this.form.aggregate,
+          roomNumber: this.detail.roomNumber,
+          budgeEndTime: this.form.budgeEndTime,
+          budgeStartTime: this.form.budgeStartTime,
+          id: this.id,
+          fixedGrowth: this.detail.fixedGrowth,
+          fax: this.detail.fax,
+          budget: this.detail.budget,
+          taxes: this.detail.taxes,
+          theDepositAmount: this.detail.theDepositAmount,
+          dailyRent: this.detail.dailyRent,
+          dailyManagementFee: this.detail.dailyManagementFee,
+          coveredAreas: this.detail.rooms.coveredAreas
+        };
+        this.$ajax.put(url + "contract/updateContract", data2).then(res => {
+          if (res.data.status === 200) {
+            this.$message({
+              message: "编辑成功",
+              type: "success"
+            });
+            this.$router.push("/rent");
+          } else if (res.data.status === 403) {
+            this.$message({
+              message: "权限不足",
+              type: "error"
+            });
+          } else {
+            this.$message({
+              message: res.data.msg,
+              type: "error"
+            });
+          }
+        });
+      }
+    },
+    sumbit() {
+      // 交付时间： paymentTime
+      // 合同终止时间： terminationTime
+      // 租赁时间： startTime   endTime
+
+      // 月租金： monthlyRent
+      // 月物业管理费： monthlyManagementFee
+      // 租金物业费合计： total
+
+      // 租赁保证金： leaseCommencementDate
+      // cashPledge 物业管理费押金
+      // 物业管理费开始日期 manageStartTime
+      // 物业管理费结束日期 manageEndTime
+      // 管理费 administrativeFee
+      // 租金开始时间 rentalStartTime
+      // 租金结束时间 rentalEndTime
+      // 租金 rental
+      // 管理费开始时间 managementCostStartTime
+      // 合同中的第二次管理费结束时间 managementCostEndTime
+      // 合同中的第二次管理费 managementCost
+      // 合计 aggregate
+      // var contractVO = {
+      //      "site":this.detail.site,
+      //         "afterTheRent":this.detail.afterTheRent,
+      //         "amplification":this.detail.amplification,
+      //         "cashDeposit":this.detail.cashDeposit,
+      //         "tenantry":this.detail.tenantry,
+      //         "ContractualRelation.roomId":this.detail.room,
+      //         "phone":this.detail.phone,
+      //         "purpose": this.detail.purpose,
+      //         "comment":this.detail.comment,
+      //         "deliveryTime": this.form.deliveryTime,
+      //         "terminationTime": this.form.terminationTime,
+      //         "startTime": this.detail.startTime,
+      //         "endTime": this.detail.endTime,
+      //         "monthlyRent": this.form.monthlyRent,
+      //         "monthlyManagementFee": this.form.monthlyManagementFee,
+      //         "total": this.form.total,
+      //         "leaseCommencementDate": this.form.leaseCommencementDate,
+      //         "cashPledge": this.form.cashPledge,
+      //         "manageStartTime": this.form.manageStartTime,
+      //         "manageEndTime": this.form.manageEndTime,
+      //         "administrativeFee": this.form.administrativeFee,
+      //         "rentalStartTime": this.form.rentalStartTime,
+      //         "rentalEndTime": this.form.rentalEndTime,
+      //         "rental": this.form.rental,
+      //         "managementCostStartTime": this.form.managementCostStartTime,
+      //         "managementCostEndTime": this.form.managementCostEndTime,
+      //         "managementCost": this.form.managementCost,
+      //         "aggregate": this.form.aggregate,
+      //         "roomNumber":this.detail.roomNumber,
+      //         "budgeEndTime":this.form.budgeEndTime,
+      //         "budgeStartTime":this.form.budgeStartTime
+      // }
+
+      this.$ajax
+        .post(url + "contract/addContract", {
+          site: this.detail.site,
+          afterTheRent: this.detail.afterTheRent,
+          amplification: this.detail.amplification,
+          cashDeposit: this.detail.cashDeposit,
+          tenantry: this.detail.tenantry,
+          room: this.detail.room,
+          phone: this.detail.phone,
+          purpose: this.detail.purpose,
+          comment: this.detail.comment,
+          deliveryTime: this.detail.deliveryTime,
+          terminationTime: this.form.terminationTime,
+          startTime: this.detail.startTime,
+          endTime: this.detail.endTime,
+          monthlyRent: this.form.monthlyRent,
+          monthlyManagementFee: this.form.monthlyManagementFee,
+          total: this.form.total,
+          premiumForLease: this.form.premiumForLease,
+          cashPledge: this.form.cashPledge,
+          manageStartTime: this.form.manageStartTime,
+          manageEndTime: this.form.manageEndTime,
+          administrativeFee: this.form.administrativeFee,
+          rentalStartTime: this.form.rentalStartTime,
+          rentalEndTime: this.form.rentalEndTime,
+          rental: this.form.rental,
+          managementCostStartTime: this.form.managementCostStartTime,
+          managementCostEndTime: this.form.managementCostEndTime,
+          managementCost: this.form.managementCost,
+          aggregate: this.form.aggregate,
+          roomNumber: this.detail.roomNumber,
+          budgeEndTime: this.form.budgeEndTime,
+          budgeStartTime: this.form.budgeStartTime,
+          id: this.id,
+          fixedGrowth: this.detail.fixedGrowth,
+          fax: this.detail.fax,
+          budget: this.detail.budget,
+          taxes: this.detail.taxes,
+          theDepositAmount: this.detail.theDepositAmount,
+          dailyRent: this.detail.dailyRent,
+          dailyManagementFee: this.detail.dailyManagementFee,
+          coveredAreas: this.detail.rooms.coveredAreas
+        })
+        .then(res => {
+          if (res.data.status === 200) {
+            this.$message({
+              message: "添加成功",
+              type: "success"
+            });
+            this.$router.push("/rent");
+          } else if (res.data.status === 403) {
+            this.$message({
+              message: "权限不足",
+              type: "error"
+            });
+          } else {
+            this.$message({
+              message: res.data.msg,
+              type: "error"
+            });
+          }
+        });
+    },
+    goBack() {
+      window.history.back();
+    },
+    relation(e) {
+      this.$ajax.get(url + "room/flndById/" + e[2]).then(res => {
+        if (this.rooms.indexOf(res.data.data.id) < 0) {
+          this.rooms.push(res.data.data.id);
+          this.thisRoom.push(res.data.data.roomNumber.toString());
+          this.detail.room = this.rooms.join();
+        }
+      });
+    },
+    handleClose(tag) {
+      var now = this.thisRoom.indexOf(tag);
+      this.thisRoom.splice(this.thisRoom.indexOf(tag), 1);
+      this.rooms.splice(now, 1);
+      this.detail.room = this.rooms.join();
+    }
+  }
+};
 </script>
 
 <style scoped>
 .Rent_contract_change {
-    position: absolute;
-    background: white;
-    z-index: 2000;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
+  position: absolute;
+  background: white;
+  z-index: 2000;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
-.tianjia{
-    display: inline-block;
-    vertical-align: top;
-    width: 47%;
+.tianjia {
+  display: inline-block;
+  vertical-align: top;
+  width: 47%;
 }
-
 
 .next input {
-    margin-left: 20px
+  margin-left: 20px;
 }
 
 .input {
-    width: 90%;
-
+  width: 90%;
 }
 .nextStep {
   border-radius: 5px;
@@ -820,68 +806,71 @@ export default {
   color: rgb(138, 138, 138);
 }
 .nn {
-    width: 20%;
-    margin: 2% 0 0 40%;
-    display: flex;
-    justify-content: space-between;
+  width: 20%;
+  margin: 2% 0 0 40%;
+  display: flex;
+  justify-content: space-between;
 }
-.el-upload-list--picture-price .el-upload-list__item{
-    width: 123px;
-    height: 123px;
+.el-upload-list--picture-price .el-upload-list__item {
+  width: 123px;
+  height: 123px;
 }
-.el-upload--picture-price{
-    width: 123px;
-    height: 123px;
+.el-upload--picture-price {
+  width: 123px;
+  height: 123px;
 }
 form {
-    margin-top: 35px;
+  margin-top: 35px;
 }
 .main span {
-font-size: 14px;color: #606266;padding-left:10px;font-weight: 700;
+  font-size: 14px;
+  color: #606266;
+  padding-left: 10px;
+  font-weight: 700;
 }
 .qq {
-    padding: 0 10% 0 5%
+  padding: 0 10% 0 5%;
 }
 
- .supplement .el-form {
-    overflow: hidden;
-    width: 100%;
-    min-width: 1030px;
-  }
-  .supplement .el-form-item {
-    /* width: 50%; */
-    /* float: left; */
-    clear: both;
-  }
-  .supplement.con {
-    padding: 0 10%;
-  }
- 
-  .supplement span {
-      border-left: #ffa517 solid 4px;
-      line-height: 18px;
-      height: 18px;
-      padding-left: 6px;
-    }
-  .supplement{
-      width: 100%
-  }
-.line{
-    text-align: center
+.supplement .el-form {
+  overflow: hidden;
+  width: 100%;
+  min-width: 1030px;
+}
+.supplement .el-form-item {
+  /* width: 50%; */
+  /* float: left; */
+  clear: both;
+}
+.supplement.con {
+  padding: 0 10%;
+}
+
+.supplement span {
+  border-left: #ffa517 solid 4px;
+  line-height: 18px;
+  height: 18px;
+  padding-left: 6px;
+}
+.supplement {
+  width: 100%;
+}
+.line {
+  text-align: center;
 }
 .el-tag + .el-tag {
-    margin-left: 10px;
-  }
-  .button-new-tag {
-    margin-left: 10px;
-    height: 32px;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
 </style>

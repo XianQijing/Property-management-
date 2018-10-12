@@ -61,7 +61,7 @@
                     <el-table-column prop="cname" label="部门" width="180"></el-table-column>
                     <el-table-column prop="remark" label="备注" width="180"></el-table-column>
                     <el-table-column width="180">
-                        <template slot-scope="scope"  v-if="scope.row.phone == role3 || role4 == 'admin' || role4 == '经理'">
+                        <template slot-scope="scope"  v-if="scope.row.phone == role3 || role4 == 'admin' || role4 == '总经理'">
                             <button class="operation" @click="toUserEdit(scope.$index, tableData)">编辑</button>
                             <button class="delete1" @click="deleteRow(scope.$index, tableData)" >删除</button>
                         </template>

@@ -49,6 +49,12 @@ axios.interceptors.response.use(
         message: '权限不足',
         type: 'error'
       })
+    }else if (data.status === 506) {
+      Message({
+        message: data.message,
+        type: 'error'
+      })
+      Router.push('/login')
     }else{
       return response
     }
@@ -96,6 +102,7 @@ axios.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
+      Router.push('/login')
     }
     return Promise.reject(error)
   }
