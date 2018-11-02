@@ -12,7 +12,6 @@
           <li id="charge" v-if="this.role.indexOf('rubik:income:list')!==-1"><router-link :to="{path:'/charge'}"><img src=".././assets/renshi.png">收费管理</router-link></li>
           <li id="parking" v-if="this.role.indexOf('rubik:park:list')!==-1"><router-link :to="{path:'/parking'}"><img src=".././assets/tingche.png">停车管理</router-link></li>
           <li id="system" v-if="this.role.indexOf('rubik:system:list')!==-1"><router-link :to="{path:'/system'}"><img src=".././assets/system.png">系统管理</router-link></li>
-          <!-- <li><router-link to=""><img src=".././assets/gongzhonghao.png">微信公众号</router-link></li> -->
         </ul>
       </aside>
 			<div class="container">
@@ -86,6 +85,7 @@ a {
 	width: 100%;
 	padding: 20px 0;
 	font-size: 0.8vw;
+	opacity: 0.41;
 	text-decoration: none;
 }
 
@@ -102,6 +102,7 @@ a {
 .router-link-active {
 	background-color: #202F41;
 	border-left: 6.68px solid #32A8EE;
+	opacity: 1;
 }
 
 ul{
@@ -125,6 +126,7 @@ ul{
 }
 a:hover {
 	background-color: #202F41;
+	opacity: 1;
 	color: white;
 	/* border-left: 6.68px solid #32A8EE; */
 }
