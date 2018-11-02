@@ -104,7 +104,14 @@ export default {
     }
   },
 	mounted(){
-    this.$ajax.get(url + 'user/indexFindById',{
+    this.findUser()
+    // if(!sessionStorage.getItem("userId")){
+    // this.$router.push('/login')
+    // }else{}
+  },
+	methods: {
+    findUser () {
+      this.$ajax.get(url + 'user/indexFindById',{
       params: {
           token: sessionStorage.getItem("userId")
       }
@@ -122,11 +129,7 @@ export default {
         // this.$router.push('/login')
       }
     })
-    // if(!sessionStorage.getItem("userId")){
-    // this.$router.push('/login')
-    // }else{}
-  },
-	methods: {
+    },
     signOut () {
       this.$ajax.post(url+'login/logout').then(res =>{
       })

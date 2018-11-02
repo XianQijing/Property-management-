@@ -105,7 +105,7 @@
                                     <el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="tenantry" label="客户姓名"></el-table-column>
 									<el-table-column prop="phone" label="联系方式"></el-table-column>
-									<el-table-column prop="rooms.useId" label="租用类型"></el-table-column>
+									<el-table-column prop="contractNo" label="合同编号"></el-table-column>
                                     <el-table-column prop="namec" label="楼宇"></el-table-column>
                                     <el-table-column prop="rooms.roomNumber" label="房号"></el-table-column>
                                     <el-table-column prop="rooms.coveredArea" label="建筑面积(平方米)"></el-table-column>
@@ -932,7 +932,7 @@ function rentHouse(data){
 		padding: 0 40px 0 50px;
 		width: 99%;
 		margin-left: 2px;
-        height: 810px;
+        height: 805px;
 	}
 
     .fenye button{

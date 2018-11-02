@@ -5,7 +5,7 @@
         <el-table-column prop="tenantry" label="客户姓名"></el-table-column>
         <el-table-column prop="phone" label="联系方式"></el-table-column>
         <!-- <el-table-column prop="rooms.useId" label="租用类型"></el-table-column> -->
-        <el-table-column prop="buildingId" label="楼宇"></el-table-column>
+        <el-table-column prop="namec" label="楼宇"></el-table-column>
         <el-table-column prop="rooms.roomNumber" label="房号"></el-table-column>
         <el-table-column prop="rooms.coveredArea" label="建筑面积(平方米)"></el-table-column>
         <el-table-column prop="purpose" label="用途"></el-table-column>

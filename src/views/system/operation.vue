@@ -176,7 +176,7 @@ function doHandleMonth(month){
   width: 99%;
   margin-left: 2px;
   margin-right: 2px;
-  height: 810px;
+  height: 805px;
   min-width: 1250px;
 }
 .time button:hover {

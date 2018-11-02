@@ -38,7 +38,7 @@
                     <el-row>
                             <el-form-item label="三年后租金增幅：">
                                 <el-col :span="12">
-                                    <el-input @blur="isStudentNo" v-model="detail.amplification" placeholder="请输入增幅">
+                                    <el-input v-model="detail.amplification" placeholder="请输入增幅">
                                         <template slot="append">%/月</template>
                                     </el-input>
                                 </el-col>
@@ -519,7 +519,7 @@ export default {
       } /*进行验证*/
     },
     blur(e) {
-      var reg = /^1[3|4|5|8][0-9]\d{4,8}$/;
+      var reg = /^1[3|4|5|8|6][0-9]\d{4,8}$/;
       var isMob = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
       if (isMob.test(e.target.value) || reg.test(e.target.value)) {
         e.target.style.borderColor = "#67c23a";
@@ -623,62 +623,8 @@ export default {
       }
     },
     sumbit() {
-      // 交付时间： paymentTime
-      // 合同终止时间： terminationTime
-      // 租赁时间： startTime   endTime
 
-      // 月租金： monthlyRent
-      // 月物业管理费： monthlyManagementFee
-      // 租金物业费合计： total
-
-      // 租赁保证金： leaseCommencementDate
-      // cashPledge 物业管理费押金
-      // 物业管理费开始日期 manageStartTime
-      // 物业管理费结束日期 manageEndTime
-      // 管理费 administrativeFee
-      // 租金开始时间 rentalStartTime
-      // 租金结束时间 rentalEndTime
-      // 租金 rental
-      // 管理费开始时间 managementCostStartTime
-      // 合同中的第二次管理费结束时间 managementCostEndTime
-      // 合同中的第二次管理费 managementCost
-      // 合计 aggregate
-      // var contractVO = {
-      //      "site":this.detail.site,
-      //         "afterTheRent":this.detail.afterTheRent,
-      //         "amplification":this.detail.amplification,
-      //         "cashDeposit":this.detail.cashDeposit,
-      //         "tenantry":this.detail.tenantry,
-      //         "ContractualRelation.roomId":this.detail.room,
-      //         "phone":this.detail.phone,
-      //         "purpose": this.detail.purpose,
-      //         "comment":this.detail.comment,
-      //         "deliveryTime": this.form.deliveryTime,
-      //         "terminationTime": this.form.terminationTime,
-      //         "startTime": this.detail.startTime,
-      //         "endTime": this.detail.endTime,
-      //         "monthlyRent": this.form.monthlyRent,
-      //         "monthlyManagementFee": this.form.monthlyManagementFee,
-      //         "total": this.form.total,
-      //         "leaseCommencementDate": this.form.leaseCommencementDate,
-      //         "cashPledge": this.form.cashPledge,
-      //         "manageStartTime": this.form.manageStartTime,
-      //         "manageEndTime": this.form.manageEndTime,
-      //         "administrativeFee": this.form.administrativeFee,
-      //         "rentalStartTime": this.form.rentalStartTime,
-      //         "rentalEndTime": this.form.rentalEndTime,
-      //         "rental": this.form.rental,
-      //         "managementCostStartTime": this.form.managementCostStartTime,
-      //         "managementCostEndTime": this.form.managementCostEndTime,
-      //         "managementCost": this.form.managementCost,
-      //         "aggregate": this.form.aggregate,
-      //         "roomNumber":this.detail.roomNumber,
-      //         "budgeEndTime":this.form.budgeEndTime,
-      //         "budgeStartTime":this.form.budgeStartTime
-      // }
-
-      this.$ajax
-        .post(url + "contract/addContract", {
+      this.$ajax.post(url + "contract/addContract", {
           site: this.detail.site,
           afterTheRent: this.detail.afterTheRent,
           amplification: this.detail.amplification,
@@ -719,8 +665,7 @@ export default {
           dailyRent: this.detail.dailyRent,
           dailyManagementFee: this.detail.dailyManagementFee,
           coveredAreas: this.detail.rooms.coveredAreas
-        })
-        .then(res => {
+        }).then(res => {
           if (res.data.status === 200) {
             this.$message({
               message: "添加成功",
@@ -745,10 +690,17 @@ export default {
     },
     relation(e) {
       this.$ajax.get(url + "room/flndById/" + e[2]).then(res => {
-        if (this.rooms.indexOf(res.data.data.id) < 0) {
-          this.rooms.push(res.data.data.id);
-          this.thisRoom.push(res.data.data.roomNumber.toString());
-          this.detail.room = this.rooms.join();
+        if (!res.data.data.clientId) {
+          if (this.rooms.indexOf(res.data.data.id) < 0) {
+            this.rooms.push(res.data.data.id);
+            this.thisRoom.push(res.data.data.roomNumber.toString());
+            this.detail.room = this.rooms.join();
+          }
+        } else {
+          this.$message({
+            message: "该房间已租。",
+            type: "error"
+          });
         }
       });
     },

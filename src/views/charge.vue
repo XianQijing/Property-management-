@@ -1163,7 +1163,7 @@ export default {
   padding: 0 40px 0 50px;
   width: 99%;
   margin-left: 2px;
-  height: 810px;
+  height: 805px;
 }
 .confirm {
   background-color: #32a8ee;

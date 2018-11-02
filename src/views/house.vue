@@ -36,13 +36,6 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="totalDataNumberAdmin">
                   </el-pagination>
-                  <!--size-change, pageSize 改变时会触发 -->
-                  <!-- current-change	currentPage 改变时会触发 -->
-                  <!-- current-page	当前页数，支持 .sync 修饰符 -->
-                  <!-- page-sizes	每页显示个数选择器的选项设置 -->
-                  <!-- layout	组件布局，子组件名用逗号分隔 -->
-                  <!-- total	总条目数 -->
-									<!-- page-size	每页显示条目个数 -->
 								</div>
 							</div>
 						</el-tab-pane>
@@ -902,7 +895,7 @@ button {
 		padding: 0 40px 0 50px;
 		width: 99%;
     margin-left: 2px;
-    height: 810px;
+    height: 805px;
 	}
 	
 	.biaodan span {

@@ -106,6 +106,7 @@ require('echarts/lib/chart/bar');
 require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
 require('echarts/lib/component/legend')
+require('echarts/lib/component/dataZoom')
 export default {
   name: 'houseAndCust',
   data () {
@@ -399,6 +400,13 @@ export default {
           width: '64%',
           containLabel: true
         },
+        dataZoom: [
+          {
+            type: 'slider',
+            start: 70,
+            bottom: 50
+          }
+        ],
         xAxis : [
           {
             name:'客户名',

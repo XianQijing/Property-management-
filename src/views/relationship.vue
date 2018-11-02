@@ -204,7 +204,7 @@
 								<router-link :to="{name: 'AddCustomer'}"><button class="add1">新增事件</button></router-link>
 								<el-table :data="customerMsg" style="width: 100%">
 									<el-table-column prop="name" label="客户" ></el-table-column>
-									<el-table-column prop="roomNumber" label="关联房屋"></el-table-column>
+									<el-table-column prop="phone" label="手机号"></el-table-column>
 									<el-table-column prop="categoryValue" label="类型"></el-table-column>
 									<el-table-column prop="content" label="描述"></el-table-column>
 									<el-table-column prop="occurrenceTime" label="反馈时间"></el-table-column>
@@ -1132,7 +1132,7 @@ function birthDay1 (data) {
 		padding: 0 40px 0 50px;
 		width: 99%;
 		margin-left: 2px;
-		height: 810px;
+		height: 805px;
 	}
 	
 	.biaodan span {

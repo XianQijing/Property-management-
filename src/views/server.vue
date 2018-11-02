@@ -106,8 +106,8 @@
                     </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-form-item label="专业分类:">
-                        <el-select v-model="detail.professional_lis" placeholder="服务类别" style="width:100%">
+                    <el-form-item label="受理人员:">
+                        <el-select v-model="professional_list" placeholder="服务类别" style="width:100%">
                             <el-option
 								v-for="find in handlerTo"
 								:key="find.id"
@@ -144,6 +144,7 @@ export default {
     name:'server',
     data(){
         return{
+            professional_list: '',
             detail: {
                 name: '',
                 area: '',
@@ -161,7 +162,7 @@ export default {
                 person:'',
                 require: '',
                 textarea:'',
-                handler: ''
+                handler: '',
             },
             service:[],
             serviceTo: [],
@@ -221,7 +222,7 @@ export default {
                 this.editChange(res.data.name,res.data.phone)
                 this.detail.handler = Number(res.data.handler)
                 this.findUsers()
-                this.detail.professional_list = res.data.professional_list
+                this.professional_list = res.data.professional_list
             })
             this.edit = false
         }else(
@@ -352,7 +353,7 @@ export default {
             serviceAcceptVO.leaseType=this.detail.leaseType;   //类型
             serviceAcceptVO.way=this.detail.way;   //报修方式
             serviceAcceptVO.receiverTime=this.detail.receiverTime;    //工时
-            serviceAcceptVO.professional_list=this.detail.professional_list;    //专业分类
+            serviceAcceptVO.professional_list=this.professional_list;    //专业分类
             serviceAcceptVO.problem=this.detail.problem;    //要求处理事项
             serviceAcceptVO.remarks=this.detail.remarks;    //备注
             if(this.$route.query.msg == 7){

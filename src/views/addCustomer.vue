@@ -579,8 +579,20 @@ export default {
             window.history.back()
         },
         handleChange(value) {
-        //console.log(value);
-      }
+            this.$ajax.get(url + 'owner/findOwnerByRoomId/'+value[2]).then(res => {
+                if(res.data.status === 200){
+                    this.ruleForm.name = res.data.data.name
+                    this.ruleForm.phone = res.data.data.phone
+                }else{
+                    this.$message({
+                        message:res.data.msg,
+                        type: 'error'
+                    })
+                    this.ruleForm.name = '',
+                    this.ruleForm.phone = ''
+                }
+            })
+        }
     }
 
 }

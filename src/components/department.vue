@@ -1216,6 +1216,7 @@ methods:{
                 })
                 this.zhiyuan = false;
                 this.staff()
+                this.$emit('ee')
             }else if(res.data.status===403){
                     this.$message({
                         message: '权限不足',
