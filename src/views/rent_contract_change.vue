@@ -102,6 +102,11 @@
                             <el-input v-model="detail.purpose" placeholder="请输入用途"></el-input>
                         </el-form-item>
                     </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="合同编号：">
+                            <el-input v-model="detail.contractNo" placeholder="请输入传真"></el-input>
+                        </el-form-item>
+                    </el-col>
                     </el-row>
                     <el-row>
                     <el-col :span="12">
@@ -369,6 +374,7 @@ export default {
         fax: "",
         room: [],
         purpose: "",
+        contractNo: '',
         rooms: {
           coveredAreas: ""
         },
@@ -599,7 +605,8 @@ export default {
           theDepositAmount: this.detail.theDepositAmount,
           dailyRent: this.detail.dailyRent,
           dailyManagementFee: this.detail.dailyManagementFee,
-          coveredAreas: this.detail.rooms.coveredAreas
+          coveredAreas: this.detail.rooms.coveredAreas,
+          contractNo: this.detail.contractNo
         };
         this.$ajax.put(url + "contract/updateContract", data2).then(res => {
           if (res.data.status === 200) {
@@ -664,7 +671,8 @@ export default {
           theDepositAmount: this.detail.theDepositAmount,
           dailyRent: this.detail.dailyRent,
           dailyManagementFee: this.detail.dailyManagementFee,
-          coveredAreas: this.detail.rooms.coveredAreas
+          coveredAreas: this.detail.rooms.coveredAreas,
+          contractNo: this.detail.contractNo
         }).then(res => {
           if (res.data.status === 200) {
             this.$message({

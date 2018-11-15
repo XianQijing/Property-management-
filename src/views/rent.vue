@@ -539,8 +539,8 @@ export default {
         flndAllContract(){
             this.$ajax.get(url + 'contract/flndAll/'+this.pageNoContract+'/'+this.pageSizeContract).then((res) => {
                 if(res.data.status === 200){  
-                this.tableDataContract=res.data.data.rows
-                this.totalDataNumberContract=res.data.data.records
+                    this.tableDataContract=res.data.data.rows
+                    this.totalDataNumberContract=res.data.data.records
                 }
                 
             })
