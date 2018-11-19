@@ -17,6 +17,9 @@
             <el-tab-pane label="操作日志" name="fourth" :lazy="lazy">
               <operation/>
             </el-tab-pane>
+            <el-tab-pane label="文件夹" name="fifth" :lazy="lazy">
+              <Folder/>
+            </el-tab-pane>
 					</el-tabs>
 				</div>
 			</div>
@@ -29,6 +32,7 @@ import Message from './message'
 import Parameters from './parameters'
 import Role from './role'
 import Operation from './operation'
+import Folder from './Folder'
 import url from '../../assets/Req.js'
 // import DepartNav from '../../components/departNav.vue'
 export default {
@@ -60,7 +64,8 @@ export default {
     Message,
     Parameters,
     Role,
-    Operation
+    Operation,
+    Folder
     // DepartNav
   }
 }
