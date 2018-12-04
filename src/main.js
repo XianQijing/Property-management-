@@ -41,13 +41,18 @@ axios.interceptors.response.use(
         message: '权限不足',
         type: 'error'
       })
-    }else if (data.status === 506) {
+    } else if (data.status === 10086584) {
+      Message({
+        message: '连接超时',
+        type: 'error'
+      })
+    } else if (data.status === 506) {
       Message({
         message: data.message,
         type: 'error'
       })
       Router.push('/login')
-    }else{
+    } else {
       return response
     }
   },

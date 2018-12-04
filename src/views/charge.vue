@@ -28,7 +28,8 @@
                                     <el-table-column prop="itemName" label="收费项目"></el-table-column>
                                     <!-- <el-table-column prop="meterName" label="仪表种类"></el-table-column> -->
                                     <el-table-column prop="price" label="费用"></el-table-column>
-                                    <el-table-column prop="createTime" label="时间"></el-table-column>
+                                    <el-table-column prop="createTime" label="起始时间"></el-table-column>
+                                    <el-table-column prop="deadline" label="截止时间"></el-table-column>
                                     <el-table-column prop="remarks" label="备注"></el-table-column>
                                     <el-table-column width=250>
                                       <template slot-scope="scope">
@@ -74,8 +75,8 @@
                                   </div>
                               </div>
                           </div>                 
-                        </el-tab-pane>
-                        <el-tab-pane label="抄表录入" v-if="this.role.indexOf('rubik:meterReading:list')!==-1" name="second">
+                      </el-tab-pane>
+                      <el-tab-pane label="抄表录入" v-if="this.role.indexOf('rubik:meterReading:list')!==-1" name="second">
                           <div class="main">
                             <button class="add" @click="luru('','','add')">录入数据</button>
                             <button class="btn4">导入</button>
@@ -118,8 +119,9 @@
                     </el-tabs>
                 </div>
             </div>
+            <!-- 抄表录入-录入数据 -->
             <el-dialog
-            :title="this.name"
+                :title="this.name"
                 :visible.sync="entry"
                 width="500px"
                 :model="entrydata">
@@ -188,8 +190,7 @@
                     <el-button type="primary" @click="submitIn">确 定</el-button>
                 </span>
             </el-dialog>
-
-
+            <!-- 应收费用-付款按钮 -->
             <el-dialog
               title="应收费用"
               :visible.sync="dialogVisible"
@@ -204,7 +205,8 @@
                 <el-button type="primary" @click="moneyYes">确 定</el-button>
               </span>
             </el-dialog>
-            <el-dialog
+            <!-- 应收费用 -->
+            <!-- <el-dialog
               title="录入"
               :visible.sync="interimCharge"
               width="500px">
@@ -220,11 +222,7 @@
               <el-form-item label="租户名称:" prop="ownerName" v-if="this.num == 0">
                 <el-input v-model="ownerName" disabled></el-input>
               </el-form-item>
-              <!-- <el-form-item label="收费项目:" prop="payItemName" v-if="this.num == 0">
-                <el-input v-model="form.payItemName"></el-input>
-              </el-form-item> -->
               <el-form-item label="收费项目:" prop="payItemTypeId" v-if="this.num == 0">
-                <!-- <el-input v-model="form.payItemTypeName"></el-input> -->
                 <el-select v-model="form.payItemTypeId" placeholder="请选择费用项目类型" style="width:100%">
                     <el-option v-for="item in list" :label="item.name" :value="item.id" :key="item.id"></el-option>
                 </el-select>
@@ -232,10 +230,7 @@
               <el-form-item label="应收费用:" prop="shouldPrice" v-if="this.num == 0">
                 <el-input v-model="form.shouldPrice" @blur="float"></el-input>
               </el-form-item>
-              <!-- <el-form-item label="实收费用:" prop="payPrice" v-if="this.num == 0">
-                <el-input v-model="form.payPrice" @blur="float"></el-input>
-              </el-form-item> -->
-              <el-form-item label="应收时间:" prop="shouldTime" v-if="this.num == 0">
+              <el-form-item label="收款时间:" prop="shouldTime" v-if="this.num == 0">
                 <el-date-picker
                   v-model="form.shouldTime"
                   type="datetime"
@@ -245,16 +240,16 @@
                   format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
               </el-form-item>
-              <!-- <el-form-item label="实收时间:" prop="payTime" v-if="this.num == 0">
+              <el-form-item label="截止时间:" prop="deadline" v-if="this.num == 0">
                 <el-date-picker
-                  v-model="form.payTime"
+                  v-model="form.deadline"
                   type="datetime"
                   placeholder="选择日期时间"
                   style="width:100%"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
-              </el-form-item> -->
+              </el-form-item>
               <el-form-item label="备注:"  v-if="this.num == 0">
                 <el-input v-model="form.remark"></el-input>
               </el-form-item>
@@ -281,6 +276,91 @@
                 <el-input v-model="form.remarks"></el-input>
               </el-form-item>
               </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="interimCharge = false">取 消</el-button>
+                <el-button type="primary" @click="moneyYes">确 定</el-button>
+              </span>
+            </el-dialog> -->
+            <el-dialog
+              title="录入"
+              :visible.sync="interimCharge"
+              width="500px">
+              <el-form  class="tanchuang" ref="form" :model="form" size="mini" :rules="rul" label-width="100px" >
+                <el-form-item label="房号:" prop="roomNum" v-if="this.num == 0">
+                <el-cascader
+                    expand-trigger="hover"
+                    :options="option"
+                    v-model="form.roomNum"
+                    @change="find(1)">
+                </el-cascader>
+              </el-form-item>
+              <el-form-item label="租户名称:" prop="ownerName" v-if="this.num == 0">
+                <el-input v-model="ownerName" disabled></el-input>
+              </el-form-item>
+              <!-- <el-form-item label="收费项目:" prop="payItemName" v-if="this.num == 0">
+                <el-input v-model="form.payItemName"></el-input>
+              </el-form-item> -->
+              <div v-for="(o, i) in shoufeiList" :key="i">
+                <img src=".././assets/add.png" @click="feiyongluru(i)">
+                <el-form-item label="收费项目:" prop="payItemTypeId" v-if="num == 0">
+                  <!-- <el-input v-model="form.payItemTypeName"></el-input> -->
+                  <el-select v-model="o.payItemTypeId" placeholder="请选择费用项目类型" style="width:100%">
+                      <el-option v-for="item in list" :label="item.name" :value="item.id" :key="item.id"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="应收费用:" prop="shouldPrice" v-if="num == 0">
+                  <el-input v-model="o.shouldPrice" @blur="float"></el-input>
+                </el-form-item>
+                <!-- <el-form-item label="实收费用:" prop="payPrice" v-if="this.num == 0">
+                  <el-input v-model="form.payPrice" @blur="float"></el-input>
+                </el-form-item> -->
+                <el-form-item label="收款时间:" prop="shouldTime" v-if="num == 0">
+                  <el-date-picker
+                    v-model="o.shouldTime"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    style="width:100%"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    format="yyyy-MM-dd HH:mm:ss">
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item label="截止时间:" prop="deadline" v-if="num == 0">
+                  <el-date-picker
+                    v-model="o.deadline"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    style="width:100%"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    format="yyyy-MM-dd HH:mm:ss">
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item label="备注:"  v-if="num == 0">
+                  <el-input v-model="o.remark"></el-input>
+                </el-form-item>
+                <el-form-item label="应收费用:" prop="receivable" v-if="num == 2">
+                  <el-input v-model="o.receivable" @blur="float"></el-input>
+                </el-form-item>
+                <el-form-item label="实收费用:" prop="officialReceipts" v-if="num == 2">
+                  <el-input v-model="o.officialReceipts" @blur="float"></el-input>
+                </el-form-item>
+                <el-form-item label="收费人:" prop="feeEarners" v-if="num == 2" >
+                  <el-input v-model="o.feeEarners"></el-input>
+                </el-form-item>
+                <el-form-item label="收费日期:" prop="time" v-if="num == 2" >
+                  <el-date-picker
+                    v-model="o.time"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    style="width:100%"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    format="yyyy-MM-dd HH:mm:ss">
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item label="备注:"  v-if="num == 2">
+                  <el-input v-model="o.remarks"></el-input>
+                </el-form-item>
+              </div>
+            </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="interimCharge = false">取 消</el-button>
                 <el-button type="primary" @click="moneyYes">确 定</el-button>
@@ -325,8 +405,18 @@ export default {
         payPrice: '',
         shouldTime: '',
         payTime: '',
+        deadline: '',
         remark: ''
       },
+      shoufeiList: [
+        {
+          payItemTypeId: '',
+          shouldPrice: '',
+          shouldTime: '',
+          deadline: '',
+          remark: ''
+        }
+      ],
       dialogVisible: false,
       date: [],
       num: 0,
@@ -348,18 +438,21 @@ export default {
         roomNum: [
           { required: true, message: '请选择房号', trigger: 'blur' },
         ],
-        payItemTypeId: [
-          { required: true, message: '请先选择项目类型', trigger: 'change' },
-        ],
-        shouldPrice: [
-          { required: true, message: '请输入应收费用', trigger: 'blur' },
-        ],
-        payPrice: [
-          { required: true, message: '请输入实收费用', trigger: 'blur' },
-        ],
-        shouldTime: [
-          { required: true, message: '请输入应收时间', trigger: 'blur' },
-        ],
+        // payItemTypeId: [
+        //   { required: true, message: '请先选择项目类型', trigger: 'change' },
+        // ],
+        // shouldPrice: [
+        //   { required: true, message: '请输入应收费用', trigger: 'blur' },
+        // ],
+        // payPrice: [
+        //   { required: true, message: '请输入实收费用', trigger: 'blur' },
+        // ],
+        // shouldTime: [
+        //   { required: true, message: '请输入收款时间', trigger: 'blur' },
+        // ],
+        // deadline: [
+        //   { required: true, message: '请输入截止时间', trigger: 'blur' },
+        // ],
         payTime: [
           { required: true, message: '请输入实收时间', trigger: 'blur' },
         ],
@@ -488,6 +581,28 @@ export default {
     }
   },
   methods: {
+    feiyongluru(index) {
+      if (this.shoufeiList.length < 2) {
+        this.shoufeiList.push({
+          money: '',
+          receivable: '',
+          officialReceipts: '',
+          feeEarners: '',
+          time: '',
+          remarks: '',
+          roomNum: [],
+          ownerName: '',
+          payItemName: '',
+          payItemTypeId: '',
+          shouldPrice: '',
+          payPrice: '',
+          shouldTime: '',
+          payTime: '',
+          deadline: '',
+          remark: ''
+        })
+      } 
+    },
     find(msg){
       var id = ''
       if(msg === 1) {
@@ -624,32 +739,43 @@ export default {
             }
           })
         }else if(this.num == 0){
-          this.$ajax.post(url + 'pay/insertByRapid',{
-            "roomNum": this.form.roomNum[2],
-            "tenantName": this.ownerName,
-            "payItemId": this.form.payItemTypeId,
-            "orderMoney": this.form.shouldPrice,
-            // "payPrice": this.form.payPrice,
-            "collectionTime": this.form.shouldTime,
-            // "payTime": this.form.payTime,
-            "remark": this.form.remark
-          }).then(res => {
-            if(res.data.status === 200){
-              this.$message({
-                message:'添加成功',
-                type: 'success'
-              })
-              this.interimCharge = false
-              this.Cost()
-              if (this.$refs.historyCharge) {
-                this.$refs.historyCharge.getHistory('getPayOrderHistory')
+          // console.log(this.shoufeiList)
+          this.shoufeiList.forEach(v => {
+            this.$ajax.post(url + 'pay/insertByRapid',{
+              "roomNum": this.form.roomNum[2],
+              "tenantName": this.ownerName,
+              "payItemId": v.payItemTypeId,
+              "orderMoney": v.shouldPrice,
+              "collectionTime": v.shouldTime,
+              "deadline":v.deadline,
+              "remark": v.remark
+            }).then(res => {
+              if(res.data.status === 200){
+                this.$message({
+                  message:'添加成功',
+                  type: 'success'
+                })
+                this.interimCharge = false
+                this.Cost()
+                this.shoufeiList = [
+                  {
+                    payItemTypeId: '',
+                    shouldPrice: '',
+                    shouldTime: '',
+                    deadline: '',
+                    remark: ''
+                  }
+                ]
+                if (this.$refs.historyCharge) {
+                  this.$refs.historyCharge.getHistory('getPayOrderHistory')
+                }
+              }else{
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
               }
-            }else{
-              this.$message({
-                message: res.data.msg,
-                type: 'error'
-              })
-            }
+            })
           })
         }
       }
