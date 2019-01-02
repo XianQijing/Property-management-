@@ -17,7 +17,7 @@
 									<el-table-column type="selection" width="55"></el-table-column>
 									<el-table-column prop="name" label="姓名"></el-table-column>
 									<el-table-column prop="phone" label="手机号" width="180"></el-table-column>
-									<el-table-column prop="sexs" label="性别"></el-table-column>
+									<!-- <el-table-column prop="sexs" label="性别"></el-table-column> -->
 									<!-- <el-table-column prop="wechat" label="微信号"></el-table-column> -->
 									<el-table-column prop="roomNumber" label="房间号"></el-table-column>
 									<!-- <el-table-column prop="leaseType" label="租用类型"></el-table-column> -->
