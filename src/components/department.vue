@@ -8,7 +8,7 @@
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <!--部门管理-->
             <el-tab-pane label="部门管理" name="first" v-if="this.role1.indexOf('rubik:divisional:list')!==-1">
-                <manage-name></manage-name>
+                <manage-name v-if="activeName === 'first'"></manage-name>
             </el-tab-pane>
             <!-- <el-tab-pane label="权限管理" name="second" v-if="this.role1[13] === 'rubik:role:list'">
               <div class="main">
